@@ -14,15 +14,15 @@ test('renders learn react link', () => {
 
 test('renders the list view', () => {
   render(
-    <MemoryRouter initialEntries={['/list']}>
+    <MemoryRouter initialEntries={['/fields']}>
       <App />
     </MemoryRouter>,
   )
   expect(screen.getByText(/LFPZ/)).toBeDefined()
 })
 
-test('goes to list through the navbar', async () => {
+test('goes to field list through the navbar', async () => {
   render(<App />, {wrapper: MemoryRouter});
-  await userEvent.click(screen.getByText(/list/i));
+  await userEvent.click(screen.getByText(/terrains/i));
   expect(await screen.getByText(/LFPZ/i)).toBeDefined();
 });

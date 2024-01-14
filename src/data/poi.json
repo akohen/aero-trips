@@ -2,15 +2,18 @@
     {
         "type": "airfield",
         "name": "Saint-Cyr",
-        "ICAO": "LFPZ"
+        "ICAO": "LFPZ",
+        "position": [48.81267514072214, 2.0686748360140164]
     },
     {
         "type": "airfield",
         "name": "Toussus",
-        "ICAO": "LFPN"
+        "ICAO": "LFPN",
+        "position": [48.7487103461373, 2.109730393327482]
     },
     {
         "type": "restaurant",
-        "name": "Les ailes volantes"
+        "name": "Les ailes volantes",
+        "position": [48.8100016582833, 2.069184036897979]
     }
 ]

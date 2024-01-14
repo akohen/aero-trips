@@ -19,7 +19,7 @@ function Layout() {
         padding="md"
       >
       <AppShell.Header>
-        <Group h="100%" px="md">
+        <Group px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           <img src={viteLogo} alt="Vite logo" />
           <h3>Aero Trips</h3>
@@ -28,7 +28,9 @@ function Layout() {
 
         <AppShell.Navbar p="md">
           <Link to="/">Home</Link>
-          <Link to="/list">List</Link>
+          <Link to="/fields">Terrains</Link>
+          <Link to="/activities">Activités</Link>
+          <Link to="/map">Carte</Link>
         </AppShell.Navbar>
 
         <AppShell.Main>
