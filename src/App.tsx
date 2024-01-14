@@ -1,38 +1,27 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import '@mantine/core/styles.css';
-
-import { MantineProvider, Button } from '@mantine/core';
+import { createBrowserRouter, RouterProvider, Route, Routes } from "react-router-dom";
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import ListPage from './routes/ListPage';
+import Layout from './Layout';
+import Home from './routes/Home';
 
-  return (
-    <MantineProvider>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <Button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </Button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </MantineProvider>
-  )
+const router = createBrowserRouter([
+  { path: "*", Component: Root },
+], {basename:"/aero-trips/"});
+
+export default function App() {
+  return <RouterProvider router={router} />;
 }
 
-export default App
+
+function Root() {
+  return (
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/list" element={<ListPage />} />
+      </Route>
+    </Routes>
+  );
+}
