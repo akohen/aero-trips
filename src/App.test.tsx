@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 
 import App from './App';
@@ -19,3 +20,9 @@ test('renders the list view', () => {
   )
   expect(screen.getByText(/LFPZ/)).toBeDefined()
 })
+
+test('goes to list through the navbar', async () => {
+  render(<App />, {wrapper: MemoryRouter});
+  await userEvent.click(screen.getByText(/list/i));
+  expect(await screen.getByText(/LFPZ/i)).toBeDefined();
+});
