@@ -18,11 +18,11 @@ test('renders the list view', () => {
       <App />
     </MemoryRouter>,
   )
-  expect(screen.getByText(/LFPZ/)).toBeDefined()
+  expect(screen.getByText(/LFNW/)).toBeDefined()
 })
 
 test('goes to field list through the navbar', async () => {
   render(<App />, {wrapper: MemoryRouter});
   await userEvent.click(screen.getByText(/terrains/i));
-  expect(await screen.getByText(/LFPZ/i)).toBeDefined();
+  expect(await screen.getByText(/LFNW/i)).toBeDefined();
 });

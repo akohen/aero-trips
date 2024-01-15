@@ -1,7 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 
-const xmlFile = readFileSync(`${process.cwd()}/scripts/AIXM4.5_all_FR_OM_2023-10-05.xml`, 'utf8');
+const xmlFile = readFileSync(`./scripts/AIXM4.5_all_FR_OM_2023-10-05.xml`, 'utf8');
 const parser = new XMLParser();
 let jsonObj = parser.parse(xmlFile);
 
@@ -19,13 +19,6 @@ jsonObj['AIXM-Snapshot'].Ahp
         airfields[e.codeIcao] = obj
     });
 
-// Usage restrictions
-jsonObj['AIXM-Snapshot'].Ahu
-    .filter(e => e.UsageLimitation.codeUsageLimitation != 'PERMIT')
-    .forEach(e => {
-        //console.log(e)
-    })
-
 // Runway information
 jsonObj['AIXM-Snapshot'].Rwy
     .forEach(e => {
@@ -38,7 +31,5 @@ jsonObj['AIXM-Snapshot'].Rwy
         }
     })
 
-
-//console.log(ADlist[0])
-console.log(Object.keys(airfields).length)
-console.log(jsonObj['AIXM-Snapshot'].Ahu.length)
+writeFileSync('src/data/airfields.json', JSON.stringify(airfields))
+console.log(Object.keys(airfields).length + ' airfields saved')
