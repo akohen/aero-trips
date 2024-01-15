@@ -3,7 +3,7 @@ import poi from '../data/poi.json'
 
 function MapPage() {
   const markers = poi.map((e) => (
-    <Marker position={e.position}>
+    <Marker position={e.position as [number, number]}>
       <Popup>{e.name}</Popup>
     </Marker>
   ));
