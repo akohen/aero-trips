@@ -1,6 +1,13 @@
 import { XMLParser } from "fast-xml-parser";
 import { readFileSync, writeFileSync } from "fs";
 
+function DMS2DD(str) {
+    const S = parseFloat(str)%100
+    const M = Math.floor(parseInt(str)%10000/100)
+    const D = Math.floor(parseInt(str)/10000)
+    return (D+(M+S/60)/60) * ('SW'.includes(str[str.length-1]) ? -1 : 1)
+}
+
 const xmlFile = readFileSync(`./scripts/AIXM4.5_all_FR_OM_2023-10-05.xml`, 'utf8');
 const parser = new XMLParser();
 let jsonObj = parser.parse(xmlFile);
@@ -13,7 +20,7 @@ jsonObj['AIXM-Snapshot'].Ahp
         const obj = {
             codeIcao: e.codeIcao,
             name: e.txtName,
-            position: [e.geoLat, e.geoLong],
+            position: [DMS2DD(e.geoLat), DMS2DD(e.geoLong)],
             runways: []
         }
         airfields[e.codeIcao] = obj

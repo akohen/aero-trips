@@ -1,5 +1,6 @@
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 import poi from '../data/poi.json'
+import airfields from '../data/airfields.json'
 
 function MapPage() {
   const markers = poi.map((e) => (
@@ -8,6 +9,11 @@ function MapPage() {
     </Marker>
   ));
 
+  const airfieldsMarkers = Object.values(airfields).map( e => (
+    <Marker position={e.position as [number, number]}>
+      <Popup>{e.name}</Popup>
+    </Marker>
+  ));
 
   return (<div>
     foo
@@ -17,6 +23,7 @@ function MapPage() {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {markers}
+      {airfieldsMarkers}
     </MapContainer>
 
   </div>
