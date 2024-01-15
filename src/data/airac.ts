@@ -1,10 +1,15 @@
-import cycles from './airac.json' assert { type: "json" };
-
-const MONTHS = ['JAN', 'FEB', 'MAR', 'AVR', 'MAI', 'JUN', 'JUI', 'AOU', 'SEP', 'OCT', 'NOV', 'DEC']
-const now = new Date().valueOf()
-const current = cycles.filter(d => (now - new Date(d[2]+2000,d[1]-1,d[0]).valueOf()) > 0).at(-1)
-const airac = current?.[0] + '_'+MONTHS[(current?.[1] || 1) - 1]+'_20'+current?.[2]
-
-export default function getAirac() {
-    return airac
+export function getAirac(reference: Date) {
+  let current = new Date("2023/12/28")
+  while (nextAirac(current) < reference) { current = nextAirac(current) }
+  const MONTHS = ['JAN', 'FEB', 'MAR', 'AVR', 'MAI', 'JUN', 'JUI', 'AOU', 'SEP', 'OCT', 'NOV', 'DEC']
+  return String(current.getDate()).padStart(2,'0') + '_' + MONTHS[current.getMonth()] + '_' + current.getFullYear()
 }
+
+export function nextAirac(start: Date) {
+  const nextDate = new Date(start);
+  nextDate.setDate(nextDate.getDate() + 28);
+  return nextDate;
+}
+
+const airac = getAirac(new Date())
+export default airac
