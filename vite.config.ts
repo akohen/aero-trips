@@ -9,7 +9,6 @@ export default defineConfig({
     react(),
     VitePWA({ registerType: 'autoUpdate', devOptions: { enabled: false } }),
   ],
-  base: "/aero-trips/",
   test: {
     globals: true,
     environment: 'happy-dom',
