@@ -25,6 +25,7 @@ function FieldsPage() {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
+    setPage(1)
     chunkedData = chunk(filterData(data, value),20);
   };
 
@@ -76,7 +77,7 @@ function FieldsPage() {
         value={search}
         onChange={handleSearchChange}
       />
-      <Pagination className="paginationtest" total={data.length} value={activePage} onChange={setPage} />
+      <Pagination className="paginationtest" total={chunkedData.length} value={activePage} onChange={setPage} />
     </Center>
     </>
     )
