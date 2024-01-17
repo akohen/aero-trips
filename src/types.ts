@@ -1,8 +1,8 @@
 export type Airfield = {
-  codeOaci: string,
+  codeIcao: string,
   name?: string,
 }
 
 export type Data = {
-  airfields: Airfield[],
+  airfields?: Airfield[],
 }

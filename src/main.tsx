@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { initializeApp } from "firebase/app";
-import { getFirestore, getDocs, collection  } from "firebase/firestore";
+import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { Airfield, Data } from './types.ts';
 
 const firebaseConfig = {
@@ -19,19 +19,30 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const data: Data = {
-  airfields: []
+export const DataContext = React.createContext<Data>({});
+
+
+const Root = () => {
+  const router = createBrowserRouter([
+    { path: "*", element: <App />},
+  ]);
+
+  const [data, setData] = useState<Data>({})
+  
+
+  useEffect(() => {
+    getDocs(collection(db, "airfields")).then( e => {
+      setData({airfields: e.docs.map(e => e.data() as Airfield)})
+    })
+  }, [])
+
+  return (<React.StrictMode>
+    <DataContext.Provider value={data}>
+      <RouterProvider router={router} />
+    </DataContext.Provider>
+  </React.StrictMode>)
 }
-const query = await getDocs(collection(db, "airfields"))
-query.forEach(a => data.airfields.push(a.data() as Airfield) )
+
+ReactDOM.createRoot(document.getElementById('root')!).render(<Root />)
 
 
-const router = createBrowserRouter([
-  { path: "*", element: <App data={data} />},
-]);
-
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>,
-)

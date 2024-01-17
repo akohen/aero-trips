@@ -6,13 +6,12 @@ import Activities from "./routes/Activities";
 import MapPage from "./routes/MapPage";
 
 import './App.css'
-import { Data } from './types.ts'
 
-export default function Root(props: {data: Data}) {
+export default function Root() {  
     return (
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<Home data={props.data} />}/>
+          <Route path="/" element={<Home />}/>
           <Route path="/fields" element={<FieldsPage />} />
           <Route path="/activities" element={<Activities />} />
           <Route path="/map" element={<MapPage />} />

@@ -16,7 +16,6 @@ function MapPage() {
   ));
 
   return (<div>
-    foo
     <MapContainer style={{ height: "700px" }} center={[48.81, 2.06]} zoom={10} scrollWheelZoom={true} >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
