@@ -29,3 +29,5 @@ AIXM*.xml
 ### Firebase Patch ###
 .runtimeconfig.json
 .firebase/
+
+serviceAccountKey.json
