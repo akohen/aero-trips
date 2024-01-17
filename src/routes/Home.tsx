@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { Button } from '@mantine/core';
-function Home() {
+import { Data } from '../types';
+
+
+function Home(props: {data: Data}) {
   const [count, setCount] = useState(0)
 
   return (
@@ -13,6 +16,7 @@ function Home() {
       <p>
           Edit <code>src/App.tsx</code> and save to test HMR
       </p>
+      <p>{props.data.airfields.map(e => e.codeOaci)}</p>
       </div>
       <p className="read-the-docs">
       Click on the Vite and React logos to learn more
