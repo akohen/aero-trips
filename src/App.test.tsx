@@ -22,7 +22,7 @@ test('renders learn react link', () => {
 
 test('renders the list view', () => {
   render(
-    <MemoryRouter initialEntries={['/fields']}>
+    <MemoryRouter initialEntries={['/airfields']}>
       <DataContext.Provider value={{airfields:[testAirport]}}>
         <App />
       </DataContext.Provider>

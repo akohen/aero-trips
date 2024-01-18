@@ -1,5 +1,5 @@
 import { XMLParser } from "fast-xml-parser";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync } from "fs";
 import admin from "firebase-admin";
 
 
@@ -56,8 +56,10 @@ jsonObj['AIXM-Snapshot'].Rwy
                 length: e.valLen,
                 composition: e.codeComposition,
             })
-            const airfieldDoc = {...airfields[id], position: new firestore.GeoPoint(airfields[id].position[0], airfields[id].position[1])}
-            batch.set(db.doc(`airfields/${id}`), airfieldDoc)
+            if(id == "LFAB") {
+                const airfieldDoc = {...airfields[id], position: new firestore.GeoPoint(airfields[id].position[0], airfields[id].position[1])}
+                batch.set(db.doc(`airfields/${id}`), airfieldDoc, { merge: true })
+            }
         }
     })
 

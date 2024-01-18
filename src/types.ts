@@ -4,7 +4,8 @@ export type Airfield = {
   codeIcao: string,
   name?: string,
   position: GeoPoint,
-  runways: Runway[]
+  runways: Runway[],
+  description?: string,
 }
 
 export type Runway = {
