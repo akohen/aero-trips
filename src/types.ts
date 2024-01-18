@@ -2,7 +2,7 @@ import { GeoPoint } from "firebase/firestore"
 
 export type Airfield = {
   codeIcao: string,
-  name?: string,
+  name: string,
   position: GeoPoint,
   runways: Runway[],
   description?: string,

@@ -33,11 +33,10 @@ function AirfieldsPage({airfields} : {airfields: Airfield[]}) {
     setData( chunk(filterData(airfields, value),20) )
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function filterData(data: any[], search: string) {
+  function filterData(data: Airfield[], search: string) {
     const query = search.toLowerCase().trim();
     return data.filter((item) =>
-      ['codeIcao', 'name'].some((key) => item[key].toLowerCase().includes(query.normalize("NFD").replace(/\p{Diacritic}/gu, "")))
+      ['codeIcao', 'name'].some((key) => item[key as 'codeIcao' | 'name'].toLowerCase().includes(query.normalize("NFD").replace(/\p{Diacritic}/gu, "")))
     );
   }
 

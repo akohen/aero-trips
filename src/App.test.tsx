@@ -7,7 +7,7 @@ import { GeoPoint } from 'firebase/firestore';
 import { Airfield } from './types';
 import App from './App';
 
-const testAirport: Airfield = {codeIcao:"LFNW", position: new GeoPoint(0,0), runways: []}
+const testAirport: Airfield = {codeIcao:"LFNW", name:"test", position: new GeoPoint(0,0), runways: []}
 
 test('renders learn react link', () => {
   render(<App data={{airfields:[testAirport]}}/>, {wrapper: MemoryRouter});
