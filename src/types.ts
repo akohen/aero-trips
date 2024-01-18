@@ -16,4 +16,19 @@ export type Runway = {
 
 export type Data = {
   airfields: Airfield[],
+  activities: Activity[],
 }
+
+export type Activity = {
+  id: string,
+  name: string,
+  position: GeoPoint,
+  description?: string,
+  type: ActivityType[],
+}
+
+export type ActivityType = 
+  'transport' | 
+  'food' |
+  'lodging' | 
+  'other'

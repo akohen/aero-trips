@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import App from './App.tsx'
 import { FirebaseOptions, initializeApp } from "firebase/app";
-import { CACHE_SIZE_UNLIMITED, collection, getDocs, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
+import { CACHE_SIZE_UNLIMITED, GeoPoint, collection, getDocs, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
 import { Airfield, Data } from './types.ts';
 
 const firebaseConfig: FirebaseOptions = {
@@ -21,13 +21,13 @@ const db = initializeFirestore(app, {
 
 
 export const DataProvider = () => {
-  const [data, setData] = useState<Data>({airfields:[]})
+  const [data, setData] = useState<Data>({airfields:[], activities:[{ id:"xxx", name:"name", position: new GeoPoint(0,0), type:["other"], description:"description"}]})
 
   useEffect(() => {
     getDocs(collection(db, "airfields")).then( e => {
-      setData({airfields: e.docs.map(e => e.data() as Airfield)})
+      setData({...data, airfields: e.docs.map(e => e.data() as Airfield)})
     })
-  }, [])
+  })
 
   return (<App data={data}/>)
 }

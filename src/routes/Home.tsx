@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Button } from '@mantine/core';
+import { Activity } from '../types';
 
-const Home = () => {
+const Home = ({activities} : {activities:Activity[]}) => {
   const [count, setCount] = useState(0)
 
   return (<>
@@ -10,6 +11,7 @@ const Home = () => {
   <Button onClick={() => setCount((count) => count + 1)}>
       count is {count}
   </Button>
+    <div>{activities.map(a=>(<p>{a.id}</p>))}</div>
   <p>
       Edit <code>src/App.tsx</code> and save to test HMR
   </p>
