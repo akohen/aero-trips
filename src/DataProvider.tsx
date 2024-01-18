@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import App from './App.tsx'
-import { initializeApp } from "firebase/app";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { FirebaseOptions, initializeApp } from "firebase/app";
+import { CACHE_SIZE_UNLIMITED, collection, getDocs, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
 import { Airfield, Data } from './types.ts';
 
-const firebaseConfig = {
+const firebaseConfig: FirebaseOptions = {
   apiKey: "AIzaSyAleHj_gty6XncQLEDlLn3Ih7X08KuQ-jw",
   authDomain: "aero-trips.firebaseapp.com",
   projectId: "aero-trips",
@@ -15,7 +15,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const db = initializeFirestore(app, 
+  {localCache: 
+    persistentLocalCache(/*settings*/{tabManager: persistentMultipleTabManager(), cacheSizeBytes: CACHE_SIZE_UNLIMITED})
+  });
 export const DataContext = React.createContext<Data>({airfields:[]});
 
 
