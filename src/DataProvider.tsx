@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import App from './App.tsx'
 import { FirebaseOptions, initializeApp } from "firebase/app";
 import { CACHE_SIZE_UNLIMITED, collection, getDocs, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
@@ -15,11 +15,9 @@ const firebaseConfig: FirebaseOptions = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = initializeFirestore(app, 
-  {localCache: 
-    persistentLocalCache(/*settings*/{tabManager: persistentMultipleTabManager(), cacheSizeBytes: CACHE_SIZE_UNLIMITED})
-  });
-export const DataContext = React.createContext<Data>({airfields:[]});
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({tabManager: persistentMultipleTabManager(), cacheSizeBytes: CACHE_SIZE_UNLIMITED})
+});
 
 
 export const DataProvider = () => {
@@ -31,9 +29,5 @@ export const DataProvider = () => {
     })
   }, [])
 
-  return (
-    <DataContext.Provider value={data}>
-      <App />
-    </DataContext.Provider>
-  )
+  return (<App data={data}/>)
 }

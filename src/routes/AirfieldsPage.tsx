@@ -3,7 +3,6 @@ import { Table, Pagination, Center, TextInput, rem, Text } from '@mantine/core';
 import airac from '../data/airac';
 import { useEffect, useState } from 'react';
 import { IconSearch } from '@tabler/icons-react';
-import { DataContext } from '../DataProvider';
 import { Airfield } from '../types';
 
 function chunk<T>(array: T[], size: number): T[][] {
@@ -16,7 +15,7 @@ function chunk<T>(array: T[], size: number): T[][] {
 }
 
 
-function AirfieldsTable({airfields} : {airfields: Airfield[]}) {
+function AirfieldsPage({airfields} : {airfields: Airfield[]}) {
   const [search, setSearch] = useState('');
   const [activePage, setPage] = useState(1);
   const [data, setData] = useState(chunk(airfields,20));
@@ -87,10 +86,4 @@ function AirfieldsTable({airfields} : {airfields: Airfield[]}) {
     )
   }
 
-
-const AirfieldsPage = () => (
-  <DataContext.Consumer>
-    {data => <AirfieldsTable airfields={data.airfields} />}
-  </DataContext.Consumer>
-)
 export default AirfieldsPage

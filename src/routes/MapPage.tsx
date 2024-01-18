@@ -1,8 +1,7 @@
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
-import { DataContext } from '../DataProvider';
 import { Airfield } from '../types';
 
-function Map({airfields} : {airfields: Airfield[]}) {
+function MapPage({airfields} : {airfields: Airfield[]}) {
   const airfieldsMarkers = airfields.map( e => (
     <Marker position={[e.position.latitude,e.position.longitude]} key={e.codeIcao}>
       <Popup>{e.name}</Popup>
@@ -24,9 +23,4 @@ function Map({airfields} : {airfields: Airfield[]}) {
 }
 
 
-const MapPage = () => (
-  <DataContext.Consumer>
-    {data => <Map airfields={data.airfields} />}
-  </DataContext.Consumer>
-)
 export default MapPage
