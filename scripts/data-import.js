@@ -1,7 +1,6 @@
 import { XMLParser } from "fast-xml-parser";
 import { readFileSync, writeFileSync } from "fs";
 import admin from "firebase-admin";
-import { exit } from "process";
 
 
 function DMS2DD(str) {
@@ -22,17 +21,13 @@ const firebaseConfig = {
   measurementId: "G-CKJYT103VV",
   credential: admin.credential.cert(creds),
 };
-
+const firestore = admin.firestore;
 admin.initializeApp(firebaseConfig);
 const db = admin.firestore();
-const res = await db.doc(`airfields/XXXX`).set({name:"foo"});
-//await setDoc(doc(db, "airfields", "XXXX"), {name:"test"})
-//const db = getFirestore(app);
-//const db = initializeFirestore(app)
+db.settings({ ignoreUndefinedProperties: true })
+const batch = db.batch()
 
 
-
-exit(0)
 const xmlFile = readFileSync(`./scripts/AIXM4.5_all_FR_OM_2023-10-05.xml`, 'utf8');
 const parser = new XMLParser();
 let jsonObj = parser.parse(xmlFile);
@@ -54,14 +49,19 @@ jsonObj['AIXM-Snapshot'].Ahp
 // Runway information
 jsonObj['AIXM-Snapshot'].Rwy
     .forEach(e => {
-        if( e.RwyUid.AhpUid.codeId in airfields) {
-            airfields[e.RwyUid.AhpUid.codeId].runways.push({
+        const id = e.RwyUid.AhpUid.codeId
+        if( id in airfields) {
+            airfields[id].runways.push({
                 designation: e.RwyUid.txtDesig,
                 length: e.valLen,
                 composition: e.codeComposition,
             })
+            const airfieldDoc = {...airfields[id], position: new firestore.GeoPoint(airfields[id].position[0], airfields[id].position[1])}
+            batch.set(db.doc(`airfields/${id}`), airfieldDoc)
         }
     })
 
-writeFileSync('src/data/airfields.json', JSON.stringify(airfields))
+
+await batch.commit()
+//writeFileSync('src/data/airfields.json', JSON.stringify(airfields))
 console.log(Object.keys(airfields).length + ' airfields saved')
