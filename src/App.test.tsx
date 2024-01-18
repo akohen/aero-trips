@@ -7,9 +7,11 @@ import App from './App';
 import { MemoryRouter } from 'react-router-dom';
 import { DataContext } from './DataProvider';
 import { GeoPoint } from 'firebase/firestore';
+import { Airfield } from './types';
 
+const testAirport: Airfield = {codeIcao:"LFNW", position: new GeoPoint(0,0), runways: []}
 const testWrapper = ({ children }: { children: React.ReactNode } ) => (
-  <MemoryRouter><DataContext.Provider value={{airfields:[{codeIcao:"LFNW", position: new GeoPoint(0,0)}]}}>{children}</DataContext.Provider></MemoryRouter>
+  <MemoryRouter><DataContext.Provider value={{airfields:[testAirport]}}>{children}</DataContext.Provider></MemoryRouter>
 )
 
 test('renders learn react link', () => {
@@ -21,7 +23,7 @@ test('renders learn react link', () => {
 test('renders the list view', () => {
   render(
     <MemoryRouter initialEntries={['/fields']}>
-      <DataContext.Provider value={{airfields:[{codeIcao:"LFNW", position: new GeoPoint(0,0)}]}}>
+      <DataContext.Provider value={{airfields:[testAirport]}}>
         <App />
       </DataContext.Provider>
     </MemoryRouter>,

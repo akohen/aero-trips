@@ -45,6 +45,7 @@ function AirfieldsTable({airfields} : {airfields: Airfield[]}) {
     <Table.Tr key={e.codeIcao}>
       <Table.Td>{e.name}</Table.Td>
       <Table.Td>{e.codeIcao}</Table.Td>
+      <Table.Td>{Math.max(...e.runways.map(r => r.length))}m</Table.Td>
       <Table.Td>
         <a target='_blank' href={`https://www.sia.aviation-civile.gouv.fr/dvd/eAIP_${airac}/Atlas-VAC/PDF_AIPparSSection/VAC/AD/AD-2.${e.codeIcao}.pdf`}>
           Consulter
@@ -53,7 +54,7 @@ function AirfieldsTable({airfields} : {airfields: Airfield[]}) {
     </Table.Tr>
   )) : (
   <Table.Tr>
-    <Table.Td colSpan={3}>
+    <Table.Td colSpan={4}>
       <Text fw={500} ta="center">
         Aucun résultat
       </Text>
@@ -67,6 +68,7 @@ function AirfieldsTable({airfields} : {airfields: Airfield[]}) {
         <Table.Tr>
           <Table.Th>Nom du terrain</Table.Th>
           <Table.Th>Code OACI</Table.Th>
+          <Table.Th>Piste</Table.Th>
           <Table.Th>Carte VAC</Table.Th>
         </Table.Tr>
       </Table.Thead>
@@ -79,7 +81,7 @@ function AirfieldsTable({airfields} : {airfields: Airfield[]}) {
         value={search}
         onChange={handleSearchChange}
       />
-      <Pagination className="paginationtest" total={data.length} value={activePage} onChange={setPage} />
+      <Pagination total={data.length} value={activePage} onChange={setPage} />
     </Center>
     </>
     )
