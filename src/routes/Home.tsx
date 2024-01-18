@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Button } from '@mantine/core';
 import { Airfield } from '../types';
-import { DataContext } from '../main';
+import { DataContext } from '../DataProvider';
 
 
 const Page = (props: {airfields: Airfield[] | undefined}) => {
