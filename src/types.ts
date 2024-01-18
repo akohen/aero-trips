@@ -4,5 +4,5 @@ export type Airfield = {
 }
 
 export type Data = {
-  airfields?: Airfield[],
+  airfields: Airfield[],
 }

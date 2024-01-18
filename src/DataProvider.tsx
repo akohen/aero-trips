@@ -16,11 +16,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-export const DataContext = React.createContext<Data>({});
+export const DataContext = React.createContext<Data>({airfields:[]});
 
 
 export const DataProvider = () => {
-  const [data, setData] = useState<Data>({})
+  const [data, setData] = useState<Data>({airfields:[]})
 
   useEffect(() => {
     getDocs(collection(db, "airfields")).then( e => {

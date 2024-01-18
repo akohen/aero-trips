@@ -1,9 +1,10 @@
 
 import { Table, Pagination, Center, TextInput, rem, Text } from '@mantine/core';
-import airfields from '../data/airfields.json'
 import airac from '../data/airac';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IconSearch } from '@tabler/icons-react';
+import { DataContext } from '../DataProvider';
+import { Airfield } from '../types';
 
 function chunk<T>(array: T[], size: number): T[][] {
   if (!array.length) {
@@ -14,19 +15,22 @@ function chunk<T>(array: T[], size: number): T[][] {
   return [head, ...chunk(tail, size)];
 }
 
-const data = Object.values(airfields);
-let chunkedData = chunk(data, 20);
 
-function FieldsPage() {
+function AirfieldsTable({airfields} : {airfields: Airfield[]}) {
   const [search, setSearch] = useState('');
   const [activePage, setPage] = useState(1);
+  const [data, setData] = useState(chunk(airfields,20));
+
+  useEffect(() => {
+    setData( chunk(airfields,20))
+  }, [airfields])
   
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
     setPage(1)
-    chunkedData = chunk(filterData(data, value),20);
+    setData( chunk(filterData(airfields, value),20) )
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,7 +41,7 @@ function FieldsPage() {
     );
   }
 
-  const rows = chunkedData.length > 0 ? chunkedData[activePage-1].map(e => (
+  const rows = data.length > 0 ? data[activePage-1].map(e => (
     <Table.Tr key={e.codeIcao}>
       <Table.Td>{e.name}</Table.Td>
       <Table.Td>{e.codeIcao}</Table.Td>
@@ -47,7 +51,15 @@ function FieldsPage() {
         </a>
       </Table.Td>
     </Table.Tr>
-  )) : [];
+  )) : (
+  <Table.Tr>
+    <Table.Td colSpan={3}>
+      <Text fw={500} ta="center">
+        Aucun résultat
+      </Text>
+    </Table.Td>
+  </Table.Tr>
+  );
   
     return (<>
     <Table stickyHeader stickyHeaderOffset={60} highlightOnHover>
@@ -58,17 +70,7 @@ function FieldsPage() {
           <Table.Th>Carte VAC</Table.Th>
         </Table.Tr>
       </Table.Thead>
-      <Table.Tbody>{rows.length > 0 ? (
-            rows
-          ) : (
-            <Table.Tr>
-              <Table.Td colSpan={Object.keys(data[0]).length}>
-                <Text fw={500} ta="center">
-                  Aucun résultat
-                </Text>
-              </Table.Td>
-            </Table.Tr>
-          )}</Table.Tbody>
+      <Table.Tbody>{rows}</Table.Tbody>
     </Table>
     <Center>
     <TextInput
@@ -77,10 +79,16 @@ function FieldsPage() {
         value={search}
         onChange={handleSearchChange}
       />
-      <Pagination className="paginationtest" total={chunkedData.length} value={activePage} onChange={setPage} />
+      <Pagination className="paginationtest" total={data.length} value={activePage} onChange={setPage} />
     </Center>
     </>
     )
   }
-  
-  export default FieldsPage
+
+
+const AirfieldsPage = () => (
+  <DataContext.Consumer>
+    {data => <AirfieldsTable airfields={data.airfields} />}
+  </DataContext.Consumer>
+)
+export default AirfieldsPage

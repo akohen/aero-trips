@@ -5,6 +5,11 @@ import '@testing-library/jest-dom'
 
 import App from './App';
 import { MemoryRouter } from 'react-router-dom';
+import { DataContext } from './DataProvider';
+
+const testWrapper = ({ children }: { children: React.ReactNode } ) => (
+  <MemoryRouter><DataContext.Provider value={{airfields:[{codeIcao:"LFNW"}]}}>{children}</DataContext.Provider></MemoryRouter>
+)
 
 test('renders learn react link', () => {
   render(<App />, {wrapper: MemoryRouter});
@@ -15,14 +20,16 @@ test('renders learn react link', () => {
 test('renders the list view', () => {
   render(
     <MemoryRouter initialEntries={['/fields']}>
-      <App />
+      <DataContext.Provider value={{airfields:[{codeIcao:"LFNW"}]}}>
+        <App />
+      </DataContext.Provider>
     </MemoryRouter>,
   )
   expect(screen.getByText(/LFNW/)).toBeDefined()
 })
 
 test('goes to field list through the navbar', async () => {
-  render(<App />, {wrapper: MemoryRouter});
+  render(<App />, {wrapper: testWrapper});
   await userEvent.click(screen.getByText(/terrains/i));
   expect(await screen.getByText(/LFNW/i)).toBeDefined();
 });
