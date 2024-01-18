@@ -1,16 +1,10 @@
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
-import poi from '../data/poi.json'
-import airfields from '../data/airfields.json'
+import { DataContext } from '../DataProvider';
+import { Airfield } from '../types';
 
-function MapPage() {
-  const markers = poi.map((e) => (
-    <Marker position={e.position as [number, number]}>
-      <Popup>{e.name}</Popup>
-    </Marker>
-  ));
-
-  const airfieldsMarkers = Object.values(airfields).map( e => (
-    <Marker position={e.position as [number, number]}>
+function Map({airfields} : {airfields: Airfield[]}) {
+  const airfieldsMarkers = airfields.map( e => (
+    <Marker position={[e.position.latitude,e.position.longitude]} key={e.codeIcao}>
       <Popup>{e.name}</Popup>
     </Marker>
   ));
@@ -21,7 +15,6 @@ function MapPage() {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {markers}
       {airfieldsMarkers}
     </MapContainer>
 
@@ -29,5 +22,11 @@ function MapPage() {
     
   )
 }
-  
+
+
+const MapPage = () => (
+  <DataContext.Consumer>
+    {data => <Map airfields={data.airfields} />}
+  </DataContext.Consumer>
+)
 export default MapPage
