@@ -15,7 +15,7 @@ export default function App({data}:{data: Data}) {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />}/>
           <Route path="/airfields" element={<AirfieldsPage airfields={data.airfields}/>} />
-          <Route path="/airfields/:airfieldId" element={<AirfieldDetails />} />
+          <Route path="/airfields/:airfieldId" element={<AirfieldDetails airfields={data.airfields}/>} />
           <Route path="/activities" element={<Activities />} />
           <Route path="/map" element={<MapPage airfields={data.airfields}/>} />
         </Route>
