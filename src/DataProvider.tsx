@@ -27,7 +27,8 @@ export const DataProvider = () => {
     getDocs(collection(db, "airfields")).then( e => {
       setData({...data, airfields: e.docs.map(e => e.data() as Airfield)})
     })
-  })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
 
   return (<App data={data}/>)
 }
