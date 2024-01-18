@@ -4,6 +4,7 @@ import airac from '../data/airac';
 import { useEffect, useState } from 'react';
 import { IconSearch } from '@tabler/icons-react';
 import { Airfield } from '../types';
+import { Link } from 'react-router-dom';
 
 function chunk<T>(array: T[], size: number): T[][] {
   if (!array.length) {
@@ -42,8 +43,8 @@ function AirfieldsPage({airfields} : {airfields: Airfield[]}) {
 
   const rows = data.length > 0 ? data[activePage-1].map(e => (
     <Table.Tr key={e.codeIcao}>
-      <Table.Td>{e.name}</Table.Td>
-      <Table.Td>{e.codeIcao}</Table.Td>
+      <Table.Td><Link to={`/airfields/${e.codeIcao}`}>{e.name}</Link></Table.Td>
+      <Table.Td><Link to={`/airfields/${e.codeIcao}`}>{e.codeIcao}</Link></Table.Td>
       <Table.Td>{Math.max(...e.runways.map(r => r.length))}m</Table.Td>
       <Table.Td>
         <a target='_blank' href={`https://www.sia.aviation-civile.gouv.fr/dvd/eAIP_${airac}/Atlas-VAC/PDF_AIPparSSection/VAC/AD/AD-2.${e.codeIcao}.pdf`}>

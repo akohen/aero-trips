@@ -29,7 +29,6 @@ function Layout() {
         <AppShell.Navbar p="md">
           <Link to="/">Home</Link>
           <Link to="/airfields">Terrains</Link>
-          <Link to="/airfields/lfoo">LFOO</Link>
           <Link to="/activities">Activités</Link>
           <Link to="/map">Carte</Link>
         </AppShell.Navbar>
