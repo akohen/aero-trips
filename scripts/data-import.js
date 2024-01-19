@@ -29,8 +29,18 @@ const batch = db.batch()
 
 
 const xmlFile = readFileSync(`./scripts/AIXM4.5_all_FR_OM_2023-10-05.xml`, 'utf8');
-const parser = new XMLParser();
+const parser = new XMLParser({ ignoreAttributes: false });
 let jsonObj = parser.parse(xmlFile);
+
+const SIAfile = readFileSync(`./scripts/XML_SIA_2024-01-25.xml`, 'utf8');
+const siaData = parser.parse(SIAfile);
+
+const siaAirfields = new Map(siaData.SiaExport.Situation.AdS.Ad.filter(a => a.Territoire['@_pk'] == 100).map(a => ['LF'+a.AdCode,a]))
+const getFuels = (ad) => {
+    const str = [ad['SvcEscaleFuel'], ad['HorAvtTxt']].join('')
+    const fuels = [['100LL', 'LL'],['JETA1','A1'],['UL91','UL']].filter((f) => str.includes(f[1])).map(f => f[0])
+    return fuels
+}
 
 const airfields = {}
 // General informations
@@ -41,7 +51,9 @@ jsonObj['AIXM-Snapshot'].Ahp
             codeIcao: e.codeIcao,
             name: e.txtName,
             position: [DMS2DD(e.geoLat), DMS2DD(e.geoLong)],
-            runways: []
+            runways: [],
+            statut: siaAirfields.get(e.codeIcao)['AdStatut'],
+            fuels: getFuels(siaAirfields.get(e.codeIcao))
         }
         airfields[e.codeIcao] = obj
     });
@@ -56,10 +68,8 @@ jsonObj['AIXM-Snapshot'].Rwy
                 length: e.valLen,
                 composition: e.codeComposition,
             })
-            if(id == "LFAB") {
-                const airfieldDoc = {...airfields[id], position: new firestore.GeoPoint(airfields[id].position[0], airfields[id].position[1])}
-                batch.set(db.doc(`airfields/${id}`), airfieldDoc, { merge: true })
-            }
+            const airfieldDoc = {...airfields[id], position: new firestore.GeoPoint(airfields[id].position[0], airfields[id].position[1])}
+            batch.set(db.doc(`airfields/${id}`), airfieldDoc, { merge: true })
         }
     })
 
