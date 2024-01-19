@@ -1,6 +1,6 @@
 
 import { Table, Text, TextInput, rem } from '@mantine/core';
-import airac from '../data/airac';
+import { getVacUrl } from '../data/airac';
 import { Airfield } from '../types';
 import { Link } from 'react-router-dom';
 import List from '../components/TableList';
@@ -46,7 +46,7 @@ function AirfieldsPage({airfields} : {airfields: Map<string,Airfield>}) {
           <Table.Td><Link to={`/airfields/${e.codeIcao}`}>{e.codeIcao}</Link></Table.Td>
           <Table.Td>{Math.max(...e.runways.map(r => r.length))}m</Table.Td>
           <Table.Td>
-            <a target='_blank' href={`https://www.sia.aviation-civile.gouv.fr/dvd/eAIP_${airac}/Atlas-VAC/PDF_AIPparSSection/VAC/AD/AD-2.${e.codeIcao}.pdf`}>
+            <a target='_blank' href={getVacUrl(e.codeIcao)}>
               Consulter
             </a>
           </Table.Td>

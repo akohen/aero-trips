@@ -13,3 +13,4 @@ export function nextAirac(start: Date) {
 
 const airac = getAirac(new Date())
 export default airac
+export const getVacUrl = (codeIcao: string) => `https://www.sia.aviation-civile.gouv.fr/dvd/eAIP_${airac}/Atlas-VAC/PDF_AIPparSSection/VAC/AD/AD-2.${codeIcao}.pdf`
