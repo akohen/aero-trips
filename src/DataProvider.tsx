@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import App from './App.tsx'
 import { FirebaseOptions, initializeApp } from "firebase/app";
-import { CACHE_SIZE_UNLIMITED, GeoPoint, collection, getDocs, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
-import { Airfield, Data } from './types.ts';
+import { CACHE_SIZE_UNLIMITED, collection, getDocs, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
+import { Activity, Airfield } from './types.ts';
 
 const firebaseConfig: FirebaseOptions = {
   apiKey: "AIzaSyAleHj_gty6XncQLEDlLn3Ih7X08KuQ-jw",
@@ -21,14 +21,22 @@ const db = initializeFirestore(app, {
 
 
 export const DataProvider = () => {
-  const [data, setData] = useState<Data>({airfields:[], activities:[{ id:"xxx", name:"name", position: new GeoPoint(0,0), type:["other"], description:"description"}]})
+  const [airfields, setAirfields] = useState<Airfield[]>([])
+  const [activities, setActivities] = useState<Activity[]>([])
+
+  const getAirfields = async () => {
+    const query = await getDocs(collection(db, "airfields"));
+    setAirfields(query.docs.map(e => e.data() as Airfield))
+  }
+  const getActivities = async () => {
+    const query = await getDocs(collection(db, "activities"));
+    setActivities(query.docs.map(e => e.data() as Activity))
+  }
 
   useEffect(() => {
-    getDocs(collection(db, "airfields")).then( e => {
-      setData({...data, airfields: e.docs.map(e => e.data() as Airfield)})
-    })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    getAirfields()
+    getActivities()
   },[])
 
-  return (<App data={data}/>)
+  return (<App airfields={airfields} activities={activities} />)
 }

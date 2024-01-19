@@ -5,19 +5,19 @@ import MapPage from "./routes/MapPage";
 
 import './App.css'
 import AirfieldDetails from "./routes/AirfieldDetails";
-import { Data } from "./types";
+import { Activity, Airfield } from "./types";
 import ActivitiesList from "./routes/ActivitiesList";
-import AirfieldsPage from "./routes/AirfieldsPage";
+import AirfieldsList from "./routes/AirfieldsList";
 
-export default function App({data}:{data: Data}) {
+export default function App({airfields, activities}:{airfields: Airfield[], activities: Activity[]}) {
     return (
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<Home activities={data.activities}/>}/>
-          <Route path="/airfields" element={<AirfieldsPage airfields={data.airfields}/>} />
-          <Route path="/airfields/:airfieldId" element={<AirfieldDetails airfields={data.airfields}/>} />
-          <Route path="/activities" element={<ActivitiesList airfields={data.airfields} />} />
-          <Route path="/map" element={<MapPage airfields={data.airfields}/>} />
+          <Route path="/" element={<Home activities={activities}/>}/>
+          <Route path="/airfields" element={<AirfieldsList airfields={airfields}/>} />
+          <Route path="/airfields/:airfieldId" element={<AirfieldDetails airfields={airfields}/>} />
+          <Route path="/activities" element={<ActivitiesList activities={activities} />} />
+          <Route path="/map" element={<MapPage airfields={airfields}/>} />
         </Route>
       </Routes>
     );

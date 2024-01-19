@@ -14,11 +14,6 @@ export type Runway = {
   length: number,
 }
 
-export type Data = {
-  airfields: Airfield[],
-  activities: Activity[],
-}
-
 export type Activity = {
   id: string,
   name: string,
