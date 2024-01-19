@@ -17,7 +17,7 @@ export default function App({airfields, activities}:{airfields: Map<string,Airfi
           <Route path="/airfields" element={<AirfieldsList airfields={airfields}/>} />
           <Route path="/airfields/:airfieldId" element={<AirfieldDetails airfields={airfields}/>} />
           <Route path="/activities" element={<ActivitiesList activities={activities} />} />
-          <Route path="/map" element={<MapPage airfields={[]} activities={[]}/>} />
+          <Route path="/map" element={<MapPage airfields={airfields} activities={activities}/>} />
         </Route>
       </Routes>
     );

@@ -28,7 +28,7 @@ function TableList<T>( {data, row, empty, columns} :
     <Table stickyHeader stickyHeaderOffset={60} highlightOnHover>
       <Table.Thead>
         <Table.Tr>
-          {columns.map(s => (<Table.Th>{s}</Table.Th>))}
+          {columns.map((value,id) => (<Table.Th key={id}>{value}</Table.Th>))}
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>{rows}</Table.Tbody>

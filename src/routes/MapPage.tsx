@@ -1,14 +1,22 @@
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 import { Activity, Airfield } from '../types';
+import { Link } from 'react-router-dom';
+import { Icon } from 'leaflet';
+import viteLogo from '/vite.svg'
 
-function MapPage({airfields, activities} : {airfields: Airfield[], activities: Activity[]}) {
-  const airfieldsMarkers = airfields.map( e => (
-    <Marker position={[e.position.latitude,e.position.longitude]} key={e.codeIcao}>
-      <Popup>{e.name}</Popup>
+function MapPage({airfields, activities} : {airfields: Map<string,Airfield>, activities: Map<string,Activity>}) {
+  const airfieldsMarkers = [...airfields].map( ([key,e]) => (
+    <Marker 
+      position={[e.position.latitude,e.position.longitude]}
+      key={e.codeIcao}
+      icon={new Icon({iconUrl: viteLogo, iconAnchor:[18,29]})}
+      zIndexOffset={1000}
+    >
+      <Popup><Link to={`/airfields/${key}`}>{e.name}</Link></Popup>
     </Marker>
   ));
 
-  const activitiesMarkers = activities.map( e => (
+  const activitiesMarkers = [...activities].map( ([,e]) => (
     <Marker position={[e.position.latitude,e.position.longitude]} key={e.name}>
       <Popup>{e.name}</Popup>
     </Marker>
