@@ -21,16 +21,20 @@ const db = initializeFirestore(app, {
 
 
 export const DataProvider = () => {
-  const [airfields, setAirfields] = useState<Airfield[]>([])
-  const [activities, setActivities] = useState<Activity[]>([])
+  const [airfields, setAirfields] = useState<Map<string,Airfield>>(new Map())
+  const [activities, setActivities] = useState<Map<string,Activity>>(new Map())
 
   const getAirfields = async () => {
     const query = await getDocs(collection(db, "airfields"));
-    setAirfields(query.docs.map(e => e.data() as Airfield))
+    const newAirfields = new Map<string, Airfield>()
+    query.docs.forEach(e => newAirfields.set(e.id, e.data() as Airfield))
+    setAirfields(newAirfields)
   }
   const getActivities = async () => {
     const query = await getDocs(collection(db, "activities"));
-    setActivities(query.docs.map(e => e.data() as Activity))
+    const newActivities = new Map<string, Activity>()
+    query.docs.forEach(e => newActivities.set(e.id, e.data() as Activity))
+    setActivities(newActivities)
   }
 
   useEffect(() => {

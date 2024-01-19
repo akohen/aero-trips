@@ -10,10 +10,10 @@ function chunk<T>(array: T[], size: number): T[][] {
 }
 
 function TableList<T>( {data, row, empty, columns} : 
-    {data: T[], row:(arg0: T, arg1: number)=>JSX.Element, empty: JSX.Element, columns: string[]} ) {
+    {data: Map<string,T>, row:(arg0: [string,T], arg1: number)=>JSX.Element, empty: JSX.Element, columns: string[]} ) {
 
   const [activePage, setPage] = useState(1);
-  const chunks = chunk(data,20)
+  const chunks = chunk([...data],20)
   useEffect(() => {setPage(1)}, [data])
 
   const rows = chunks.length > 0 ? chunks[activePage-1].map(row) : (

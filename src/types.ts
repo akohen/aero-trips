@@ -15,7 +15,6 @@ export type Runway = {
 }
 
 export type Activity = {
-  id: string,
   name: string,
   position: GeoPoint,
   description?: string,
@@ -26,4 +25,5 @@ export type ActivityType =
   'transport' | 
   'food' |
   'lodging' | 
+  'poi' |
   'other'

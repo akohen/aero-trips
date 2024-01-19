@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { IconSearch } from '@tabler/icons-react';
 
 
-function AirfieldsPage({airfields} : {airfields: Airfield[]}) {
+function AirfieldsPage({airfields} : {airfields: Map<string,Airfield>}) {
   const [search, setSearch] = useState('');
   const [data, setData] = useState(airfields);
 
@@ -22,11 +22,11 @@ function AirfieldsPage({airfields} : {airfields: Airfield[]}) {
     setData( filterData(airfields, value) )
   };
 
-  function filterData(data: Airfield[], search: string) {
+  function filterData(data: Map<string,Airfield>, search: string) {
     const query = search.toLowerCase().trim();
-    return data.filter((item) =>
-      ['codeIcao', 'name'].some((key) => item[key as 'codeIcao' | 'name'].toLowerCase().includes(query.normalize("NFD").replace(/\p{Diacritic}/gu, "")))
-    );
+    return new Map([...data].filter(([key, item]) => 
+      [item.description, item.codeIcao, item.name, key].some((x) => x?.toLowerCase().includes(query.normalize("NFD").replace(/\p{Diacritic}/gu, "")))
+    ))
   }
   
   return (<>
@@ -40,8 +40,8 @@ function AirfieldsPage({airfields} : {airfields: Airfield[]}) {
       data={data} 
       columns={['Nom du terrain','Code OACI','Piste','Carte VAC']}
       empty={(<Text fw={500} ta="center">Aucun résultat</Text>)}
-      row={(e) => (
-        <Table.Tr key={e.codeIcao}>
+      row={([key, e]) => (
+        <Table.Tr key={key}>
           <Table.Td><Link to={`/airfields/${e.codeIcao}`}>{e.name}</Link></Table.Td>
           <Table.Td><Link to={`/airfields/${e.codeIcao}`}>{e.codeIcao}</Link></Table.Td>
           <Table.Td>{Math.max(...e.runways.map(r => r.length))}m</Table.Td>

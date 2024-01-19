@@ -7,8 +7,8 @@ import { GeoPoint } from 'firebase/firestore';
 import { Airfield, Activity } from './types';
 import App from './App';
 
-const testAirfields: Airfield[] = [{codeIcao:"LFNW", name:"test", position: new GeoPoint(0,0), runways: []}]
-const testActivities: Activity[] = [{ id:"xxx", name:"name", position: new GeoPoint(0,0), type:["other"], description:"description"}]
+const testAirfields: Map<string,Airfield> = new Map([["LFNW",{codeIcao:"LFNW", name:"test", position: new GeoPoint(0,0), runways: []}]])
+const testActivities: Map<string,Activity> = new Map([["XXXX", { name:"name", position: new GeoPoint(0,0), type:["other"], description:"description"}]])
 
 test('renders learn react link', () => {
   render(<App airfields={testAirfields} activities={testActivities}/>, {wrapper: MemoryRouter});

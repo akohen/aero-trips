@@ -9,15 +9,15 @@ import { Activity, Airfield } from "./types";
 import ActivitiesList from "./routes/ActivitiesList";
 import AirfieldsList from "./routes/AirfieldsList";
 
-export default function App({airfields, activities}:{airfields: Airfield[], activities: Activity[]}) {
+export default function App({airfields, activities}:{airfields: Map<string,Airfield>, activities: Map<string,Activity>}) {
     return (
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<Home activities={activities}/>}/>
+          <Route path="/" element={<Home />}/>
           <Route path="/airfields" element={<AirfieldsList airfields={airfields}/>} />
           <Route path="/airfields/:airfieldId" element={<AirfieldDetails airfields={airfields}/>} />
           <Route path="/activities" element={<ActivitiesList activities={activities} />} />
-          <Route path="/map" element={<MapPage airfields={airfields}/>} />
+          <Route path="/map" element={<MapPage airfields={[]} activities={[]}/>} />
         </Route>
       </Routes>
     );

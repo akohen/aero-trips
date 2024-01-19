@@ -1,9 +1,15 @@
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
-import { Airfield } from '../types';
+import { Activity, Airfield } from '../types';
 
-function MapPage({airfields} : {airfields: Airfield[]}) {
+function MapPage({airfields, activities} : {airfields: Airfield[], activities: Activity[]}) {
   const airfieldsMarkers = airfields.map( e => (
     <Marker position={[e.position.latitude,e.position.longitude]} key={e.codeIcao}>
+      <Popup>{e.name}</Popup>
+    </Marker>
+  ));
+
+  const activitiesMarkers = activities.map( e => (
+    <Marker position={[e.position.latitude,e.position.longitude]} key={e.name}>
       <Popup>{e.name}</Popup>
     </Marker>
   ));
@@ -15,6 +21,7 @@ function MapPage({airfields} : {airfields: Airfield[]}) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {airfieldsMarkers}
+      {activitiesMarkers}
     </MapContainer>
 
   </div>
