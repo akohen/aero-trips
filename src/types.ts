@@ -6,6 +6,7 @@ export type Airfield = {
   position: GeoPoint,
   runways: Runway[],
   description?: string,
+  status?:'CAP'|'PRV'|'RST'|'MIL'|'OFF'
 }
 
 export type Runway = {

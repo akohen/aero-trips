@@ -52,10 +52,11 @@ jsonObj['AIXM-Snapshot'].Ahp
             name: e.txtName,
             position: [DMS2DD(e.geoLat), DMS2DD(e.geoLong)],
             runways: [],
-            statut: siaAirfields.get(e.codeIcao)['AdStatut'],
-            fuels: getFuels(siaAirfields.get(e.codeIcao))
+            status: siaAirfields.get(e.codeIcao)['AdStatut'],
         }
         airfields[e.codeIcao] = obj
+        const fuels = getFuels(siaAirfields.get(e.codeIcao))
+        if(fuels.length > 0) airfields[e.codeIcao]['fuels'] = fuels
     });
 
 // Runway information
