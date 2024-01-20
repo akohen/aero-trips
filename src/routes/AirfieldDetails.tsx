@@ -9,6 +9,8 @@ const AirfieldDetails = ({airfields} : {airfields:Map<string,Airfield>}) => {
     <h1>Fiche {airfield.name} - {airfield.codeIcao}</h1>
     <p>{airfield.description}</p>
     <a target='_blank' href={getVacUrl(airfield.codeIcao)}>Carte VAC</a>
+    <p>Statut: {airfield.status}</p>
+    <div><h4>Pistes</h4> {airfield.runways.map(r => (<div>{r.designation} - {r.length}m</div>))}</div>
   </>) : (
     <p>Pas de terrain trouvé</p>
   ) : (

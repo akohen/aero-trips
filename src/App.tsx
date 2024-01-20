@@ -8,6 +8,7 @@ import AirfieldDetails from "./routes/AirfieldDetails";
 import { Activity, Airfield } from "./types";
 import ActivitiesList from "./routes/ActivitiesList";
 import AirfieldsList from "./routes/AirfieldsList";
+import ActivityDetails from "./routes/ActivityDetails";
 
 export default function App({airfields, activities}:{airfields: Map<string,Airfield>, activities: Map<string,Activity>}) {
     return (
@@ -17,6 +18,7 @@ export default function App({airfields, activities}:{airfields: Map<string,Airfi
           <Route path="/airfields" element={<AirfieldsList airfields={airfields}/>} />
           <Route path="/airfields/:airfieldId" element={<AirfieldDetails airfields={airfields}/>} />
           <Route path="/activities" element={<ActivitiesList activities={activities} />} />
+          <Route path="/activities/:activityId" element={<ActivityDetails activities={activities}/>} />
           <Route path="/map" element={<MapPage airfields={airfields} activities={activities}/>} />
         </Route>
       </Routes>

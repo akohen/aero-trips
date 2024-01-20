@@ -16,9 +16,9 @@ function MapPage({airfields, activities} : {airfields: Map<string,Airfield>, act
     </Marker>
   ));
 
-  const activitiesMarkers = [...activities].map( ([,e]) => (
+  const activitiesMarkers = [...activities].map( ([key,e]) => (
     <Marker position={[e.position.latitude,e.position.longitude]} key={e.name}>
-      <Popup>{e.name}</Popup>
+      <Popup><Link to={`/activities/${key}`}>{e.name}</Link></Popup>
     </Marker>
   ));
 
