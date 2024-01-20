@@ -19,7 +19,7 @@ export default function App({airfields, activities}:{airfields: Map<string,Airfi
           <Route path="/airfields/:airfieldId" element={<AirfieldDetails airfields={airfields}/>} />
           <Route path="/activities" element={<ActivitiesList activities={activities} />} />
           <Route path="/activities/:activityId" element={<ActivityDetails activities={activities}/>} />
-          <Route path="/map" element={<MapPage airfields={airfields} activities={activities}/>} />
+          <Route path="/map/:lat?/:lng?" element={<MapPage airfields={airfields} activities={activities}/>} />
         </Route>
       </Routes>
     );

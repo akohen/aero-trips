@@ -38,7 +38,7 @@ function AirfieldsPage({airfields} : {airfields: Map<string,Airfield>}) {
     />
     <List
       data={data} 
-      columns={['Nom du terrain','Code OACI','Piste','Carte VAC']}
+      columns={['Nom du terrain','Code OACI','Piste','Actions']}
       empty={(<Text fw={500} ta="center">Aucun résultat</Text>)}
       row={([key, e]) => (
         <Table.Tr key={key}>
@@ -46,9 +46,8 @@ function AirfieldsPage({airfields} : {airfields: Map<string,Airfield>}) {
           <Table.Td><Link to={`/airfields/${e.codeIcao}`}>{e.codeIcao}</Link></Table.Td>
           <Table.Td>{Math.max(...e.runways.map(r => r.length))}m</Table.Td>
           <Table.Td>
-            <a target='_blank' href={getVacUrl(e.codeIcao)}>
-              Consulter
-            </a>
+            <a target='_blank' href={getVacUrl(e.codeIcao)}>Consulter</a>
+            <Link to={`/map/${e.position.latitude}/${e.position.longitude}`}>Voir sur la carte</Link>
           </Table.Td>
         </Table.Tr>
       )}
