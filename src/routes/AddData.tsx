@@ -66,7 +66,7 @@ const slug = (str: string) => {
     .concat('-',Math.random().toString(36).substring(7));
 }
 
-const AddData = (data:Data) => {
+const AddData = () => {
   const saveChange = ({name, type}: {name: string, type: string[]}) => {
     console.log(name, type)
     addDoc(collection(data.db, "changes"), {

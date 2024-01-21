@@ -1,10 +1,9 @@
-import { Firestore, GeoPoint } from "firebase/firestore"
+import { GeoPoint } from "firebase/firestore"
 
 export type Data = {
   airfields: Map<string,Airfield>,
   activities: Map<string,Activity>,
   trips: Map<string,Trip>,
-  db: Firestore,
 }
 
 export type Airfield = {

@@ -7,9 +7,10 @@ import { GeoPoint } from 'firebase/firestore';
 import { Data } from './types';
 import App from './App';
 
+
 const testData: Data = {
-  airfields: new Map([["LFNW",{codeIcao:"LFNW", name:"test", position: new GeoPoint(0,0), runways: []}]]),
-  activities: new Map([["XXXX", { name:"name", position: new GeoPoint(0,0), type:["other"], description:"description"}]]),
+  airfields: new Map([["LFNW", { codeIcao: "LFNW", name: "test", position: new GeoPoint(0, 0), runways: [] }]]),
+  activities: new Map([["XXXX", { name: "name", position: new GeoPoint(0, 0), type: ["other"], description: "description" }]]),
   trips: new Map(),
 }
 
