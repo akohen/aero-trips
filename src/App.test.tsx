@@ -4,14 +4,17 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import { MemoryRouter } from 'react-router-dom';
 import { GeoPoint } from 'firebase/firestore';
-import { Airfield, Activity } from './types';
+import { Data } from './types';
 import App from './App';
 
-const testAirfields: Map<string,Airfield> = new Map([["LFNW",{codeIcao:"LFNW", name:"test", position: new GeoPoint(0,0), runways: []}]])
-const testActivities: Map<string,Activity> = new Map([["XXXX", { name:"name", position: new GeoPoint(0,0), type:["other"], description:"description"}]])
+const testData: Data = {
+  airfields: new Map([["LFNW",{codeIcao:"LFNW", name:"test", position: new GeoPoint(0,0), runways: []}]]),
+  activities: new Map([["XXXX", { name:"name", position: new GeoPoint(0,0), type:["other"], description:"description"}]]),
+  trips: new Map(),
+}
 
 test('renders learn react link', () => {
-  render(<App airfields={testAirfields} activities={testActivities}/>, {wrapper: MemoryRouter});
+  render(<App {...testData} />, {wrapper: MemoryRouter});
   const linkElement = screen.getByText(/learn more/i);
   expect(linkElement).toBeDefined();
 });
@@ -19,14 +22,14 @@ test('renders learn react link', () => {
 test('renders the list view', () => {
   render(
     <MemoryRouter initialEntries={['/airfields']}>
-      <App airfields={testAirfields} activities={testActivities}/>
+      <App {...testData}/>
     </MemoryRouter>,
   )
   expect(screen.getByText(/LFNW/)).toBeDefined()
 })
 
 test('goes to field list through the navbar', async () => {
-  render(<App airfields={testAirfields} activities={testActivities}/>, {wrapper: MemoryRouter});
+  render(<App {...testData}/>, {wrapper: MemoryRouter});
   await userEvent.click(screen.getByText(/terrains/i));
   expect(await screen.getByText(/LFNW/i)).toBeDefined();
 });
