@@ -10,20 +10,16 @@ import ActivitiesList from "./routes/ActivitiesList";
 import AirfieldsList from "./routes/AirfieldsList";
 import ActivityDetails from "./routes/ActivityDetails";
 
-export default function App({airfields, activities} : Data) {
+export default function App(data : Data) {
     return (
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<Home />}/>
-          <Route path="/airfields" element={<AirfieldsList airfields={airfields}/>} />
-          <Route path="/airfields/:airfieldId" element={
-            <AirfieldDetails airfields={airfields} activities={activities} />
-          } />
-          <Route path="/activities" element={
-            <ActivitiesList activities={activities} />
-          } />
-          <Route path="/activities/:activityId" element={<ActivityDetails activities={activities}/>} />
-          <Route path="/map/:lat?/:lng?" element={<MapPage airfields={airfields} activities={activities}/>} />
+          <Route path="/"                       element={<Home />}/>
+          <Route path="/airfields"              element={<AirfieldsList {...data}/>} />
+          <Route path="/airfields/:airfieldId"  element={<AirfieldDetails {...data} />} />
+          <Route path="/activities"             element={<ActivitiesList {...data} />} />
+          <Route path="/activities/:activityId" element={<ActivityDetails {...data}/>} />
+          <Route path="/map/:lat?/:lng?"        element={<MapPage {...data}/>} />
         </Route>
       </Routes>
     );
