@@ -9,6 +9,7 @@ import { Data } from "./types";
 import ActivitiesList from "./routes/ActivitiesList";
 import AirfieldsList from "./routes/AirfieldsList";
 import ActivityDetails from "./routes/ActivityDetails";
+import TripsList from "./routes/TripsList";
 
 export default function App(data : Data) {
     return (
@@ -20,6 +21,7 @@ export default function App(data : Data) {
           <Route path="/activities"             element={<ActivitiesList {...data} />} />
           <Route path="/activities/:activityId" element={<ActivityDetails {...data}/>} />
           <Route path="/map/:lat?/:lng?"        element={<MapPage {...data}/>} />
+          <Route path="/trips"                  element={<TripsList {...data} />} />
         </Route>
       </Routes>
     );

@@ -3,6 +3,7 @@ import { GeoPoint } from "firebase/firestore"
 export type Data = {
   airfields: Map<string,Airfield>,
   activities: Map<string,Activity>,
+  trips: Map<string,Trip>,
 }
 
 export type Airfield = {
@@ -33,3 +34,12 @@ export type ActivityType =
   'lodging' | 
   'poi' |
   'other'
+
+export type Trip = {
+  start?: Airfield,
+  end: Airfield,
+  name: string,
+  description: string,
+  type: 'short' | 'day' | 'multi',
+  wpt?: GeoPoint[],
+}

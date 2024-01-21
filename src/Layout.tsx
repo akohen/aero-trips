@@ -31,6 +31,7 @@ function Layout() {
           <Link to="/airfields">Terrains</Link>
           <Link to="/activities">Activités</Link>
           <Link to="/map">Carte</Link>
+          <Link to="/trips">Sorties</Link>
         </AppShell.Navbar>
 
         <AppShell.Main>

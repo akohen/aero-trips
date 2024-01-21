@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import App from './App.tsx'
 import { FirebaseOptions, initializeApp } from "firebase/app";
 import { CACHE_SIZE_UNLIMITED, collection, getDocs, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
-import { Activity, Airfield } from './types.ts';
+import { Activity, Airfield, Trip } from './types.ts';
 
 const firebaseConfig: FirebaseOptions = {
   apiKey: "AIzaSyAleHj_gty6XncQLEDlLn3Ih7X08KuQ-jw",
@@ -23,6 +23,7 @@ const db = initializeFirestore(app, {
 export const DataProvider = () => {
   const [airfields, setAirfields] = useState<Map<string,Airfield>>(new Map())
   const [activities, setActivities] = useState<Map<string,Activity>>(new Map())
+  const [trips, setTrips] = useState<Map<string,Trip>>(new Map())
 
   const getAirfields = async () => {
     const query = await getDocs(collection(db, "airfields"));
@@ -36,11 +37,18 @@ export const DataProvider = () => {
     query.docs.forEach(e => newActivities.set(e.id, e.data() as Activity))
     setActivities(newActivities)
   }
+  const getTrips = async () => {
+    const query = await getDocs(collection(db, "trips"));
+    const newTrips = new Map<string, Trip>()
+    query.docs.forEach(e => newTrips.set(e.id, e.data() as Trip))
+    setTrips(newTrips)
+  }
 
   useEffect(() => {
     getAirfields()
     getActivities()
+    getTrips()
   },[])
 
-  return (<App airfields={airfields} activities={activities} />)
+  return (<App airfields={airfields} activities={activities} trips={trips} />)
 }
