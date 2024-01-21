@@ -1,5 +1,10 @@
 import { GeoPoint } from "firebase/firestore"
 
+export type Data = {
+  airfields: Map<string,Airfield>,
+  activities: Map<string,Activity>,
+}
+
 export type Airfield = {
   codeIcao: string,
   name: string,
