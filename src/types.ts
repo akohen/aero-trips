@@ -36,8 +36,8 @@ export type ActivityType =
   'other'
 
 export type Trip = {
-  start?: Airfield,
-  end: Airfield,
+  from?: string,
+  to: string,
   name: string,
   description: string,
   type: 'short' | 'day' | 'multi',
