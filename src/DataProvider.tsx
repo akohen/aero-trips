@@ -50,5 +50,5 @@ export const DataProvider = () => {
     getTrips()
   },[])
 
-  return (<App airfields={airfields} activities={activities} trips={trips} />)
+  return (<App airfields={airfields} activities={activities} trips={trips} db={db} />)
 }

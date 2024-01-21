@@ -1,5 +1,6 @@
 import viteLogo from '/vite.svg'
 import '@mantine/core/styles.css';
+import '@mantine/tiptap/styles.css';
 import { MantineProvider, AppShell, Burger, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Link, Outlet } from "react-router-dom";
@@ -32,6 +33,7 @@ function Layout() {
           <Link to="/activities">Activités</Link>
           <Link to="/trips">Sorties</Link>
           <Link to="/map">Carte</Link>
+          <Link to="/edit">Ajout</Link>
         </AppShell.Navbar>
 
         <AppShell.Main>
