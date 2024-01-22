@@ -4,6 +4,7 @@ export type Data = {
   airfields: Map<string,Airfield>,
   activities: Map<string,Activity>,
   trips: Map<string,Trip>,
+  saveChange: (obj: Object) => void,
 }
 
 export type Airfield = {

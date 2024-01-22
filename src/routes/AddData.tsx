@@ -3,8 +3,6 @@ import { useForm } from "@mantine/form"
 import { RichTextEditor, Link } from '@mantine/tiptap';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { Data } from "../types";
-import { addDoc, collection } from "firebase/firestore";
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,15 +64,12 @@ const slug = (str: string) => {
     .concat('-',Math.random().toString(36).substring(7));
 }
 
-const AddData = () => {
-  const saveChange = ({name, type}: {name: string, type: string[]}) => {
+const AddData = (saveChange: (obj: Object) => void) => {
+  const formSubmit = ({name, type}: {name: string, type: string[]}) => {
+    saveChange({targetDocument:"activities/"+slug(name), type})
     console.log(name, type)
-    addDoc(collection(data.db, "changes"), {
-      targetDocument: "activities/"+slug(name),
-      name,
-      type,
-    });
   }
+
   const form = useForm({
     initialValues: {
       name: '',
@@ -82,7 +77,7 @@ const AddData = () => {
     },
   });
   return (
-  <form onSubmit={form.onSubmit(saveChange)}>
+  <form onSubmit={form.onSubmit(formSubmit)}>
     <p>Ajouter une activité</p>
     <Fieldset legend="Ajouter une activité">
       <TextInput

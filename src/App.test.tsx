@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
@@ -12,6 +12,7 @@ const testData: Data = {
   airfields: new Map([["LFNW", { codeIcao: "LFNW", name: "test", position: new GeoPoint(0, 0), runways: [] }]]),
   activities: new Map([["XXXX", { name: "name", position: new GeoPoint(0, 0), type: ["other"], description: "description" }]]),
   trips: new Map(),
+  saveChange: vi.fn(),
 }
 
 test('renders learn react link', () => {

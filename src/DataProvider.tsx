@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import App from './App.tsx'
 import { FirebaseOptions, initializeApp } from "firebase/app";
-import { CACHE_SIZE_UNLIMITED, collection, getDocs, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
+import { CACHE_SIZE_UNLIMITED, addDoc, collection, getDocs, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
 import { Activity, Airfield, Trip } from './types.ts';
 
 const firebaseConfig: FirebaseOptions = {
@@ -44,11 +44,15 @@ export const DataProvider = () => {
     setTrips(newTrips)
   }
 
+  const saveChange = (obj: Object) => {
+    addDoc(collection(db, "changes"), obj);
+  }
+
   useEffect(() => {
     getAirfields()
     getActivities()
     getTrips()
   },[])
 
-  return (<App airfields={airfields} activities={activities} trips={trips} />)
+  return (<App airfields={airfields} activities={activities} trips={trips} saveChange={saveChange} />)
 }
