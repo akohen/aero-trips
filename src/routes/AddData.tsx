@@ -66,10 +66,10 @@ const slug = (str: string) => {
     .concat('-',Math.random().toString(36).substring(7));
 }
 
-const AddData = ({saveChange}: {saveChange:(obj: Object) => void}) => {
+const AddData = ({saveChange}: {saveChange:(obj: object) => void}) => {
   const [submitted, setSubmitted] = useState(false)
 
-  const formSubmit = ({name, type, position, description}: {name: string, type: string[], position: string, description: any}) => {
+  const formSubmit = ({name, type, position, description}: {name: string, type: string[], position: string, description: string}) => {
     const point: GeoPoint= new GeoPoint(...position.split(', ').map(parseFloat) as [number, number])
     saveChange({targetDocument:"activities/"+slug(name), name, type, description, position: point})
     setSubmitted(true)

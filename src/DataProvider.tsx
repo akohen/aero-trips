@@ -44,7 +44,7 @@ export const DataProvider = () => {
     setTrips(newTrips)
   }
 
-  const saveChange = (obj: Object) => {
+  const saveChange = (obj: object) => {
     addDoc(collection(db, "changes"), obj);
   }
 
