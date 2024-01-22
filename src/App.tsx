@@ -25,7 +25,7 @@ export default function App(data : Data) {
           <Route path="/map/:lat?/:lng?"        element={<MapPage {...data}/>} />
           <Route path="/trips"                  element={<TripsList {...data} />} />
           <Route path="/trips/:tripId"          element={<TripDetails {...data} />} />
-          <Route path="/edit/:type?/:id?"       element={<AddData />} />
+          <Route path="/edit/:type?/:id?"       element={<AddData {...data} />} />
         </Route>
       </Routes>
     );

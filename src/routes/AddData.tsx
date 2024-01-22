@@ -3,6 +3,7 @@ import { useForm } from "@mantine/form"
 import { RichTextEditor, Link } from '@mantine/tiptap';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { useState } from "react";
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,10 +65,12 @@ const slug = (str: string) => {
     .concat('-',Math.random().toString(36).substring(7));
 }
 
-const AddData = (saveChange: (obj: Object) => void) => {
+const AddData = ({saveChange}: {saveChange:(obj: Object) => void}) => {
+  const [submitted, setSubmitted] = useState(false)
+
   const formSubmit = ({name, type}: {name: string, type: string[]}) => {
-    saveChange({targetDocument:"activities/"+slug(name), type})
-    console.log(name, type)
+    saveChange({targetDocument:"activities/"+slug(name), name, type})
+    setSubmitted(true)
   }
 
   const form = useForm({
@@ -76,29 +79,37 @@ const AddData = (saveChange: (obj: Object) => void) => {
       type: [],
     },
   });
-  return (
-  <form onSubmit={form.onSubmit(formSubmit)}>
-    <p>Ajouter une activité</p>
-    <Fieldset legend="Ajouter une activité">
-      <TextInput
-        label="Nom de l'activité"
-        placeholder="Nom de l'activité"
-        {...form.getInputProps('name')}
-      />
-    <Chip.Group multiple {...form.getInputProps('type')}>
-      <Group justify="center" mt="md">
-        <Chip value="transport">Transport</Chip>
-        <Chip value="food">Restauration</Chip>
-        <Chip value="lodging">Hébergement</Chip>
-        <Chip value="poi">A voir du ciel</Chip>
-        <Chip value="other">Autre</Chip>
+
+
+  return submitted ? (
+    <div>
+      <p>{form.values.name} envoyé!</p>
+      <p>Ces informations seront affichées d'ici quelques jours</p>
+    </div>
+  ): (
+    <form onSubmit={form.onSubmit(formSubmit)}>
+      <h1>Proposer un ajout/modification</h1>
+      <Fieldset legend="Ajouter une activité">
+        <TextInput
+          label="Nom de l'activité"
+          placeholder="Nom de l'activité"
+          {...form.getInputProps('name')}
+        />
+      <Chip.Group multiple {...form.getInputProps('type')}>
+        <Group justify="center" mt="md">
+          <Chip value="transport">Transport</Chip>
+          <Chip value="food">Restauration</Chip>
+          <Chip value="lodging">Hébergement</Chip>
+          <Chip value="poi">A voir du ciel</Chip>
+          <Chip value="other">Autre</Chip>
+        </Group>
+      </Chip.Group>
+      </Fieldset>
+      <Group mt="md">
+        <Button type="submit">Submit</Button>
       </Group>
-    </Chip.Group>
-    </Fieldset>
-    <Group mt="md">
-      <Button type="submit">Submit</Button>
-    </Group>
-  </form>
-)}
+    </form>
+  )
+}
 
 export default AddData
