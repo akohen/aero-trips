@@ -1,4 +1,4 @@
-import select, { Separator } from '@inquirer/select';
+import select from '@inquirer/select';
 import chalk from 'chalk';
 import admin from "firebase-admin";
 import creds from "../serviceAccountKey.json" with { "type": "json" }
@@ -12,7 +12,7 @@ const firebaseConfig = {
   measurementId: "G-CKJYT103VV",
   credential: admin.credential.cert(creds),
 };
-const firestore = admin.firestore;
+
 admin.initializeApp(firebaseConfig);
 const db = admin.firestore();
 db.settings({ ignoreUndefinedProperties: true });
@@ -49,7 +49,7 @@ for(const {targetDocument, newDoc, id} of results) {
   const currentDoc = (await db.doc(targetDocument).get()).data()
   console.log(chalk.bgBlue(targetDocument) + ' => ' + (currentDoc ? chalk.bgBlue('edit') : chalk.bgGreen('new') ))
   for(let field in newDoc) {
-    if(currentDoc && newDoc[field] == currentDoc[field]) continue
+    if(currentDoc && newDoc[field].toString() == currentDoc[field].toString()) continue
     console.log(chalk.italic.blue(field))
     console.log(chalk.green(newDoc[field]))
     if(currentDoc) console.log(chalk.red(currentDoc[field]))
