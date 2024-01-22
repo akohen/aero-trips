@@ -3,11 +3,12 @@ import { useForm } from "@mantine/form"
 import { RichTextEditor, Link } from '@mantine/tiptap';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { GeoPoint } from "firebase/firestore";
 import { useState } from "react";
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function Demo({name, form}:any) {
+export function RTE({name, form}:any) {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -68,16 +69,23 @@ const slug = (str: string) => {
 const AddData = ({saveChange}: {saveChange:(obj: Object) => void}) => {
   const [submitted, setSubmitted] = useState(false)
 
-  const formSubmit = ({name, type}: {name: string, type: string[]}) => {
-    saveChange({targetDocument:"activities/"+slug(name), name, type})
+  const formSubmit = ({name, type, position, description}: {name: string, type: string[], position: string, description: any}) => {
+    const point: GeoPoint= new GeoPoint(...position.split(', ').map(parseFloat) as [number, number])
+    saveChange({targetDocument:"activities/"+slug(name), name, type, description, position: point})
     setSubmitted(true)
   }
 
   const form = useForm({
     initialValues: {
       name: '',
+      position: '',
       type: [],
+      description: '',
     },
+    validate: {
+      name: (value) => (value.length < 2 ? 'Le nom doit avoir au moins 2 charactères' : null),
+      position: (value) => (/^-?\d+.\d+, -?\d+.\d+$/g.test(value) ? null : 'Doit être de la forme "Latitude, Longitude" (eg. "12.345, -6.789")'),
+    }
   });
 
 
@@ -95,6 +103,12 @@ const AddData = ({saveChange}: {saveChange:(obj: Object) => void}) => {
           placeholder="Nom de l'activité"
           {...form.getInputProps('name')}
         />
+
+        <TextInput
+          label="Position"
+          placeholder="48.10000, -0.10000"
+          {...form.getInputProps('position')}
+        />
       <Chip.Group multiple {...form.getInputProps('type')}>
         <Group justify="center" mt="md">
           <Chip value="transport">Transport</Chip>
@@ -104,6 +118,7 @@ const AddData = ({saveChange}: {saveChange:(obj: Object) => void}) => {
           <Chip value="other">Autre</Chip>
         </Group>
       </Chip.Group>
+      <RTE name="description" form={form} />
       </Fieldset>
       <Group mt="md">
         <Button type="submit">Submit</Button>
