@@ -9,7 +9,7 @@ import App from './App';
 
 
 const testData: Data = {
-  airfields: new Map([["LFNW", { codeIcao: "LFNW", name: "test", position: new GeoPoint(0, 0), runways: [] }]]),
+  airfields: new Map([["LFNW", { codeIcao: "LFNW", name: "test", position: new GeoPoint(0, 0), runways: [], status:"CAP" }]]),
   activities: new Map([["XXXX", { name: "name", position: new GeoPoint(0, 0), type: ["other"], description: "description" }]]),
   trips: new Map(),
   saveChange: vi.fn(),
