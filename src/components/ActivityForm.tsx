@@ -1,5 +1,4 @@
 import { Fieldset, TextInput, Chip, Group, Space, Button, Text } from "@mantine/core"
-import { RichTextEditor } from "@mantine/tiptap"
 import { useEditor } from "@tiptap/react";
 import { Activity } from "../types";
 import { StarterKit } from "@tiptap/starter-kit";
@@ -7,6 +6,7 @@ import { Link } from "@tiptap/extension-link";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import TextEditor from "./TextEditor";
 
 const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => void, activity: Activity}) => {
   const [submitted, setSubmitted] = useState(false)
@@ -70,36 +70,7 @@ const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => voi
     </Group>
   </Chip.Group>
   <Space h="md" />
-  <RichTextEditor editor={editor}>
-  <RichTextEditor.Toolbar sticky stickyOffset={60}>
-    <RichTextEditor.ControlsGroup>
-      <RichTextEditor.Bold />
-      <RichTextEditor.Italic />
-      <RichTextEditor.Underline />
-      <RichTextEditor.Strikethrough />
-      <RichTextEditor.ClearFormatting />
-    </RichTextEditor.ControlsGroup>
-
-    <RichTextEditor.ControlsGroup>
-      <RichTextEditor.H1 />
-      <RichTextEditor.H2 />
-      <RichTextEditor.H3 />
-      <RichTextEditor.H4 />
-    </RichTextEditor.ControlsGroup>
-
-    <RichTextEditor.ControlsGroup>
-      <RichTextEditor.Link />
-      <RichTextEditor.Unlink />
-    </RichTextEditor.ControlsGroup>
-
-    <RichTextEditor.ControlsGroup>
-      <RichTextEditor.Undo />
-      <RichTextEditor.Redo />
-    </RichTextEditor.ControlsGroup>
-  </RichTextEditor.Toolbar>
-
-  <RichTextEditor.Content />
-</RichTextEditor>
+  <TextEditor editor={editor} />
   </Fieldset>
   <Group mt="md">
     <Button type="submit">Enregistrer</Button>

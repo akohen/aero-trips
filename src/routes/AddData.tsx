@@ -6,6 +6,8 @@ import { IconPhoto, IconMap } from "@tabler/icons-react";
 import ActivityForm from "../components/ActivityForm";
 import { slug } from "../utils";
 import { GeoPoint } from "firebase/firestore";
+import AirfieldForm from "../components/AirfieldForm";
+import TripForm from "../components/TripForm";
 
 const AddData = (data: Data) => {
   const params = useParams();
@@ -36,8 +38,8 @@ const AddData = (data: Data) => {
     <p>Loading</p>
   ) : 
   type == 'activities' && (<ActivityForm activity={entity as Activity} submitFn={submitFn} />) 
-  || type == 'trips' && (<>trips</>) 
-  || type == 'airfields' && (<>airfields</>) 
+  || type == 'trips' && (<TripForm trip={entity as Trip} submitFn={submitFn} />) 
+  || type == 'airfields' && (<AirfieldForm airfield={entity as Airfield} submitFn={submitFn} />) 
   : (
     <Group justify="center">
       <p>Proposer</p>
