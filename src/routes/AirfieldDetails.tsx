@@ -2,6 +2,9 @@ import { Link, useParams } from "react-router-dom";
 import { Activity, Airfield, Data } from "../types";
 import { getVacUrl } from "../data/airac";
 import haversineDistance from "haversine-distance";
+import { Button, Group, Space, Text, Title } from "@mantine/core";
+import { getAirfieldStatus } from "../utils";
+import { IconEdit, IconMapCheck } from "@tabler/icons-react";
 
 const AirfieldDetails = ({airfields, activities} : Data) => {
   const params = useParams();
@@ -34,13 +37,20 @@ const AirfieldDetails = ({airfields, activities} : Data) => {
       ))
   }
   return airfields.size > 0 ? airfield ? (<>
-    <h1>Fiche {airfield.name} - {airfield.codeIcao}</h1>
-    <p>{airfield.description}</p>
-    <a target='_blank' href={getVacUrl(airfield.codeIcao)}>Carte VAC</a>
-    <p>Statut: {airfield.status}</p>
-    <div><h4>Pistes</h4> {airfield.runways.map((r,i) => (<div key={i}>{r.designation} - {r.length}m</div>))}</div>
-    <div><h4>Terrains proches</h4>{nearbyAirfields(airfield)}</div>
-    <div><h4>Activités proches</h4>{nearbyActivities(airfield)}</div>
+    <Title order={1}>Fiche {airfield.name} - {airfield.codeIcao} <Link to={"edit"}><IconEdit size={20} color="black"/></Link></Title>
+    <Text {...(airfield.status != 'CAP' ? {c:'red',fw:'bold'} : {})}>{getAirfieldStatus(airfield.status)}</Text>
+    <Space mt={"md"}/>
+    <Group justify="space-evenly">
+      <div><Link to={getVacUrl(airfield.codeIcao)} target="_blank"><Button leftSection={<IconMapCheck size={20}/>} variant="default">Carte VAC</Button></Link></div>
+      <div><Title order={4}>Pistes</Title> {airfield.runways.map((r,i) => (<div key={i}>{r.designation} - {r.length}m</div>))}</div>
+    </Group>
+    <Group justify="space-evenly" align="top">
+      <div><Title order={4}>Terrains proches</Title>{nearbyAirfields(airfield)}</div>
+      <div><Title order={4}>Activités proches</Title>{nearbyActivities(airfield)}</div>
+    </Group>
+    <div dangerouslySetInnerHTML={{__html: airfield.description!}} />
+    
+    
   </>) : (
     <p>Pas de terrain trouvé</p>
   ) : (

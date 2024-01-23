@@ -49,7 +49,7 @@ for(const {targetDocument, newDoc, id} of results) {
   const currentDoc = (await db.doc(targetDocument).get()).data()
   console.log(chalk.bgBlue(targetDocument) + ' => ' + (currentDoc ? chalk.bgBlue('edit') : chalk.bgGreen('new') ))
   for(let field in newDoc) {
-    if(currentDoc && newDoc[field].toString() == currentDoc[field].toString()) continue
+    if(currentDoc && newDoc[field].toString() == currentDoc[field]?.toString()) continue
     console.log(chalk.italic.blue(field))
     console.log(chalk.green(newDoc[field]))
     if(currentDoc) console.log(chalk.red(currentDoc[field]))

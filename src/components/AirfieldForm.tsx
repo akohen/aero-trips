@@ -7,6 +7,7 @@ import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import TextEditor from "./TextEditor";
+import { IconArrowLeft, IconCaretLeft, IconChevronLeft } from "@tabler/icons-react";
 
 const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => void, airfield: Airfield}) => {
   const [submitted, setSubmitted] = useState(false)
@@ -35,8 +36,8 @@ const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => voi
     submitFn(values)
     setSubmitted(true)
   })}>
-  <h1>Proposer une modification</h1>
-  <Fieldset legend="Modifier un terrain">
+  <h1><RouterLink to=".." relative="path"><IconChevronLeft color="black"/><IconArrowLeft color="black"/><IconCaretLeft color="black"/>&lt;</RouterLink> Proposer une modification</h1>
+  <Fieldset legend={`Terrain de ${airfield.name}`}>
     <TextEditor editor={editor} />
   </Fieldset>
   <Group mt="md">
