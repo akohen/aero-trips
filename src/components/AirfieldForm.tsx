@@ -1,4 +1,4 @@
-import { Fieldset, Group, Button } from "@mantine/core"
+import { Fieldset, Group, Button, Title, Space } from "@mantine/core"
 import { useEditor } from "@tiptap/react";
 import { Airfield } from "../types";
 import { StarterKit } from "@tiptap/starter-kit";
@@ -7,7 +7,7 @@ import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import TextEditor from "./TextEditor";
-import { IconArrowLeft, IconCaretLeft, IconChevronLeft } from "@tabler/icons-react";
+import { IconChevronLeft } from "@tabler/icons-react";
 
 const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => void, airfield: Airfield}) => {
   const [submitted, setSubmitted] = useState(false)
@@ -36,7 +36,8 @@ const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => voi
     submitFn(values)
     setSubmitted(true)
   })}>
-  <h1><RouterLink to=".." relative="path"><IconChevronLeft color="black"/><IconArrowLeft color="black"/><IconCaretLeft color="black"/>&lt;</RouterLink> Proposer une modification</h1>
+  <Title><RouterLink to=".." relative="path"><IconChevronLeft color="black"/></RouterLink>Proposer une modification</Title>
+  <Space mt={"md"}/>
   <Fieldset legend={`Terrain de ${airfield.name}`}>
     <TextEditor editor={editor} />
   </Fieldset>
