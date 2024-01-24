@@ -1,4 +1,4 @@
-import { Fieldset, TextInput, Chip, Group, Space, Button, Text } from "@mantine/core"
+import { Fieldset, TextInput, Chip, Group, Space, Button, Text, Title } from "@mantine/core"
 import { useEditor } from "@tiptap/react";
 import { Activity } from "../types";
 import { StarterKit } from "@tiptap/starter-kit";
@@ -7,6 +7,7 @@ import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import TextEditor from "./TextEditor";
+import BackButton from "./BackButton";
 
 const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => void, activity: Activity}) => {
   const [submitted, setSubmitted] = useState(false)
@@ -46,7 +47,7 @@ const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => voi
     )
     setSubmitted(true)
   })}>
-  <h1>Proposer un ajout/modification</h1>
+  <Title><BackButton />Proposer une modification</Title>
   <Fieldset legend="Ajouter une activité">
     <TextInput
       label="Nom de l'activité"

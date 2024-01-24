@@ -1,4 +1,4 @@
-import { Fieldset, Group, Button, TextInput, InputLabel } from "@mantine/core"
+import { Fieldset, Group, Button, TextInput, InputLabel, Title } from "@mantine/core"
 import { useEditor } from "@tiptap/react";
 import { Trip } from "../types";
 import { StarterKit } from "@tiptap/starter-kit";
@@ -7,6 +7,7 @@ import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import TextEditor from "./TextEditor";
+import BackButton from "./BackButton";
 
 const TripForm = ({submitFn, trip}: {submitFn: (document: object) => void, trip: Trip}) => {
   const [submitted, setSubmitted] = useState(false)
@@ -46,7 +47,7 @@ const TripForm = ({submitFn, trip}: {submitFn: (document: object) => void, trip:
     )
     setSubmitted(true)
   })}>
-  <h1>Proposer une modification</h1>
+  <Title><BackButton />Proposer une modification</Title>
   <Fieldset legend="Modifier une sortie">
     <TextInput
       withAsterisk

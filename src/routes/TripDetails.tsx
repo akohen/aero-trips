@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { Airfield, Data, Trip } from "../types";
+import EditButton from "../components/EditButton";
 
 const TripDetails = ({trips, airfields} : Data) => {
   const params = useParams();
@@ -14,7 +15,7 @@ const TripDetails = ({trips, airfields} : Data) => {
     </p>)
   }
   return trips.size > 0 ? trip ? (<>
-    <h1>Fiche {trip.name}</h1>
+    <h1>Fiche {trip.name} <EditButton /></h1>
     <p>{trip.type}</p>
     <p>{trip.description}</p>
     {route(trip)}

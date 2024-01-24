@@ -45,6 +45,8 @@ changes.forEach(d => {
   results.push({targetDocument, newDoc, id:d.id})
 })
 
+console.log(chalk.bgMagenta(chalk.bold(results.length) + " changements à valider"))
+
 for(const {targetDocument, newDoc, id} of results) {
   const currentDoc = (await db.doc(targetDocument).get()).data()
   console.log(chalk.bgBlue(targetDocument) + ' => ' + (currentDoc ? chalk.bgBlue('edit') : chalk.bgGreen('new') ))

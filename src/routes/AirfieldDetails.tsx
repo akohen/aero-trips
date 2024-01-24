@@ -4,7 +4,8 @@ import { getVacUrl } from "../data/airac";
 import haversineDistance from "haversine-distance";
 import { Button, Group, Space, Text, Title } from "@mantine/core";
 import { getAirfieldStatus } from "../utils";
-import { IconEdit, IconMapCheck } from "@tabler/icons-react";
+import { IconMapCheck } from "@tabler/icons-react";
+import EditButton from "../components/EditButton";
 
 const AirfieldDetails = ({airfields, activities} : Data) => {
   const params = useParams();
@@ -37,7 +38,7 @@ const AirfieldDetails = ({airfields, activities} : Data) => {
       ))
   }
   return airfields.size > 0 ? airfield ? (<>
-    <Title order={1}>Fiche {airfield.name} - {airfield.codeIcao} <Link to={"edit"}><IconEdit size={20} color="black"/></Link></Title>
+    <Title order={1}>Fiche {airfield.name} - {airfield.codeIcao} <EditButton /></Title>
     <Text {...(airfield.status != 'CAP' ? {c:'red',fw:'bold'} : {})}>{getAirfieldStatus(airfield.status)}</Text>
     <Space mt={"md"}/>
     <Group justify="space-evenly">
