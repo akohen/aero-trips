@@ -48,15 +48,21 @@ changes.forEach(d => {
 console.log(chalk.bgMagenta(chalk.bold(results.length) + " changements à valider"))
 
 for(const {targetDocument, newDoc, id} of results) {
-  const currentDoc = (await db.doc(targetDocument).get()).data()
-  console.log(chalk.bgBlue(targetDocument) + ' => ' + (currentDoc ? chalk.bgBlue('edit') : chalk.bgGreen('new') ))
-  for(let field in newDoc) {
-    if(currentDoc && newDoc[field].toString() == currentDoc[field]?.toString()) continue
-    console.log(chalk.italic.blue(field))
-    console.log(chalk.green(newDoc[field]))
-    if(currentDoc) console.log(chalk.red(currentDoc[field]))
+  let answer
+  if(process.argv.includes('--apply-all')) {
+    answer = 'apply'
+  } else {
+    const currentDoc = (await db.doc(targetDocument).get()).data()
+    console.log(chalk.bgBlue(targetDocument) + ' => ' + (currentDoc ? chalk.bgBlue('edit') : chalk.bgGreen('new') ))
+    for(let field in newDoc) {
+      if(currentDoc && newDoc[field].toString() == currentDoc[field]?.toString()) continue
+      console.log(chalk.italic.blue(field))
+      console.log(chalk.green(newDoc[field]))
+      if(currentDoc) console.log(chalk.red(currentDoc[field]))
+    }
+  answer = await select(options);
   }
-  const answer = await select(options);
+
   if(answer == 'apply') {
     await db.doc(targetDocument).set(newDoc, {merge: true})
   }
