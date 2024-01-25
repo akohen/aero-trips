@@ -6,6 +6,7 @@ import { Button, Group, Space, Text, Title } from "@mantine/core";
 import { getAirfieldStatus } from "../utils";
 import { IconMapCheck } from "@tabler/icons-react";
 import EditButton from "../components/EditButton";
+import BackButton from "../components/BackButton";
 
 const AirfieldDetails = ({airfields, activities} : Data) => {
   const params = useParams();
@@ -38,7 +39,7 @@ const AirfieldDetails = ({airfields, activities} : Data) => {
       ))
   }
   return airfields.size > 0 ? airfield ? (<>
-    <Title order={1}>Fiche {airfield.name} - {airfield.codeIcao} <EditButton /></Title>
+    <Title order={1}><BackButton />Fiche {airfield.name} - {airfield.codeIcao} <EditButton /></Title>
     <Text {...(airfield.status != 'CAP' ? {c:'red',fw:'bold'} : {})}>{getAirfieldStatus(airfield.status)}</Text>
     <Space mt={"md"}/>
     <Group justify="space-evenly">

@@ -1,6 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import { Airfield, Data, Trip } from "../types";
+import { Title } from "@mantine/core";
 import EditButton from "../components/EditButton";
+import BackButton from "../components/BackButton";
 
 const TripDetails = ({trips, airfields} : Data) => {
   const params = useParams();
@@ -15,7 +17,7 @@ const TripDetails = ({trips, airfields} : Data) => {
     </p>)
   }
   return trips.size > 0 ? trip ? (<>
-    <h1>Fiche {trip.name} <EditButton /></h1>
+    <Title><BackButton />Fiche {trip.name} <EditButton /></Title>
     <p>{trip.type}</p>
     <p>{trip.description}</p>
     {route(trip)}
