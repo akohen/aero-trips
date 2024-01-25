@@ -1,5 +1,6 @@
 import haversineDistance from "haversine-distance";
 import { Activity, ActivityType, Airfield } from "./types";
+import { ADfilter } from "./App";
 
 export const slug = (str: string) => {
   return str
@@ -34,4 +35,18 @@ export function findNearest<T extends Airfield|Activity>(reference: Airfield|Act
   .map(([id,ad]) => [haversineDistance(reference.position,ad.position), ad, id] as [number, T ,string])
   .filter(([dist,]) => dist < maxDistance && dist > 1)
   .sort((a,b) => a[0]-b[0])
+}
+
+export const filterAirfields = (data: Map<string,Airfield>, filters: ADfilter) => {
+  const query = filters.search.toLowerCase().trim().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+  return new Map([...data]
+    .filter(([key, item]) => 
+      [item.description, item.codeIcao, item.name, key].some((x) => x?.toLowerCase().includes(query))
+    )
+    .filter(([, item]) => {
+      if(filters.status == '2' && item.status != 'CAP') return false
+      else if(filters.status == '3' && !['CAP', 'RST'].includes(item.status)) return false
+      return true
+    })
+  )
 }
