@@ -1,4 +1,5 @@
-import { ActivityType, Airfield } from "./types";
+import haversineDistance from "haversine-distance";
+import { Activity, ActivityType, Airfield } from "./types";
 
 export const slug = (str: string) => {
   return str
@@ -27,3 +28,10 @@ export const getAirfieldStatus = (status: Airfield["status"]) => ({
   MIL: "Usage militaire uniquement",
   OFF: "Fermé",
 }[status])
+
+export function findNearest<T extends Airfield|Activity>(reference: Airfield|Activity, items:Map<string,T>, maxDistance: number = 10000): [distance: number, item: T, id: string][] {
+  return [...items]
+  .map(([id,ad]) => [haversineDistance(reference.position,ad.position), ad, id] as [number, T ,string])
+  .filter(([dist,]) => dist < maxDistance && dist > 1)
+  .sort((a,b) => a[0]-b[0])
+}

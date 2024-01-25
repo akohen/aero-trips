@@ -1,40 +1,62 @@
 
-import { Table, Text, TextInput, rem } from '@mantine/core';
+import { Chip, Group, Table, Text, TextInput, rem } from '@mantine/core';
 import { getVacUrl } from '../data/airac';
 import { Airfield } from '../types';
 import { Link } from 'react-router-dom';
 import List from '../components/TableList';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { IconSearch } from '@tabler/icons-react';
+import { ADfilter } from '../App';
 
 
-function AirfieldsPage({airfields} : {airfields: Map<string,Airfield>}) {
-  const [search, setSearch] = useState('');
+function AirfieldsPage({airfields, filters, setFilters} : {airfields: Map<string,Airfield>, filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) {
   const [data, setData] = useState(airfields);
 
   useEffect(()=>{
-    setData( airfields )
+    setData( filterData(airfields, filters) )
   },[airfields])
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.currentTarget;
-    setSearch(value);
-    setData( filterData(airfields, value) )
+    const newFilters = {...filters, search: event.currentTarget.value}
+    setFilters(newFilters)
+    setData( filterData(airfields, newFilters) )
   };
 
-  function filterData(data: Map<string,Airfield>, search: string) {
-    const query = search.toLowerCase().trim();
-    return new Map([...data].filter(([key, item]) => 
-      [item.description, item.codeIcao, item.name, key].some((x) => x?.toLowerCase().includes(query.normalize("NFD").replace(/\p{Diacritic}/gu, "")))
-    ))
+  const handleStatusChange = (value: string) => {
+    const newFilters = {...filters, status: value}
+    setFilters(newFilters)
+    setData( filterData(airfields, newFilters) )
+  }
+
+  function filterData(data: Map<string,Airfield>, filters: ADfilter) {
+    const query = filters.search.toLowerCase().trim().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+    return new Map([...data]
+      .filter(([key, item]) => 
+        [item.description, item.codeIcao, item.name, key].some((x) => x?.toLowerCase().includes(query))
+      )
+      .filter(([, item]) => {
+        if(filters.status == '2' && item.status != 'CAP') return false
+        else if(filters.status == '3' && !['CAP', 'RST'].includes(item.status)) return false
+        return true
+      })
+    )
   }
   
   return (<>
+    <Chip.Group multiple={false} value={filters.status} onChange={handleStatusChange}>
+      <Group justify="center">
+        <Text>Statut</Text>
+        <Chip value="1">Tous</Chip>
+        <Chip value="2">Publics uniquement</Chip>
+        <Chip value="3">Publics ou restreints</Chip>
+      </Group>
+    </Chip.Group>
     <TextInput
       placeholder="Chercher un terrain"
       leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-      value={search}
+      value={filters.search}
       onChange={handleSearchChange}
+      mt={'md'}
     />
     <List
       data={data} 
