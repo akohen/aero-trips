@@ -20,17 +20,17 @@ export type ADfilter = {
 }
 
 export default function App(data : Data) {
-  const [filtersAD, setFiltersAD] = useState<ADfilter>({search:'', status:'1'});
+  const [ADfilter, setADfilter] = useState<ADfilter>({search:'', status:'1'});
   
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route path="/"                       element={<Home />}/>
-        <Route path="/airfields"              element={<AirfieldsList {...data} filters={filtersAD} setFilters={setFiltersAD} />} />
+        <Route path="/airfields"              element={<AirfieldsList {...data} filters={ADfilter} setFilters={setADfilter} />} />
         <Route path="/airfields/:airfieldId"  element={<AirfieldDetails {...data} />} />
         <Route path="/activities"             element={<ActivitiesList {...data} />} />
         <Route path="/activities/:activityId" element={<ActivityDetails {...data}/>} />
-        <Route path="/map/:lat?/:lng?"        element={<MapPage {...data}/>} />
+        <Route path="/map/:lat?/:lng?"        element={<MapPage {...data} ADfilter={ADfilter} />} />
         <Route path="/trips"                  element={<TripsList {...data} />} />
         <Route path="/trips/:tripId"          element={<TripDetails {...data} />} />
         <Route path="/:type?/:id?/edit"       element={<AddData {...data} />} />

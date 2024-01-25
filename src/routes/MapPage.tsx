@@ -3,11 +3,13 @@ import { Activity, Airfield } from '../types';
 import { Link, useParams } from 'react-router-dom';
 import { Icon, LatLngExpression } from 'leaflet';
 import viteLogo from '/vite.svg'
+import { ADfilter } from '../App';
+import { filterAirfields } from '../utils';
 
-function MapPage({airfields, activities} : {airfields: Map<string,Airfield>, activities: Map<string,Activity>}) {
+function MapPage({airfields, activities, ADfilter} : {airfields: Map<string,Airfield>, activities: Map<string,Activity>, ADfilter: ADfilter}) {
   const params = useParams();
   const center: LatLngExpression = (params.lat && params.lng) ? [parseFloat(params.lat), parseFloat(params.lng)] : [48.81,2.06]
-  const airfieldsMarkers = [...airfields].map( ([key,e]) => (
+  const airfieldsMarkers = [...filterAirfields(airfields, ADfilter)].map( ([key,e]) => (
     <Marker 
       position={[e.position.latitude,e.position.longitude]}
       key={e.codeIcao}
