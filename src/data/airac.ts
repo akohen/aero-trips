@@ -1,4 +1,4 @@
-export function getAirac(reference: Date) {
+export function getAirac(reference: Date = new Date()) {
   let current = new Date("2023/12/28")
   while (nextAirac(current) < reference) { current = nextAirac(current) }
   const MONTHS = ['JAN', 'FEB', 'MAR', 'AVR', 'MAI', 'JUN', 'JUI', 'AOU', 'SEP', 'OCT', 'NOV', 'DEC']
@@ -11,6 +11,4 @@ export function nextAirac(start: Date) {
   return nextDate;
 }
 
-const airac = getAirac(new Date())
-export default airac
-export const getVacUrl = (codeIcao: string) => `https://www.sia.aviation-civile.gouv.fr/dvd/eAIP_${airac}/Atlas-VAC/PDF_AIPparSSection/VAC/AD/AD-2.${codeIcao}.pdf`
+export const getVacUrl = (codeIcao: string) => `https://www.sia.aviation-civile.gouv.fr/dvd/eAIP_${getAirac()}/Atlas-VAC/PDF_AIPparSSection/VAC/AD/AD-2.${codeIcao}.pdf`

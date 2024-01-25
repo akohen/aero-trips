@@ -17,7 +17,7 @@ const testData: Data = {
 
 test('renders learn react link', () => {
   render(<App {...testData} />, {wrapper: MemoryRouter});
-  const linkElement = screen.getByText(/learn more/i);
+  const linkElement = screen.getByText(/Bienvenue sur Aero trips/i);
   expect(linkElement).toBeDefined();
 });
 
