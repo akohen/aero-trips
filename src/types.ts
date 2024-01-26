@@ -44,3 +44,8 @@ export type Trip = {
   type: 'short' | 'day' | 'multi',
   wpt?: GeoPoint[],
 }
+
+export type ADfilter = {
+  search: string,
+  status: string,
+}

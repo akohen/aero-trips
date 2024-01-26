@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
 import Home from "./routes/Home";
 import MapPage from "./routes/MapPage";
-
 import './App.css'
 import AirfieldDetails from "./routes/AirfieldDetails";
 import { Data } from "./types";
@@ -13,11 +12,8 @@ import TripsList from "./routes/TripsList";
 import TripDetails from "./routes/TripDetails";
 import AddData from "./routes/AddData";
 import { useState } from "react";
+import { ADfilter } from './types';
 
-export type ADfilter = {
-  search: string,
-  status: string,
-}
 
 export default function App(data : Data) {
   const [ADfilter, setADfilter] = useState<ADfilter>({search:'', status:'1'});

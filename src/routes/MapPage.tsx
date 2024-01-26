@@ -1,9 +1,8 @@
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
-import { Activity, Airfield } from '../types';
+import { Activity, Airfield, ADfilter } from '../types';
 import { Link, useParams } from 'react-router-dom';
 import { Icon, LatLngExpression } from 'leaflet';
 import viteLogo from '/vite.svg'
-import { ADfilter } from '../App';
 import { filterAirfields } from '../utils';
 
 function MapPage({airfields, activities, ADfilter} : {airfields: Map<string,Airfield>, activities: Map<string,Activity>, ADfilter: ADfilter}) {

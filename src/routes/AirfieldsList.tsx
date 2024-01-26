@@ -1,13 +1,12 @@
 
-import { Chip, Group, Table, Text, TextInput, rem } from '@mantine/core';
+import { Table, Text } from '@mantine/core';
 import { getVacUrl } from '../data/airac';
-import { Airfield } from '../types';
+import { ADfilter, Airfield } from '../types';
 import { Link } from 'react-router-dom';
 import List from '../components/TableList';
 import { useEffect, useState, Dispatch, SetStateAction } from 'react';
-import { IconSearch } from '@tabler/icons-react';
-import { ADfilter } from '../App';
 import { filterAirfields } from '../utils';
+import AirfieldsFilters from '../components/AirfieldsFilters';
 
 function AirfieldsPage({airfields, filters, setFilters} : {airfields: Map<string,Airfield>, filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) {
   const [data, setData] = useState(airfields);
@@ -17,21 +16,7 @@ function AirfieldsPage({airfields, filters, setFilters} : {airfields: Map<string
   },[airfields, filters])
 
   return (<>
-    <Chip.Group multiple={false} value={filters.status} onChange={(v) => setFilters({...filters, status: v})}>
-      <Group justify="center">
-        <Text>Statut</Text>
-        <Chip value="1">Tous</Chip>
-        <Chip value="2">Publics uniquement</Chip>
-        <Chip value="3">Publics ou restreints</Chip>
-      </Group>
-    </Chip.Group>
-    <TextInput
-      placeholder="Chercher un terrain"
-      leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-      value={filters.search}
-      onChange={(e) => setFilters({...filters, search: e.currentTarget.value})}
-      mt={'md'}
-    />
+    <AirfieldsFilters filters={filters} setFilters={setFilters}/>
     <List
       data={data} 
       columns={['Nom du terrain','Code OACI','Piste','Actions']}

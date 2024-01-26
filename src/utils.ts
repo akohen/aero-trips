@@ -1,6 +1,5 @@
 import haversineDistance from "haversine-distance";
-import { Activity, ActivityType, Airfield } from "./types";
-import { ADfilter } from "./App";
+import { Activity, ActivityType, Airfield, ADfilter } from "./types";
 
 export const slug = (str: string) => {
   return str
