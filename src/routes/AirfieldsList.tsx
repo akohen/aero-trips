@@ -1,16 +1,23 @@
 
-import { Table, Text } from '@mantine/core';
+import { Button, Group, Table, Text } from '@mantine/core';
 import { getVacUrl } from '../data/airac';
 import { ADfilter, Activity, Airfield } from '../types';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
 import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { filterAirfields } from '../utils';
 import AirfieldsFilters from '../components/AirfieldsFilters';
+import { AirfieldTitle } from '../components/AirfieldUtils';
+import { IconMapCheck, IconMapPinSearch } from '@tabler/icons-react';
 
 function AirfieldsPage({airfields, activities, filters, setFilters} : 
   {airfields: Map<string,Airfield>, activities: Map<string,Activity>, filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) {
   const [data, setData] = useState(airfields);
+  const navigate = useNavigate();
+  const AdTd = (e: Airfield) => ({
+    className:'clickable',
+    onClick:() => navigate(`/airfields/${e.codeIcao}`)
+  })
 
   useEffect(()=>{
     setData( filterAirfields(airfields, filters) )
@@ -24,12 +31,27 @@ function AirfieldsPage({airfields, activities, filters, setFilters} :
       empty={(<Text fw={500} ta="center">Aucun résultat</Text>)}
       row={([key, e]) => (
         <Table.Tr key={key}>
-          <Table.Td><Link to={`/airfields/${e.codeIcao}`}>{e.name}</Link></Table.Td>
-          <Table.Td><Link to={`/airfields/${e.codeIcao}`}>{e.codeIcao}</Link></Table.Td>
-          <Table.Td>{Math.max(...e.runways.map(r => r.length))}m</Table.Td>
-          <Table.Td>
-            <a target='_blank' href={getVacUrl(e.codeIcao)}>Consulter</a>
-            <Link to={`/map/${e.position.latitude}/${e.position.longitude}`}>Voir sur la carte</Link>
+          <Table.Td {...AdTd(e)}><AirfieldTitle ad={e}/></Table.Td>
+          <Table.Td {...AdTd(e)}>{e.codeIcao}</Table.Td>
+          <Table.Td {...AdTd(e)}>{Math.max(...e.runways.map(r => r.length))}m</Table.Td>
+          <Table.Td><Group justify="flex-start">
+            <Button
+              component={Link}
+              to={getVacUrl(e.codeIcao)}
+              target='_blank'
+              size="compact-sm"
+              leftSection={<IconMapCheck size={20} />}
+            >
+              Carte VAC
+            </Button>
+            <Button
+              component={Link}
+              to={`/map/${e.position.latitude}/${e.position.longitude}`}
+              size="compact-sm"
+              leftSection={<IconMapPinSearch size={20} />}
+            >
+              Voir sur la carte
+            </Button></Group>
           </Table.Td>
         </Table.Tr>
       )}

@@ -3,7 +3,7 @@ import { Airfield, Data } from "../types";
 import { getVacUrl } from "../data/airac";
 import { Button, Group, Space, Text, Title } from "@mantine/core";
 import { findNearest, getAirfieldStatus } from "../utils";
-import { IconMapCheck } from "@tabler/icons-react";
+import { IconMapCheck, IconMapPinSearch } from "@tabler/icons-react";
 import EditButton from "../components/EditButton";
 import BackButton from "../components/BackButton";
 
@@ -33,7 +33,24 @@ const AirfieldDetails = ({airfields, activities} : Data) => {
     <Text {...(airfield.status != 'CAP' ? {c:'red',fw:'bold'} : {})}>{getAirfieldStatus(airfield.status)}</Text>
     <Space mt={"md"}/>
     <Group justify="space-evenly">
-      <div><Link to={getVacUrl(airfield.codeIcao)} target="_blank"><Button leftSection={<IconMapCheck size={20}/>} variant="default">Carte VAC</Button></Link></div>
+      <div>
+        <Button 
+          component={Link}
+          to={getVacUrl(airfield.codeIcao)} target="_blank"
+          variant="default"
+          leftSection={<IconMapCheck size={20}/>}
+        >
+          Carte VAC
+        </Button>
+        <Button
+          component={Link}
+          to={`/map/${airfield.position.latitude}/${airfield.position.longitude}`}
+          variant="default"
+          leftSection={<IconMapPinSearch size={20} />}
+        >
+          Voir sur la carte
+        </Button>
+      </div>
       <div><Title order={4}>Pistes</Title> {airfield.runways.map((r,i) => (<div key={i}>{r.designation} - {r.length}m</div>))}</div>
     </Group>
     <Group justify="space-evenly" align="top">

@@ -1,5 +1,5 @@
-import { Group, Chip, InputLabel, TextInput, rem, NumberInput, Select, Button, Collapse } from "@mantine/core"
-import { IconSearch } from "@tabler/icons-react"
+import { Group, Chip, InputLabel, TextInput, rem, NumberInput, Select, Button, Collapse, CloseButton } from "@mantine/core"
+import { IconCircleCheck, IconForbid, IconGasStation, IconSearch, IconToiletPaper } from "@tabler/icons-react"
 import { ADfilter, Activity, Airfield } from "../types"
 import { Dispatch, SetStateAction } from "react"
 import { useDisclosure } from "@mantine/hooks"
@@ -23,7 +23,7 @@ return (<>
 <Collapse in={opened}>
   <Group justify="space-between">
     <Chip.Group multiple={true} value={filters.services} onChange={(v) => setFilters({...filters, services: v})}>
-      <Group justify="center">
+      <Group>
         <Chip value="2" size='xs'>🍽 Restauration</Chip>
         <Chip value="3" size='xs'>🛏 Hébergement</Chip>
         <Chip value="4" size='xs'>🚲 Vélo</Chip>
@@ -45,10 +45,10 @@ return (<>
     </Group>
     <Chip.Group multiple={true} value={filters.ad} onChange={(v) => setFilters({...filters, ad: v})}>
       <Group justify="center">
-        <Chip value="CAP" size='xs'>🟢 Accès public</Chip>
-        <Chip value="RST" size='xs'>🟡 Accès restreint</Chip>
-        <Chip value="toilet" size='xs'>🚽 Toilettes</Chip>
-        <Chip value="100LL" size='xs'>⛽ 100LL</Chip>
+        <Chip value="CAP" size='xs'><IconCircleCheck size={16} color="teal" />Accès public</Chip>
+        <Chip value="RST" size='xs'><IconForbid size={16} color="orange" /> Accès restreint</Chip>
+        <Chip value="toilet" size='xs'><IconToiletPaper size={16} /> Toilettes</Chip>
+        <Chip value="100LL" size='xs'><IconGasStation size={16} /> 100LL</Chip>
       </Group>
     </Chip.Group>
     <Group justify="space-between">
@@ -81,6 +81,7 @@ return (<>
       value={filters.search}
       onChange={(e) => setFilters({...filters, search: e.currentTarget.value})}
       style={{flexGrow:2}}
+      rightSection={filters.search ? <CloseButton size={18} onClick={() => setFilters({...filters, search: ''})} style={{cursor:'pointer'}}/> : undefined}
     />
     <Button onClick={toggle}>Filtres avancés</Button>
     <Button onClick={() => setFilters({
