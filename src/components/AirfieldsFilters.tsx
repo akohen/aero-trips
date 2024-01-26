@@ -1,4 +1,4 @@
-import { Group, Chip, InputLabel, TextInput, rem, NumberInput, Autocomplete } from "@mantine/core"
+import { Group, Chip, InputLabel, TextInput, rem, NumberInput, Select } from "@mantine/core"
 import { IconSearch } from "@tabler/icons-react"
 import { ADfilter, Activity, Airfield } from "../types"
 import { Dispatch, SetStateAction } from "react"
@@ -6,8 +6,14 @@ import { Dispatch, SetStateAction } from "react"
 const AirfieldsFilters = ({airfields, activities, filters, setFilters}: 
 {airfields:Map<string, Airfield>, activities:Map<string, Activity>, filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) => {
   
-  const listAA = [...airfields].map(([id, ad]) => ({label: `${ad.name} - ${ad.codeIcao}`, value:id})).concat(
-    [...activities].map(([id, activity]) => ({label: activity.name, value:id}))
+  // Multiple AD or activities with the exact same position will have the same key and conflict with each other! Maybe go back to IDs ?
+  const listAA = [...airfields] 
+    .map(([, ad]) => (
+      {label: `${ad.name} - ${ad.codeIcao}`, value:`${ad.position.latitude},${ad.position.longitude}`}
+    )).concat([...activities]
+    .map(([, activity]) => (
+      {label: activity.name, value:`${activity.position.latitude},${activity.position.longitude}`}
+    ))
   )
 
 return (<>
@@ -45,17 +51,22 @@ return (<>
     A moins de
     <NumberInput
       style={{width:'90px'}}
+      size="xs"
       suffix="km"
       min={0} max={9999} step={5}
       placeholder="5km"
+      value={filters.distance} onChange={v => setFilters({...filters, distance: v as number})}
       />
     de
-    <Autocomplete
-      style={{width:'250px'}}
-      placeholder="Terrain ou lieu"
-      limit={5}
+    <Select 
+      value={filters.target}
+      onChange={v => setFilters({...filters, target: v || ''})}
       data={listAA}
-      />
+      placeholder="Terrain ou activité"
+      limit={8} searchable clearable
+      size="xs"
+      style={{width:'250px'}}
+    />
     </Group>
 
   </Group>

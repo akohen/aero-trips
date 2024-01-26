@@ -48,8 +48,9 @@ export type Trip = {
 
 export type ADfilter = {
   search: string,
-  status: string,
   services: string[],
   ad: string[],
   runway: number | undefined,
+  distance: number | undefined,
+  target: string,
 }
