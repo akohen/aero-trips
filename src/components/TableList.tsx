@@ -1,4 +1,4 @@
-import { Table, Pagination, Center } from '@mantine/core';
+import { Table, Pagination, Center, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 
 function chunk<T>(array: T[], size: number): T[][] {
@@ -12,7 +12,7 @@ function TableList<T>( {data, row, empty, columns} :
     {data: Map<string,T>, row:(arg0: [string,T], arg1: number)=>JSX.Element, empty: JSX.Element, columns: string[]} ) {
 
   const [activePage, setPage] = useState(1);
-  const chunks = chunk([...data],20)
+  const chunks = chunk([...data],17)
   useEffect(() => {
     const page = Math.min(activePage, chunks.length)
     setPage(Math.max(1, page))
@@ -35,7 +35,7 @@ function TableList<T>( {data, row, empty, columns} :
       </Table.Thead>
       <Table.Tbody>{rows}</Table.Tbody>
     </Table>
-    <Center><Pagination total={chunks.length} value={activePage} onChange={setPage} /></Center>
+    <Center><Pagination total={chunks.length} value={activePage} onChange={setPage} />{data.size > 0 && <Text ml={'md'}>({data.size} résultats)</Text>}</Center>
   </>)
 }
 
