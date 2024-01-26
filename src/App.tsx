@@ -20,8 +20,8 @@ export default function App(data : Data) {
     search:'',
     services: [],
     ad: [],
-    runway: undefined,
-    distance: undefined,
+    runway: '',
+    distance: '',
     target: '',
 });
   

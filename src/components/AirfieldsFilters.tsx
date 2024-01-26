@@ -1,10 +1,13 @@
-import { Group, Chip, InputLabel, TextInput, rem, NumberInput, Select } from "@mantine/core"
+import { Group, Chip, InputLabel, TextInput, rem, NumberInput, Select, Button, Collapse } from "@mantine/core"
 import { IconSearch } from "@tabler/icons-react"
 import { ADfilter, Activity, Airfield } from "../types"
 import { Dispatch, SetStateAction } from "react"
+import { useDisclosure } from "@mantine/hooks"
 
 const AirfieldsFilters = ({airfields, activities, filters, setFilters}: 
 {airfields:Map<string, Airfield>, activities:Map<string, Activity>, filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) => {
+
+  const [opened, { toggle }] = useDisclosure(false);
   
   // Multiple AD or activities with the exact same position will have the same key and conflict with each other! Maybe go back to IDs ?
   const listAA = [...airfields] 
@@ -17,6 +20,7 @@ const AirfieldsFilters = ({airfields, activities, filters, setFilters}:
   )
 
 return (<>
+<Collapse in={opened}>
   <Group justify="space-between">
     <Chip.Group multiple={true} value={filters.services} onChange={(v) => setFilters({...filters, services: v})}>
       <Group justify="center">
@@ -60,7 +64,7 @@ return (<>
     de
     <Select 
       value={filters.target}
-      onChange={v => setFilters({...filters, target: v || ''})}
+      onChange={v => setFilters({...filters, target: v})}
       data={listAA}
       placeholder="Terrain ou activité"
       limit={8} searchable clearable
@@ -68,15 +72,28 @@ return (<>
       style={{width:'250px'}}
     />
     </Group>
-
   </Group>
-  <TextInput
-    placeholder="Chercher un terrain"
-    leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-    value={filters.search}
-    onChange={(e) => setFilters({...filters, search: e.currentTarget.value})}
-    mt={'md'}
-  />
+  </Collapse>
+  <Group justify="space-between"  mt={'md'}>
+    <TextInput
+      placeholder="Chercher un terrain"
+      leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+      value={filters.search}
+      onChange={(e) => setFilters({...filters, search: e.currentTarget.value})}
+      style={{flexGrow:2}}
+    />
+    <Button onClick={toggle}>Filtres avancés</Button>
+    <Button onClick={() => setFilters({
+      search:'',
+      services: [],
+      ad: [],
+      runway: '',
+      distance: '',
+      target: null,
+    })}>
+      Supprimer tous les filtres
+    </Button>
+  </Group>
 </>)}
 
 export default AirfieldsFilters
