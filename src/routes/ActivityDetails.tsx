@@ -10,7 +10,7 @@ const ActivityDetails = ({activities} : {activities:Map<string,Activity>}) => {
   const activity = params.activityId ? activities.get(params.activityId) : undefined;
   return activities.size > 0 ? activity ? (<>
     <Title order={1}><BackButton />Fiche {activity.name} <EditButton /></Title>
-    <Text>{activity.type.map(t => (<><span key={t}>{getActivityType(t)}</span> </>))}</Text>
+    <Text>{activity.type.map(t => (<span key={t}>{getActivityType(t)}</span>))}</Text>
     <Space mt={"md"}/>
     <div dangerouslySetInnerHTML={{__html: activity.description!}} />
     
