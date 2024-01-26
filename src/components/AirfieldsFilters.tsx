@@ -7,7 +7,7 @@ import { useDisclosure } from "@mantine/hooks"
 const AirfieldsFilters = ({airfields, activities, filters, setFilters}: 
 {airfields:Map<string, Airfield>, activities:Map<string, Activity>, filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) => {
 
-  const [opened, { toggle }] = useDisclosure(false);
+  const [opened, { toggle }] = useDisclosure(Object.values(filters).some(x => Array.isArray(x) ? x.length: x));
   
   // Multiple AD or activities with the exact same position will have the same key and conflict with each other! Maybe go back to IDs ?
   const listAA = [...airfields] 
