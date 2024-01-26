@@ -27,11 +27,11 @@ test('renders the list view', () => {
       <App {...testData}/>
     </MemoryRouter>,
   )
-  expect(screen.getByText(/LFNW/)).toBeDefined()
+  expect(screen.getAllByText(/LFNW/)).toBeDefined()
 })
 
 test('goes to field list through the navbar', async () => {
   render(<App {...testData}/>, {wrapper: MemoryRouter});
   await userEvent.click(screen.getByText(/terrains/i));
-  expect(await screen.getByText(/LFNW/i)).toBeDefined();
+  expect(await screen.getAllByText(/LFNW/i)).toBeDefined();
 });

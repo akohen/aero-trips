@@ -1,14 +1,15 @@
 
 import { Table, Text } from '@mantine/core';
 import { getVacUrl } from '../data/airac';
-import { ADfilter, Airfield } from '../types';
+import { ADfilter, Activity, Airfield } from '../types';
 import { Link } from 'react-router-dom';
 import List from '../components/TableList';
 import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { filterAirfields } from '../utils';
 import AirfieldsFilters from '../components/AirfieldsFilters';
 
-function AirfieldsPage({airfields, filters, setFilters} : {airfields: Map<string,Airfield>, filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) {
+function AirfieldsPage({airfields, activities, filters, setFilters} : 
+  {airfields: Map<string,Airfield>, activities: Map<string,Activity>, filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) {
   const [data, setData] = useState(airfields);
 
   useEffect(()=>{
@@ -16,7 +17,7 @@ function AirfieldsPage({airfields, filters, setFilters} : {airfields: Map<string
   },[airfields, filters])
 
   return (<>
-    <AirfieldsFilters filters={filters} setFilters={setFilters}/>
+    <AirfieldsFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters}/>
     <List
       data={data} 
       columns={['Nom du terrain','Code OACI','Piste','Actions']}

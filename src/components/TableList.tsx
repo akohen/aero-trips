@@ -1,4 +1,3 @@
-
 import { Table, Pagination, Center } from '@mantine/core';
 import { useEffect, useState } from 'react';
 
@@ -14,9 +13,12 @@ function TableList<T>( {data, row, empty, columns} :
 
   const [activePage, setPage] = useState(1);
   const chunks = chunk([...data],20)
-  useEffect(() => {setPage(1)}, [data])
+  useEffect(() => {
+    const page = Math.min(activePage, chunks.length)
+    setPage(Math.max(1, page))
+  }, [activePage, chunks])
 
-  const rows = chunks.length > 0 ? chunks[activePage-1].map(row) : (
+  const rows = chunks.length > 0 ? chunks[activePage-1]?.map(row) : (
   <Table.Tr>
     <Table.Td colSpan={columns.length}>
         {empty}

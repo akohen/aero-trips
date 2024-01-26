@@ -14,6 +14,7 @@ export type Airfield = {
   runways: Runway[],
   description?: string,
   status:'CAP'|'PRV'|'RST'|'MIL'|'OFF'
+  fuels?: string[]
 }
 
 export type Runway = {
@@ -48,4 +49,7 @@ export type Trip = {
 export type ADfilter = {
   search: string,
   status: string,
+  services: string[],
+  ad: string[],
+  runway: number | undefined,
 }

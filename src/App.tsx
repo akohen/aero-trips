@@ -16,7 +16,7 @@ import { ADfilter } from './types';
 
 
 export default function App(data : Data) {
-  const [ADfilter, setADfilter] = useState<ADfilter>({search:'', status:'1'});
+  const [ADfilter, setADfilter] = useState<ADfilter>({search:'', status:'1', services: [], ad: [], runway: undefined});
   
   return (
     <Routes>

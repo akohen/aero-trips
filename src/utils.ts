@@ -38,14 +38,17 @@ export function findNearest<T extends Airfield|Activity>(reference: Airfield|Act
 
 export const filterAirfields = (data: Map<string,Airfield>, filters: ADfilter) => {
   const query = filters.search.toLowerCase().trim().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+  const status = ['CAP', 'PRV', 'RST'].filter( e => filters.ad.includes(e))
+
   return new Map([...data]
+    .filter(([, item]) => {
+      if( status.length > 0 && !status.includes(item.status)) return false
+      if( filters.ad.includes('100LL') && !item.fuels?.includes('100LL')) return false
+      if( filters.runway && Math.max(...item.runways.map(r => r.length)) < filters.runway) return false
+      return true
+    })
     .filter(([key, item]) => 
       [item.description, item.codeIcao, item.name, key].some((x) => x?.toLowerCase().includes(query))
     )
-    .filter(([, item]) => {
-      if(filters.status == '2' && item.status != 'CAP') return false
-      else if(filters.status == '3' && !['CAP', 'RST'].includes(item.status)) return false
-      return true
-    })
   )
 }

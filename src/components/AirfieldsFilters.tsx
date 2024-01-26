@@ -1,18 +1,63 @@
-import { Group, Chip, InputLabel, TextInput, rem } from "@mantine/core"
+import { Group, Chip, InputLabel, TextInput, rem, NumberInput, Autocomplete } from "@mantine/core"
 import { IconSearch } from "@tabler/icons-react"
-import { ADfilter } from "../types"
+import { ADfilter, Activity, Airfield } from "../types"
 import { Dispatch, SetStateAction } from "react"
 
-const AirfieldsFilters = ({filters, setFilters}: {filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) => (<>
+const AirfieldsFilters = ({airfields, activities, filters, setFilters}: 
+{airfields:Map<string, Airfield>, activities:Map<string, Activity>, filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) => {
+  
+  const listAA = [...airfields].map(([id, ad]) => ({label: `${ad.name} - ${ad.codeIcao}`, value:id})).concat(
+    [...activities].map(([id, activity]) => ({label: activity.name, value:id}))
+  )
+
+return (<>
   <Group justify="space-between">
-    <Chip.Group multiple={false} value={filters.status} onChange={(v) => setFilters({...filters, status: v})}>
+    <Chip.Group multiple={true} value={filters.services} onChange={(v) => setFilters({...filters, services: v})}>
       <Group justify="center">
-        <InputLabel>Statut</InputLabel>
-        <Chip value="1" size='xs'>Tous</Chip>
-        <Chip value="2" size='xs'>Publics uniquement</Chip>
-        <Chip value="3" size='xs'>Publics ou restreints</Chip>
+        <Chip value="2" size='xs'>🍽 Restauration</Chip>
+        <Chip value="3" size='xs'>🛏 Hébergement</Chip>
+        <Chip value="4" size='xs'>🚲 Vélo</Chip>
+        <Chip value="5" size='xs'>🚌 Transport</Chip>
+        <Chip value="6" size='xs'>🥾 Randonée</Chip>
+        <Chip value="7" size='xs'>🖼 Visite</Chip>
+        <Chip value="8" size='xs'>🎪 Autres activités</Chip>
       </Group>
     </Chip.Group>
+    <Group justify="space-between">
+      <InputLabel>Longueur de piste minimum</InputLabel>
+      <NumberInput
+        style={{width:'100px'}}
+        suffix="m"
+        min={0} max={9999} step={50}
+        placeholder="500m"
+        value={filters.runway} onChange={(v) => setFilters({...filters, runway: v as number})}
+      />
+    </Group>
+    <Chip.Group multiple={true} value={filters.ad} onChange={(v) => setFilters({...filters, ad: v})}>
+      <Group justify="center">
+        <Chip value="CAP" size='xs'>🟢 Accès public</Chip>
+        <Chip value="RST" size='xs'>🟡 Accès restreint</Chip>
+        <Chip value="toilet" size='xs'>🚽 Toilettes</Chip>
+        <Chip value="100LL" size='xs'>⛽ 100LL</Chip>
+      </Group>
+    </Chip.Group>
+    <Group justify="space-between">
+    A moins de
+    <NumberInput
+      style={{width:'90px'}}
+      suffix="km"
+      min={0} max={9999} step={5}
+      placeholder="5km"
+      />
+    de
+    <Autocomplete
+      style={{width:'250px'}}
+      placeholder="Terrain ou lieu"
+      limit={5}
+      data={listAA}
+      />
+    </Group>
+
   </Group>
   <TextInput
     placeholder="Chercher un terrain"
@@ -21,6 +66,6 @@ const AirfieldsFilters = ({filters, setFilters}: {filters: ADfilter, setFilters:
     onChange={(e) => setFilters({...filters, search: e.currentTarget.value})}
     mt={'md'}
   />
-</>)
+</>)}
 
 export default AirfieldsFilters
