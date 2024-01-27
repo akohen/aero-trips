@@ -5,6 +5,7 @@ import { findNearest, getAirfieldStatus } from "../utils";
 import { IconMapCheck, IconMapPinSearch } from "@tabler/icons-react";
 import EditButton from "../components/EditButton";
 import BackButton from "../components/BackButton";
+import { Data, Airfield } from "..";
 
 const AirfieldDetails = ({airfields, activities} : Data) => {
   const params = useParams();
