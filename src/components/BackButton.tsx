@@ -1,6 +1,9 @@
 import { IconChevronLeft } from "@tabler/icons-react"
-import { Link } from "react-router-dom"
+import { useNavigate  } from "react-router-dom"
 
-const BackButton = () => (<Link to=".." relative="path"><IconChevronLeft color="black"/></Link>)
+
+const BackButton = () => {
+  const navigate = useNavigate();
+  return (<IconChevronLeft className="clickable" color="black" onClick={() => navigate(-1)}/>)}
 
 export default BackButton
