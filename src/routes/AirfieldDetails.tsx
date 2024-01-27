@@ -6,6 +6,7 @@ import { IconMapCheck, IconMapPinSearch } from "@tabler/icons-react";
 import EditButton from "../components/EditButton";
 import BackButton from "../components/BackButton";
 import { Data, Airfield } from "..";
+import { ActivityTitle } from "../components/ActivityUtils";
 
 const AirfieldDetails = ({airfields, activities} : Data) => {
   const params = useParams();
@@ -20,10 +21,10 @@ const AirfieldDetails = ({airfields, activities} : Data) => {
       ))
   }
   const nearbyActivities = (airfield: Airfield) => {
-    return findNearest(airfield, activities).map(([dist,ad,id]) => (
+    return findNearest(airfield, activities).map(([dist, activity, id]) => (
       <p key={id}>
         <Link to={`/activities/${id}`}>
-          {ad.name} {dist > 1500 ? `${Math.round(dist/1000)}km` : `${Math.round(dist/100)*100}m`}
+          <ActivityTitle activity={activity} /><Text span size="sm"> à {dist > 1500 ? `${Math.round(dist/1000)}km` : `${Math.round(dist/100)*100}m`}</Text>
         </Link>
       </p>
     ))

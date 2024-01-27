@@ -16,7 +16,7 @@ const icons = {
 }
 
 export const ActivityTitle = ({activity}: {activity: Activity}) => (
-<Text size="sm" className="list-item-title">
+<Text span size="sm" className="list-item-title">
   {activity.name}
   {activity.type.map((e,i) => icons[e](i))}
 </Text>)
