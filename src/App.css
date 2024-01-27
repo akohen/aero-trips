@@ -3,3 +3,5 @@ a { color: #000; text-decoration: none;}
 .clickable { cursor: pointer; }
 
 .tiptap-content > img { max-width: 60vw;}
+
+.list-item-title svg { margin-left: 6px; }

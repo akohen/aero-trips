@@ -7,6 +7,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import ActivitiesFilters from '../components/ActivitiesFilters';
 import { filterActivities } from '../utils';
 import { ViewOnMap } from '../components/CommonButtons';
+import { ActivityTitle } from '../components/ActivityUtils';
 
 
 function ActivitiesList({airfields, activities, filters, setFilters} : 
@@ -32,7 +33,7 @@ function ActivitiesList({airfields, activities, filters, setFilters} :
       empty={(<Text fw={500} ta="center">Aucun résultat</Text>)}
       row={([key, e]) => (
         <Table.Tr key={key}>
-          <Table.Td {...ActivityTd(key)}>{e.name}</Table.Td>
+          <Table.Td {...ActivityTd(key)}><ActivityTitle activity={e}/></Table.Td>
           <Table.Td>{e.type}</Table.Td>
           <Table.Td><ViewOnMap item={e}/></Table.Td>
         </Table.Tr>
