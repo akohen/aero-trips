@@ -1,5 +1,4 @@
 import { Link, useParams } from "react-router-dom";
-import { Airfield, Data } from "../types";
 import { getVacUrl } from "../data/airac";
 import { Button, Group, Space, Text, Title } from "@mantine/core";
 import { findNearest, getAirfieldStatus } from "../utils";

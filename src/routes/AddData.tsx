@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Activity, Airfield, Data, Trip } from "../types";
+import { Activity, Airfield, Data, Trip } from "..";
 import { Button, Group } from "@mantine/core";
 import { IconPhoto, IconMap } from "@tabler/icons-react";
 import ActivityForm from "../components/ActivityForm";

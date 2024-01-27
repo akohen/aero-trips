@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { Airfield, Data, Trip } from "../types";
+import { Airfield, Data, Trip } from "..";
 import { Title } from "@mantine/core";
 import EditButton from "../components/EditButton";
 import BackButton from "../components/BackButton";

@@ -4,7 +4,7 @@ import Home from "./routes/Home";
 import MapPage from "./routes/MapPage";
 import './App.css'
 import AirfieldDetails from "./routes/AirfieldDetails";
-import { Data } from "./types";
+import { Data } from ".";
 import ActivitiesList from "./routes/ActivitiesList";
 import AirfieldsList from "./routes/AirfieldsList";
 import ActivityDetails from "./routes/ActivityDetails";
@@ -12,7 +12,7 @@ import TripsList from "./routes/TripsList";
 import TripDetails from "./routes/TripDetails";
 import AddData from "./routes/AddData";
 import { useState } from "react";
-import { ADfilter } from './types';
+import { ADfilter } from '.';
 
 
 export default function App(data : Data) {

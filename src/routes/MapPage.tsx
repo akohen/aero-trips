@@ -1,5 +1,5 @@
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
-import { Activity, Airfield, ADfilter } from '../types';
+import { Activity, Airfield, ADfilter } from '..';
 import { Link, useParams } from 'react-router-dom';
 import { Icon, LatLngExpression } from 'leaflet';
 import viteLogo from '/vite.svg'

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Activity } from "../types";
+import { Activity } from "..";
 import { Space, Text, Title } from "@mantine/core";
 import { getActivityType } from "../utils";
 import EditButton from "../components/EditButton";

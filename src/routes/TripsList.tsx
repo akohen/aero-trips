@@ -1,6 +1,6 @@
 
 import { Table, Text, TextInput, rem } from '@mantine/core';
-import { Trip } from '../types';
+import { Trip } from '..';
 import { Link } from 'react-router-dom';
 import List from '../components/TableList';
 import { useEffect, useState } from 'react';

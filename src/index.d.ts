@@ -1,13 +1,13 @@
 import { GeoPoint } from "firebase/firestore"
 
-export type Data = {
+type Data = {
   airfields: Map<string,Airfield>,
   activities: Map<string,Activity>,
   trips: Map<string,Trip>,
   saveChange: (obj: object) => void,
 }
 
-export type Airfield = {
+type Airfield = {
   codeIcao: string,
   name: string,
   position: GeoPoint,
@@ -17,27 +17,27 @@ export type Airfield = {
   fuels?: string[]
 }
 
-export type Runway = {
+type Runway = {
   composition?: string,
   designation?: string,
   length: number,
 }
 
-export type Activity = {
+type Activity = {
   name: string,
   position: GeoPoint,
   description?: string,
   type: ActivityType[],
 }
 
-export type ActivityType = 
+type ActivityType = 
   'transport' | 
   'food' |
   'lodging' | 
   'poi' |
   'other'
 
-export type Trip = {
+type Trip = {
   from?: string,
   to: string,
   name: string,
@@ -46,7 +46,7 @@ export type Trip = {
   wpt?: GeoPoint[],
 }
 
-export type ADfilter = {
+type ADfilter = {
   search: string,
   services: string[],
   ad: string[],

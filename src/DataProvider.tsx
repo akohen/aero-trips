@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import App from './App.tsx'
 import { FirebaseOptions, initializeApp } from "firebase/app";
 import { CACHE_SIZE_UNLIMITED, addDoc, collection, getDocs, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
-import { Activity, Airfield, Trip } from './types.ts';
+import { Activity, Airfield, Trip } from '..ts';
 
 const firebaseConfig: FirebaseOptions = {
   apiKey: "AIzaSyAleHj_gty6XncQLEDlLn3Ih7X08KuQ-jw",

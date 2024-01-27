@@ -1,7 +1,7 @@
 
 import { Button, Group, Table, Text } from '@mantine/core';
 import { getVacUrl } from '../data/airac';
-import { ADfilter, Activity, Airfield } from '../types';
+import { ADfilter, Activity, Airfield } from '..';
 import { Link, useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
 import { useEffect, useState, Dispatch, SetStateAction } from 'react';

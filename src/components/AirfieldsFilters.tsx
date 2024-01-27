@@ -1,6 +1,6 @@
 import { Group, Chip, InputLabel, TextInput, rem, NumberInput, Select, Button, Collapse, CloseButton } from "@mantine/core"
 import { IconCircleCheck, IconForbid, IconGasStation, IconSearch, IconToiletPaper } from "@tabler/icons-react"
-import { ADfilter, Activity, Airfield } from "../types"
+import { ADfilter, Activity, Airfield } from ".."
 import { Dispatch, SetStateAction } from "react"
 import { useDisclosure } from "@mantine/hooks"
 

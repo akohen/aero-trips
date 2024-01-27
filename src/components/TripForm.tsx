@@ -1,6 +1,6 @@
 import { Fieldset, Group, Button, TextInput, InputLabel, Title } from "@mantine/core"
 import { useEditor } from "@tiptap/react";
-import { Trip } from "../types";
+import { Trip } from "..";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Link } from "@tiptap/extension-link";
 import { useForm } from "@mantine/form";

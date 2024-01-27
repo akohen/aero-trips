@@ -1,5 +1,5 @@
 import { IconBan, IconCircleCheck, IconForbid, IconGasStation } from "@tabler/icons-react";
-import { Airfield } from "../types";
+import { Airfield } from "..";
 
 const icons = {
   CAP:<IconCircleCheck size={16} style={{verticalAlign:'middle'}} color="teal" />, 

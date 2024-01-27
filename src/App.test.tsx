@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import { MemoryRouter } from 'react-router-dom';
 import { GeoPoint } from 'firebase/firestore';
-import { Data } from './types';
+import { Data } from '.';
 import App from './App';
 
 

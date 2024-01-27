@@ -1,6 +1,6 @@
 import { Fieldset, Group, Button, Title, Space } from "@mantine/core"
 import { useEditor } from "@tiptap/react";
-import { Airfield } from "../types";
+import { Airfield } from "..";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Link } from "@tiptap/extension-link";
 import { useForm } from "@mantine/form";

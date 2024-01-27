@@ -1,5 +1,5 @@
 import haversineDistance from "haversine-distance";
-import { Activity, ActivityType, Airfield, ADfilter } from "./types";
+import { Activity, ActivityType, Airfield, ADfilter } from ".";
 import { GeoPoint } from "firebase/firestore";
 
 export const slug = (str: string) => {
