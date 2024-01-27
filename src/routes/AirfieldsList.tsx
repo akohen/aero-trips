@@ -8,7 +8,8 @@ import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { filterAirfields } from '../utils';
 import AirfieldsFilters from '../components/AirfieldsFilters';
 import { AirfieldTitle } from '../components/AirfieldUtils';
-import { IconMapCheck, IconMapPinSearch } from '@tabler/icons-react';
+import { IconMapCheck } from '@tabler/icons-react';
+import { ViewOnMap } from '../components/CommonButtons';
 
 function AirfieldsPage({airfields, activities, filters, setFilters} : 
   {airfields: Map<string,Airfield>, activities: Map<string,Activity>, filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) {
@@ -44,14 +45,8 @@ function AirfieldsPage({airfields, activities, filters, setFilters} :
             >
               Carte VAC
             </Button>
-            <Button
-              component={Link}
-              to={`/map/${e.position.latitude}/${e.position.longitude}`}
-              size="compact-sm"
-              leftSection={<IconMapPinSearch size={20} />}
-            >
-              Voir sur la carte
-            </Button></Group>
+            <ViewOnMap item={e}/>
+            </Group>
           </Table.Td>
         </Table.Tr>
       )}
