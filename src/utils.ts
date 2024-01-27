@@ -1,5 +1,5 @@
 import haversineDistance from "haversine-distance";
-import { Activity, ActivityType, Airfield, ADfilter } from ".";
+import { Activity, ActivityType, Airfield, ADfilter, ActivityFilter } from ".";
 import { GeoPoint } from "firebase/firestore";
 
 export const slug = (str: string) => {
@@ -49,6 +49,17 @@ export const filterAirfields = (airfields: Map<string,Airfield>, filters: ADfilt
       if( filters.runway && Math.max(...item.runways.map(r => r.length)) < filters.runway) return false
       if( filters.distance && filters.target && haversineDistance(item.position, new GeoPoint(...filters.target.split(',').map(parseFloat) as [number, number])) > filters.distance*1000) { return false}
       return [item.description, item.codeIcao, item.name, key].some(x => x?.toLowerCase().includes(query))
+    })
+  )
+}
+
+export const filterActivities = (activities: Map<string,Activity>, filters: ActivityFilter) => {
+  const query = filters.search.toLowerCase().trim().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+  
+  return new Map([...activities]
+    .filter(([key, item]) => {
+      if( filters.distance && filters.target && haversineDistance(item.position, new GeoPoint(...filters.target.split(',').map(parseFloat) as [number, number])) > filters.distance*1000) { return false}
+      return [item.description, item.name, key].some(x => x?.toLowerCase().includes(query))
     })
   )
 }

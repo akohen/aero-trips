@@ -1,40 +1,25 @@
 
-import { Table, Text, TextInput, rem } from '@mantine/core';
-import { Activity } from '..';
+import { Table, Text } from '@mantine/core';
+import { Activity, ActivityFilter, Airfield } from '..';
 import { Link } from 'react-router-dom';
 import List from '../components/TableList';
-import { useEffect, useState } from 'react';
-import { IconSearch } from '@tabler/icons-react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import ActivitiesFilters from '../components/ActivitiesFilters';
+import { filterActivities } from '../utils';
 
 
-function ActivitiesList({activities} : {activities: Map<string,Activity>}) {
-  const [search, setSearch] = useState('');
+function ActivitiesList({airfields, activities, filters, setFilters} : 
+  {airfields: Map<string,Airfield>, activities: Map<string,Activity>, filters: ActivityFilter, setFilters: Dispatch<SetStateAction<ActivityFilter>>}) {
+  
   const [data, setData] = useState(activities);
 
   useEffect(()=>{
-    setData( activities )
-  },[activities])
+    setData( filterActivities( activities, filters) )
+  },[activities, filters])
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.currentTarget;
-    setSearch(value);
-    setData( filterData(activities, value) )
-  };
-
-  function filterData(data: Map<string,Activity>, search: string) {
-    const query = search.toLowerCase().trim();
-    return new Map([...data].filter(([key, item]) => 
-      [key, item.name, item.description].some((x) => x?.toLowerCase().includes(query.normalize("NFD").replace(/\p{Diacritic}/gu, "")))
-    ))
-  }
   
   return (<>
-    <TextInput
-      placeholder="Chercher une activité"
-      leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-      value={search}
-      onChange={handleSearchChange}
-    />
+    <ActivitiesFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} />
     <List
       data={data} 
       columns={['Nom','Type']}

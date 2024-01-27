@@ -54,3 +54,9 @@ type ADfilter = {
   distance: number | '',
   target: string | null,
 }
+
+type ActivityFilter = {
+  search: string,
+  target: string | null,
+  distance: number | '',
+}

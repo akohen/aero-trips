@@ -4,7 +4,7 @@ import Home from "./routes/Home";
 import MapPage from "./routes/MapPage";
 import './App.css'
 import AirfieldDetails from "./routes/AirfieldDetails";
-import { Data } from ".";
+import { ActivityFilter, Data } from ".";
 import ActivitiesList from "./routes/ActivitiesList";
 import AirfieldsList from "./routes/AirfieldsList";
 import ActivityDetails from "./routes/ActivityDetails";
@@ -24,6 +24,12 @@ export default function App(data : Data) {
     distance: '',
     target: '',
 });
+
+  const [ActFilter, setActFilter] = useState<ActivityFilter>({
+    distance: '',
+    search: '',
+    target: '',
+  })
   
   return (
     <Routes>
@@ -31,7 +37,7 @@ export default function App(data : Data) {
         <Route path="/"                       element={<Home />}/>
         <Route path="/airfields"              element={<AirfieldsList {...data} filters={ADfilter} setFilters={setADfilter} />} />
         <Route path="/airfields/:airfieldId"  element={<AirfieldDetails {...data} />} />
-        <Route path="/activities"             element={<ActivitiesList {...data} />} />
+        <Route path="/activities"             element={<ActivitiesList {...data} filters={ActFilter} setFilters={setActFilter} />} />
         <Route path="/activities/:activityId" element={<ActivityDetails {...data}/>} />
         <Route path="/map/:lat?/:lng?"        element={<MapPage {...data} ADfilter={ADfilter} />} />
         <Route path="/trips"                  element={<TripsList {...data} />} />
