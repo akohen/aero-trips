@@ -1,5 +1,6 @@
 import { RichTextEditor } from "@mantine/tiptap";
 import { Editor } from "@tiptap/react";
+import { ImageControl } from "./ImageControl";
 
 const TextEditor = ({editor}:{editor:Editor | null}) => (
   <RichTextEditor editor={editor}>
@@ -10,6 +11,10 @@ const TextEditor = ({editor}:{editor:Editor | null}) => (
         <RichTextEditor.Underline />
         <RichTextEditor.Strikethrough />
         <RichTextEditor.ClearFormatting />
+      </RichTextEditor.ControlsGroup>
+
+      <RichTextEditor.ControlsGroup>
+        <ImageControl editor={editor!} />
       </RichTextEditor.ControlsGroup>
 
       <RichTextEditor.ControlsGroup>

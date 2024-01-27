@@ -57,7 +57,7 @@ const AirfieldDetails = ({airfields, activities} : Data) => {
       <div><Title order={4}>Terrains proches</Title>{nearbyAirfields(airfield)}</div>
       <div><Title order={4}>Activités proches</Title>{nearbyActivities(airfield)}</div>
     </Group>
-    <div dangerouslySetInnerHTML={{__html: airfield.description!}} />
+    <div className="tiptap-content" dangerouslySetInnerHTML={{__html: airfield.description!}} />
   </>) : (
     <p>Pas de terrain trouvé</p>
   ) : (

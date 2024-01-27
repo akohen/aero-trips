@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
+import Image from "@tiptap/extension-image";
 
 const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => void, activity: Activity}) => {
   const [submitted, setSubmitted] = useState(false)
@@ -30,8 +31,14 @@ const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => voi
     extensions: [
       StarterKit,
       Link,
+      Image.configure({allowBase64: false}),
     ],
     content: form.values['description'],
+    editorProps: {
+      handleDrop: function() {
+        return false; //TODO
+      }
+    },
     onUpdate({ editor }) {
       form.setFieldValue('description', editor?.getHTML());
     }

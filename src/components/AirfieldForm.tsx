@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
+import Image from "@tiptap/extension-image";
 
 const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => void, airfield: Airfield}) => {
   const [submitted, setSubmitted] = useState(false)
@@ -22,6 +23,7 @@ const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => voi
     extensions: [
       StarterKit,
       Link,
+      Image,
     ],
     content: form.values['description'],
     onUpdate({ editor }) {
