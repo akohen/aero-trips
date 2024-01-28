@@ -29,6 +29,7 @@ export default function App(data : Data) {
     distance: '',
     search: '',
     target: '',
+    type: [],
   })
   
   return (

@@ -1,8 +1,9 @@
-import { Group, TextInput, rem, NumberInput, Select, Button, Collapse, CloseButton } from "@mantine/core"
+import { Group, TextInput, rem, NumberInput, Select, Button, Collapse, CloseButton, Chip } from "@mantine/core"
 import { IconSearch } from "@tabler/icons-react"
 import { Activity, ActivityFilter, Airfield } from ".."
 import { Dispatch, SetStateAction } from "react"
 import { useDisclosure } from "@mantine/hooks"
+import { CommonIcon } from "./CommonIcon"
 
 const ActivitiesFilters = ({airfields, activities, filters, setFilters}: 
 {airfields:Map<string, Airfield>, activities:Map<string, Activity>, filters: ActivityFilter, setFilters: Dispatch<SetStateAction<ActivityFilter>>}) => {
@@ -22,6 +23,15 @@ const ActivitiesFilters = ({airfields, activities, filters, setFilters}:
 return (<>
 <Collapse in={opened}>
   <Group justify="space-between">
+    <Chip.Group multiple={true} value={filters.type} onChange={(v) => setFilters({...filters, type: v})}>
+      <Group>
+        <Chip value="food" size='xs'><CommonIcon iconType={"food"} />&nbsp;Restauration</Chip>
+        <Chip value="lodging" size='xs'><CommonIcon iconType={"lodging"} />&nbsp;Hébergement</Chip>
+        <Chip value="bike" size='xs'><CommonIcon iconType={"bike"} />&nbsp;Vélo</Chip>
+        <Chip value="poi" size='xs'><CommonIcon iconType={"poi"} />&nbsp;A voir du ciel</Chip>
+        <Chip value="other" size='xs'><CommonIcon iconType={"other"} />&nbsp;Autres activités</Chip>
+      </Group>
+    </Chip.Group>
     <Group justify="space-between">
     A moins de
     <NumberInput
@@ -59,6 +69,7 @@ return (<>
       search:'',
       distance: '',
       target: null,
+      type: [],
     })}>
       Supprimer tous les filtres
     </Button>

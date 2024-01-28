@@ -63,4 +63,5 @@ type ActivityFilter = {
   search: string,
   target: string | null,
   distance: number | '',
+  type: string[],
 }

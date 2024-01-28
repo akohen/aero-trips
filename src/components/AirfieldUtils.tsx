@@ -8,7 +8,7 @@ import viteLogo from '/vite.svg'
 
 
 export const AirfieldTitle = ({ad}: {ad: Airfield}) => {
-  return (<><CommonIcon iconType={ad.status} /> {ad.name} {ad.fuels?.map(e => <CommonIcon iconType={e} />)}</>)
+  return (<><CommonIcon iconType={ad.status} /> {ad.name} {ad.fuels?.map(e => <CommonIcon key={e} iconType={e} />)}</>)
 }
 
 export const NearbyAirfields = ({items} : {items: [distance: number, item: Airfield, id: string][]}) => (

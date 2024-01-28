@@ -1,7 +1,7 @@
 import haversineDistance from "haversine-distance";
 import { Activity, Airfield, ADfilter, ActivityFilter, ActivityType } from ".";
 import { GeoPoint } from "firebase/firestore";
-import { IconBan, IconBed, IconBulb, IconBus, IconCircleCheck, IconEye, IconForbid, IconGasStation, IconSoup } from "@tabler/icons-react";
+import { IconBan, IconBed, IconBike, IconBulb, IconBus, IconCircleCheck, IconEye, IconForbid, IconGasStation, IconSoup } from "@tabler/icons-react";
 
 export const slug = (str: string) => {
   return str
@@ -26,6 +26,7 @@ export const iconsList = new Map<string, {label: string,icon: React.FC,style: ob
   ['transport', {label:"Transport", icon:IconBus, style:iconStyle}],
   ['lodging', {label:"Hébergement", icon:IconBed, style:iconStyle}],
   ['poi', {label:"A voir du ciel", icon:IconEye, style:iconStyle}],
+  ['bike', {label:"Vélo", icon:IconBike, style:iconStyle}],
   ['other', {label:"Autre activité", icon:IconBulb, style:iconStyle}],
   ['CAP', {label:"Ouvert à la circulation aérienne publique", icon:IconCircleCheck, style:{...iconStyle, color:"teal"}}],
   ['RST', {label:"Accès restreint", icon:IconForbid, style:{...iconStyle, color:"orange"}}],
@@ -69,6 +70,7 @@ export const filterActivities = (activities: Map<string,Activity>, filters: Acti
   return new Map([...activities]
     .filter(([key, item]) => {
       if( filters.distance && filters.target && haversineDistance(item.position, new GeoPoint(...filters.target.split(',').map(parseFloat) as [number, number])) > filters.distance*1000) { return false}
+      if( filters.type.length > 0 && !filters.type.every(t => item.type.includes(t as ActivityType))) return false
       return [item.name, key].some(x => x?.toLowerCase().includes(query))
     })
   )
