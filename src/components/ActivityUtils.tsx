@@ -1,25 +1,13 @@
-import { Paper, Text, Title, Tooltip } from "@mantine/core";
+import { Paper, Text, Title } from "@mantine/core";
 import { Activity } from "..";
-import { IconBed, IconBulb, IconBus, IconEye, IconSoup } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
+import { CommonIcon } from "./CommonIcon";
 
-const iconStyle = {
-  size:16,
-  style:{verticalAlign:'middle'}
-}
-
-const icons = {
-  food: (i: number) => <Tooltip key={i} label="Restauration"><IconSoup {...iconStyle} /></Tooltip>,
-  transport: (i: number) => <Tooltip key={i} label="Transport"><IconBus key={i} {...iconStyle} /></Tooltip>,
-  lodging: (i: number) => <Tooltip key={i} label="Hébergement"><IconBed key={i} {...iconStyle} /></Tooltip>,
-  poi: (i: number) => <Tooltip key={i} label="A voir du ciel"><IconEye key={i} {...iconStyle} /></Tooltip>,
-  other: (i: number) => <Tooltip key={i} label="Autre activité"><IconBulb key={i} {...iconStyle} /></Tooltip>,
-}
 
 export const ActivityTitle = ({activity}: {activity: Activity}) => (
 <Text span size="sm" className="list-item-title">
   {activity.name}
-  {activity.type.map((e,i) => icons[e](i))}
+  {activity.type.map((e,i) => <CommonIcon iconType={e} key={i} /> )}
 </Text>)
 
 export const NearbyActivities = ({items} : {items: [distance: number, item: Activity, id: string][]}) => (

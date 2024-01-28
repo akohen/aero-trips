@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { Flex, Group, Paper, Text, Title } from "@mantine/core";
-import { findNearest, getAirfieldStatus } from "../utils";
+import { findNearest, iconsList } from "../utils";
 import EditButton from "../components/EditButton";
 import BackButton from "../components/BackButton";
 import { Data } from "..";
@@ -14,7 +14,7 @@ const AirfieldDetails = ({airfields, activities} : Data) => {
   
   return airfields.size > 0 ? airfield ? (<>
     <Title order={1}><BackButton />Fiche {airfield.name} - {airfield.codeIcao} <EditButton /></Title>
-    <Text {...(airfield.status != 'CAP' ? {c:'red',fw:'bold'} : {})}>{getAirfieldStatus(airfield.status)}</Text>
+    <Text {...(airfield.status != 'CAP' ? {c:'red',fw:'bold'} : {})}>{iconsList.get(airfield.status)?.label}</Text>
     <Group 
       justify="space-evenly"
       align="baseline"

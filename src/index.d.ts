@@ -30,11 +30,15 @@ type Activity = {
   type: ActivityType[],
 }
 
-type ActivityType = 
+type ActivityType =  // food, lodging, bike, hiking, transit, car, poi, historic?
   'transport' | 
-  'food' |
-  'lodging' | 
-  'poi' |
+  'food' | // Restaurant, aires de picnic, food trucks...
+  'lodging' | // Hotel, camping...
+  'bike' | // location de vélo
+  'transit' | // Train, bus, tram, subway stations...
+  'car' | // Taxi ou location de voiture
+  'hiking' | // Randonnée
+  'poi' | // A voir du ciel
   'other'
 
 type Trip = {
