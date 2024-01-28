@@ -13,7 +13,7 @@ function Layout() {
       <AppShell
         header={{ height: 60 }}
         navbar={{
-          width: 250,
+          width: 200,
           breakpoint: 'sm',
           collapsed: { mobile: !opened },
         }}
@@ -28,12 +28,12 @@ function Layout() {
       </AppShell.Header>
 
         <AppShell.Navbar p="md">
-          <Link to="/">Home</Link>
-          <Link to="/airfields">Terrains</Link>
-          <Link to="/activities">Activités</Link>
-          <Link to="/trips">Sorties</Link>
-          <Link to="/map">Carte</Link>
-          <Link to="/edit">Ajout</Link>
+          <Link onClick={toggle} to="/">Home</Link>
+          <Link onClick={toggle} to="/airfields">Terrains</Link>
+          <Link onClick={toggle} to="/activities">Activités</Link>
+          <Link onClick={toggle} to="/trips">Sorties</Link>
+          <Link onClick={toggle} to="/map">Carte</Link>
+          <Link onClick={toggle} to="/edit">Ajout</Link>
         </AppShell.Navbar>
 
         <AppShell.Main>
