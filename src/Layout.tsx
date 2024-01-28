@@ -1,13 +1,15 @@
 import viteLogo from '/vite.svg'
 import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
-import { MantineProvider, AppShell, Burger, Group } from '@mantine/core';
+import { MantineProvider, AppShell, Burger, Group, Button, Stack } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, matchPath, useLocation } from "react-router-dom";
+import { IconBulb, IconHome, IconMap, IconMapRoute, IconPlaneArrival } from '@tabler/icons-react';
 
 function Layout() {
   const [opened, { toggle }] = useDisclosure();
-
+  const location = useLocation()
+  
   return (
     <MantineProvider>
       <AppShell
@@ -28,12 +30,63 @@ function Layout() {
       </AppShell.Header>
 
         <AppShell.Navbar p="md">
-          <Link onClick={toggle} to="/">Home</Link>
-          <Link onClick={toggle} to="/airfields">Terrains</Link>
-          <Link onClick={toggle} to="/activities">Activités</Link>
-          <Link onClick={toggle} to="/trips">Sorties</Link>
-          <Link onClick={toggle} to="/map">Carte</Link>
-          <Link onClick={toggle} to="/edit">Ajout</Link>
+          <Stack>
+            
+          <Button 
+            component={Link} 
+            onClick={toggle} 
+            to="/" 
+            leftSection={<IconHome size={14} />}
+            variant={matchPath(location.pathname,'/') ? 'filled' : 'light'}
+          >
+            Home
+          </Button>
+          <Button 
+            component={Link} 
+            onClick={toggle} 
+            to="/airfields" 
+            leftSection={<IconPlaneArrival size={14} />}
+            variant={location.pathname.startsWith('/airfields') ? 'filled' : 'light'}
+          >
+            Terrains
+          </Button>
+          <Button 
+            component={Link} 
+            onClick={toggle} 
+            to="/activities" 
+            leftSection={<IconBulb size={14} />}
+            variant={location.pathname.startsWith('/activities') ? 'filled' : 'light'}
+          >
+            Activités
+          </Button>
+          <Button 
+            component={Link} 
+            onClick={toggle} 
+            to="/trips" 
+            leftSection={<IconMapRoute size={14} />}
+            variant={location.pathname.startsWith('/trips') ? 'filled' : 'light'}
+          >
+            Sorties
+          </Button>
+          <Button 
+            component={Link} 
+            onClick={toggle} 
+            to="/map"  
+            leftSection={<IconMap size={14} />}
+            variant={location.pathname.startsWith('/map') ? 'filled' : 'light'}
+          >
+            Carte
+          </Button>
+          <Button 
+            component={Link} 
+            onClick={toggle} 
+            to="/edit" 
+            leftSection={<IconMap size={14} />}
+            variant={location.pathname.startsWith('/edit') ? 'filled' : 'light'}
+          >
+            Ajout
+          </Button>
+          </Stack>
         </AppShell.Navbar>
 
         <AppShell.Main>
