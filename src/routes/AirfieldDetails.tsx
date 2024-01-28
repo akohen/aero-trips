@@ -1,64 +1,45 @@
-import { Link, useParams } from "react-router-dom";
-import { getVacUrl } from "../data/airac";
-import { Button, Group, Space, Text, Title } from "@mantine/core";
+import { useParams } from "react-router-dom";
+import { Flex, Group, Paper, Text, Title } from "@mantine/core";
 import { findNearest, getAirfieldStatus } from "../utils";
-import { IconMapCheck, IconMapPinSearch } from "@tabler/icons-react";
 import EditButton from "../components/EditButton";
 import BackButton from "../components/BackButton";
-import { Data, Airfield } from "..";
-import { ActivityTitle } from "../components/ActivityUtils";
+import { Data } from "..";
+import { NearbyActivities } from "../components/ActivityUtils";
+import { NearbyAirfields } from "../components/AirfieldUtils";
+import { ButtonViewOnMap, ButtonVACMap } from "../components/CommonButtons";
 
 const AirfieldDetails = ({airfields, activities} : Data) => {
   const params = useParams();
   const airfield = params.airfieldId ? airfields.get(params.airfieldId) : undefined;
-  const nearbyAirfields = (airfield: Airfield) => {
-    return findNearest(airfield, airfields, 50000)
-      .slice(0,8)
-      .map(([dist,ad]) => (
-        <p key={ad.codeIcao}>
-          <Link to={`/airfields/${ad.codeIcao}`}>{ad.name} - {ad.codeIcao} {Math.round(dist/1000)} km</Link>
-        </p>
-      ))
-  }
-  const nearbyActivities = (airfield: Airfield) => {
-    return findNearest(airfield, activities).map(([dist, activity, id]) => (
-      <p key={id}>
-        <Link to={`/activities/${id}`}>
-          <ActivityTitle activity={activity} /><Text span size="sm"> à {dist > 1500 ? `${Math.round(dist/1000)}km` : `${Math.round(dist/100)*100}m`}</Text>
-        </Link>
-      </p>
-    ))
-  }
+  
   return airfields.size > 0 ? airfield ? (<>
     <Title order={1}><BackButton />Fiche {airfield.name} - {airfield.codeIcao} <EditButton /></Title>
     <Text {...(airfield.status != 'CAP' ? {c:'red',fw:'bold'} : {})}>{getAirfieldStatus(airfield.status)}</Text>
-    <Space mt={"md"}/>
-    <Group justify="space-evenly">
-      <div>
-        <Button 
-          component={Link}
-          to={getVacUrl(airfield.codeIcao)} target="_blank"
-          variant="default"
-          leftSection={<IconMapCheck size={20}/>}
-        >
-          Carte VAC
-        </Button>
-        <Button
-          component={Link}
-          to={`/map/${airfield.position.latitude}/${airfield.position.longitude}`}
-          variant="default"
-          leftSection={<IconMapPinSearch size={20} />}
-        >
-          Voir sur la carte
-        </Button>
-      </div>
-      <div><Title order={4}>Pistes</Title> {airfield.runways.map((r,i) => (<div key={i}>{r.designation} - {r.length}m</div>))}</div>
+    <Group 
+      justify="space-evenly"
+      align="baseline"
+      grow
+      preventGrowOverflow={false} wrap="wrap"
+    >
+      <NearbyAirfields items={findNearest(airfield, airfields, 50000).slice(0,8)} />
+      <NearbyActivities items={findNearest(airfield, activities).slice(0,8)} />
+      <Flex
+        bg="gray.1"
+        gap="sm"
+        justify="center"
+        align="center"
+        direction="column"
+        wrap="wrap"
+      >
+        <div>
+          <Title order={4}>Pistes</Title>
+          {airfield.runways.map((r,i) => (<div key={i}>{r.designation} - {r.length}m</div>))}
+        </div>
+        <ButtonVACMap airfield={airfield} />
+        <ButtonViewOnMap item={airfield} />
+      </Flex>
     </Group>
-    <Group justify="space-evenly" align="top">
-      <div><Title order={4}>Terrains proches</Title>{nearbyAirfields(airfield)}</div>
-      <div><Title order={4}>Activités proches</Title>{nearbyActivities(airfield)}</div>
-    </Group>
-    <div className="tiptap-content" dangerouslySetInnerHTML={{__html: airfield.description!}} />
+    <Paper bg="gray.1" mt={"md"} className="tiptap-content" dangerouslySetInnerHTML={{__html: airfield.description!}} />
   </>) : (
     <p>Pas de terrain trouvé</p>
   ) : (

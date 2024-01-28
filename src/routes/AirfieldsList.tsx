@@ -1,15 +1,13 @@
 
-import { Button, Group, Table, Text } from '@mantine/core';
-import { getVacUrl } from '../data/airac';
+import { Group, Table, Text } from '@mantine/core';
 import { ADfilter, Activity, Airfield } from '..';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
 import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { filterAirfields } from '../utils';
 import AirfieldsFilters from '../components/AirfieldsFilters';
 import { AirfieldTitle } from '../components/AirfieldUtils';
-import { IconMapCheck } from '@tabler/icons-react';
-import { ViewOnMap } from '../components/CommonButtons';
+import { ButtonVACMap, ButtonViewOnMap } from '../components/CommonButtons';
 
 function AirfieldsPage({airfields, activities, filters, setFilters} : 
   {airfields: Map<string,Airfield>, activities: Map<string,Activity>, filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) {
@@ -36,16 +34,8 @@ function AirfieldsPage({airfields, activities, filters, setFilters} :
           <Table.Td {...AdTd(e)}>{e.codeIcao}</Table.Td>
           <Table.Td {...AdTd(e)}>{Math.max(...e.runways.map(r => r.length))}m</Table.Td>
           <Table.Td><Group justify="flex-start">
-            <Button
-              component={Link}
-              to={getVacUrl(e.codeIcao)}
-              target='_blank'
-              size="compact-sm"
-              leftSection={<IconMapCheck size={20} />}
-            >
-              Carte VAC
-            </Button>
-            <ViewOnMap item={e}/>
+            <ButtonVACMap airfield={e} compact />
+            <ButtonViewOnMap item={e} compact />
             </Group>
           </Table.Td>
         </Table.Tr>

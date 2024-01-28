@@ -1,6 +1,7 @@
-import { Text, Tooltip } from "@mantine/core";
+import { Paper, Text, Title, Tooltip } from "@mantine/core";
 import { Activity } from "..";
 import { IconBed, IconBulb, IconBus, IconEye, IconSoup } from "@tabler/icons-react";
+import { Link } from "react-router-dom";
 
 const iconStyle = {
   size:16,
@@ -20,3 +21,17 @@ export const ActivityTitle = ({activity}: {activity: Activity}) => (
   {activity.name}
   {activity.type.map((e,i) => icons[e](i))}
 </Text>)
+
+export const NearbyActivities = ({items} : {items: [distance: number, item: Activity, id: string][]}) => (
+  items.length > 0 && <Paper bg="gray.1">
+    <Title order={4}>Activités proches</Title>
+    { items.map(([dist, activity, id]) => (
+        <Text key={id}>
+          <Link to={`/activities/${id}`}>
+            <ActivityTitle activity={activity} /><Text span size="sm"> à {dist > 1500 ? `${Math.round(dist/1000)}km` : `${Math.round(dist/100)*100}m`}</Text>
+          </Link>
+        </Text>
+    ))}
+  </Paper>
+  
+)

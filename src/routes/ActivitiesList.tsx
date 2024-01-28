@@ -6,7 +6,7 @@ import List from '../components/TableList';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import ActivitiesFilters from '../components/ActivitiesFilters';
 import { filterActivities } from '../utils';
-import { ViewOnMap } from '../components/CommonButtons';
+import { ButtonViewOnMap } from '../components/CommonButtons';
 import { ActivityTitle } from '../components/ActivityUtils';
 
 
@@ -35,7 +35,7 @@ function ActivitiesList({airfields, activities, filters, setFilters} :
         <Table.Tr key={key}>
           <Table.Td {...ActivityTd(key)}><ActivityTitle activity={e}/></Table.Td>
           <Table.Td>{e.type}</Table.Td>
-          <Table.Td><ViewOnMap item={e}/></Table.Td>
+          <Table.Td><ButtonViewOnMap item={e} compact/></Table.Td>
         </Table.Tr>
       )}
     />
