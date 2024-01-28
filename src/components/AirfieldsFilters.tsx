@@ -24,13 +24,13 @@ return (<>
   <Group justify="space-between">
     <Chip.Group multiple={true} value={filters.services} onChange={(v) => setFilters({...filters, services: v})}>
       <Group>
-        <Chip value="2" size='xs'>🍽 Restauration</Chip>
-        <Chip value="3" size='xs'>🛏 Hébergement</Chip>
-        <Chip value="4" size='xs'>🚲 Vélo</Chip>
-        <Chip value="5" size='xs'>🚌 Transport</Chip>
-        <Chip value="6" size='xs'>🥾 Randonée</Chip>
-        <Chip value="7" size='xs'>🖼 Visite</Chip>
-        <Chip value="8" size='xs'>🎪 Autres activités</Chip>
+        <Chip value="food" size='xs'>🍽 Restauration</Chip>
+        <Chip value="lodging" size='xs'>🛏 Hébergement</Chip>
+        <Chip value="bike" size='xs'>🚲 Vélo</Chip>
+        <Chip value="transport" size='xs'>🚌 Transport</Chip>
+        <Chip value="hiking" size='xs'>🥾 Randonée</Chip>
+        <Chip value="poi" size='xs'>🖼 Visite</Chip>
+        <Chip value="other" size='xs'>🎪 Autres activités</Chip>
       </Group>
     </Chip.Group>
     <Group justify="space-between">

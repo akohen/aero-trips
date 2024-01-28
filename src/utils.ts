@@ -1,5 +1,5 @@
 import haversineDistance from "haversine-distance";
-import { Activity, Airfield, ADfilter, ActivityFilter } from ".";
+import { Activity, Airfield, ADfilter, ActivityFilter, ActivityType } from ".";
 import { GeoPoint } from "firebase/firestore";
 import { IconBan, IconBed, IconBulb, IconBus, IconCircleCheck, IconEye, IconForbid, IconSoup } from "@tabler/icons-react";
 
@@ -43,7 +43,7 @@ export function findNearest<T extends Airfield|Activity>(reference: Airfield|Act
 }
 
 
-export const filterAirfields = (airfields: Map<string,Airfield>, filters: ADfilter) => {
+export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map<string,Activity>, filters: ADfilter) => {
   const query = filters.search.toLowerCase().trim().normalize("NFD").replace(/\p{Diacritic}/gu, "");
   const status = ['CAP', 'PRV', 'RST'].filter( e => filters.ad.includes(e))
 
@@ -53,6 +53,10 @@ export const filterAirfields = (airfields: Map<string,Airfield>, filters: ADfilt
       if( filters.ad.includes('100LL') && !item.fuels?.includes('100LL')) return false
       if( filters.runway && Math.max(...item.runways.map(r => r.length)) < filters.runway) return false
       if( filters.distance && filters.target && haversineDistance(item.position, new GeoPoint(...filters.target.split(',').map(parseFloat) as [number, number])) > filters.distance*1000) { return false}
+      if( filters.services.length > 0 ) { 
+        const adActivities = findNearest(item, activities, 3000)
+        if(!filters.services.every( service => adActivities.some(([,activity]) => activity.type.includes(service as ActivityType)))) return false
+      }
       return [item.description, item.codeIcao, item.name, key].some(x => x?.toLowerCase().includes(query))
     })
   )

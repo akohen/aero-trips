@@ -16,7 +16,7 @@ export const NearbyActivities = ({items} : {items: [distance: number, item: Acti
     { items.map(([dist, activity, id]) => (
         <Text key={id}>
           <Link to={`/activities/${id}`}>
-            <ActivityTitle activity={activity} /><Text span size="sm"> à {dist > 1500 ? `${Math.round(dist/1000)}km` : `${Math.round(dist/100)*100}m`}</Text>
+            <ActivityTitle activity={activity} /><Text span size="sm"> à {dist > 2500 ? `${Math.round(dist/1000)}km` : `${Math.round(dist/100)*100}m`}</Text>
           </Link>
         </Text>
     ))}

@@ -19,8 +19,8 @@ function AirfieldsPage({airfields, activities, filters, setFilters} :
   })
 
   useEffect(()=>{
-    setData( filterAirfields(airfields, filters) )
-  },[airfields, filters])
+    setData( filterAirfields(airfields, activities, filters) )
+  },[airfields, activities, filters])
 
   return (<>
     <AirfieldsFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters}/>
