@@ -1,7 +1,7 @@
 import haversineDistance from "haversine-distance";
 import { Activity, Airfield, ADfilter, ActivityFilter, ActivityType } from ".";
 import { GeoPoint } from "firebase/firestore";
-import { IconBan, IconBed, IconBulb, IconBus, IconCircleCheck, IconEye, IconForbid, IconSoup } from "@tabler/icons-react";
+import { IconBan, IconBed, IconBulb, IconBus, IconCircleCheck, IconEye, IconForbid, IconGasStation, IconSoup } from "@tabler/icons-react";
 
 export const slug = (str: string) => {
   return str
@@ -32,6 +32,7 @@ export const iconsList = new Map<string, {label: string,icon: React.FC,style: ob
   ['PRV', {label:"Terrain privé", icon:IconBan, style:{...iconStyle, color:"red"}}],
   ['MIL', {label:"Usage militaire uniquement", icon:IconBan, style:{...iconStyle, color:"red"}}],
   ['OFF', {label:"Fermé", icon:IconBan, style:{...iconStyle, color:"red"}}],
+  ['100LL', {label:"Essence 100LL disponible", icon:IconGasStation, style:iconStyle}],
 ])
 
 

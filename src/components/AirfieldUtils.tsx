@@ -1,4 +1,3 @@
-import { IconGasStation } from "@tabler/icons-react";
 import { Airfield } from "..";
 import { Paper, Title, Text, Stack } from "@mantine/core";
 import { Link } from "react-router-dom";
@@ -9,7 +8,7 @@ import viteLogo from '/vite.svg'
 
 
 export const AirfieldTitle = ({ad}: {ad: Airfield}) => {
-  return (<><CommonIcon iconType={ad.status} /> {ad.name} {ad.fuels?.includes('100LL') ? <IconGasStation size={16} style={{verticalAlign:'middle'}} /> : undefined}</>)
+  return (<><CommonIcon iconType={ad.status} /> {ad.name} {ad.fuels?.map(e => <CommonIcon iconType={e} />)}</>)
 }
 
 export const NearbyAirfields = ({items} : {items: [distance: number, item: Airfield, id: string][]}) => (

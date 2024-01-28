@@ -29,13 +29,12 @@ function ActivitiesList({airfields, activities, filters, setFilters} :
     <ActivitiesFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} />
     <List
       data={data} 
-      columns={['Nom','Type', '']}
+      columns={['Nom', '']}
       empty={(<Text fw={500} ta="center">Aucun résultat</Text>)}
       row={([key, e]) => (
         <Table.Tr key={key}>
           <Table.Td {...ActivityTd(key)}><ActivityTitle activity={e}/></Table.Td>
-          <Table.Td>{e.type}</Table.Td>
-          <Table.Td><ButtonViewOnMap item={e} compact/></Table.Td>
+          <Table.Td align='right'><ButtonViewOnMap item={e} compact/></Table.Td>
         </Table.Tr>
       )}
     />
