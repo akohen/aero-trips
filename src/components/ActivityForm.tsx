@@ -18,7 +18,7 @@ const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => voi
       name: activity ? activity.name : '',
       position: activity ? activity.position.latitude +', '+activity.position.longitude: '',
       type: activity? activity.type : [] as string[],
-      description: activity ? activity.description : '',
+      description: activity ? activity.description : {},
     },
     validate: {
       name: (value) => (value.length < 2 ? 'Le nom doit avoir au moins 2 charactères' : null),
@@ -40,7 +40,7 @@ const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => voi
       }
     },
     onUpdate({ editor }) {
-      form.setFieldValue('description', editor?.getHTML());
+      form.setFieldValue('description', editor.getJSON());
     }
   });
 

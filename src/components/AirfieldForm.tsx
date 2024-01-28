@@ -15,7 +15,7 @@ const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => voi
 
   const form = useForm({
     initialValues: {
-      description: airfield ? airfield.description : '',
+      description: airfield ? airfield.description : {},
     },
   });
 
@@ -27,14 +27,17 @@ const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => voi
     ],
     content: form.values['description'],
     onUpdate({ editor }) {
-      form.setFieldValue('description', editor?.getHTML());
+      form.setFieldValue('description', editor.getJSON());
     }
   });
 
 
-  return (submitted && !airfield) ? (
-    <p>Message envoyé</p>
-  ) : (<form onSubmit={form.onSubmit((values) => {
+  return (submitted && !airfield) ? (<>
+    <Title><BackButton />Proposer une modification</Title>
+    <p>Votre proposition a bien été enregistrée, elle sera ajoutée au site d'ici quelques jours!</p>
+    <p><RouterLink to=".." relative="path">Retour</RouterLink></p>
+  </>) : (
+  <form onSubmit={form.onSubmit((values) => {
     submitFn(Object.keys(values)
       .filter((k) => form.isDirty(k))
       .reduce((a, k) => ({ ...a, [k]: values[k as 'description'] }), {})

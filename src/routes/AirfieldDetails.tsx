@@ -7,6 +7,10 @@ import { Data } from "..";
 import { NearbyActivities } from "../components/ActivityUtils";
 import { NearbyAirfields } from "../components/AirfieldUtils";
 import { ButtonViewOnMap, ButtonVACMap } from "../components/CommonButtons";
+import { generateHTML } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Link from "@tiptap/extension-link";
+import Image from "@tiptap/extension-image";
 
 const AirfieldDetails = ({airfields, activities} : Data) => {
   const params = useParams();
@@ -39,7 +43,11 @@ const AirfieldDetails = ({airfields, activities} : Data) => {
         <ButtonViewOnMap item={airfield} />
       </Flex>
     </Group>
-    <Paper bg="gray.1" mt={"md"} className="tiptap-content" dangerouslySetInnerHTML={{__html: airfield.description!}} />
+    {airfield.description != undefined && <Paper 
+        bg="gray.1" mt={"md"}
+        className="tiptap-content"
+        dangerouslySetInnerHTML={{__html: generateHTML(airfield.description,[StarterKit,Link, Image])}} 
+      />}
   </>) : (
     <p>Pas de terrain trouvé</p>
   ) : (

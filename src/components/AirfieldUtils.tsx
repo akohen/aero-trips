@@ -3,6 +3,9 @@ import { Airfield } from "..";
 import { Paper, Title, Text } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { CommonIcon } from "./CommonIcon";
+import { Marker, Popup } from 'react-leaflet'
+import { Icon } from 'leaflet';
+import viteLogo from '/vite.svg'
 
 
 export const AirfieldTitle = ({ad}: {ad: Airfield}) => {
@@ -20,3 +23,16 @@ export const NearbyAirfields = ({items} : {items: [distance: number, item: Airfi
   </Paper>
   
 )
+
+export const AirfieldMarker = ({id, airfield}: {id:string, airfield:Airfield}) => {
+  //airfield?.description.content.find( (a: { type: string }) => a.type =='image')
+  return (
+  <Marker 
+    position={[airfield.position.latitude,airfield.position.longitude]}
+    key={airfield.codeIcao}
+    icon={new Icon({iconUrl: viteLogo, iconAnchor:[18,29]})}
+    zIndexOffset={1000}
+  >
+    <Popup><Link to={`/airfields/${id}`}>{airfield.name}</Link></Popup>
+  </Marker>
+)}

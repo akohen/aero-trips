@@ -12,7 +12,7 @@ type Airfield = {
   name: string,
   position: GeoPoint,
   runways: Runway[],
-  description?: string,
+  description?: JSONContent,
   status:'CAP'|'PRV'|'RST'|'MIL'|'OFF'
   fuels?: string[]
 }
@@ -26,7 +26,7 @@ type Runway = {
 type Activity = {
   name: string,
   position: GeoPoint,
-  description?: string,
+  description?: JSONContent,
   type: ActivityType[],
 }
 

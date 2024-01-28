@@ -57,7 +57,7 @@ export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map
         const adActivities = findNearest(item, activities, 3000)
         if(!filters.services.every( service => adActivities.some(([,activity]) => activity.type.includes(service as ActivityType)))) return false
       }
-      return [item.description, item.codeIcao, item.name, key].some(x => x?.toLowerCase().includes(query))
+      return [item.codeIcao, item.name, key].some(x => x?.toLowerCase().includes(query))
     })
   )
 }
@@ -68,7 +68,7 @@ export const filterActivities = (activities: Map<string,Activity>, filters: Acti
   return new Map([...activities]
     .filter(([key, item]) => {
       if( filters.distance && filters.target && haversineDistance(item.position, new GeoPoint(...filters.target.split(',').map(parseFloat) as [number, number])) > filters.distance*1000) { return false}
-      return [item.description, item.name, key].some(x => x?.toLowerCase().includes(query))
+      return [item.name, key].some(x => x?.toLowerCase().includes(query))
     })
   )
 }

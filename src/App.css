@@ -2,6 +2,8 @@ a { color: #000; text-decoration: none;}
 
 .clickable { cursor: pointer; }
 
-.tiptap-content > img { max-width: 60vw;}
+.tiptap-content > img { max-width: 50vw;}
+.tiptap-content { text-align: center;}
+.tiptap-content a { color: steelblue; }
 
 .list-item-title svg { margin-left: 4px; }
