@@ -4,7 +4,7 @@ import '@mantine/tiptap/styles.css';
 import { MantineProvider, AppShell, Burger, Group, Button, Stack } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Link, Outlet, matchPath, useLocation } from "react-router-dom";
-import { IconBulb, IconHome, IconMap, IconMapRoute, IconPlaneArrival } from '@tabler/icons-react';
+import { IconBulb, IconCirclePlus, IconHome, IconMap, IconMapRoute, IconPlaneArrival } from '@tabler/icons-react';
 
 function Layout() {
   const [opened, { toggle }] = useDisclosure();
@@ -81,7 +81,7 @@ function Layout() {
             component={Link} 
             onClick={toggle} 
             to="/edit" 
-            leftSection={<IconMap size={14} />}
+            leftSection={<IconCirclePlus size={14} />}
             variant={location.pathname.startsWith('/edit') ? 'filled' : 'light'}
           >
             Ajout

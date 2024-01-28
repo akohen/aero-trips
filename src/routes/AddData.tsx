@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Activity, Airfield, Data, Trip } from "..";
 import { Button, Group } from "@mantine/core";
-import { IconPhoto, IconMap } from "@tabler/icons-react";
+import { IconMapRoute, IconBulb } from "@tabler/icons-react";
 import ActivityForm from "../components/ActivityForm";
 import { slug } from "../utils";
 import { GeoPoint } from "firebase/firestore";
@@ -43,8 +43,8 @@ const AddData = (data: Data) => {
   : (
     <Group justify="center">
       <p>Proposer</p>
-      <Button leftSection={<IconPhoto size={14} />} onClick={() => setType('activities')}>Lieu ou activité</Button>
-      <Button leftSection={<IconMap size={14} />} onClick={() => setType('trips')}>Sortie</Button>
+      <Button leftSection={<IconBulb size={14} />} onClick={() => setType('activities')}>Lieu ou activité</Button>
+      <Button leftSection={<IconMapRoute size={14} />} onClick={() => setType('trips')}>Sortie</Button>
     </Group>
   )
 }
