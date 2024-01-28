@@ -31,15 +31,16 @@ type Activity = {
 }
 
 type ActivityType =  // food, lodging, bike, hiking, transit, car, poi, historic?
-  'transport' | 
   'food' | // Restaurant, aires de picnic, food trucks...
   'lodging' | // Hotel, camping...
   'bike' | // location de vélo
   'transit' | // Train, bus, tram, subway stations...
   'car' | // Taxi ou location de voiture
   'hiking' | // Randonnée
+  'culture' | // Chateau, musée...
   'poi' | // A voir du ciel
-  'other'
+  'aero' | // En rapport avec l'aéronautique
+  'other' // autre activité
 
 type Trip = {
   from?: string,

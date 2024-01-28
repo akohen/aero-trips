@@ -3,6 +3,7 @@ import { IconCircleCheck, IconForbid, IconGasStation, IconSearch, IconToiletPape
 import { ADfilter, Activity, Airfield } from ".."
 import { Dispatch, SetStateAction } from "react"
 import { useDisclosure } from "@mantine/hooks"
+import { CommonIcon } from "./CommonIcon"
 
 const AirfieldsFilters = ({airfields, activities, filters, setFilters}: 
 {airfields:Map<string, Airfield>, activities:Map<string, Activity>, filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) => {
@@ -24,13 +25,7 @@ return (<>
   <Group justify="space-between">
     <Chip.Group multiple={true} value={filters.services} onChange={(v) => setFilters({...filters, services: v})}>
       <Group>
-        <Chip value="food" size='xs'>🍽 Restauration</Chip>
-        <Chip value="lodging" size='xs'>🛏 Hébergement</Chip>
-        <Chip value="bike" size='xs'>🚲 Vélo</Chip>
-        <Chip value="transport" size='xs'>🚌 Transport</Chip>
-        <Chip value="hiking" size='xs'>🥾 Randonée</Chip>
-        <Chip value="poi" size='xs'>🖼 Visite</Chip>
-        <Chip value="other" size='xs'>🎪 Autres activités</Chip>
+        {['food','lodging','bike','transit', 'car', 'hiking', 'culture', 'aero', 'other'].map(e => <Chip value={e} key={e} size='xs'><CommonIcon iconType={e} />&nbsp;</Chip>)}
       </Group>
     </Chip.Group>
     <Group justify="space-between">

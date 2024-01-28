@@ -25,11 +25,7 @@ return (<>
   <Group justify="space-between">
     <Chip.Group multiple={true} value={filters.type} onChange={(v) => setFilters({...filters, type: v})}>
       <Group>
-        <Chip value="food" size='xs'><CommonIcon iconType={"food"} />&nbsp;Restauration</Chip>
-        <Chip value="lodging" size='xs'><CommonIcon iconType={"lodging"} />&nbsp;Hébergement</Chip>
-        <Chip value="bike" size='xs'><CommonIcon iconType={"bike"} />&nbsp;Vélo</Chip>
-        <Chip value="poi" size='xs'><CommonIcon iconType={"poi"} />&nbsp;A voir du ciel</Chip>
-        <Chip value="other" size='xs'><CommonIcon iconType={"other"} />&nbsp;Autres activités</Chip>
+        {['food','lodging','bike','transit', 'car', 'hiking', 'culture', 'poi', 'aero', 'other'].map(e => <Chip value={e} key={e} size='xs'><CommonIcon iconType={e} />&nbsp;</Chip>)}
       </Group>
     </Chip.Group>
     <Group justify="space-between">
