@@ -1,4 +1,3 @@
-import viteLogo from '/vite.svg'
 import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
 import { MantineProvider, AppShell, Burger, Group, Button, Stack } from '@mantine/core';
@@ -24,7 +23,7 @@ function Layout() {
       <AppShell.Header>
         <Group px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-          <img src={viteLogo} alt="Vite logo" />
+          <IconPlaneArrival />
           <h3>Aero Trips</h3>
         </Group>
       </AppShell.Header>

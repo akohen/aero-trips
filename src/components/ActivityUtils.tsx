@@ -3,7 +3,8 @@ import { Activity } from "..";
 import { Link } from "react-router-dom";
 import { CommonIcon } from "./CommonIcon";
 import { Marker, Popup } from "react-leaflet";
-
+import { Icon } from 'leaflet';
+import pinActivity from '/map-pin-activity.svg'
 
 export const ActivityTitle = ({activity}: {activity: Activity}) => (
 <Text span size="sm" className="list-item-title">
@@ -28,7 +29,10 @@ export const NearbyActivities = ({items} : {items: [distance: number, item: Acti
 export const ActivityMarker = ({id, activity}: {id:string, activity:Activity}) => {
   const imgNode = activity.description?.content != undefined ? activity.description.content.find( (a: { type: string }) => a.type =='image') : undefined
   return (
-  <Marker position={[activity.position.latitude,activity.position.longitude]}>
+  <Marker
+    position={[activity.position.latitude,activity.position.longitude]}
+    icon={new Icon({iconUrl: pinActivity, iconAnchor:[25,49], iconSize:[50,50]})}
+  >
     <Popup>
       <Link to={`/activities/${id}`}>
         <Stack align="center" gap={"xs"}>

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { CommonIcon } from "./CommonIcon";
 import { Marker, Popup } from 'react-leaflet'
 import { Icon } from 'leaflet';
-import viteLogo from '/vite.svg'
+import pinRunway from '/map-pin-runway.svg'
 
 
 export const AirfieldTitle = ({ad}: {ad: Airfield}) => {
@@ -28,7 +28,7 @@ export const AirfieldMarker = ({id, airfield}: {id:string, airfield:Airfield}) =
   return (
   <Marker 
     position={[airfield.position.latitude,airfield.position.longitude]}
-    icon={new Icon({iconUrl: viteLogo, iconAnchor:[18,29]})}
+    icon={new Icon({iconUrl: pinRunway, iconAnchor:[25,49], iconSize:[50,50]})}
     zIndexOffset={1000}
   >
     <Popup>
