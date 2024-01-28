@@ -29,7 +29,7 @@ function ActivitiesList({airfields, activities, filters, setFilters} :
     <ActivitiesFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} />
     <List
       data={data} 
-      columns={['Nom', '']}
+      columns={["Nom du lieu ou de l'activité", '']}
       empty={(<Text fw={500} ta="center">Aucun résultat</Text>)}
       row={([key, e]) => (
         <Table.Tr key={key}>
