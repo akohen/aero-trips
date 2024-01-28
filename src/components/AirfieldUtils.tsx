@@ -12,7 +12,7 @@ export const AirfieldTitle = ({ad}: {ad: Airfield}) => {
 }
 
 export const NearbyAirfields = ({items} : {items: [distance: number, item: Airfield, id: string][]}) => (
-  items.length > 0 && <Paper bg="gray.1">
+  items.length > 0 && <Paper bg="gray.1" className="nearby">
     <Title order={4}>Terrains proches</Title>
     { items.map(([dist,ad]) => (
       <Text key={ad.codeIcao}>

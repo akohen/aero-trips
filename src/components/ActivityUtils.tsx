@@ -13,7 +13,7 @@ export const ActivityTitle = ({activity}: {activity: Activity}) => (
 </Text>)
 
 export const NearbyActivities = ({items} : {items: [distance: number, item: Activity, id: string][]}) => (
-  items.length > 0 && <Paper bg="gray.1">
+  items.length > 0 && <Paper bg="gray.1" className="nearby">
     <Title order={4}>Activités proches</Title>
     { items.map(([dist, activity, id]) => (
         <Text key={id}>

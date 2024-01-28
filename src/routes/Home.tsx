@@ -15,7 +15,10 @@ const Home = () => {
       Les modifications étant validées manuellement, votre modification n'apparaîtra pas immédiatement sur le site.
     </p>
     <p>
-      Ce site n'est pas une source d'information aéronautique, et ne peut pas se substituer à la documentation réglementaire lors de la préparation d'un vol.
+      Le nom définitif du projet est encore à définir, n'hésitez pas à soumettre vos propositions de nom.
+    </p>
+    <p>
+      ⚠ Ce site n'est pas une source d'information aéronautique, et ne peut pas se substituer à la documentation réglementaire lors de la préparation d'un vol.
     </p>
   </div>
 </>)}

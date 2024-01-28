@@ -32,6 +32,6 @@ test('renders the list view', () => {
 
 test('goes to field list through the navbar', async () => {
   render(<App {...testData}/>, {wrapper: MemoryRouter});
-  await userEvent.click(screen.getByText(/terrains/i));
+  await userEvent.click(screen.getByText(/Terrains/));
   expect(await screen.getAllByText(/LFNW/i)).toBeDefined();
 });
