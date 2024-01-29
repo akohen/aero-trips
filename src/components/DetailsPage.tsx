@@ -43,6 +43,7 @@ const DetailsPage = ({item, airfields, activities} : {item: Airfield|Activity, a
           <Title order={4}>Pistes</Title>
           {item.runways.map((r,i) => (<div key={i}>{r.designation} - {r.length}m {r.composition == 'GRASS' ? 'Non revêtue' : 'Revêtue'}</div>))}
         </div>
+        {(item.fuels && item.fuels.length > 0) ? `Essences: ${item.fuels?.join(' ')}` : `Pas d'essence disponible`}
         <ButtonVACMap airfield={item} />
         <ButtonViewOnMap item={item} />
       </>):(<>
