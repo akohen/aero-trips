@@ -1,4 +1,4 @@
-import { Fieldset, Group, Button, Title, Space } from "@mantine/core"
+import { Fieldset, Group, Button, Title, Space, Chip, InputLabel } from "@mantine/core"
 import { useEditor } from "@tiptap/react";
 import { Airfield } from "..";
 import { StarterKit } from "@tiptap/starter-kit";
@@ -16,6 +16,7 @@ const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => voi
   const form = useForm({
     initialValues: {
       description: airfield ? airfield.description : {},
+      fuels: airfield ? airfield.fuels : []
     },
   });
 
@@ -45,8 +46,18 @@ const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => voi
     setSubmitted(true)
   })}>
   <Title><BackButton />Proposer une modification</Title>
-  <Space mt={"md"}/>
   <Fieldset legend={`Terrain de ${airfield.name}`}>
+    <Group justify="center" align="baseline">
+    <InputLabel>Essence disponible sur le terrain</InputLabel>
+    <Chip.Group multiple {...form.getInputProps('fuels')}>
+      <Group justify="center" mt="md">
+        <Chip value="100LL">100LL</Chip>
+        <Chip value="JETA1">Jet A1</Chip>
+        <Chip value="SP98">SP98</Chip>
+      </Group>
+    </Chip.Group>
+    </Group>
+    <Space mt={"md"}/>
     <TextEditor editor={editor} />
   </Fieldset>
   <Group mt="md">
