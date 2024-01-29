@@ -1,30 +1,18 @@
-# React + TypeScript + Vite
+# Aero trips
 
+## Setup
+- run `npm i`
+- For admin tasks: [download a service account key](https://console.firebase.google.com/project/aero-trips/settings/serviceaccounts/adminsdk) and copy the file as `serviceAccountKey.json` to the root of the project 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- `npm start` to run locally
 
-Currently, two official plugins are available:
+## Testing
+- `npm test`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Build & deploy
+- To test the build `npm run build` and then `npm run preview`
+- Pushing to master will trigger the deployment to firebase
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Admin
+- `node scripts/manage-edits.js` to review the changes submitted by users
+- Add `--apply-all` to skip validation and apply all the changes submitted
