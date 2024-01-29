@@ -28,7 +28,7 @@ function Layout() {
         </Group>
       </AppShell.Header>
 
-        <AppShell.Navbar p="md">
+        <AppShell.Navbar p="md" zIndex={500}>
           <Stack>
             
           <Button 
