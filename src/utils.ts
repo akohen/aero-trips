@@ -1,6 +1,5 @@
 import haversineDistance from "haversine-distance";
 import { Activity, Airfield, ADfilter, ActivityFilter, ActivityType } from ".";
-import { GeoPoint } from "firebase/firestore";
 import { IconBan, IconBed, IconBike, IconBulb, IconBus, IconCar, IconCircleCheck, IconEye, IconForbid, IconGasStation, IconPlane, IconShoe, IconSoup, IconTower } from "@tabler/icons-react";
 
 export const slug = (str: string) => {
@@ -58,7 +57,12 @@ export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map
       if( status.length > 0 && !status.includes(item.status)) return false
       if( filters.ad.includes('100LL') && !item.fuels?.includes('100LL')) return false
       if( filters.runway && Math.max(...item.runways.map(r => r.length)) < filters.runway) return false
-      if( filters.distance && filters.target && haversineDistance(item.position, new GeoPoint(...filters.target.split(',').map(parseFloat) as [number, number])) > filters.distance*1000) { return false}
+      if( filters.distance && filters.target ) {
+        const [targetType, targetId] = filters.target.split('/')
+        const target = {activities, airfields}[targetType]?.get(targetId)
+        console.log(target)
+        if(target && (haversineDistance(item.position, target.position) > filters.distance*1000)) return false
+      } 
       if( filters.services.length > 0 ) { 
         const adActivities = findNearest(item, activities, 4000)
         if(!filters.services.every( service => adActivities.some(([,activity]) => activity.type.includes(service as ActivityType)))) return false
@@ -68,12 +72,16 @@ export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map
   )
 }
 
-export const filterActivities = (activities: Map<string,Activity>, filters: ActivityFilter) => {
+export const filterActivities = (airfields: Map<string,Airfield>, activities: Map<string,Activity>, filters: ActivityFilter) => {
   const query = filters.search.toLowerCase().trim().normalize("NFD").replace(/\p{Diacritic}/gu, "");
   
   return new Map([...activities]
     .filter(([key, item]) => {
-      if( filters.distance && filters.target && haversineDistance(item.position, new GeoPoint(...filters.target.split(',').map(parseFloat) as [number, number])) > filters.distance*1000) { return false}
+      if( filters.distance && filters.target ) {
+        const [targetType, targetId] = filters.target.split('/')
+        const target = {activities, airfields}[targetType]?.get(targetId)
+        if(target && (haversineDistance(item.position, target.position) > filters.distance*1000)) return false
+      } 
       if( filters.type.length > 0 && !filters.type.every(t => item.type.includes(t as ActivityType))) return false
       return [item.name, key].some(x => x?.toLowerCase().includes(query))
     })

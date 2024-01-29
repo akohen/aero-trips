@@ -10,13 +10,12 @@ const AirfieldsFilters = ({airfields, activities, filters, setFilters}:
 
   const [opened, { toggle }] = useDisclosure(Object.values(filters).some(x => Array.isArray(x) ? x.length: x));
   
-  // Multiple AD or activities with the exact same position will have the same key and conflict with each other! Maybe go back to IDs ?
   const listAA = [...airfields] 
-    .map(([, ad]) => (
-      {label: `${ad.name} - ${ad.codeIcao}`, value:`${ad.position.latitude},${ad.position.longitude}`}
+    .map(([id, ad]) => (
+      {label: `${ad.name} - ${ad.codeIcao}`, value:`airfields/${id}`}
     )).concat([...activities]
-    .map(([, activity]) => (
-      {label: activity.name, value:`${activity.position.latitude},${activity.position.longitude}`}
+    .map(([id, activity]) => (
+      {label: activity.name, value:`activities/${id}`}
     ))
   )
 

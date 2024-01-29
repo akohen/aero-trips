@@ -21,7 +21,7 @@ function ActivitiesList({airfields, activities, filters, setFilters} :
   })
 
   useEffect(()=>{
-    setData( filterActivities( activities, filters) )
+    setData( filterActivities( airfields, activities, filters) )
   },[activities, filters])
 
   
