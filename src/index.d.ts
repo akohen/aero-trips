@@ -46,7 +46,7 @@ type Trip = {
   from?: string,
   to: string,
   name: string,
-  description: string,
+  description: JSONContent,
   type: 'short' | 'day' | 'multi',
   wpt?: GeoPoint[],
 }

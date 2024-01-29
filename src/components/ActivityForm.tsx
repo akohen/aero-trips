@@ -1,6 +1,6 @@
 import { Fieldset, TextInput, Chip, Group, Space, Button, Text, Title, InputLabel, Center, Tooltip } from "@mantine/core"
 import { useEditor } from "@tiptap/react";
-import { Activity } from "..";
+import { Activity, ActivityType } from "..";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Link } from "@tiptap/extension-link";
 import { useForm } from "@mantine/form";
@@ -18,13 +18,13 @@ const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => voi
     initialValues: {
       name: activity ? activity.name : '',
       position: activity ? activity.position.latitude +', '+activity.position.longitude: '',
-      type: activity? activity.type : [] as string[],
-      description: activity ? activity.description : {},
+      type: activity? activity.type : [] as ActivityType[],
+      description: activity ? activity.description : '',
     },
     validate: {
-      name: (value) => (value.length < 2 ? 'Le nom doit avoir au moins 2 charactères' : null),
+      name: (value: string) => (value.length < 2 ? 'Le nom doit avoir au moins 2 charactères' : null),
       position: (value) => (/^-?\d+.\d+, -?\d+.\d+$/g.test(value) ? null : 'Doit être de la forme "Latitude, Longitude" (eg. "12.345, -6.789")'),
-      type: (value) => value.length == 0 ? 'Choisir au moins 1 type' : null,
+      type: (value: ActivityType[]) => value.length == 0 ? 'Choisir au moins 1 type' : null,
     }
   });
 

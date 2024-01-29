@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
+import Image from "@tiptap/extension-image";
 
 const TripForm = ({submitFn, trip}: {submitFn: (document: object) => void, trip: Trip}) => {
   const [submitted, setSubmitted] = useState(false)
@@ -15,7 +16,7 @@ const TripForm = ({submitFn, trip}: {submitFn: (document: object) => void, trip:
   const form = useForm({
     initialValues: {
       name: trip ? trip.name : '',
-      description: trip ? trip.description : '',
+      description: trip ? trip.description: '',
       to: trip ? trip.to : '',
       from: trip ? trip.from : '',
     },
@@ -30,10 +31,11 @@ const TripForm = ({submitFn, trip}: {submitFn: (document: object) => void, trip:
     extensions: [
       StarterKit,
       Link,
+      Image,
     ],
     content: form.values['description'],
     onUpdate({ editor }) {
-      form.setFieldValue('description', editor?.getHTML());
+      form.setFieldValue('description', editor?.getJSON());
     }
   });
 
