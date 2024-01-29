@@ -1,6 +1,10 @@
 import select from '@inquirer/select';
 import chalk from 'chalk';
 import admin from "firebase-admin";
+import { generateHTML } from '@tiptap/html'
+import StarterKit from "@tiptap/starter-kit"
+import Link from "@tiptap/extension-link"
+import Image from "@tiptap/extension-image"
 import creds from "../serviceAccountKey.json" with { "type": "json" }
 const firebaseConfig = {
   apiKey: "AIzaSyAleHj_gty6XncQLEDlLn3Ih7X08KuQ-jw",
@@ -55,10 +59,20 @@ for(const {targetDocument, newDoc, id} of results) {
     const currentDoc = (await db.doc(targetDocument).get()).data()
     console.log(chalk.bgBlue(targetDocument) + ' => ' + (currentDoc ? chalk.bgBlue('edit') : chalk.bgGreen('new') ))
     for(let field in newDoc) {
-      if(currentDoc && newDoc[field].toString() == currentDoc[field]?.toString()) continue
+      let newField = newDoc[field]
+      let currentField = currentDoc ? currentDoc[field] : undefined
+      if(field == "position") {
+        newField = newDoc[field].latitude +','+newDoc[field].longitude
+        if(currentField) {currentField = currentDoc[field].latitude +','+currentDoc[field].longitude}
+      } if(field == 'description') {
+        newField = generateHTML(newField,[StarterKit,Link, Image])
+        if(currentField) {currentField = generateHTML(currentField,[StarterKit,Link, Image])}
+      }
+      
+      if(currentDoc && newField == currentField) continue
       console.log(chalk.italic.blue(field))
-      console.log(chalk.green(newDoc[field]))
-      if(currentDoc) console.log(chalk.red(currentDoc[field]))
+      console.log(chalk.green(newField))
+      if(currentDoc) console.log(chalk.red(currentField))
     }
   answer = await select(options);
   }
