@@ -41,7 +41,7 @@ const DetailsPage = ({item, airfields, activities} : {item: Airfield|Activity, a
       {('codeIcao' in item) ? (<>
         <div>
           <Title order={4}>Pistes</Title>
-          {item.runways.map((r,i) => (<div key={i}>{r.designation} - {r.length}m</div>))}
+          {item.runways.map((r,i) => (<div key={i}>{r.designation} - {r.length}m {r.composition == 'GRASS' ? 'Non revêtue' : 'Revêtue'}</div>))}
         </div>
         <ButtonVACMap airfield={item} />
         <ButtonViewOnMap item={item} />
