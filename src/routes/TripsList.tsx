@@ -1,7 +1,7 @@
 
 import { Table, Text, TextInput, rem } from '@mantine/core';
 import { Trip } from '..';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
 import { useEffect, useState } from 'react';
 import { IconSearch } from '@tabler/icons-react';
@@ -10,6 +10,12 @@ import { IconSearch } from '@tabler/icons-react';
 function TripsList({trips} : {trips: Map<string,Trip>}) {
   const [search, setSearch] = useState('');
   const [data, setData] = useState(trips);
+  const navigate = useNavigate();
+  const TripTd = (id: string) => ({
+    className:'clickable',
+    onClick:() => navigate(`/trips/${id}`)
+  })
+  const tripTypes = {short:'Quelques heures', day:'A la journée', multi:'Sur plusieurs jours'}
 
   useEffect(()=>{
     setData( trips )
@@ -41,8 +47,8 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
       empty={(<Text fw={500} ta="center">Aucun résultat</Text>)}
       row={([key, e]) => (
         <Table.Tr key={key}>
-          <Table.Td><Link to={`/trips/${key}`}>{e.name}</Link></Table.Td>
-          <Table.Td>{e.type}</Table.Td>
+          <Table.Td {...TripTd(key)}>{e.name}</Table.Td>
+          <Table.Td>{tripTypes[e.type]}</Table.Td>
         </Table.Tr>
       )}
     />

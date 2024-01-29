@@ -1,4 +1,4 @@
-import { Fieldset, Group, Button, TextInput, InputLabel, Title } from "@mantine/core"
+import { Fieldset, Group, Button, TextInput, InputLabel, Title, Chip } from "@mantine/core"
 import { useEditor } from "@tiptap/react";
 import { Trip } from "..";
 import { StarterKit } from "@tiptap/starter-kit";
@@ -71,6 +71,16 @@ const TripForm = ({submitFn, trip}: {submitFn: (document: object) => void, trip:
         withAsterisk
         {...form.getInputProps('to')}
       />
+    </Group>
+    <Group justify="center" align="baseline">
+    <InputLabel>Type de sortie</InputLabel>
+    <Chip.Group {...form.getInputProps('type')}>
+      <Group justify="center" mt="md">
+        <Chip value="short">Vol court</Chip>
+        <Chip value="day">Sortie à la journée</Chip>
+        <Chip value="multi">Voyage sur plusieurs jours</Chip>
+      </Group>
+    </Chip.Group>
     </Group>
     <InputLabel style={{width: '100%'}}>Description</InputLabel>
     <TextEditor editor={editor} />
