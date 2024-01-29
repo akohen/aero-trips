@@ -2,8 +2,7 @@
 
 ## Setup
 - run `npm i`
-- For admin tasks: [download a service account key](https://console.firebase.google.com/project/aero-trips/settings/serviceaccounts/adminsdk) and copy the file as `serviceAccountKey.json` to the root of the project 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- For admin tasks: [download a service account key](https://console.firebase.google.com/project/aero-trips/settings/serviceaccounts/adminsdk) and copy the file as `serviceAccountKey.json` to the root of the project.
 - `npm start` to run locally
 
 ## Testing
