@@ -19,6 +19,9 @@ const AddData = (data: Data) => {
     setType(params.type as 'activities'|'airfields'|'trips')
     if(params.type && params.id && ['activities','airfields','trips'].includes(params.type)) {
       setEntity(data[params.type as 'activities'|'airfields'|'trips'].get(params.id))
+    } else if(params.lat && params.lng) {
+      setType('activities')
+      setEntity({name: '', position: new GeoPoint(parseFloat(params.lat), parseFloat(params.lng))} as Activity)
     } else {
       setEntity(undefined)
     }

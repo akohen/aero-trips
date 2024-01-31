@@ -43,7 +43,7 @@ export default function App(data : Data) {
         <Route path="/map/:lat?/:lng?"        element={<MapPage {...data} ADfilter={ADfilter} ActFilter={ActFilter} setADfilter={setADfilter} setActFilter={setActFilter} />} />
         <Route path="/trips"                  element={<TripsList {...data} />} />
         <Route path="/trips/:tripId"          element={<TripDetails {...data} />} />
-        <Route path="/:type?/:id?/edit"       element={<AddData {...data} />} />
+        <Route path="/:type?/:id?/edit/:lat?/:lng?"       element={<AddData {...data} />} />
       </Route>
     </Routes>
   );
