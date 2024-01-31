@@ -16,4 +16,6 @@ a { color: steelblue; text-decoration: none;}
   top: 20px;
   right: 20px;
   z-index: 400;
+  width: 36px;
+  height: 36px;
 }

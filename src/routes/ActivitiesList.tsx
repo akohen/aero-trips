@@ -22,7 +22,7 @@ function ActivitiesList({airfields, activities, filters, setFilters} :
 
   useEffect(()=>{
     setData( filterActivities( airfields, activities, filters) )
-  },[activities, filters])
+  },[activities, airfields, filters])
 
   
   return (<>

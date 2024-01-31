@@ -60,7 +60,6 @@ export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map
       if( filters.distance && filters.target ) {
         const [targetType, targetId] = filters.target.split('/')
         const target = {activities, airfields}[targetType]?.get(targetId)
-        console.log(target)
         if(target && (haversineDistance(item.position, target.position) > filters.distance*1000)) return false
       } 
       if( filters.services.length > 0 ) { 
