@@ -10,3 +10,10 @@ a { color: steelblue; text-decoration: none;}
 .list-item-title svg { margin-left: 4px; }
 
 .leaflet-container a {  color: #000; }
+
+.map-top-right {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 400;
+}
