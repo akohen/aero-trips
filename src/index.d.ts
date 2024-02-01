@@ -14,7 +14,8 @@ type Airfield = {
   runways: Runway[],
   description?: JSONContent,
   status:'CAP'|'PRV'|'RST'|'MIL'|'OFF'
-  fuels?: string[]
+  fuels?: string[],
+  toilet?:'no','public','private',
 }
 
 type Runway = {

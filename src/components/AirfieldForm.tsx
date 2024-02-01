@@ -16,7 +16,8 @@ const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => voi
   const form = useForm({
     initialValues: {
       description: airfield ? airfield.description : {},
-      fuels: airfield ? airfield.fuels : []
+      fuels: airfield ? airfield.fuels : [],
+      toilet: airfield ? airfield.toilet : '',
     },
   });
 
@@ -54,6 +55,16 @@ const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => voi
         <Chip value="100LL">100LL</Chip>
         <Chip value="JETA1">Jet A1</Chip>
         <Chip value="SP98">SP98</Chip>
+      </Group>
+    </Chip.Group>
+    </Group>
+    <Group justify="center" align="baseline">
+    <InputLabel>Toilettes sur le terrain</InputLabel>
+    <Chip.Group {...form.getInputProps('toilet')}>
+      <Group justify="center" mt="md">
+        <Chip value="no">Non</Chip>
+        <Chip value="public">Oui, publiques (eg. terminal)</Chip>
+        <Chip value="private">Oui, privées (eg. restaurant ou aéroclub)</Chip>
       </Group>
     </Chip.Group>
     </Group>
