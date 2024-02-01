@@ -1,23 +1,15 @@
-import { Group, TextInput, rem, NumberInput, Select, Button, Collapse, CloseButton, Chip } from "@mantine/core"
+import { Group, TextInput, rem, NumberInput, Button, Collapse, CloseButton, Chip } from "@mantine/core"
 import { IconSearch } from "@tabler/icons-react"
 import { Activity, ActivityFilter, Airfield } from ".."
 import { Dispatch, SetStateAction } from "react"
 import { useDisclosure } from "@mantine/hooks"
 import { CommonIcon } from "./CommonIcon"
+import ObjectFinder from "./ObjectFinder"
 
 const ActivitiesFilters = ({airfields, activities, filters, setFilters}: 
 {airfields:Map<string, Airfield>, activities:Map<string, Activity>, filters: ActivityFilter, setFilters: Dispatch<SetStateAction<ActivityFilter>>}) => {
 
   const [opened, { toggle }] = useDisclosure(Object.values(filters).some(x => Array.isArray(x) ? x.length: x));
-  
-  const listAA = [...airfields] 
-    .map(([id, ad]) => (
-      {label: `${ad.name} - ${ad.codeIcao}`, value:`airfields/${id}`}
-    )).concat([...activities]
-    .map(([id, activity]) => (
-      {label: activity.name, value:`activities/${id}`}
-    ))
-  )
 
 return (<>
 <Collapse in={opened}>
@@ -38,15 +30,9 @@ return (<>
       value={filters.distance} onChange={v => setFilters({...filters, distance: v as number})}
       />
     de
-    <Select 
-      value={filters.target}
-      onChange={v => setFilters({...filters, target: v})}
-      data={listAA}
-      placeholder="Terrain ou activité"
-      limit={8} searchable clearable
-      size="xs"
-      style={{width:'250px'}}
-    />
+    <ObjectFinder
+      activities={activities} airfields={airfields}
+      value={filters.target} onChange={v => setFilters({...filters, target: v})} />
     </Group>
   </Group>
   </Collapse>

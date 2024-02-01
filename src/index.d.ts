@@ -49,7 +49,7 @@ type Trip = {
   name: string,
   description: JSONContent,
   type: 'short' | 'day' | 'multi',
-  wpt?: GeoPoint[],
+  steps?: {type: 'activity'|'airfield', id:string}[],
 }
 
 type ADfilter = {
