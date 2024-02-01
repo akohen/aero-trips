@@ -1,6 +1,6 @@
 import haversineDistance from "haversine-distance";
 import { Activity, Airfield, ADfilter, ActivityFilter, ActivityType } from ".";
-import { IconBan, IconBed, IconBike, IconBulb, IconBus, IconCar, IconCircleCheck, IconEye, IconForbid, IconGasStation, IconPlane, IconShoe, IconSoup, IconTower } from "@tabler/icons-react";
+import { IconBan, IconBed, IconBike, IconBulb, IconBus, IconCar, IconCircleCheck, IconEye, IconForbid, IconGasStation, IconPlane, IconShoe, IconSoup, IconToiletPaper, IconTower } from "@tabler/icons-react";
 
 export const slug = (str: string) => {
   return str
@@ -31,6 +31,8 @@ export const iconsList = new Map<string, {label: string,icon: React.FC,style: ob
   ['aero', {label:"Aéronautique", icon:IconPlane, style:iconStyle}],
   ['bike', {label:"Vélo", icon:IconBike, style:iconStyle}],
   ['other', {label:"Autre activité", icon:IconBulb, style:iconStyle}],
+  ['public', {label:"Toilettes publiques", icon:IconToiletPaper, style:iconStyle}],
+  ['private', {label:"Toilettes privées", icon:IconToiletPaper, style:iconStyle}],
   ['CAP', {label:"Ouvert à la circulation aérienne publique", icon:IconCircleCheck, style:{...iconStyle, color:"teal"}}],
   ['RST', {label:"Accès restreint", icon:IconForbid, style:{...iconStyle, color:"orange"}}],
   ['PRV', {label:"Terrain privé", icon:IconBan, style:{...iconStyle, color:"red"}}],
@@ -57,6 +59,7 @@ export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map
       if( status.length > 0 && !status.includes(item.status)) return false
       if( filters.ad.includes('100LL') && !item.fuels?.includes('100LL')) return false
       if( filters.runway && Math.max(...item.runways.map(r => r.length)) < filters.runway) return false
+      if( filters.ad.includes('toilet') && (item.toilet == 'no' || !item.toilet)) return false
       if( filters.distance && filters.target ) {
         const [targetType, targetId] = filters.target.split('/')
         const target = {activities, airfields}[targetType]?.get(targetId)

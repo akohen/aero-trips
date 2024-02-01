@@ -8,7 +8,7 @@ import Image from "@tiptap/extension-image"
 import { Activity, Airfield } from ".."
 import { findNearest, iconsList } from "../utils"
 import { NearbyActivities } from "./ActivityUtils"
-import { NearbyAirfields } from "./AirfieldUtils"
+import { NearbyAirfields, ToiletText } from "./AirfieldUtils"
 import { ButtonVACMap, ButtonViewOnMap } from "./CommonButtons"
 
 const DetailsPage = ({item, airfields, activities} : {item: Airfield|Activity, airfields: Map<string,Airfield>, activities:Map<string,Activity>}) => (<>
@@ -44,6 +44,7 @@ const DetailsPage = ({item, airfields, activities} : {item: Airfield|Activity, a
           {item.runways.map((r,i) => (<div key={i}>{r.designation} - {r.length}m {r.composition == 'GRASS' ? 'Non revêtue' : 'Revêtue'}</div>))}
         </div>
         {(item.fuels && item.fuels.length > 0) ? `Essences: ${item.fuels?.join(' ')}` : `Pas d'essence disponible`}
+        <ToiletText airfield={item} />
         <ButtonVACMap airfield={item} />
         <ButtonViewOnMap item={item} />
       </>):(<>
