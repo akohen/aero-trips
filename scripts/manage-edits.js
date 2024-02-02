@@ -64,9 +64,12 @@ for(const {targetDocument, newDoc, id} of results) {
       if(field == "position") {
         newField = newDoc[field].latitude +','+newDoc[field].longitude
         if(currentField) {currentField = currentDoc[field].latitude +','+currentDoc[field].longitude}
-      } if(field == 'description') {
+      } else if(field == 'description') {
         newField = generateHTML(newField,[StarterKit,Link, Image])
         if(currentField) {currentField = generateHTML(currentField,[StarterKit,Link, Image])}
+      } else if(field == 'steps') {
+        newField = newField.map(e => e.id).join(', ')
+        if(currentField) {currentField = currentField.map(e => e.id).join(', ')}
       }
       
       if(currentDoc && newField == currentField) continue
