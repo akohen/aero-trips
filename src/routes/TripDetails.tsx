@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Activity, Airfield, Data } from "..";
 import { Group, Paper, Stepper, Text, Title, rem } from "@mantine/core";
 import EditButton from "../components/EditButton";
@@ -44,10 +44,10 @@ const TripDetails = ({trips, airfields, activities} : Data) => {
         style={{minWidth: '325px', flex:'1 1 0'}}
         styles={{ stepLabel: {lineHeight:'var(--stepper-icon-size)'}}}
       >
-        {items.map(([e, , type],i) =>(
+        {items.map(([e, id, type],i) =>(
         <Stepper.Step
           key={i}
-          label={e.name}
+          label={<Link to={`/${type}/${id}`}>{e.name}</Link>}
           icon={type == 'airfields' ? <IconPlaneArrival style={{ width: rem(18), height: rem(18) }} /> : <IconBulb style={{ width: rem(18), height: rem(18) }} />}
         />))}
       </Stepper>
