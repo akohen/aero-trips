@@ -1,22 +1,68 @@
 import { useParams } from "react-router-dom";
-import { Data } from "..";
-import { Paper, Text, Title } from "@mantine/core";
+import { Activity, Airfield, Data } from "..";
+import { Grid, Paper, Stepper, Text, Title, rem } from "@mantine/core";
 import EditButton from "../components/EditButton";
 import BackButton from "../components/BackButton";
 import { generateHTML } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit"
 import Link from "@tiptap/extension-link"
 import Image from "@tiptap/extension-image"
+import { MapContainer, TileLayer } from "react-leaflet";
+import { AirfieldMarker } from "../components/AirfieldUtils";
+import { ActivityMarker } from "../components/ActivityUtils";
+import { latLngBounds } from "leaflet";
+import { IconBulb, IconPlaneArrival } from "@tabler/icons-react";
 
-const TripDetails = ({trips} : Data) => {
+const TripDetails = ({trips, airfields, activities} : Data) => {
   const params = useParams();
+  if(trips.size == 0) return (<p>Chargement en cours</p>)
   const trip = params.tripId ? trips.get(params.tripId) : undefined;
+
+  if(!trip) return (<p>Activité/lieu inconnu</p>)
+
   const tripTypes = {short:'Vol de quelques heures', day:'Sortie à la journée', multi:'Voyage sur plusieurs jours'}
+  const items = trip.steps
+    .map(e => ([{activities, airfields}[e.type].get(e.id), e.id, e.type] as [Activity|Airfield, string, string]))
+    .filter(([, e]) => e != undefined)
+  const markers = items
+    .map( ([e, key, type]) => type == 'airfields' ? 
+      <AirfieldMarker key={key} id={key} airfield={e as Airfield} /> : 
+      <ActivityMarker key={key} id={key} activity={e as Activity} />
+    );
   
-  return trips.size > 0 ? trip ? (<>
+  const bounds = latLngBounds([])
+  items.forEach(([e]) => bounds.extend([e.position.latitude,e.position.longitude]))
+  
+  return (<>
     <Title><BackButton />Fiche {trip.name} <EditButton /></Title>
     <Text>{tripTypes[trip.type]}</Text>
-    {trip.steps.map((step,i) =>(<Text key={i}>{step.id}</Text>))}
+
+    <Grid mt={"md"}>
+      <Grid.Col span={4}>
+      <Stepper
+        active={-1}
+        orientation="vertical"
+        styles={{ stepLabel: {lineHeight:'var(--stepper-icon-size)'},}}
+      >
+        {items.map(([e, , type],i) =>(
+        <Stepper.Step
+          key={i}
+          label={e.name}
+          icon={type == 'airfields' ? <IconPlaneArrival style={{ width: rem(18), height: rem(18) }} /> : <IconBulb style={{ width: rem(18), height: rem(18) }} />}
+        />))}
+      </Stepper>
+        
+      </Grid.Col>
+      <Grid.Col span={8}>
+        <MapContainer style={{ height: "500px" }} bounds={bounds.pad(0.1)} scrollWheelZoom={true} >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          {markers}
+        </MapContainer>
+      </Grid.Col>
+    </Grid>
 
     {trip.description != undefined && <Paper 
     bg="gray.1" mt={"md"}
@@ -24,11 +70,7 @@ const TripDetails = ({trips} : Data) => {
     dangerouslySetInnerHTML={{__html: generateHTML(trip.description,[StarterKit,Link, Image])}} 
   />}
     
-  </>) : (
-    <p>Activité/lieu inconnu</p>
-  ) : (
-    <p>Chargement en cours</p>
-  )
+  </>)
 }
 
 export default TripDetails
