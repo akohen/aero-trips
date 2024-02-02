@@ -43,7 +43,7 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
     />
     <List
       data={data} 
-      columns={['Nom','Type']}
+      columns={['Nom','Durée']}
       empty={(<Text fw={500} ta="center">Aucun résultat</Text>)}
       row={([key, e]) => (
         <Table.Tr key={key}>

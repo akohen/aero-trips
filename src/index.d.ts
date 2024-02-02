@@ -44,12 +44,10 @@ type ActivityType =  // food, lodging, bike, hiking, transit, car, poi, historic
   'other' // autre activité
 
 type Trip = {
-  from?: string,
-  to: string,
   name: string,
   description: JSONContent,
   type: 'short' | 'day' | 'multi',
-  steps?: {type: 'activity'|'airfield', id:string}[],
+  steps: {type: 'activities'|'airfields', id:string}[],
 }
 
 type ADfilter = {

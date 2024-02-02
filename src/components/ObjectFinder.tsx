@@ -1,9 +1,9 @@
-import { Select } from "@mantine/core";
+import { ComboboxItem, Select } from "@mantine/core";
 import { Activity, Airfield } from "..";
 import { useEffect, useState } from "react";
 
-const ObjectFinder = ({activities, airfields, value, onChange}: 
-  {activities: Map<string,Activity>, airfields: Map<string,Airfield>, value: string|null, onChange: (value: string|null) => void}) => {
+const ObjectFinder = ({activities, airfields, value, onChange, ...props}: 
+  {activities: Map<string,Activity>, airfields: Map<string,Airfield>, value: string|null, onChange: (value: string | null, option: ComboboxItem) => void}) => {
     type FinderOptions = {group: string, items: {label: string, value: string}[]}[]
     const [data, setData] = useState<FinderOptions>([])
 
@@ -33,6 +33,7 @@ const ObjectFinder = ({activities, airfields, value, onChange}:
     limit={8} searchable clearable
     size="xs"
     style={{width:'250px'}}
+    {...props}
   />)
 }
 
