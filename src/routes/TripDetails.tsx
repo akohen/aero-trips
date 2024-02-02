@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
 import { Activity, Airfield, Data } from "..";
-import { Grid, Paper, Stepper, Text, Title, rem } from "@mantine/core";
+import { Group, Paper, Stepper, Text, Title, rem } from "@mantine/core";
 import EditButton from "../components/EditButton";
 import BackButton from "../components/BackButton";
 import { generateHTML } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit"
-import Link from "@tiptap/extension-link"
+import {default as TiptapLink} from "@tiptap/extension-link"
 import Image from "@tiptap/extension-image"
 import { MapContainer, TileLayer } from "react-leaflet";
 import { AirfieldMarker } from "../components/AirfieldUtils";
@@ -37,12 +37,12 @@ const TripDetails = ({trips, airfields, activities} : Data) => {
     <Title><BackButton />Fiche {trip.name} <EditButton /></Title>
     <Text>{tripTypes[trip.type]}</Text>
 
-    <Grid mt={"md"}>
-      <Grid.Col span={4}>
+    <Group grow preventGrowOverflow={false}>
       <Stepper
         active={-1}
         orientation="vertical"
-        styles={{ stepLabel: {lineHeight:'var(--stepper-icon-size)'},}}
+        style={{minWidth: '325px', flex:'1 1 0'}}
+        styles={{ stepLabel: {lineHeight:'var(--stepper-icon-size)'}}}
       >
         {items.map(([e, , type],i) =>(
         <Stepper.Step
@@ -51,9 +51,7 @@ const TripDetails = ({trips, airfields, activities} : Data) => {
           icon={type == 'airfields' ? <IconPlaneArrival style={{ width: rem(18), height: rem(18) }} /> : <IconBulb style={{ width: rem(18), height: rem(18) }} />}
         />))}
       </Stepper>
-        
-      </Grid.Col>
-      <Grid.Col span={8}>
+       <div style={{minWidth: `min(400px,90vw)`, flex:'2 1 0'}}>
         <MapContainer style={{ height: "500px" }} bounds={bounds.pad(0.1)} scrollWheelZoom={true} >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -61,13 +59,13 @@ const TripDetails = ({trips, airfields, activities} : Data) => {
           />
           {markers}
         </MapContainer>
-      </Grid.Col>
-    </Grid>
+        </div>
+    </Group>
 
     {trip.description != undefined && <Paper 
     bg="gray.1" mt={"md"}
     className="tiptap-content"
-    dangerouslySetInnerHTML={{__html: generateHTML(trip.description,[StarterKit,Link, Image])}} 
+    dangerouslySetInnerHTML={{__html: generateHTML(trip.description,[StarterKit, TiptapLink, Image])}} 
   />}
     
   </>)
