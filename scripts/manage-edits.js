@@ -85,7 +85,7 @@ for(const {targetDocument, newDoc, id} of results) {
   if(answer == 'apply') {
     if(newDoc.description) {
       newDoc.description.content.forEach(async e => {
-        if(e.type == 'image') {
+        if(e.type == 'image' && (e.attrs.src.startsWith('data:image/jpeg;base64') || e.attrs.src.startsWith('data:image/png;base64'))) {
           const type = e.attrs.src.match(/data:image\/(png|jpeg)/)
           const data = e.attrs.src.replace(/^data:image\/jpeg;base64,/, "")
           var bitmap = Buffer.from(data,'base64');
