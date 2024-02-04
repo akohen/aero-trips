@@ -1,15 +1,17 @@
-import { Title, Group, Flex, Paper, Text } from "@mantine/core"
+import { Title, Group, Flex, Paper, Text, Button } from "@mantine/core"
 import { generateHTML } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import BackButton from "./BackButton"
 import EditButton from "./EditButton"
-import Link from "@tiptap/extension-link"
-import Image from "@tiptap/extension-image"
+import { default as TiptapLink } from "@tiptap/extension-link"
+import { default as TiptapImage } from "@tiptap/extension-image"
 import { Activity, Airfield, Trip } from ".."
 import { findNearest, iconsList } from "../utils"
 import { NearbyActivities, NearbyTrips } from "./ActivityUtils"
 import { NearbyAirfields, ToiletText } from "./AirfieldUtils"
 import { ButtonVACMap, ButtonViewOnMap } from "./CommonButtons"
+import { IconBrandGoogleMaps } from "@tabler/icons-react"
+import { Link } from "react-router-dom"
 
 const DetailsPage = ({id, item, airfields, activities, trips} : 
 {id: string, item: Airfield|Activity, airfields: Map<string,Airfield>, activities:Map<string,Activity>, trips:Map<string,Trip>}) => (<>
@@ -54,14 +56,21 @@ const DetailsPage = ({id, item, airfields, activities, trips} :
           <ButtonViewOnMap item={item} />
         </div>
       </>)}
-
-      
+      <Button
+        component={Link}
+        to={`https://www.google.fr/maps/place/${item.position.latitude},${item.position.longitude}`}
+        target="_blank"
+        size={'sm'}
+        leftSection={<IconBrandGoogleMaps size={20} />}
+      >
+        Google Maps
+      </Button>
     </Flex>
   </Group>
   {item.description != undefined && <Paper 
     bg="gray.1" mt={"md"}
     className="tiptap-content"
-    dangerouslySetInnerHTML={{__html: generateHTML(item.description,[StarterKit,Link, Image])}} 
+    dangerouslySetInnerHTML={{__html: generateHTML(item.description,[StarterKit, TiptapLink, TiptapImage])}} 
   />}
 </>)
 
