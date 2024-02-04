@@ -51,8 +51,8 @@ const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => voi
       </InputLabel>
     </Tooltip>)
 
-  return (submitted && !activity) ? (
-    <><Title><BackButton />Proposer une nouvelle activité ou lieu</Title>
+  return (submitted) ? (
+    <><Title><BackButton />{activity ? 'Proposer une modification' : 'Proposer une nouvelle activité ou lieu'}</Title>
     <p>Modifications enregistrées. Elles seront visibles d'ici quelques jours. <RouterLink to=".." relative="path">Retour</RouterLink></p></>
   ) : (<form onSubmit={form.onSubmit((values) => {
     submitFn(Object.keys(values)
@@ -100,7 +100,6 @@ const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => voi
   </Fieldset>
   <Group mt="md">
     <Button type="submit">Enregistrer</Button>
-  {submitted && (<p>Modifications enregistrées. Elles seront visibles d'ici quelques jours. <RouterLink to=".." relative="path">Retour</RouterLink></p>)}
   </Group>
 </form>)
 }

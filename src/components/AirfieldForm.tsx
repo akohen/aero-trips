@@ -36,9 +36,9 @@ const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => voi
   });
 
 
-  return (submitted && !airfield) ? (<>
+  return (submitted) ? (<>
     <Title><BackButton />Proposer une modification</Title>
-    <p>Votre proposition a bien été enregistrée, elle sera ajoutée au site d'ici quelques jours!</p>
+    <p>Votre modification a bien été enregistrée, elle sera ajoutée au site d'ici quelques jours!</p>
     <p><RouterLink to=".." relative="path">Retour</RouterLink></p>
   </>) : (
   <form onSubmit={form.onSubmit((values) => {
@@ -75,7 +75,6 @@ const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => voi
   </Fieldset>
   <Group mt="md">
     <Button type="submit">Enregistrer</Button>
-  {submitted && (<p>Modifications enregistrées. Elles seront visibles d'ici quelques jours. <RouterLink to=".." relative="path">Retour</RouterLink></p>)}
   </Group>
 </form>)
 }
