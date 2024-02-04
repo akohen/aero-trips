@@ -1,6 +1,8 @@
 import haversineDistance from "haversine-distance";
 import { Activity, Airfield, ADfilter, ActivityFilter, ActivityType } from ".";
 import { IconBan, IconBed, IconBike, IconBulb, IconBus, IconCar, IconCircleCheck, IconEye, IconForbid, IconGasStation, IconPlane, IconShoe, IconSoup, IconToiletPaper, IconTower } from "@tabler/icons-react";
+import { Slice } from "@tiptap/pm/model";
+import { EditorView } from "@tiptap/pm/view";
 
 export const slug = (str: string) => {
   return str
@@ -88,4 +90,25 @@ export const filterActivities = (airfields: Map<string,Airfield>, activities: Ma
       return [item.name, key].some(x => x?.toLowerCase().includes(query))
     })
   )
+}
+
+export const editorProps = {
+  handleDrop: function(view: EditorView, event: DragEvent, _slice: Slice, moved: boolean) {
+    if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) { // if dropping external files
+      const file = event.dataTransfer.files[0]; 
+      if ((file.type === "image/jpeg" || file.type === "image/png") && file.size < 2**20) { // check valid image type under 10MB
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+          const { schema } = view.state;
+          const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
+          const node = schema.nodes.image.create({ src: reader.result }); // creates the image element
+          const transaction = view.state.tr.insert(coordinates!.pos, node); // places it in the correct position
+          return view.dispatch(transaction);
+        };
+      } else {window.alert("Les images doivent être au format .png ou .jpg et faire moins de 1Mo")}
+      return true; // handled
+    }
+    return false; // not handled use default behaviour
+  }
 }

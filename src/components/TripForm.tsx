@@ -8,10 +8,11 @@ import { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
-import Image from "@tiptap/extension-image";
+import { default as TiptapImage } from "@tiptap/extension-image";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { IconGripVertical, IconX } from "@tabler/icons-react";
 import TripStepSelect from "./TripStepSelect";
+import { editorProps } from "../utils";
 
 const TripForm = ({submitFn, trip, airfields, activities}: 
   {submitFn: (document: object) => void, trip: Trip, airfields: Map<string, Airfield>, activities: Map<string, Activity>}) => {
@@ -88,8 +89,9 @@ const TripForm = ({submitFn, trip, airfields, activities}:
     extensions: [
       StarterKit,
       Link,
-      Image,
+      TiptapImage.configure({allowBase64: true}),
     ],
+    editorProps: editorProps,
     content: form.values['description'],
     onUpdate({ editor }) {
       form.setFieldValue('description', editor?.getJSON());
