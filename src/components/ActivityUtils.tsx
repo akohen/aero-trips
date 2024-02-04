@@ -1,5 +1,5 @@
 import { Paper, Stack, Text, Title } from "@mantine/core";
-import { Activity } from "..";
+import { Activity, Trip } from "..";
 import { Link } from "react-router-dom";
 import { CommonIcon } from "./CommonIcon";
 import { Marker, Popup } from "react-leaflet";
@@ -23,8 +23,22 @@ export const NearbyActivities = ({items} : {items: [distance: number, item: Acti
         </Text>
     ))}
   </Paper>
-  
 )
+
+export const NearbyTrips = ({itemId, type, trips} : {itemId: string, type:'activities'|'airfields', trips: Map<string, Trip>}) => {
+  const items = [...trips].filter(([,trip]) => trip.steps.some(step => step.type == type && step.id == itemId)).slice(0,8)
+  return (
+  items.length > 0 && <Paper bg="gray.1" className="nearby">
+    <Title order={4}>Sorties</Title>
+    { items.map(([id, trip]) => (
+        <Text key={id}>
+          <Link to={`/trips/${id}`}>
+            <Text span size="sm">{trip.name}</Text>
+          </Link>
+        </Text>
+    ))}
+  </Paper>
+)}
 
 export const ActivityMarker = ({id, activity}: {id:string, activity:Activity}) => {
   const imgNode = activity.description?.content != undefined ? activity.description.content.find( (a: { type: string }) => a.type =='image') : undefined

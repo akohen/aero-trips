@@ -5,13 +5,14 @@ import BackButton from "./BackButton"
 import EditButton from "./EditButton"
 import Link from "@tiptap/extension-link"
 import Image from "@tiptap/extension-image"
-import { Activity, Airfield } from ".."
+import { Activity, Airfield, Trip } from ".."
 import { findNearest, iconsList } from "../utils"
-import { NearbyActivities } from "./ActivityUtils"
+import { NearbyActivities, NearbyTrips } from "./ActivityUtils"
 import { NearbyAirfields, ToiletText } from "./AirfieldUtils"
 import { ButtonVACMap, ButtonViewOnMap } from "./CommonButtons"
 
-const DetailsPage = ({item, airfields, activities} : {item: Airfield|Activity, airfields: Map<string,Airfield>, activities:Map<string,Activity>}) => (<>
+const DetailsPage = ({id, item, airfields, activities, trips} : 
+{id: string, item: Airfield|Activity, airfields: Map<string,Airfield>, activities:Map<string,Activity>, trips:Map<string,Trip>}) => (<>
   <Title order={1}>
     <BackButton />{item.name} {('codeIcao' in item) && (<> - {item.codeIcao}</>)}
     &nbsp;<EditButton />
@@ -29,6 +30,7 @@ const DetailsPage = ({item, airfields, activities} : {item: Airfield|Activity, a
   >
     <NearbyAirfields items={findNearest(item, airfields, 50000).slice(0,8)} />
     <NearbyActivities items={findNearest(item, activities).slice(0,8)} />
+    <NearbyTrips itemId={id} trips={trips} type={('codeIcao' in item) ? 'airfields' : 'activities'} />
 
     <Flex
       bg="gray.1"
