@@ -11,6 +11,7 @@ import BackButton from "./BackButton";
 import { default as TiptapImage } from "@tiptap/extension-image";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { editorProps } from "../utils";
+import { CommonIcon } from "./CommonIcon";
 
 const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => void, activity: Activity}) => {
   const [submitted, setSubmitted] = useState(false)
@@ -80,16 +81,17 @@ const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => voi
   <Center mt={"md"}><InputLabel>Choisir une ou plusieurs catégories</InputLabel></Center>
   <Chip.Group multiple {...form.getInputProps('type')}>
     <Group justify="center" mt="md">
-      <Chip value="food">Restauration</Chip>
-      <Chip value="lodging">Hébergement</Chip>
-      <Chip value="transit">Transport en commun</Chip>
-      <Chip value="bike">Vélo</Chip>
-      <Chip value="car">Taxi ou location de voiture</Chip>
-      <Chip value="hiking">Marche à pied</Chip>
-      <Chip value="culture">Musée, château ou activité culturelle</Chip>
-      <Chip value="aero">Activité en lien avec l'aéronautique</Chip>
-      <Chip value="poi">A voir du ciel</Chip>
-      <Chip value="other">Autre</Chip>
+      <Chip value="food"><CommonIcon iconType="food"/>&nbsp;Restauration</Chip>
+      <Chip value="lodging"><CommonIcon iconType="lodging"/>&nbsp;Hébergement</Chip>
+      <Chip value="transit"><CommonIcon iconType="transit"/>&nbsp;Transport en commun</Chip>
+      <Chip value="bike"><CommonIcon iconType="bike"/>&nbsp;Vélo</Chip>
+      <Chip value="car"><CommonIcon iconType="car"/>&nbsp;Taxi ou location de voiture</Chip>
+      <Chip value="hiking"><CommonIcon iconType="hiking"/>&nbsp;Marche à pied</Chip>
+      <Chip value="culture"><CommonIcon iconType="culture"/>&nbsp;Musée, château ou activité culturelle</Chip>
+      <Chip value="aero"><CommonIcon iconType="aero"/>&nbsp;Activité en lien avec l'aéronautique</Chip>
+      <Chip value="nautical"><CommonIcon iconType="nautical"/>&nbsp;Activité nautique</Chip>
+      <Chip value="poi"><CommonIcon iconType="poi"/>&nbsp;A voir du ciel</Chip>
+      <Chip value="other"><CommonIcon iconType="other"/>&nbsp;Autre</Chip>
       <Text c="red">{form.getInputProps('type').error}</Text>
     </Group>
   </Chip.Group>

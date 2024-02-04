@@ -1,6 +1,6 @@
 import haversineDistance from "haversine-distance";
 import { Activity, Airfield, ADfilter, ActivityFilter, ActivityType } from ".";
-import { IconBan, IconBed, IconBike, IconBulb, IconBus, IconCar, IconCircleCheck, IconEye, IconForbid, IconGasStation, IconPlane, IconShoe, IconSoup, IconToiletPaper, IconTower } from "@tabler/icons-react";
+import { IconBan, IconBed, IconBike, IconBulb, IconBus, IconCar, IconCircleCheck, IconEye, IconForbid, IconGasStation, IconPlane, IconSailboat, IconShoe, IconSoup, IconToiletPaper, IconTower } from "@tabler/icons-react";
 import { Slice } from "@tiptap/pm/model";
 import { EditorView } from "@tiptap/pm/view";
 
@@ -32,6 +32,7 @@ export const iconsList = new Map<string, {label: string,icon: React.FC,style: ob
   ['poi', {label:"A voir du ciel", icon:IconEye, style:iconStyle}],
   ['aero', {label:"Aéronautique", icon:IconPlane, style:iconStyle}],
   ['bike', {label:"Vélo", icon:IconBike, style:iconStyle}],
+  ['nautical', {label:"Activités nautiques", icon:IconSailboat, style:iconStyle}],
   ['other', {label:"Autre activité", icon:IconBulb, style:iconStyle}],
   ['public', {label:"Toilettes publiques", icon:IconToiletPaper, style:iconStyle}],
   ['private', {label:"Toilettes privées", icon:IconToiletPaper, style:iconStyle}],

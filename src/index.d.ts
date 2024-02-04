@@ -41,6 +41,7 @@ type ActivityType =  // food, lodging, bike, hiking, transit, car, poi, historic
   'culture' | // Chateau, musée...
   'poi' | // A voir du ciel
   'aero' | // En rapport avec l'aéronautique
+  'nautical' | // Activités nautiques
   'other' // autre activité
 
 type Trip = {
