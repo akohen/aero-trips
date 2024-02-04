@@ -20,6 +20,7 @@ const firebaseConfig = {
 admin.initializeApp(firebaseConfig);
 const db = admin.firestore();
 db.settings({ ignoreUndefinedProperties: true });
+const storage = admin.storage().bucket()
 
 const options = {
   message: 'Choisir une action pour ce changement',
@@ -66,6 +67,7 @@ for(const {targetDocument, newDoc, id} of results) {
         if(currentField) {currentField = currentDoc[field].latitude +','+currentDoc[field].longitude}
       } else if(field == 'description') {
         newField = generateHTML(newField,[StarterKit,Link, Image])
+          .replace(/<img src="data:image\/(jpg|png|jpeg);base64.*?">/gi,'<BASE 64 IMAGE>')
         if(currentField) {currentField = generateHTML(currentField,[StarterKit,Link, Image])}
       } else if(field == 'steps') {
         newField = newField.map(e => e.id).join(', ')
@@ -81,6 +83,19 @@ for(const {targetDocument, newDoc, id} of results) {
   }
 
   if(answer == 'apply') {
+    if(newDoc.description) {
+      newDoc.description.content.forEach(async e => {
+        if(e.type == 'image') {
+          const type = e.attrs.src.match(/data:image\/(png|jpeg)/)
+          const data = e.attrs.src.replace(/^data:image\/jpeg;base64,/, "")
+          var bitmap = Buffer.from(data,'base64');
+          const path = 'images/'+Math.random().toString(36).substring(2)+'.'+type[1]
+          e.attrs.src = admin.storage().bucket().file(path).publicUrl()
+          await admin.storage().bucket().file(path).save(bitmap, {contentType:'image/'+type[1]})
+          await admin.storage().bucket().file(path).makePublic()
+        }
+      })
+    }
     await db.doc(targetDocument).set(newDoc, {merge: true})
   }
   if(['delete', 'apply'].includes(answer)) {
