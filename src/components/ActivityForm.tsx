@@ -56,7 +56,7 @@ const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => voi
     <p>Modifications enregistrées. Elles seront visibles d'ici quelques jours. <RouterLink to=".." relative="path">Retour</RouterLink></p></>
   ) : (<form onSubmit={form.onSubmit((values) => {
     submitFn(Object.keys(values)
-      .filter((k) => form.isDirty(k))
+      .filter((k) => form.isDirty(k) || activity.name == '')
       .reduce((a, k) => ({ ...a, [k]: values[k as 'name'|'position'|'description'|'type'] }), {})
     )
     setSubmitted(true)
