@@ -57,6 +57,7 @@ const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => voi
         <Chip value="100LL">100LL</Chip>
         <Chip value="JETA1">Jet A1</Chip>
         <Chip value="SP98">SP98</Chip>
+        <Chip value="UL91">UL91</Chip>
       </Group>
     </Chip.Group>
     </Group>
