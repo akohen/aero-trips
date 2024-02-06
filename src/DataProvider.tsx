@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import App from './App.tsx'
 import { FirebaseOptions, initializeApp } from "firebase/app";
-import { CACHE_SIZE_UNLIMITED, addDoc, collection, getDocs, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
+import { addDoc, collection, getDocs, initializeFirestore } from "firebase/firestore";
 import { Activity, Airfield, Trip } from '.';
 
 const firebaseConfig: FirebaseOptions = {
@@ -16,7 +16,7 @@ const firebaseConfig: FirebaseOptions = {
 
 const app = initializeApp(firebaseConfig);
 const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({tabManager: persistentMultipleTabManager(), cacheSizeBytes: CACHE_SIZE_UNLIMITED}),
+  //localCache: persistentLocalCache({tabManager: persistentMultipleTabManager(), cacheSizeBytes: CACHE_SIZE_UNLIMITED}),
   ignoreUndefinedProperties: true,
 });
 
