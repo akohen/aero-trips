@@ -33,6 +33,7 @@ const AddData = (data: Data) => {
       ...document,
       targetDocument:`${type}/${params.id ? params.id : slug(document.name!)}`, 
       position: document.position ? new GeoPoint(...document.position.split(', ').map(parseFloat) as [number, number]) : undefined,
+      updated_at: new Date(),
     })
   }
 
