@@ -43,7 +43,7 @@ const options = {
   ],
 };
 
-const changes = await db.collection('changes').get()
+const changes = await db.collection('changes').orderBy("updated_at").get()
 const results = []
 changes.forEach(d => {
   const {targetDocument, ...newDoc} = d.data()
