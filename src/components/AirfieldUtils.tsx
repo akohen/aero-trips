@@ -23,8 +23,8 @@ export const NearbyAirfields = ({items} : {items: [distance: number, item: Airfi
 )
 
 export const ToiletText = ({airfield}:{airfield: Airfield}) => {
-  if(airfield.toilet == 'private') return <Text>Toilettes publiques</Text>
-  if(airfield.toilet == 'public') return <Text>Toilettes privées</Text>
+  if(airfield.toilet == 'private') return <Text>Toilettes privées</Text>
+  if(airfield.toilet == 'public') return <Text>Toilettes publiques</Text>
 }
 
 export const AirfieldMarker = ({id, airfield}: {id:string, airfield:Airfield}) => {
