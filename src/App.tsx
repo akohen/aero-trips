@@ -34,7 +34,7 @@ export default function App(data : Data) {
   
   return (
     <Routes>
-      <Route element={<Layout />}>
+      <Route element={<Layout {...data} />}>
         <Route path="/"                       element={<Home />}/>
         <Route path="/airfields"              element={<AirfieldsList {...data} filters={ADfilter} setFilters={setADfilter} />} />
         <Route path="/airfields/:airfieldId"  element={<AirfieldDetails {...data} />} />

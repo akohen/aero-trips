@@ -22,11 +22,11 @@ const TripForm = ({submitFn, trip, airfields, activities}:
     const [data, setData] = useState<FinderOptions>([])
 
     useEffect(() => {
-      const activitiesOptions = [...airfields] 
+      const airfieldsOptions = [...airfields] 
         .map(([id, ad]) => (
           {label: `${ad.name} - ${ad.codeIcao}`, value:`airfields/${id}`}
         ))
-      const airfieldsOptions = [...activities] 
+      const activitiesOptions = [...activities] 
         .map(([id, activity]) => (
           {label: activity.name, value:`activities/${id}`}
         ))

@@ -2,12 +2,35 @@ import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
 import { MantineProvider, AppShell, Burger, Group, Button, Stack } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Link, Outlet, matchPath, useLocation } from "react-router-dom";
+import { Link, Outlet, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { IconBulb, IconCirclePlus, IconHome, IconMap, IconMapRoute, IconPlaneArrival } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
+import { Data } from '.';
+import TripStepSelect from './components/TripStepSelect';
 
-function Layout() {
+function Layout({airfields, activities}: Data) {
   const [opened, { toggle }] = useDisclosure();
   const location = useLocation()
+  const navigate = useNavigate();
+  type FinderOptions = {group: string, items: {label: string, value: string}[]}[]
+    const [data, setData] = useState<FinderOptions>([])
+
+    useEffect(() => {
+      const airfieldsOptions = [...airfields] 
+        .map(([id, ad]) => (
+          {label: `${ad.name} - ${ad.codeIcao}`, value:`airfields/${id}`}
+        ))
+      const activitiesOptions = [...activities] 
+        .map(([id, activity]) => (
+          {label: activity.name, value:`activities/${id}`}
+        ))
+
+      setData([
+        {group:'Terrains', items:airfieldsOptions},
+        {group:'Activités', items:activitiesOptions},
+      ])
+
+    },[airfields, activities])
   
   return (
     <MantineProvider>
@@ -85,6 +108,10 @@ function Layout() {
           >
             Ajout
           </Button>
+          <TripStepSelect
+            data={data}
+            addItem={(value: string) => navigate(value)}
+          />
           </Stack>
         </AppShell.Navbar>
 
