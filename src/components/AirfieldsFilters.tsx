@@ -1,5 +1,5 @@
 import { Group, Chip, InputLabel, TextInput, rem, NumberInput, Button, Collapse, CloseButton } from "@mantine/core"
-import { IconCircleCheck, IconForbid, IconGasStation, IconSearch, IconToiletPaper } from "@tabler/icons-react"
+import { IconCircleCheck, IconForbid, IconGasStation, IconRoad, IconSearch, IconToiletPaper } from "@tabler/icons-react"
 import { ADfilter, Activity, Airfield } from ".."
 import { Dispatch, SetStateAction } from "react"
 import { useDisclosure } from "@mantine/hooks"
@@ -35,6 +35,7 @@ return (<>
         <Chip value="RST" size='xs'><IconForbid size={16} color="orange" /> Accès restreint</Chip>
         <Chip value="toilet" size='xs'><IconToiletPaper size={16} /> Toilettes</Chip>
         <Chip value="100LL" size='xs'><IconGasStation size={16} /> 100LL</Chip>
+        <Chip value="concrete" size='xs'><IconRoad size={16} /> Piste en dur</Chip>
       </Group>
     </Chip.Group>
     <Group justify="space-between">

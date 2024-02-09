@@ -63,6 +63,7 @@ export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map
       if( filters.ad.includes('100LL') && !item.fuels?.includes('100LL')) return false
       if( filters.runway && Math.max(...item.runways.map(r => r.length)) < filters.runway) return false
       if( filters.ad.includes('toilet') && (item.toilet == 'no' || !item.toilet)) return false
+      if( filters.ad.includes('concrete') && !item.runways.some(r => r.composition != 'GRASS') ) return false
       if( filters.distance && filters.target ) {
         const [targetType, targetId] = filters.target.split('/')
         const target = {activities, airfields}[targetType]?.get(targetId)
