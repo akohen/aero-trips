@@ -70,7 +70,7 @@ export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map
         if(target && (haversineDistance(item.position, target.position) > filters.distance*1000)) return false
       } 
       if( filters.services.length > 0 ) { 
-        const adActivities = findNearest(item, activities, 4000)
+        const adActivities = findNearest(item, activities, 5000)
         if(!filters.services.every( service => adActivities.some(([,activity]) => activity.type.includes(service as ActivityType)))) return false
       }
       return [item.codeIcao, item.name, key].some(x => x?.toLowerCase().includes(query))
