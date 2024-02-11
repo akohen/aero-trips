@@ -111,6 +111,7 @@ function Layout({airfields, activities}: Data) {
           <TripStepSelect
             data={data}
             addItem={(value: string) => navigate(value)}
+            placeholder="Accès direct"
           />
           </Stack>
         </AppShell.Navbar>

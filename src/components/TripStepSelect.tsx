@@ -1,21 +1,25 @@
 import { useState } from 'react';
-import { Combobox, InputBase, useCombobox } from '@mantine/core';
+import { Combobox, InputBase, ScrollArea, useCombobox } from '@mantine/core';
 
 
-export default function TripStepSelect({data, addItem, ...rest}: 
-  {data:{group: string, items: {label: string, value: string}[]}[], addItem: (value: string) => void}) {
+export default function TripStepSelect({data, addItem, placeholder,...rest}: 
+  {data:{group: string, items: {label: string, value: string}[]}[], addItem: (value: string) => void, placeholder: string}) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
-  const allData = data.reduce<string[]>((acc, group) => [...acc, ...group.items.map(a => a.label)], []);
   const [value, setValue] = useState<string | null>(null);
   const [search, setSearch] = useState('');
 
-  const shouldFilterOptions = allData.every((item) => item !== search);
+
   const filteredGroups = data.map((group) => {
-    const filteredOptions = shouldFilterOptions
-      ? group.items.filter((item) => item.label.toLowerCase().includes(search.toLowerCase().trim())).slice(0,5)
-      : group.items.slice(0,5);
+    const searchWords = search.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().split(' ')
+    const checkItem = (item: {label:string}) => {
+      const words = item.label.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().split(' ')
+      return searchWords.every(searchWord => words.some(word => word.includes(searchWord)))
+    }
+    const filteredOptions = search != ''
+      ? group.items.filter(checkItem).slice(0,8)
+      : group.items.slice(0,3);
 
     return { ...group, options: filteredOptions };
   });
@@ -25,7 +29,7 @@ export default function TripStepSelect({data, addItem, ...rest}:
   const groups = filteredGroups.map((group) => {
     const options = group.options.map((item) => (
       <Combobox.Option value={item.value} key={item.value}>
-        {item.label}
+        {item.label.normalize('NFD')}
       </Combobox.Option>
     ));
 
@@ -63,14 +67,16 @@ export default function TripStepSelect({data, addItem, ...rest}:
             combobox.closeDropdown();
             setSearch(value || '');
           }}
-          placeholder="Chercher un lieu"
+          placeholder={placeholder}
           rightSectionPointerEvents="none"
         />
       </Combobox.Target>
 
       <Combobox.Dropdown>
         <Combobox.Options>
+          <ScrollArea.Autosize mah={280} type="always">
           {totalOptions > 0 ? groups : <Combobox.Empty>Aucun résultat</Combobox.Empty>}
+          </ScrollArea.Autosize>
         </Combobox.Options>
       </Combobox.Dropdown>
     </Combobox>

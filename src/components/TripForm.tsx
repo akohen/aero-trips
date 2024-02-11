@@ -151,6 +151,7 @@ const TripForm = ({submitFn, trip, airfields, activities}:
       <TripStepSelect
         data={data}
         addItem={addStep}
+        placeholder="Chercher un lieu, une activité ou un terrain"
         {...{error:form.getInputProps('steps').error}}
       />
     <InputLabel style={{width: '100%'}}>Description</InputLabel>
