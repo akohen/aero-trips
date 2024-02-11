@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg enable-background="new 0 0 64 64" viewBox="0 0 64 64" id="map-pin" xmlns="http://www.w3.org/2000/svg">
+  <path d="M51.9,19.9C51.9,30.9,32,64,32,64S12.1,30.9,12.1,19.9S21,0,32,0S51.9,8.9,51.9,19.9z" style="fill: rgb(233, 92, 92);"/>
+  <circle cx="32" cy="19.9" r="12.3" fill="#fff" transform="rotate(-76.714 32.003 19.925)"/>
+</svg>

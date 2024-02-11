@@ -1,41 +1,14 @@
-import { LayerGroup, LayersControl, MapContainer, TileLayer, useMapEvents } from 'react-leaflet'
+import { LayerGroup, LayersControl, MapContainer, TileLayer } from 'react-leaflet'
 import { Activity, Airfield, ADfilter, ActivityFilter } from '..';
-import { BrowserRouter, Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { LatLngExpression } from 'leaflet';
 import { filterActivities, filterAirfields } from '../utils';
 import { AirfieldMarker } from '../components/AirfieldUtils';
 import { ActivityMarker } from '../components/ActivityUtils';
 import { Dispatch, SetStateAction } from 'react';
-import { ActionIcon, Button, MantineProvider } from '@mantine/core';
+import { ActionIcon } from '@mantine/core';
 import { IconFilterX } from '@tabler/icons-react';
-import { flushSync } from 'react-dom';
-import { createRoot } from 'react-dom/client';
-
-const ClickMenu = () => {
-  
-  const map = useMapEvents({
-    contextmenu(e) { 
-      const div = document.createElement("div");
-      flushSync(() => { // I'm sad, but I don't think there's a better way for this
-        createRoot(div).render(
-          <BrowserRouter>
-            <MantineProvider>
-              <Button 
-                component={Link}
-                to={`/edit/${e.latlng.lat}/${e.latlng.lng}`}
-                style={{color: 'white'}}
-              >
-                Ajouter un lieu ici
-              </Button>
-            </MantineProvider>
-          </BrowserRouter>);
-      });
-      map.openPopup(div.innerHTML, e.latlng, {className: 'map-context-menu'})
-    },
-  })
-
-  return (null)
-}
+import MapMenu from '../components/MapMenu';
 
 function MapPage({airfields, activities, ADfilter, ActFilter, setADfilter, setActFilter} : 
   {airfields: Map<string,Airfield>, activities: Map<string,Activity>, ADfilter: ADfilter, ActFilter:ActivityFilter, setADfilter: Dispatch<SetStateAction<ADfilter>>, setActFilter:Dispatch<SetStateAction<ActivityFilter>>}) {
@@ -68,7 +41,7 @@ function MapPage({airfields, activities, ADfilter, ActFilter, setADfilter, setAc
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <ClickMenu />
+      <MapMenu />
       {isFilterActive() && <ActionIcon
         variant='default'
         aria-label="Supprimer les filtres"
