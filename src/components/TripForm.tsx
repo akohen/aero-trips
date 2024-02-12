@@ -1,6 +1,6 @@
-import { Fieldset, Group, Button, TextInput, InputLabel, Title, Center, Text, Radio } from "@mantine/core"
+import { Fieldset, Group, Button, TextInput, InputLabel, Title, Center, Text, Radio, Chip } from "@mantine/core"
 import { useEditor } from "@tiptap/react";
-import { Activity, Airfield, Trip } from "..";
+import { Activity, ActivityType, Airfield, Trip } from "..";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Link } from "@tiptap/extension-link";
 import { useForm } from "@mantine/form";
@@ -13,6 +13,7 @@ import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { IconGripVertical, IconX } from "@tabler/icons-react";
 import TripStepSelect from "./TripStepSelect";
 import { editorProps } from "../utils";
+import { CommonIcon } from "./CommonIcon";
 
 const TripForm = ({submitFn, trip, airfields, activities}: 
   {submitFn: (document: object) => void, trip: Trip, airfields: Map<string, Airfield>, activities: Map<string, Activity>}) => {
@@ -44,11 +45,13 @@ const TripForm = ({submitFn, trip, airfields, activities}:
       description: trip ? trip.description: '',
       steps: trip ? trip.steps : [] as {type: 'activities'|'airfields', id:string}[],
       type: trip ? trip.type : '',
+      tags: trip ? trip.tags : [],
     },
     validate: {
       name: (value) => (value.length < 2 ? 'Le nom doit avoir au moins 2 charactères' : null),
       steps: (value) => (value.length < 1 ? 'La sortie doit comporter au moins 1 étape' : null),
-      type: (value) => (value == '' ? 'Choisir une durée de sortie' : null)
+      type: (value) => (value == '' ? 'Choisir une durée de sortie' : null),
+      tags: (value: ActivityType[]) => value.length == 0 ? 'Choisir au moins 1 thème' : null,
     }
   });
 
@@ -133,6 +136,20 @@ const TripForm = ({submitFn, trip, airfields, activities}:
       </Group>
     </Radio.Group>
     </Group>
+    <InputLabel mt="md">Thème(s) de la sortie</InputLabel>
+    <Chip.Group multiple {...form.getInputProps('tags')}>
+    <Group justify="center">
+      <Chip value="bike"><CommonIcon iconType="bike"/>&nbsp;Vélo</Chip>
+      <Chip value="hiking"><CommonIcon iconType="hiking"/>&nbsp;Marche à pied</Chip>
+      <Chip value="culture"><CommonIcon iconType="culture"/>&nbsp;Culture</Chip>
+      <Chip value="aero"><CommonIcon iconType="aero"/>&nbsp;Aéronautique</Chip>
+      <Chip value="nautical"><CommonIcon iconType="nautical"/>&nbsp;Plage et nautisme</Chip>
+      <Chip value="nature"><CommonIcon iconType="nature"/>&nbsp;Nature et animaux</Chip>
+      <Chip value="poi"><CommonIcon iconType="poi"/>&nbsp;Vues aériennes</Chip>
+      <Chip value="other"><CommonIcon iconType="other"/>&nbsp;Autre</Chip>
+      <Text c="red">{form.getInputProps('tags').error}</Text>
+    </Group>
+  </Chip.Group>
     <DragDropContext
         onDragEnd={({ destination, source }) =>
           destination?.index !== undefined && form.reorderListItem('steps', { from: source.index, to: destination.index })

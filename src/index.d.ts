@@ -50,6 +50,7 @@ type Trip = {
   description: JSONContent,
   type: 'short' | 'day' | 'multi',
   steps: {type: 'activities'|'airfields', id:string}[],
+  tags: ActivityType[],
 }
 
 type ADfilter = {

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
 import { useEffect, useState } from 'react';
 import { IconSearch } from '@tabler/icons-react';
+import { TripTitle } from '../components/TripsUtils';
 
 
 function TripsList({trips} : {trips: Map<string,Trip>}) {
@@ -47,7 +48,7 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
       empty={(<Text fw={500} ta="center">Aucun résultat</Text>)}
       row={([key, e]) => (
         <Table.Tr key={key}>
-          <Table.Td {...TripTd(key)}>{e.name}</Table.Td>
+          <Table.Td {...TripTd(key)}>{<TripTitle trip={e} />}</Table.Td>
           <Table.Td>{tripTypes[e.type]}</Table.Td>
         </Table.Tr>
       )}
