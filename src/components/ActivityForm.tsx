@@ -90,6 +90,7 @@ const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => voi
       <Chip value="culture"><CommonIcon iconType="culture"/>&nbsp;Musée, château ou activité culturelle</Chip>
       <Chip value="aero"><CommonIcon iconType="aero"/>&nbsp;Activité en lien avec l'aéronautique</Chip>
       <Chip value="nautical"><CommonIcon iconType="nautical"/>&nbsp;Activité nautique</Chip>
+      <Chip value="nature"><CommonIcon iconType="nature"/>&nbsp;Nature et animaux</Chip>
       <Chip value="poi"><CommonIcon iconType="poi"/>&nbsp;A voir du ciel</Chip>
       <Chip value="other"><CommonIcon iconType="other"/>&nbsp;Autre</Chip>
       <Text c="red">{form.getInputProps('type').error}</Text>

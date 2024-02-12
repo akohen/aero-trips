@@ -42,6 +42,7 @@ type ActivityType =  // food, lodging, bike, hiking, transit, car, poi, historic
   'poi' | // A voir du ciel
   'aero' | // En rapport avec l'aéronautique
   'nautical' | // Activités nautiques
+  'nature' | // Nature et animaux
   'other' // autre activité
 
 type Trip = {
