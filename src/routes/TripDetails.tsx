@@ -7,7 +7,7 @@ import { generateHTML } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit"
 import {default as TiptapLink} from "@tiptap/extension-link"
 import Image from "@tiptap/extension-image"
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, Polyline, TileLayer } from "react-leaflet";
 import { AirfieldMarker } from "../components/AirfieldUtils";
 import { ActivityMarker } from "../components/ActivityUtils";
 import { latLngBounds } from "leaflet";
@@ -29,6 +29,7 @@ const TripDetails = ({trips, airfields, activities} : Data) => {
       <AirfieldMarker key={key} id={key} airfield={e as Airfield} /> : 
       <ActivityMarker key={key} id={key} activity={e as Activity} />
     );
+  const linePositions = items.map( ([e,]) => ({lat: e.position.latitude, lng: e.position.longitude}))
   
   const bounds = latLngBounds([])
   items.forEach(([e]) => bounds.extend([e.position.latitude,e.position.longitude]))
@@ -58,6 +59,7 @@ const TripDetails = ({trips, airfields, activities} : Data) => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           {markers}
+          <Polyline positions={linePositions} />
         </MapContainer>
         </div>
     </Group>
