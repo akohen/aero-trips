@@ -38,7 +38,7 @@ const TripDetails = ({trips, airfields, activities} : Data) => {
     <Title><BackButton />Fiche {trip.name} <EditButton /></Title>
     <Text>{tripTypes[trip.type]}</Text>
 
-    <Group grow preventGrowOverflow={false}>
+    <Group grow preventGrowOverflow={false} align="flex-start">
       <Stepper
         active={-1}
         orientation="vertical"
@@ -53,7 +53,7 @@ const TripDetails = ({trips, airfields, activities} : Data) => {
         />))}
       </Stepper>
        <div style={{minWidth: `min(400px,90vw)`, flex:'2 1 0'}}>
-        <MapContainer style={{ height: "500px" }} bounds={bounds.pad(0.1)} scrollWheelZoom={true} >
+        <MapContainer style={{ height: "600px" }} bounds={bounds.pad(0.1)} scrollWheelZoom={true} >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
