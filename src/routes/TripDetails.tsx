@@ -11,15 +11,21 @@ import { MapContainer, Polyline, TileLayer } from "react-leaflet";
 import { AirfieldMarker } from "../components/AirfieldUtils";
 import { ActivityMarker } from "../components/ActivityUtils";
 import { latLngBounds } from "leaflet";
-import { IconBulb, IconPlaneArrival } from "@tabler/icons-react";
+import { IconBulb, IconDots, IconPlaneArrival } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 
 const TripDetails = ({trips, airfields, activities} : Data) => {
   const params = useParams();
-  if(trips.size == 0) return (<p>Chargement en cours</p>)
+  const [skip, setSkip] = useState(false)
   const trip = params.tripId ? trips.get(params.tripId) : undefined;
+  useEffect(() => {
+    if(trip && trip.steps.length > 6) setSkip(true)
+  }, [trip])
+  if(trips.size == 0) return (<p>Chargement en cours</p>)
 
   if(!trip) return (<p>Activité/lieu inconnu</p>)
-
+  
+  
   const tripTypes = {short:'Vol de quelques heures', day:'Sortie à la journée', multi:'Voyage sur plusieurs jours'}
   const items = trip.steps
     .map(e => ([{activities, airfields}[e.type].get(e.id), e.id, e.type] as [Activity|Airfield, string, string]))
@@ -43,14 +49,28 @@ const TripDetails = ({trips, airfields, activities} : Data) => {
         active={-1}
         orientation="vertical"
         style={{minWidth: '325px', flex:'1 1 0'}}
-        styles={{ stepLabel: {lineHeight:'var(--stepper-icon-size)'}}}
+        styles={{
+          stepLabel: {lineHeight:'var(--stepper-icon-size)'}, 
+          verticalSeparator: {borderLeftColor:"#ccc"},
+        }}
       >
-        {items.map(([e, id, type],i) =>(
-        <Stepper.Step
-          key={i}
-          label={<Link to={`/${type}/${id}`}>{e.name}</Link>}
-          icon={type == 'airfields' ? <IconPlaneArrival style={{ width: rem(18), height: rem(18) }} /> : <IconBulb style={{ width: rem(18), height: rem(18) }} />}
-        />))}
+        {items.map(([e, id, type],i) => {
+          if(skip && i == 2) return (
+          <Stepper.Step
+            key={i}
+            label={<a onClick={() => setSkip(false)}>Voir tout</a>}
+            icon={<IconDots style={{ width: rem(18), height: rem(18) }} />}
+            styles={i == 2 ? {verticalSeparator: {borderLeftStyle:"dashed"}} : {}}
+          />)
+          if(skip && i > 1 && i < items.length - 2) return 
+          return (
+            <Stepper.Step
+              key={i}
+              label={<Link to={`/${type}/${id}`}>{e.name}</Link>}
+              icon={type == 'airfields' ? <IconPlaneArrival style={{ width: rem(18), height: rem(18) }} /> : <IconBulb style={{ width: rem(18), height: rem(18) }} />}
+              styles={skip && i == 1 ? {verticalSeparator: {borderLeftStyle:"dashed"}} : {}}
+            />)
+        })}
       </Stepper>
        <div style={{minWidth: `min(400px,90vw)`, flex:'2 1 0'}}>
         <MapContainer style={{ height: "600px" }} bounds={bounds.pad(0.1)} scrollWheelZoom={true} >
