@@ -58,7 +58,7 @@ const TripDetails = ({trips, airfields, activities} : Data) => {
           if(skip && i == 2) return (
           <Stepper.Step
             key={i}
-            label={<a onClick={() => setSkip(false)}>Voir tout</a>}
+            label={<a className="clickable" onClick={() => setSkip(false)}>Voir toutes les étapes</a>}
             icon={<IconDots style={{ width: rem(18), height: rem(18) }} />}
             styles={i == 2 ? {verticalSeparator: {borderLeftStyle:"dashed"}} : {}}
           />)
@@ -72,6 +72,7 @@ const TripDetails = ({trips, airfields, activities} : Data) => {
             />)
         })}
       </Stepper>
+      
        <div style={{minWidth: `min(400px,90vw)`, flex:'2 1 0'}}>
         <MapContainer style={{ height: "600px" }} bounds={bounds.pad(0.1)} scrollWheelZoom={true} >
           <TileLayer
@@ -83,7 +84,6 @@ const TripDetails = ({trips, airfields, activities} : Data) => {
         </MapContainer>
         </div>
     </Group>
-
     {trip.description != undefined && <Paper 
     bg="gray.1" mt={"md"}
     className="tiptap-content"
