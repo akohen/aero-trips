@@ -99,7 +99,7 @@ export const editorProps = {
   handleDrop: function(view: EditorView, event: DragEvent, _slice: Slice, moved: boolean) {
     if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) { // if dropping external files
       const file = event.dataTransfer.files[0]; 
-      if ((file.type === "image/jpeg" || file.type === "image/png") && file.size < 2**20) { // check valid image type under 10MB
+      if ((file.type === "image/jpeg" || file.type === "image/png") && file.size < 2**19) { // check valid image type under 500kB
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = function () {

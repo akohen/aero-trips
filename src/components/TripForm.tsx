@@ -92,7 +92,7 @@ const TripForm = ({submitFn, trip, airfields, activities}:
     extensions: [
       StarterKit,
       Link,
-      TiptapImage.configure({allowBase64: true}),
+      TiptapImage.configure({allowBase64: false}),
     ],
     editorProps: editorProps,
     content: form.values['description'],

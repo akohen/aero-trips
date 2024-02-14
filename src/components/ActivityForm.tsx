@@ -34,7 +34,7 @@ const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => voi
     extensions: [
       StarterKit,
       Link,
-      TiptapImage.configure({allowBase64: true}),
+      TiptapImage.configure({allowBase64: false}),
     ],
     editorProps: editorProps,
     content: form.values['description'],
