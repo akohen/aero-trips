@@ -89,7 +89,7 @@ export const filterActivities = (airfields: Map<string,Airfield>, activities: Ma
         const target = {activities, airfields}[targetType]?.get(targetId)
         if(target && (haversineDistance(item.position, target.position) > filters.distance*1000)) return false
       } 
-      if( filters.type.length > 0 && !filters.type.every(t => item.type.includes(t as ActivityType))) return false
+      if( filters.type.length > 0 && !filters.type.some(t => item.type.includes(t as ActivityType))) return false
       return [item.name, key].some(x => x?.toLowerCase().includes(query))
     })
   )
