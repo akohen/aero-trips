@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Activity, Airfield, Data, Trip } from "..";
-import { Button, Group } from "@mantine/core";
+import { Button, Group, Paper } from "@mantine/core";
 import { IconMapRoute, IconBulb } from "@tabler/icons-react";
 import ActivityForm from "../components/ActivityForm";
 import { slug } from "../utils";
@@ -45,11 +45,16 @@ const AddData = (data: Data) => {
   || type == 'trips' && (<TripForm trip={entity as Trip} submitFn={submitFn} airfields={data.airfields} activities={data.activities} />) 
   || type == 'airfields' && (<AirfieldForm airfield={entity as Airfield} submitFn={submitFn} />) 
   : (
-    <Group justify="center">
-      <p>Proposer</p>
-      <Button leftSection={<IconBulb size={14} />} onClick={() => setType('activities')}>Lieu ou activité</Button>
-      <Button leftSection={<IconMapRoute size={14} />} onClick={() => setType('trips')}>Sortie</Button>
-    </Group>
+    <Paper>
+      <Group justify="center">
+        <p>Proposer</p>
+        <Button leftSection={<IconBulb size={14} />} onClick={() => setType('activities')}>Lieu ou activité</Button>
+        <Button leftSection={<IconMapRoute size={14} />} onClick={() => setType('trips')}>Sortie</Button>
+      </Group>
+      <Group justify="center">
+        <p>Il est également possible d'ajouter des lieux ou activités depuis la carte, en faisant un clic droit à l'emplacement où ajouter ce nouveau lieu.</p>
+      </Group>
+    </Paper>
   )
 }
 
