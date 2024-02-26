@@ -9,7 +9,7 @@ import { Data } from '.';
 import TripStepSelect from './components/TripStepSelect';
 
 function Layout({airfields, activities}: Data) {
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { toggle, close }] = useDisclosure();
   const location = useLocation()
   const navigate = useNavigate();
   type FinderOptions = {group: string, items: {label: string, value: string}[]}[]
@@ -110,7 +110,7 @@ function Layout({airfields, activities}: Data) {
           </Button>
           <TripStepSelect
             data={data}
-            addItem={(value: string) => navigate(value)}
+            addItem={(value: string) => {navigate(value); close()}}
             placeholder="Accès direct"
           />
           </Stack>
