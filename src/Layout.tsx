@@ -43,7 +43,7 @@ function Layout({airfields, activities}: Data) {
         }}
         padding="md"
       >
-      <AppShell.Header>
+      <AppShell.Header  zIndex={1200}>
         <Group px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           <IconPlaneArrival />
