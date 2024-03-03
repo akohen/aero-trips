@@ -22,7 +22,7 @@
     "@tiptap/pm": "^2.1.16",
     "@tiptap/react": "^2.1.16",
     "@tiptap/starter-kit": "^2.1.16",
-    "firebase": "^10.7.1",
+    "firebase": "^10.8.1",
     "haversine-distance": "^1.2.1",
     "leaflet": "^1.9.4",
     "react": "^18.2.0",
