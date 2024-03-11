@@ -14,14 +14,16 @@ import carActivity from '/map-pin-car.svg'
 import hikingActivity from '/map-pin-hiking.svg'
 import nauticalActivity from '/map-pin-nautical.svg'
 import natureActivity from '/map-pin-nature.svg'
+import cultureActivity from '/map-pin-culture.svg'
 
 const selectIcon = (types: ActivityType[]) => {
   if(types.includes('lodging')) return lodgingActivity
   if(types.includes('nautical')) return nauticalActivity
-  if(types.includes('food')) return foodActivity
   if(types.includes('bike')) return bikeActivity
+  if(types.includes('culture')) return cultureActivity
   if(types.includes('nature')) return natureActivity
   if(types.includes('hiking')) return hikingActivity
+  if(types.includes('food')) return foodActivity
   if(types.includes('transit')) return transitActivity
   if(types.includes('car')) return carActivity
   if(types.includes('poi')) return eyeActivity
