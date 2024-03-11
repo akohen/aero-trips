@@ -9,7 +9,7 @@ import {default as TiptapLink} from "@tiptap/extension-link"
 import Image from "@tiptap/extension-image"
 import { MapContainer, Polyline, TileLayer } from "react-leaflet";
 import { AirfieldMarker } from "../components/AirfieldUtils";
-import { ActivityMarker } from "../components/ActivityUtils";
+import ActivityMarker from '../components/ActivityMarker';
 import { latLngBounds } from "leaflet";
 import { IconBulb, IconDots, IconPlaneArrival } from "@tabler/icons-react";
 import { useEffect, useState } from "react";

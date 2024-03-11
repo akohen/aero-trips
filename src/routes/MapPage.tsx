@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { LatLngExpression } from 'leaflet';
 import { filterActivities, filterAirfields } from '../utils';
 import { AirfieldMarker } from '../components/AirfieldUtils';
-import { ActivityMarker } from '../components/ActivityUtils';
+import ActivityMarker from '../components/ActivityMarker';
 import { Dispatch, SetStateAction } from 'react';
 import { ActionIcon } from '@mantine/core';
 import { IconFilterX } from '@tabler/icons-react';
