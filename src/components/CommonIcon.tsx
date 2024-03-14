@@ -5,5 +5,5 @@ export const CommonIcon = ({iconType, ...rest}: {iconType: string}) => {
   const {label, icon, style} = iconsList.get(iconType) || {}
   if(!icon) return
   const Icon = icon
-  return <Tooltip {...rest} label={label} zIndex={1001}><Icon {...style} /></Tooltip>
+  return <Tooltip {...rest} label={label} zIndex={1201}><Icon {...style} /></Tooltip>
 }
