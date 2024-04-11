@@ -34,7 +34,8 @@ return (<>
         <Chip value="CAP" size='xs'><IconCircleCheck size={16} color="teal" />Accès public</Chip>
         <Chip value="RST" size='xs'><IconForbid size={16} color="orange" /> Accès restreint</Chip>
         <Chip value="toilet" size='xs'><IconToiletPaper size={16} /> Toilettes</Chip>
-        <Chip value="100LL" size='xs'><IconGasStation size={16} /> 100LL</Chip>
+        <Chip value="100LL" size='xs'><IconGasStation size={16} color="darkblue" /> 100LL</Chip>
+        <Chip value="SP9X" size='xs'><IconGasStation size={16} color="green" /> SP95/98</Chip>
         <Chip value="concrete" size='xs'><IconRoad size={16} /> Piste en dur</Chip>
       </Group>
     </Chip.Group>
