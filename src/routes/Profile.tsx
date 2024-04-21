@@ -10,7 +10,7 @@ const Profile = ({profile, setProfile} : Data) => {
 
   const form = useForm({
     initialValues: {
-      displayName: '',
+      displayName: profile?.displayName || '',
     },
     validate: {
       displayName: (value: string) => (value.length < 2 ? 'Le nom doit avoir au moins 2 charactères' : null),
@@ -18,6 +18,7 @@ const Profile = ({profile, setProfile} : Data) => {
   });
 
   useEffect(() => {
+    console.log("updated profile", profile)
     if(profile != null) {
       form.setInitialValues({displayName:profile.displayName})
       form.setValues({displayName:profile.displayName})
