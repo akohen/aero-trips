@@ -1,5 +1,5 @@
 import { LayerGroup, LayersControl, MapContainer, TileLayer } from 'react-leaflet'
-import { Activity, Airfield, ADfilter, ActivityFilter } from '..';
+import { ADfilter, ActivityFilter, Data } from '..';
 import { useParams } from 'react-router-dom';
 import { LatLngExpression } from 'leaflet';
 import { filterActivities, filterAirfields } from '../utils';
@@ -11,7 +11,7 @@ import { IconFilterX } from '@tabler/icons-react';
 import MapMenu from '../components/MapMenu';
 
 function MapPage({airfields, activities, ADfilter, ActFilter, setADfilter, setActFilter} : 
-  {airfields: Map<string,Airfield>, activities: Map<string,Activity>, ADfilter: ADfilter, ActFilter:ActivityFilter, setADfilter: Dispatch<SetStateAction<ADfilter>>, setActFilter:Dispatch<SetStateAction<ActivityFilter>>}) {
+  Data & {ADfilter: ADfilter, ActFilter:ActivityFilter, setADfilter: Dispatch<SetStateAction<ADfilter>>, setActFilter:Dispatch<SetStateAction<ActivityFilter>>}) {
   const params = useParams();
   const center: LatLngExpression = (params.lat && params.lng) ? [parseFloat(params.lat), parseFloat(params.lng)] : [48.81,2.06]
   const airfieldsMarkers = [...filterAirfields(airfields, activities, ADfilter)].map( ([key,e]) => <AirfieldMarker key={key} id={key} airfield={e} />);

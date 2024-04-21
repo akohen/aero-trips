@@ -1,6 +1,6 @@
 
 import { Table, Text } from '@mantine/core';
-import { Activity, ActivityFilter, Airfield } from '..';
+import { ActivityFilter, Data } from '..';
 import { useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
@@ -11,7 +11,7 @@ import { ActivityTitle } from '../components/ActivityUtils';
 
 
 function ActivitiesList({airfields, activities, filters, setFilters} : 
-  {airfields: Map<string,Airfield>, activities: Map<string,Activity>, filters: ActivityFilter, setFilters: Dispatch<SetStateAction<ActivityFilter>>}) {
+  Data & {filters: ActivityFilter, setFilters: Dispatch<SetStateAction<ActivityFilter>>}) {
   
   const [data, setData] = useState(activities);
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
 
 import { Group, Table, Text } from '@mantine/core';
-import { ADfilter, Activity, Airfield } from '..';
+import { ADfilter, Airfield, Data } from '..';
 import { useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
 import { useEffect, useState, Dispatch, SetStateAction } from 'react';
@@ -10,7 +10,7 @@ import { AirfieldTitle } from '../components/AirfieldUtils';
 import { ButtonVACMap, ButtonViewOnMap } from '../components/CommonButtons';
 
 function AirfieldsPage({airfields, activities, filters, setFilters} : 
-  {airfields: Map<string,Airfield>, activities: Map<string,Activity>, filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) {
+  Data & {filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) {
   const [data, setData] = useState(airfields);
   const navigate = useNavigate();
   const AdTd = (e: Airfield) => ({

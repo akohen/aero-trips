@@ -13,6 +13,7 @@ const testData: Data = {
   activities: new Map([["XXXX", { name: "name", position: new GeoPoint(0, 0), type: ["other"], description: "description" }]]),
   trips: new Map(),
   saveChange: vi.fn(),
+  profile: null,
 }
 
 test('renders learn react link', () => {
