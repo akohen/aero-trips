@@ -57,5 +57,12 @@ export const DataProvider = () => {
     })
   },[])
 
-  return (<App airfields={airfields} activities={activities} trips={trips} saveChange={saveChange} profile={profile} />)
+  return (<App
+    airfields={airfields}
+    activities={activities}
+    trips={trips}
+    saveChange={saveChange}
+    profile={profile}
+    setProfile={setProfile}
+  />)
 }

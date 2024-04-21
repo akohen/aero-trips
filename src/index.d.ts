@@ -6,6 +6,7 @@ type Data = {
   trips: Map<string,Trip>,
   saveChange: (obj: object) => void,
   profile: Profile?,
+  setProfile: React.Dispatch<React.SetStateAction<Profile | null>>,
 }
 
 type Airfield = {

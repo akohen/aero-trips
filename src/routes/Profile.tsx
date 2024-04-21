@@ -1,10 +1,13 @@
 import { Button, Fieldset, TextInput } from "@mantine/core"
 import { IconLogout, IconBrandGoogleFilled } from "@tabler/icons-react"
 import { Data } from ".."
-import { googleLogout, googleLogin } from "../data/firebase"
+import { googleLogout, googleLogin, db } from "../data/firebase"
 import { useForm } from "@mantine/form"
+import { useEffect } from "react"
+import { doc, setDoc } from "firebase/firestore"
 
-const Profile = ({profile} : Data) => {
+const Profile = ({profile, setProfile} : Data) => {
+
   const form = useForm({
     initialValues: {
       displayName: '',
@@ -14,13 +17,26 @@ const Profile = ({profile} : Data) => {
     }
   });
 
+  useEffect(() => {
+    if(profile != null) {
+      form.setInitialValues({displayName:profile.displayName})
+      form.setValues({displayName:profile.displayName})
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile])
+
+  const saveProfile = (values: typeof form.values) => {
+    if(!profile) return
+    setDoc(doc(db, "profiles", profile.uid), {displayName:values.displayName})
+    setProfile({...profile, ...values})
+  }
 
   return (<>
   <h1>Votre profil utilisateur</h1>
   <div className="card">
     { profile ? 
       <>
-        <form onSubmit={form.onSubmit(v => {console.log(v)})}>
+        <form onSubmit={form.onSubmit(saveProfile)}>
         <Fieldset legend='Modifier vos informations'>
         <TextInput
             label="Votre nom ou pseudo"
