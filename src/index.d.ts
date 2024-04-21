@@ -5,6 +5,7 @@ type Data = {
   activities: Map<string,Activity>,
   trips: Map<string,Trip>,
   saveChange: (obj: object) => void,
+  profile: Profile?,
 }
 
 type Airfield = {
@@ -67,4 +68,10 @@ type ActivityFilter = {
   target: string | null,
   distance: number | '',
   type: string[],
+}
+
+type Profile = {
+  displayName: string,
+  uid: string,
+  email: string,
 }

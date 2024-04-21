@@ -13,6 +13,7 @@ import TripDetails from "./routes/TripDetails";
 import AddData from "./routes/AddData";
 import { useState } from "react";
 import { ADfilter } from '.';
+import Profile from "./routes/Profile";
 
 
 export default function App(data : Data) {
@@ -36,6 +37,7 @@ export default function App(data : Data) {
     <Routes>
       <Route element={<Layout {...data} />}>
         <Route path="/"                       element={<Home />}/>
+        <Route path="/profile"                element={<Profile {...data} />}/>
         <Route path="/airfields"              element={<AirfieldsList {...data} filters={ADfilter} setFilters={setADfilter} />} />
         <Route path="/airfields/:airfieldId"  element={<AirfieldDetails {...data} />} />
         <Route path="/activities"             element={<ActivitiesList {...data} filters={ActFilter} setFilters={setActFilter} />} />
