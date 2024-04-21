@@ -1,3 +1,4 @@
+import { Text } from "@mantine/core"
 import { Link } from "react-router-dom"
 
 const Home = () => {
@@ -20,6 +21,7 @@ const Home = () => {
     <p>
       ⚠ Ce site n'est pas une source d'information aéronautique, et ne peut pas se substituer à la documentation réglementaire lors de la préparation d'un vol.
     </p>
+    <Text size="sm">Aéro trips version {APP_VERSION}</Text>
   </div>
 </>)}
 

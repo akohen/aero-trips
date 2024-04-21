@@ -9,6 +9,9 @@ export default defineConfig({
     react(),
     //VitePWA({ registerType: 'autoUpdate', devOptions: { enabled: false } }),
   ],
+  define: {
+    APP_VERSION: JSON.stringify(process.env.npm_package_version),
+  },
   test: {
     globals: true,
     environment: 'happy-dom',
