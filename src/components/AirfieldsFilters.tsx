@@ -9,7 +9,7 @@ import ObjectFinder from "./ObjectFinder"
 const AirfieldsFilters = ({airfields, activities, filters, setFilters}: 
 {airfields:Map<string, Airfield>, activities:Map<string, Activity>, filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) => {
 
-  const [opened, { toggle }] = useDisclosure(Object.values(filters).some(x => Array.isArray(x) ? x.length: x));
+  const [opened, { toggle }] = useDisclosure(true)
 
 return (<>
 <Collapse in={opened}>

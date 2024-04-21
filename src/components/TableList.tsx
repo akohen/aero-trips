@@ -12,7 +12,7 @@ function TableList<T>( {data, row, empty, columns} :
     {data: Map<string,T>, row:(arg0: [string,T], arg1: number)=>JSX.Element, empty: JSX.Element, columns: string[]} ) {
 
   const [activePage, setPage] = useState(1);
-  const chunks = chunk([...data],17)
+  const chunks = chunk([...data],15)
   useEffect(() => {
     const page = Math.min(activePage, chunks.length)
     setPage(Math.max(1, page))
