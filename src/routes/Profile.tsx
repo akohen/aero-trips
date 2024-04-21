@@ -18,7 +18,6 @@ const Profile = ({profile, setProfile} : Data) => {
   });
 
   useEffect(() => {
-    console.log("updated profile", profile)
     if(profile != null) {
       form.setInitialValues({displayName:profile.displayName})
       form.setValues({displayName:profile.displayName})
@@ -28,7 +27,7 @@ const Profile = ({profile, setProfile} : Data) => {
 
   const saveProfile = (values: typeof form.values) => {
     if(!profile) return
-    setDoc(doc(db, "profiles", profile.uid), {displayName:values.displayName})
+    setDoc(doc(db, "profiles", profile.uid), {displayName:values.displayName},{merge:true})
     setProfile({...profile, ...values})
   }
 
