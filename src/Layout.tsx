@@ -3,12 +3,13 @@ import '@mantine/tiptap/styles.css';
 import { MantineProvider, AppShell, Burger, Group, Button, Stack } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Link, Outlet, matchPath, useLocation, useNavigate } from "react-router-dom";
-import { IconBulb, IconCirclePlus, IconHome, IconMap, IconMapRoute, IconPlaneArrival } from '@tabler/icons-react';
+import { IconBrandGoogleFilled, IconBulb, IconCirclePlus, IconHome, IconLogout, IconMap, IconMapRoute, IconPlaneArrival, IconUser } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Data } from '.';
 import TripStepSelect from './components/TripStepSelect';
+import { googleLogin, googleLogout } from './data/firebase';
 
-function Layout({airfields, activities}: Data) {
+function Layout({airfields, activities, profile}: Data) {
   const [opened, { toggle, close }] = useDisclosure();
   const location = useLocation()
   const navigate = useNavigate();
@@ -108,6 +109,35 @@ function Layout({airfields, activities}: Data) {
           >
             Ajout
           </Button>
+          {profile ? 
+          <>
+            <Button 
+              component={Link} 
+              onClick={toggle} 
+              to="/profile"  
+              leftSection={<IconUser size={14} />}
+              variant={location.pathname.startsWith('/profile') ? 'filled' : 'light'}
+            >
+            Mon profil
+            </Button>
+            <Button
+              onClick={googleLogout}
+              leftSection={<IconLogout size={14} />}
+              variant='light'
+            >
+            Déconnexion
+            </Button>
+          </>
+          : 
+          <Button
+              onClick={googleLogin}
+              leftSection={<IconBrandGoogleFilled size={14} />}
+              variant='light'
+            >
+            Connexion
+          </Button>
+          }
+          
           <TripStepSelect
             data={data}
             addItem={(value: string) => {navigate(value); close()}}

@@ -1,7 +1,7 @@
 import { Button, Fieldset, Select, TextInput } from "@mantine/core"
-import { IconLogout, IconBrandGoogleFilled } from "@tabler/icons-react"
+import { IconBrandGoogleFilled } from "@tabler/icons-react"
 import { Data } from ".."
-import { googleLogout, googleLogin, db } from "../data/firebase"
+import { googleLogin, db } from "../data/firebase"
 import { useForm } from "@mantine/form"
 import { useEffect } from "react"
 import { doc, setDoc } from "firebase/firestore"
@@ -43,8 +43,7 @@ const Profile = ({profile, setProfile, airfields} : Data) => {
   <h1>Votre profil utilisateur</h1>
   <div className="card">
     { profile ? 
-      <>
-        <form onSubmit={form.onSubmit(saveProfile)}>
+      <form onSubmit={form.onSubmit(saveProfile)}>
         <Fieldset legend='Modifier vos informations'>
         <TextInput
           label="Votre nom ou pseudo"
@@ -61,9 +60,8 @@ const Profile = ({profile, setProfile, airfields} : Data) => {
         />
         <Button mt="md" type="submit">Enregistrer</Button>
         </Fieldset>
-        </form>
-        Connecté en tant que {profile.displayName} <Button leftSection={<IconLogout />} onClick={googleLogout} variant='filled'>Déconnexion</Button>
-      </> :
+      </form>
+      :
       <p><Button leftSection={<IconBrandGoogleFilled />} onClick={googleLogin} variant='filled'>Se connecter avec Google</Button></p>
     }
   </div>
