@@ -4,7 +4,7 @@ import { initializeFirestore } from "firebase/firestore";
 
 const firebaseConfig: FirebaseOptions = {
   apiKey: "AIzaSyAleHj_gty6XncQLEDlLn3Ih7X08KuQ-jw",
-  authDomain: "aero-trips.firebaseapp.com",
+  authDomain: "aero-trips.web.app",
   projectId: "aero-trips",
   storageBucket: "aero-trips.appspot.com",
   messagingSenderId: "484361364174",
