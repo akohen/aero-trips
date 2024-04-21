@@ -14,6 +14,7 @@ const testData: Data = {
   trips: new Map(),
   saveChange: vi.fn(),
   profile: null,
+  setProfile: vi.fn(),
 }
 
 test('renders learn react link', () => {
