@@ -1,4 +1,4 @@
-import { Button, Fieldset, TextInput } from "@mantine/core"
+import { Button, Fieldset, Select, TextInput } from "@mantine/core"
 import { IconLogout, IconBrandGoogleFilled } from "@tabler/icons-react"
 import { Data } from ".."
 import { googleLogout, googleLogin, db } from "../data/firebase"
@@ -6,11 +6,16 @@ import { useForm } from "@mantine/form"
 import { useEffect } from "react"
 import { doc, setDoc } from "firebase/firestore"
 
-const Profile = ({profile, setProfile} : Data) => {
+const Profile = ({profile, setProfile, airfields} : Data) => {
+
+  const data = [...airfields].map(([id, ad]) => (
+    {label: `${ad.codeIcao} - ${ad.name}`, value:id}
+  ))  
 
   const form = useForm({
     initialValues: {
       displayName: profile?.displayName || '',
+      homebase: profile?.homebase || '',
     },
     validate: {
       displayName: (value: string) => (value.length < 2 ? 'Le nom doit avoir au moins 2 charactères' : null),
@@ -19,15 +24,18 @@ const Profile = ({profile, setProfile} : Data) => {
 
   useEffect(() => {
     if(profile != null) {
-      form.setInitialValues({displayName:profile.displayName})
-      form.setValues({displayName:profile.displayName})
+      form.setInitialValues({displayName:profile.displayName, homebase:profile.homebase||''})
+      form.setValues({displayName:profile.displayName, homebase:profile.homebase})
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile])
 
   const saveProfile = (values: typeof form.values) => {
     if(!profile) return
-    setDoc(doc(db, "profiles", profile.uid), {displayName:values.displayName},{merge:true})
+    setDoc(doc(db, "profiles", profile.uid), {
+      displayName: values.displayName,
+      homebase: values.homebase,
+    }, {merge:true})
     setProfile({...profile, ...values})
   }
 
@@ -39,9 +47,18 @@ const Profile = ({profile, setProfile} : Data) => {
         <form onSubmit={form.onSubmit(saveProfile)}>
         <Fieldset legend='Modifier vos informations'>
         <TextInput
-            label="Votre nom ou pseudo"
-            {...form.getInputProps('displayName')}
-            />
+          label="Votre nom ou pseudo"
+          {...form.getInputProps('displayName')}
+        />
+        <Select
+          mt="md"
+          {...form.getInputProps('homebase')}
+          label="Votre terrain"
+          placeholder="Entrez le nom ou le code OACI"
+          data={data}
+          searchable
+          clearable
+        />
         <Button mt="md" type="submit">Enregistrer</Button>
         </Fieldset>
         </form>

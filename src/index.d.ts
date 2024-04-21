@@ -75,4 +75,5 @@ type Profile = {
   displayName: string,
   uid: string,
   email: string,
+  homebase?: string,
 }
