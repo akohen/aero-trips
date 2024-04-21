@@ -10,10 +10,13 @@ import { ActionIcon } from '@mantine/core';
 import { IconFilterX } from '@tabler/icons-react';
 import MapMenu from '../components/MapMenu';
 
-function MapPage({airfields, activities, ADfilter, ActFilter, setADfilter, setActFilter} : 
+function MapPage({airfields, activities, profile, ADfilter, ActFilter, setADfilter, setActFilter} : 
   Data & {ADfilter: ADfilter, ActFilter:ActivityFilter, setADfilter: Dispatch<SetStateAction<ADfilter>>, setActFilter:Dispatch<SetStateAction<ActivityFilter>>}) {
   const params = useParams();
-  const center: LatLngExpression = (params.lat && params.lng) ? [parseFloat(params.lat), parseFloat(params.lng)] : [48.81,2.06]
+  const defaultCenter: LatLngExpression = (profile?.homebase && airfields.has(profile.homebase)) ? 
+    [airfields.get(profile.homebase)!.position.latitude, airfields.get(profile.homebase)!.position.longitude] : 
+    [49,2]
+  const center: LatLngExpression = (params.lat && params.lng) ? [parseFloat(params.lat), parseFloat(params.lng)] : defaultCenter
   const airfieldsMarkers = [...filterAirfields(airfields, activities, ADfilter)].map( ([key,e]) => <AirfieldMarker key={key} id={key} airfield={e} />);
 
   const activitiesMarkers = [...filterActivities(airfields, activities, ActFilter)].map( ([key,e]) => <ActivityMarker key={key} id={key} activity={e} />);
