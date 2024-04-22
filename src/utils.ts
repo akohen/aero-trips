@@ -1,8 +1,9 @@
 import haversineDistance from "haversine-distance";
-import { Activity, Airfield, ADfilter, ActivityFilter, ActivityType } from ".";
+import { Activity, Airfield, ADfilter, ActivityFilter, ActivityType, Profile } from ".";
 import { IconBan, IconBed, IconBike, IconBulb, IconBus, IconCar, IconCircleCheck, IconEye, IconForbid, IconGasStation, IconPaw, IconPlane, IconSailboat, IconShoe, IconSoup, IconToiletPaper, IconTower } from "@tabler/icons-react";
 import { Slice } from "@tiptap/pm/model";
 import { EditorView } from "@tiptap/pm/view";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 export const slug = (str: string) => {
   return str
@@ -118,3 +119,42 @@ export const editorProps = {
     return false; // not handled use default behaviour
   }
 }
+
+export const editorPropsWithProfile = (profile: Profile|null) => ({
+  handleDrop: function(view: EditorView, event: DragEvent, _slice: Slice, moved: boolean) {
+    if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) { // if dropping external files
+      const file = event.dataTransfer.files[0]; 
+      if ((file.type === "image/jpeg" || file.type === "image/png") && file.size < 2**19) { // check valid image type under 512kB
+        if(profile) {
+          const storage = getStorage();
+          const storageRef = ref(storage, `img/${profile.uid}/${Math.random().toString(36).substring(2)}`);
+          uploadBytes(storageRef, file, {contentType: file.type})
+          .catch(e => console.error(e))
+          .then(() => {
+            getDownloadURL(storageRef).then((url) => {
+              const { schema } = view.state;
+              const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
+              const node = schema.nodes.image.create({ src: url }); // creates the image element
+              const transaction = view.state.tr.insert(coordinates!.pos, node); // places it in the correct position
+              return view.dispatch(transaction);
+            })
+          })
+          
+        } else {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = function () {
+            const { schema } = view.state;
+            const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
+            const node = schema.nodes.image.create({ src: reader.result }); // creates the image element
+            const transaction = view.state.tr.insert(coordinates!.pos, node); // places it in the correct position
+            return view.dispatch(transaction);
+          };
+        }
+        
+      } else {window.alert("Les images doivent être au format .png ou .jpg et faire moins de 500 ko")}
+      return true; // handled
+    }
+    return false; // not handled use default behaviour
+  }
+})

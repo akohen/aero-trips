@@ -1,6 +1,6 @@
 import { Fieldset, Group, Button, TextInput, InputLabel, Title, Center, Text, Radio, Chip } from "@mantine/core"
 import { useEditor } from "@tiptap/react";
-import { Activity, ActivityType, Airfield, Trip } from "..";
+import { ActivityType, Data, Trip } from "..";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Link } from "@tiptap/extension-link";
 import { useForm } from "@mantine/form";
@@ -12,11 +12,11 @@ import { default as TiptapImage } from "@tiptap/extension-image";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { IconGripVertical, IconX } from "@tabler/icons-react";
 import TripStepSelect from "./TripStepSelect";
-import { editorProps } from "../utils";
 import { CommonIcon } from "./CommonIcon";
+import { editorPropsWithProfile } from "../utils";
 
-const TripForm = ({submitFn, trip, airfields, activities}: 
-  {submitFn: (document: object) => void, trip: Trip, airfields: Map<string, Airfield>, activities: Map<string, Activity>}) => {
+const TripForm = ({airfields, activities, profile, submitFn, trip}: 
+  Data & {submitFn: (document: object) => void, trip: Trip}) => {
   const [submitted, setSubmitted] = useState(false)
 
   type FinderOptions = {group: string, items: {label: string, value: string}[]}[]
@@ -94,10 +94,11 @@ const TripForm = ({submitFn, trip, airfields, activities}:
       Link,
       TiptapImage.configure({allowBase64: false}),
     ],
-    editorProps: editorProps,
+    editorProps: editorPropsWithProfile(profile),
     content: form.values['description'],
     onUpdate({ editor }) {
       form.setFieldValue('description', editor?.getJSON());
+      console.log(profile)
     }
   });
 
