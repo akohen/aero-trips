@@ -53,12 +53,13 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
     </Group>
     <List
       data={data} 
-      columns={['Nom','Durée']}
+      columns={['Nom','Durée', 'Proposée par']}
       empty={(<Text fw={500} ta="center">Aucun résultat</Text>)}
       row={([key, e]) => (
         <Table.Tr key={key}>
           <Table.Td {...TripTd(key)}>{<TripTitle trip={e} />}</Table.Td>
           <Table.Td>{tripTypes[e.type]}</Table.Td>
+          <Table.Td>{e.author ? e.author : 'Aero Trips'}</Table.Td>
         </Table.Tr>
       )}
     />
