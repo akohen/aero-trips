@@ -138,6 +138,7 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
       <TextInput
         withAsterisk
         style = {{ flex: 1 }}
+        miw={180}
         label="Nom de la sortie"
         placeholder="Nom de la sortie"
         {...form.getInputProps('name')}
