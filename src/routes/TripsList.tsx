@@ -1,10 +1,10 @@
 
-import { Table, Text, TextInput, rem } from '@mantine/core';
+import { Button, Group, Table, Text, TextInput, rem } from '@mantine/core';
 import { Trip } from '..';
 import { useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
 import { useEffect, useState } from 'react';
-import { IconSearch } from '@tabler/icons-react';
+import { IconCirclePlus, IconSearch } from '@tabler/icons-react';
 import { TripTitle } from '../components/TripsUtils';
 
 
@@ -36,12 +36,21 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
   }
   
   return (<>
-    <TextInput
-      placeholder="Chercher une activité"
-      leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-      value={search}
-      onChange={handleSearchChange}
-    />
+    <Group justify="space-between"  mt={'md'}>
+      <TextInput
+        placeholder="Chercher une sortie / voyage"
+        leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+        value={search}
+        onChange={handleSearchChange}
+        style={{flexGrow:2}}
+        />
+      <Button
+        onClick={() => navigate(`/trips/edit`)}
+        leftSection={<IconCirclePlus size={14} />}
+        >
+        Proposer une nouvelle sortie
+      </Button>
+    </Group>
     <List
       data={data} 
       columns={['Nom','Durée']}
