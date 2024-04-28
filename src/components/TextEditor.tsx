@@ -14,7 +14,7 @@ const TextEditor = ({editor}:{editor:Editor | null}) => (
       </RichTextEditor.ControlsGroup>
 
       <RichTextEditor.ControlsGroup>
-        <ImageControl editor={editor!} />
+        <ImageControl editor={editor} />
       </RichTextEditor.ControlsGroup>
 
       <RichTextEditor.ControlsGroup>
