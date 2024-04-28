@@ -14,7 +14,7 @@ import { latLngBounds } from "leaflet";
 import { IconBulb, IconDots, IconPlaneArrival } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
-const TripDetails = ({trips, airfields, activities} : Data) => {
+const TripDetails = ({trips, airfields, activities, profile} : Data) => {
   const params = useParams();
   const [skip, setSkip] = useState(false)
   const trip = params.tripId ? trips.get(params.tripId) : undefined;
@@ -41,7 +41,7 @@ const TripDetails = ({trips, airfields, activities} : Data) => {
   items.forEach(([e]) => bounds.extend([e.position.latitude,e.position.longitude]))
   
   return (<>
-    <Title><BackButton />Fiche {trip.name} <EditButton /></Title>
+    <Title><BackButton />Fiche {trip.name} {profile && profile.uid == trip.uid && <EditButton />}</Title>
     <Text>{tripTypes[trip.type]}</Text>
 
     <Group grow preventGrowOverflow={false} align="flex-start">

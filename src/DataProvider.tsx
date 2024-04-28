@@ -47,7 +47,6 @@ export const DataProvider = () => {
         const uid = user.uid;
         const query = await getDoc(doc(db, "profiles", uid))
         if(query.exists()) {
-          console.log(query.data())
           setProfile({...query.data(), uid} as Profile)
         } else {
           setDoc(doc(db, "profiles", uid), {email:user.email, displayName:user.displayName})

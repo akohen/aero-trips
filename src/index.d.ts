@@ -53,6 +53,8 @@ type Trip = {
   type: 'short' | 'day' | 'multi',
   steps: {type: 'activities'|'airfields', id:string}[],
   tags: ActivityType[],
+  uid: string,
+  author: string,
 }
 
 type ADfilter = {

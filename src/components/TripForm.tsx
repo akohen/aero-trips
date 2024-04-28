@@ -1,57 +1,60 @@
 import { Fieldset, Group, Button, TextInput, InputLabel, Title, Center, Text, Radio, Chip } from "@mantine/core"
 import { useEditor } from "@tiptap/react";
-import { ActivityType, Data, Trip } from "..";
+import { ActivityType, Data } from "..";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Link } from "@tiptap/extension-link";
 import { useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
 import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
 import { default as TiptapImage } from "@tiptap/extension-image";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import { IconGripVertical, IconX } from "@tabler/icons-react";
+import { IconBrandGoogleFilled, IconGripVertical, IconX } from "@tabler/icons-react";
 import TripStepSelect from "./TripStepSelect";
 import { CommonIcon } from "./CommonIcon";
-import { editorPropsWithProfile } from "../utils";
+import { editorPropsWithProfile, slug } from "../utils";
+import { db, googleLogin } from "../data/firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
-const TripForm = ({airfields, activities, profile, submitFn, trip}: 
-  Data & {submitFn: (document: object) => void, trip: Trip}) => {
-  const [submitted, setSubmitted] = useState(false)
-
+const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: string|undefined}) => {
   type FinderOptions = {group: string, items: {label: string, value: string}[]}[]
-    const [data, setData] = useState<FinderOptions>([])
+  const trip = id ? trips.get(id) : undefined
+  const [data, setData] = useState<FinderOptions>([])
+  const [error, setError] = useState('')
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    const airfieldsOptions = [...airfields] 
+      .map(([id, ad]) => (
+        {label: `${ad.name} - ${ad.codeIcao}`, value:`airfields/${id}`}
+      ))
+    const activitiesOptions = [...activities] 
+      .map(([id, activity]) => (
+        {label: activity.name, value:`activities/${id}`}
+      ))
 
-    useEffect(() => {
-      const airfieldsOptions = [...airfields] 
-        .map(([id, ad]) => (
-          {label: `${ad.name} - ${ad.codeIcao}`, value:`airfields/${id}`}
-        ))
-      const activitiesOptions = [...activities] 
-        .map(([id, activity]) => (
-          {label: activity.name, value:`activities/${id}`}
-        ))
+    setData([
+      {group:'Terrains', items:airfieldsOptions},
+      {group:'Activités', items:activitiesOptions},
+    ])
 
-      setData([
-        {group:'Terrains', items:airfieldsOptions},
-        {group:'Activités', items:activitiesOptions},
-      ])
-
-    },[airfields, activities])
+  },[airfields, activities])
 
   const form = useForm({
     initialValues: {
       name: trip ? trip.name : '',
       description: trip ? trip.description: '',
       steps: trip ? trip.steps : [] as {type: 'activities'|'airfields', id:string}[],
-      type: trip ? trip.type : '',
+      type: trip ? trip.type : '' as "short" | "day" | "multi",
       tags: trip ? trip.tags : [],
     },
     validate: {
       name: (value) => (value.length < 2 ? 'Le nom doit avoir au moins 2 charactères' : null),
-      steps: (value) => (value.length < 1 ? 'La sortie doit comporter au moins 1 étape' : null),
-      type: (value) => (value == '' ? 'Choisir une durée de sortie' : null),
+      steps: (value) => (value.length < 2 ? 'La sortie doit comporter au moins 2 étapes' : null),
+      type: (value) => (!value ? 'Choisir une durée de sortie' : null),
       tags: (value: ActivityType[]) => value.length == 0 ? 'Choisir au moins 1 thème' : null,
+      description: (value) => value.length == 0 ? 'La description ne peut pas être vide' : null,
     }
   });
 
@@ -62,6 +65,20 @@ const TripForm = ({airfields, activities, profile, submitFn, trip}:
       form.insertListItem('steps', { type: type, id: id })
     }
   }
+
+  const saveTrip = (values: typeof form.values) => {
+    if(!profile) return
+
+    const newTrip = {...values, uid: profile.uid, author: profile.displayName}
+    const tripID = id ? id : slug(newTrip.name)
+    setDoc(doc(db, "trips", tripID), newTrip, {merge:true})
+      .then(() => {
+        trips.set(tripID!, newTrip)
+        navigate(`/trips/${tripID}`)
+      })
+      .catch(e => setError(e.message as string))
+  }
+
 
   const DisplayItem = ({item}: {item:{type:'activities'|'airfields', id:string}}) => item.type == 'activities' ? (
     <Text>{activities.get(item.id)?.name}</Text>
@@ -98,23 +115,23 @@ const TripForm = ({airfields, activities, profile, submitFn, trip}:
     content: form.values['description'],
     onUpdate({ editor }) {
       form.setFieldValue('description', editor?.getJSON());
-      console.log(profile)
     }
   });
 
+  if(!profile || (trip && profile.uid != trip.uid)) return (<>
+    <Title><BackButton />Proposer une sortie</Title>
+    <p>Connectez vous avec un compte Google pour pouvoir créer et modifier vos propositions de sorties.</p>
+    <Button
+        onClick={googleLogin}
+        leftSection={<IconBrandGoogleFilled size={14} />}
+        variant='light'
+      >
+      Connexion
+    </Button>
+  </>)
 
-  return (submitted) ? (
-    <><Title><BackButton />Proposer une modification</Title>
-    <p>Modifications enregistrées. Elles seront visibles d'ici quelques jours. <RouterLink to=".." relative="path">Retour</RouterLink></p>
-    </>
-  ) : (<form onSubmit={form.onSubmit((values) => {
-    submitFn(Object.keys(values)
-      .filter((k) => form.isDirty(k))
-      .reduce((a, k) => ({ ...a, [k]: values[k as 'name'|'description'] }), {})
-    )
-    setSubmitted(true)
-  })}>
-  <Title><BackButton />Proposer une modification</Title>
+  return (<form onSubmit={form.onSubmit(saveTrip)}>
+  <Title><BackButton />Proposer une sortie</Title>
   <Fieldset legend="Modifier une sortie">
     
     <Group justify="space-between" align="top">
@@ -174,10 +191,12 @@ const TripForm = ({airfields, activities, profile, submitFn, trip}:
       />
     <InputLabel style={{width: '100%'}}>Description</InputLabel>
     <TextEditor editor={editor} />
+    <Text c="red">{form.getInputProps('description').error}</Text>
     
   </Fieldset>
   <Group mt="md">
     <Button type="submit">Enregistrer</Button>
+    <Text c="red">{error}</Text>
   </Group>
 </form>)
 }

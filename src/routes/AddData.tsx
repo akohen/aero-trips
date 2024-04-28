@@ -42,7 +42,7 @@ const AddData = (data: Data) => {
     <p>Loading</p>
   ) : 
   type == 'activities' && (<ActivityForm activity={entity as Activity} submitFn={submitFn} />) 
-  || type == 'trips' && (<TripForm trip={entity as Trip} submitFn={submitFn} {...data} />) 
+  || type == 'trips' && (<TripForm id={params.id} {...data} />) 
   || type == 'airfields' && (<AirfieldForm airfield={entity as Airfield} submitFn={submitFn} />) 
   : (
     <Paper>
