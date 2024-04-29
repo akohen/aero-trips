@@ -1,8 +1,9 @@
 import { RichTextEditor } from "@mantine/tiptap";
 import { Editor } from "@tiptap/react";
 import { ImageControl } from "./ImageControl";
+import { Profile } from "..";
 
-const TextEditor = ({editor}:{editor:Editor | null}) => (
+const TextEditor = ({editor, profile}:{editor:Editor|null, profile: Profile|null}) => (
   <RichTextEditor editor={editor}>
     <RichTextEditor.Toolbar sticky stickyOffset={60}>
       <RichTextEditor.ControlsGroup>
@@ -14,7 +15,7 @@ const TextEditor = ({editor}:{editor:Editor | null}) => (
       </RichTextEditor.ControlsGroup>
 
       <RichTextEditor.ControlsGroup>
-        <ImageControl editor={editor} />
+        <ImageControl editor={editor} profile={profile}/>
       </RichTextEditor.ControlsGroup>
 
       <RichTextEditor.ControlsGroup>

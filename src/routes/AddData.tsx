@@ -41,9 +41,9 @@ const AddData = (data: Data) => {
   return type ? (params.id != undefined && !entity) ? (
     <p>Loading</p>
   ) : 
-  type == 'activities' && (<ActivityForm activity={entity as Activity} submitFn={submitFn} />) 
+  type == 'activities' && (<ActivityForm activity={entity as Activity} submitFn={submitFn} profile={data.profile} />) 
   || type == 'trips' && (<TripForm id={params.id} {...data} />) 
-  || type == 'airfields' && (<AirfieldForm airfield={entity as Airfield} submitFn={submitFn} />) 
+  || type == 'airfields' && (<AirfieldForm airfield={entity as Airfield} submitFn={submitFn} profile={data.profile} />) 
   : (
     <Paper>
       <Group justify="center">

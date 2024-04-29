@@ -1,6 +1,6 @@
 import { Fieldset, Group, Button, Title, Space, Chip, InputLabel } from "@mantine/core"
 import { useEditor } from "@tiptap/react";
-import { Airfield } from "..";
+import { Airfield, Profile } from "..";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Link } from "@tiptap/extension-link";
 import { useForm } from "@mantine/form";
@@ -11,7 +11,7 @@ import BackButton from "./BackButton";
 import { default as TiptapImage } from "@tiptap/extension-image";
 import { editorProps } from "../utils";
 
-const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => void, airfield: Airfield}) => {
+const AirfieldForm = ({submitFn, airfield, profile}: {submitFn: (document: object) => void, airfield: Airfield, profile: Profile|null}) => {
   const [submitted, setSubmitted] = useState(false)
 
   const form = useForm({
@@ -72,7 +72,7 @@ const AirfieldForm = ({submitFn, airfield}: {submitFn: (document: object) => voi
     </Chip.Group>
     </Group>
     <Space mt={"md"}/>
-    <TextEditor editor={editor} />
+    <TextEditor editor={editor} profile={profile} />
   </Fieldset>
   <Group mt="md">
     <Button type="submit">Enregistrer</Button>

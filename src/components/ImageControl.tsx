@@ -3,8 +3,9 @@ import { IconPhotoUp } from '@tabler/icons-react';
 import { ChangeEvent, useRef } from 'react';
 import { Editor } from '@tiptap/react';
 import { uploadImage } from '../utils';
+import { Profile } from '..';
 
-export const ImageControl = ({editor}:{editor:Editor | null}) => {
+export const ImageControl = ({editor, profile}:{editor:Editor|null, profile: Profile|null}) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const handleClick = () => {
     if(!inputRef.current) return
@@ -15,7 +16,7 @@ export const ImageControl = ({editor}:{editor:Editor | null}) => {
     const files = e.target.files;
     if(!editor || !files) return
     const pos = editor.view.state.selection.anchor
-    uploadImage(editor.view, pos, files[0], null)
+    uploadImage(editor.view, pos, files[0], profile)
     inputRef.current!.value = ''
   }
 

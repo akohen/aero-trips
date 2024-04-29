@@ -191,7 +191,7 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
         {...{error:form.getInputProps('steps').error}}
       />
     <InputLabel style={{width: '100%'}}>Description</InputLabel>
-    <TextEditor editor={editor} />
+    <TextEditor editor={editor} profile={profile} />
     <Text c="red">{form.getInputProps('description').error}</Text>
     
   </Fieldset>

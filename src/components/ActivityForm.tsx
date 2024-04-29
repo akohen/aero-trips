@@ -1,6 +1,6 @@
 import { Fieldset, TextInput, Chip, Group, Space, Button, Text, Title, InputLabel, Center, Tooltip } from "@mantine/core"
 import { useEditor } from "@tiptap/react";
-import { Activity, ActivityType } from "..";
+import { Activity, ActivityType, Profile } from "..";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Link } from "@tiptap/extension-link";
 import { useForm } from "@mantine/form";
@@ -13,7 +13,7 @@ import { IconInfoCircle } from "@tabler/icons-react";
 import { editorProps } from "../utils";
 import { CommonIcon } from "./CommonIcon";
 
-const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => void, activity: Activity}) => {
+const ActivityForm = ({submitFn, activity, profile}: {submitFn: (document: object) => void, activity: Activity, profile: Profile|null}) => {
   const [submitted, setSubmitted] = useState(false)
 
   const form = useForm({
@@ -99,7 +99,7 @@ const ActivityForm = ({submitFn, activity}: {submitFn: (document: object) => voi
   
   <Space h="md" />
   <Center mt={"md"}><InputLabel>Description de l'activité</InputLabel></Center>
-  <TextEditor editor={editor} />
+  <TextEditor editor={editor} profile={profile} />
   </Fieldset>
   <Group mt="md">
     <Button type="submit">Enregistrer</Button>
