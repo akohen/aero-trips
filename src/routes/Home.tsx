@@ -1,9 +1,9 @@
-import { Text } from "@mantine/core"
+import { Text, Title } from "@mantine/core"
 import { Link } from "react-router-dom"
 
 const Home = () => {
   return (<>
-  <h1>Bienvenue sur Aero trips</h1>
+  <Title>Bienvenue sur Aero trips</Title>
   <div className="card">
     <p>
       Le but de ce site est d'aider les pilotes privés à trouver des idées de sorties en avion ainsi que des activités à proximité des aérodromes.

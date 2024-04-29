@@ -1,7 +1,7 @@
 import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
-import { MantineProvider, AppShell, Burger, Group, Button, Stack } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { MantineProvider, AppShell, Burger, Group, Button, Stack, em, Title } from '@mantine/core';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { Link, Outlet, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { IconBrandGoogleFilled, IconBulb, IconCirclePlus, IconHome, IconLogout, IconMap, IconMapRoute, IconPlaneArrival, IconUser } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
@@ -12,6 +12,7 @@ import { googleLogin, googleLogout } from './data/firebase';
 function Layout({airfields, activities, profile}: Data) {
   const [opened, { toggle, close }] = useDisclosure();
   const location = useLocation()
+  const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
   const navigate = useNavigate();
   type FinderOptions = {group: string, items: {label: string, value: string}[]}[]
     const [data, setData] = useState<FinderOptions>([])
@@ -36,7 +37,10 @@ function Layout({airfields, activities, profile}: Data) {
   return (
     <MantineProvider>
       <AppShell
-        header={{ height: 60 }}
+        header={{ 
+          height: 60, 
+          collapsed: !isMobile,
+        }}
         navbar={{
           width: 200,
           breakpoint: 'sm',
@@ -54,7 +58,9 @@ function Layout({airfields, activities, profile}: Data) {
 
         <AppShell.Navbar p="md" zIndex={1000}>
           <Stack>
-            
+            <Group px="md" visibleFrom='sm'>
+              <Title order={3}><IconPlaneArrival /> Aero Trips</Title>
+            </Group>
           <Button 
             component={Link} 
             onClick={toggle} 
