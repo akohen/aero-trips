@@ -50,7 +50,7 @@ function Layout({airfields, activities, profile}: Data) {
       >
       <AppShell.Header  zIndex={1200}>
         <Group px="md">
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+          <Burger opened={opened} onClick={toggle} size="sm" />
           <IconPlaneArrival />
           <h3>Aero Trips</h3>
         </Group>
@@ -58,8 +58,9 @@ function Layout({airfields, activities, profile}: Data) {
 
         <AppShell.Navbar p="md" zIndex={1000}>
           <Stack>
-            <Group px="md" visibleFrom='sm'>
-              <Title order={3}><IconPlaneArrival /> Aero Trips</Title>
+            <Group visibleFrom='sm'>
+              <IconPlaneArrival />
+              <Title order={3}>Aero Trips</Title>
             </Group>
           <Button 
             component={Link} 
