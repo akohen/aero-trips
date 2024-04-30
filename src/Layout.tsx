@@ -57,7 +57,8 @@ function Layout({airfields, activities, profile}: Data) {
       </AppShell.Header>
 
         <AppShell.Navbar p="md" zIndex={1000}>
-          <Stack>
+        <Stack style={{flexGrow:1}}>
+          <Stack style={{flexGrow:1}}>
             <Group visibleFrom='sm'>
               <IconPlaneArrival />
               <Title order={3}>Aero Trips</Title>
@@ -116,6 +117,14 @@ function Layout({airfields, activities, profile}: Data) {
           >
             Ajout
           </Button>
+          <TripStepSelect
+            data={data}
+            addItem={(value: string) => {navigate(value); close()}}
+            placeholder="Accès direct"
+          />
+          </Stack>
+
+          <Stack>
           {profile ? 
           <>
             <Button 
@@ -144,12 +153,7 @@ function Layout({airfields, activities, profile}: Data) {
             Connexion
           </Button>
           }
-          
-          <TripStepSelect
-            data={data}
-            addItem={(value: string) => {navigate(value); close()}}
-            placeholder="Accès direct"
-          />
+          </Stack>
           </Stack>
         </AppShell.Navbar>
 
