@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import App from './App.tsx'
-import { addDoc, collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { Activity, Airfield, Profile, Trip } from '.';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from './data/firebase.ts';
@@ -31,10 +31,6 @@ export const DataProvider = () => {
     setTrips(newTrips)
   }
 
-  const saveChange = (obj: object) => {
-    addDoc(collection(db, "changes"), obj);
-  }
-
   useEffect(() => {
     getAirfields()
     getActivities()
@@ -60,7 +56,6 @@ export const DataProvider = () => {
     airfields={airfields}
     activities={activities}
     trips={trips}
-    saveChange={saveChange}
     profile={profile}
     setProfile={setProfile}
   />)

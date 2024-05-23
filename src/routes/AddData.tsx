@@ -5,9 +5,10 @@ import { Button, Group, Paper } from "@mantine/core";
 import { IconMapRoute, IconBulb } from "@tabler/icons-react";
 import ActivityForm from "../components/ActivityForm";
 import { slug } from "../utils";
-import { GeoPoint } from "firebase/firestore";
+import { GeoPoint, addDoc, collection } from "firebase/firestore";
 import AirfieldForm from "../components/AirfieldForm";
 import TripForm from "../components/TripForm";
+import { db } from "../data/firebase";
 
 const AddData = (data: Data) => {
   const params = useParams();
@@ -29,7 +30,7 @@ const AddData = (data: Data) => {
 
 
   const submitFn = (document: {name?: string, position?: string}) => {
-    data.saveChange({
+    addDoc(collection(db, "changes"), {
       ...document,
       targetDocument:`${type}/${params.id ? params.id : slug(document.name!)}`, 
       position: document.position ? new GeoPoint(...document.position.split(', ').map(parseFloat) as [number, number]) : undefined,
