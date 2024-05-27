@@ -4,11 +4,9 @@ import { Activity, Airfield, Data, Trip } from "..";
 import { Button, Group, Paper } from "@mantine/core";
 import { IconMapRoute, IconBulb } from "@tabler/icons-react";
 import ActivityForm from "../components/ActivityForm";
-import { slug } from "../utils";
-import { GeoPoint, addDoc, collection } from "firebase/firestore";
+import { GeoPoint } from "firebase/firestore";
 import AirfieldForm from "../components/AirfieldForm";
 import TripForm from "../components/TripForm";
-import { db } from "../data/firebase";
 
 const AddData = (data: Data) => {
   const params = useParams();
@@ -29,22 +27,12 @@ const AddData = (data: Data) => {
   },[data, params])
 
 
-  const submitFn = (document: {name?: string, position?: string}) => {
-    addDoc(collection(db, "changes"), {
-      ...document,
-      targetDocument:`${type}/${params.id ? params.id : slug(document.name!)}`, 
-      position: document.position ? new GeoPoint(...document.position.split(', ').map(parseFloat) as [number, number]) : undefined,
-      updated_at: new Date(),
-    })
-  }
-
-
   return type ? (params.id != undefined && !entity) ? (
     <p>Loading</p>
   ) : 
-  type == 'activities' && (<ActivityForm activity={entity as Activity} submitFn={submitFn} profile={data.profile} />) 
+  type == 'activities' && (<ActivityForm activity={entity as Activity} id={params.id} {...data} />) 
   || type == 'trips' && (<TripForm id={params.id} {...data} />) 
-  || type == 'airfields' && (<AirfieldForm airfield={entity as Airfield} submitFn={submitFn} profile={data.profile} />) 
+  || type == 'airfields' && (<AirfieldForm airfield={entity as Airfield} profile={data.profile} />) 
   : (
     <Paper>
       <Group justify="center">

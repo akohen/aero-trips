@@ -116,7 +116,7 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
     onUpdate({ editor }) {
       form.setFieldValue('description', editor?.getJSON());
     }
-  });
+  }, [profile]);
 
   if(!profile || (trip && profile.uid != trip.uid)) return (<>
     <Title><BackButton />Proposer une sortie</Title>

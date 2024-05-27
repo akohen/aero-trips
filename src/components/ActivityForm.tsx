@@ -5,16 +5,20 @@ import { StarterKit } from "@tiptap/starter-kit";
 import { Link } from "@tiptap/extension-link";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
 import { default as TiptapImage } from "@tiptap/extension-image";
 import { IconInfoCircle } from "@tabler/icons-react";
-import { editorProps } from "../utils";
+import { editorProps, slug } from "../utils";
 import { CommonIcon } from "./CommonIcon";
+import { GeoPoint, addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { db } from "../data/firebase";
 
-const ActivityForm = ({submitFn, activity, profile}: {submitFn: (document: object) => void, activity: Activity, profile: Profile|null}) => {
+const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, profile: Profile|null, id: string|undefined, activities: Map<string,Activity>}) => {
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
+  const navigate = useNavigate();
 
   const form = useForm({
     initialValues: {
@@ -41,7 +45,33 @@ const ActivityForm = ({submitFn, activity, profile}: {submitFn: (document: objec
     onUpdate({ editor }) {
       form.setFieldValue('description', editor.getJSON());
     }
-  });
+  }, [profile]);
+
+
+  const saveActivity = (values: typeof form.values) => {
+    const newActivity = {
+      ...values, 
+      position: new GeoPoint(...values.position.split(', ').map(parseFloat) as [number, number]),
+      updated_at: new Date(),
+    }
+    const activityID = id ? id : slug(values.name)
+
+    if(profile) {
+      setDoc(doc(db, "activities", activityID), newActivity, {merge:true})
+      .then(() => {
+        activities.set(activityID, newActivity)
+        navigate(`/activities/${activityID}`)
+      })
+      .catch(e => setError(e.message as string))
+    } else {
+      addDoc(collection(db, "changes"), {
+        ...newActivity,
+        targetDocument:`activities/${activityID}`,
+      })
+      setSubmitted(true)    
+    }
+  }
+
 
 
 
@@ -55,13 +85,7 @@ const ActivityForm = ({submitFn, activity, profile}: {submitFn: (document: objec
   return (submitted) ? (
     <><Title><BackButton />{activity ? 'Proposer une modification' : 'Proposer une nouvelle activité ou lieu'}</Title>
     <p>Modifications enregistrées. Elles seront visibles d'ici quelques jours. <RouterLink to=".." relative="path">Retour</RouterLink></p></>
-  ) : (<form onSubmit={form.onSubmit((values) => {
-    submitFn(Object.keys(values)
-      .filter((k) => form.isDirty(k) || activity.name == '')
-      .reduce((a, k) => ({ ...a, [k]: values[k as 'name'|'position'|'description'|'type'] }), {})
-    )
-    setSubmitted(true)
-  })}>
+  ) : (<form onSubmit={form.onSubmit(saveActivity)}>
   <Title><BackButton />{activity ? 'Proposer une modification' : 'Proposer une nouvelle activité ou lieu'}</Title>
   <Fieldset>
   <Group justify="space-between" align="top">
@@ -103,6 +127,7 @@ const ActivityForm = ({submitFn, activity, profile}: {submitFn: (document: objec
   </Fieldset>
   <Group mt="md">
     <Button type="submit">Enregistrer</Button>
+    <Text c="red">{error}</Text>
   </Group>
 </form>)
 }

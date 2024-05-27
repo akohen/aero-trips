@@ -10,8 +10,10 @@ import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
 import { default as TiptapImage } from "@tiptap/extension-image";
 import { editorProps } from "../utils";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../data/firebase";
 
-const AirfieldForm = ({submitFn, airfield, profile}: {submitFn: (document: object) => void, airfield: Airfield, profile: Profile|null}) => {
+const AirfieldForm = ({airfield, profile}: {airfield: Airfield, profile: Profile|null}) => {
   const [submitted, setSubmitted] = useState(false)
 
   const form = useForm({
@@ -33,7 +35,15 @@ const AirfieldForm = ({submitFn, airfield, profile}: {submitFn: (document: objec
     onUpdate({ editor }) {
       form.setFieldValue('description', editor.getJSON());
     }
-  });
+  }, [profile]);
+
+  const submitFn = (document: {name?: string, position?: string}) => {
+    addDoc(collection(db, "changes"), {
+      ...document,
+      targetDocument:`airfields/${airfield.codeIcao}`,
+      updated_at: new Date(),
+    })
+  }
 
 
   return (submitted) ? (<>
