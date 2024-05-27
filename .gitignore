@@ -32,3 +32,4 @@ XML_SIA*.xml
 .firebase/
 
 serviceAccountKey.json
+backups/

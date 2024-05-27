@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "export": "npx -p node-firestore-import-export firestore-export -a serviceAccountKey.json -b backups/$(date +\"%Y-%m-%d\").json"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^16.5.0",
