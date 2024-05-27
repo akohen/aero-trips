@@ -99,19 +99,8 @@ export const filterActivities = (airfields: Map<string,Airfield>, activities: Ma
   )
 }
 
-export const editorProps = {
-  handleDrop: function(view: EditorView, event: DragEvent, _slice: Slice, moved: boolean) {
-    if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) { // if dropping external files
-      const file = event.dataTransfer.files[0];
-      const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
-      uploadImage(view, coordinates!.pos, file,null)
-      return true; // handled
-    }
-    return false; // not handled use default behaviour
-  }
-}
 
-export const editorPropsWithProfile = (profile: Profile|null) => ({
+export const editorProps = (profile: Profile|null) => ({
   handleDrop: function(view: EditorView, event: DragEvent, _slice: Slice, moved: boolean) {
     if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) { // if dropping external files
       const file = event.dataTransfer.files[0]; 

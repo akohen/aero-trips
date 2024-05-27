@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import { MemoryRouter } from 'react-router-dom';
@@ -33,6 +33,6 @@ test('renders the list view', () => {
 
 test('goes to field list through the navbar', async () => {
   render(<App {...testData}/>, {wrapper: MemoryRouter});
-  await userEvent.click(screen.getByText(/Terrains/));
+  await userEvent.click(within(screen.getByRole('navigation')).getByRole('link', {name: /Terrains/i}));
   expect(await screen.getAllByText(/LFNW/i)).toBeDefined();
 });

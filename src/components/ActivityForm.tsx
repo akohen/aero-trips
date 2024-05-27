@@ -36,7 +36,7 @@ const ActivityForm = ({submitFn, activity, profile}: {submitFn: (document: objec
       Link,
       TiptapImage.configure({allowBase64: false}),
     ],
-    editorProps: editorProps,
+    editorProps: editorProps(profile),
     content: form.values['description'],
     onUpdate({ editor }) {
       form.setFieldValue('description', editor.getJSON());

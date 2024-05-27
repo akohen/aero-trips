@@ -12,7 +12,7 @@ import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { IconBrandGoogleFilled, IconGripVertical, IconX } from "@tabler/icons-react";
 import TripStepSelect from "./TripStepSelect";
 import { CommonIcon } from "./CommonIcon";
-import { editorPropsWithProfile, slug } from "../utils";
+import { editorProps, slug } from "../utils";
 import { db, googleLogin } from "../data/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
@@ -111,7 +111,7 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
       Link,
       TiptapImage.configure({allowBase64: false}),
     ],
-    editorProps: editorPropsWithProfile(profile),
+    editorProps: editorProps(profile),
     content: form.values['description'],
     onUpdate({ editor }) {
       form.setFieldValue('description', editor?.getJSON());
