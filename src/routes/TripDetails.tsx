@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { Activity, Airfield, Data } from "..";
-import { Group, Paper, Stepper, Text, Title, rem } from "@mantine/core";
+import { Flex, Group, Paper, Stepper, Text, Title, rem } from "@mantine/core";
 import EditButton from "../components/EditButton";
 import BackButton from "../components/BackButton";
 import { generateHTML } from "@tiptap/react";
@@ -13,6 +13,7 @@ import ActivityMarker from '../components/ActivityMarker';
 import { latLngBounds } from "leaflet";
 import { IconBulb, IconDots, IconPlaneArrival } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+import ActivityCard from "../components/ActivityCard";
 
 const TripDetails = ({trips, airfields, activities, profile} : Data) => {
   const params = useParams();
@@ -89,6 +90,11 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
     className="tiptap-content"
     dangerouslySetInnerHTML={{__html: generateHTML(trip.description,[StarterKit, TiptapLink, Image])}} 
   />}
+  <Flex mt='md' gap="xs" wrap="wrap" justify={{ sm: 'center' }}>
+    {items.filter( ([, , type]) => type == "activities").map(([item, id, ]) => (
+      <ActivityCard key={id} id={id} activity={item as Activity}/>
+    ))}
+  </Flex>
     
   </>)
 }
