@@ -38,7 +38,7 @@ function Layout({airfields, activities, profile}: Data) {
     <MantineProvider>
       <AppShell
         header={{ 
-          height: 60, 
+          height: 80, 
           collapsed: !isMobile,
         }}
         navbar={{

@@ -2,10 +2,12 @@ import { RichTextEditor } from "@mantine/tiptap";
 import { Editor } from "@tiptap/react";
 import { ImageControl } from "./ImageControl";
 import { Profile } from "..";
+import { em } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 
 const TextEditor = ({editor, profile}:{editor:Editor|null, profile: Profile|null}) => (
   <RichTextEditor editor={editor}>
-    <RichTextEditor.Toolbar sticky stickyOffset={60}>
+    <RichTextEditor.Toolbar sticky stickyOffset={useMediaQuery(`(max-width: ${em(768)})`) ? 80 : 0}>
       <RichTextEditor.ControlsGroup>
         <RichTextEditor.Bold />
         <RichTextEditor.Italic />
