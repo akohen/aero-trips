@@ -38,7 +38,7 @@ return (<>
   </Collapse>
   <Group justify="space-between"  mt={'md'}>
     <TextInput
-      placeholder="Chercher un terrain"
+      placeholder="Chercher une activité"
       leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
       value={filters.search}
       onChange={(e) => setFilters({...filters, search: e.currentTarget.value})}
