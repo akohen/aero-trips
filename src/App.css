@@ -3,7 +3,7 @@ a { color: steelblue; text-decoration: none;}
 
 .clickable { cursor: pointer; }
 
-.tiptap-content > img { max-width: 50vw;}
+.tiptap-content > img { max-width: 30vw;}
 .tiptap-content a { color: steelblue; }
 
 .list-item-title svg { margin-left: 4px; }
