@@ -1,4 +1,4 @@
-import { Title, Group, Flex, Text, Button, Paper, Grid } from "@mantine/core"
+import { Title, Text, Button, Paper, Grid, Stack } from "@mantine/core"
 import BackButton from "./BackButton"
 import EditButton from "./EditButton"
 import { Activity, Airfield, Trip } from ".."
@@ -26,33 +26,18 @@ const DetailsPage = ({id, item, airfields, activities, trips} :
   ) : (
     <Text>{item.type.map<React.ReactNode>(t => (<span key={t}>{iconsList.get(t)?.label} </span>)).reduce((a,b) => [a,' - ',b])}</Text>
   )}
-  <Group 
-    justify="space-evenly"
-    align="baseline"
-    grow
-    preventGrowOverflow={false} wrap="wrap"
-  >
-    
-    
-  </Group>
-  <Grid grow
-      mt="md">
-  <Grid.Col span={3}>
-  <Paper
+
+  <Grid grow mt="md">
+    <Grid.Col span={3}>
+    <Paper
       shadow="md"
       radius="md"
       p='xs'
       withBorder
       bg="gray.0"
-    >    
-    <Flex
-      gap="sm"
-      justify="center"
-      align="center"
-      direction="column"
-      wrap="wrap"
     >
-      {('codeIcao' in item) ? (<>
+      <Stack gap={"xs"}>
+      {('codeIcao' in item) && <>
         <div>
           <Title order={4}>Pistes</Title>
           {item.runways.map((r,i) => (<div key={i}>{r.designation} - {r.length}m {r.composition == 'GRASS' ? 'Non revêtue' : 'Revêtue'}</div>))}
@@ -60,25 +45,20 @@ const DetailsPage = ({id, item, airfields, activities, trips} :
         {(item.fuels && item.fuels.length > 0) ? `Essences: ${item.fuels?.join(' ')}` : `Pas d'essence disponible`}
         <ToiletText airfield={item} />
         <ButtonVACMap airfield={item} />
-        <ButtonViewOnMap item={item} />
-      </>):(<>
-        <div>
-          <ButtonViewOnMap item={item} />
-        </div>
-      </>)}
+      </>}
+      <ButtonViewOnMap item={item} />
       <Button
         component={Link}
         to={`https://www.google.fr/maps/place/${item.position.latitude},${item.position.longitude}`}
         target="_blank"
-        size={'sm'}
         leftSection={<IconBrandGoogleMaps size={20} />}
       >
         Google Maps
       </Button>
-    </Flex>
+      </Stack>
     </Paper>
   </Grid.Col>
-  {item.description && <Grid.Col span={9}><Description content={item.description} /></Grid.Col>}
+  {item.description && <Grid.Col span={6}><Description content={item.description} /></Grid.Col>}
   <NearbyAirfields items={nearbyAirfields} />
   <NearbyActivities items={nearbyActivities} />
   <NearbyTrips items={nearbyTrips} />
