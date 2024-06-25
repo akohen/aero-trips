@@ -25,3 +25,5 @@ a { color: steelblue; text-decoration: none;}
   transform: scale(1.025,1.025);
   transition: all 0.2s ease-in-out;
 }
+
+main { background-color: #faf8f8;}
