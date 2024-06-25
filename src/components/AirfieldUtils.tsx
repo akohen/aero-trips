@@ -1,5 +1,5 @@
 import { Airfield } from "..";
-import { Paper, Title, Text, Stack } from "@mantine/core";
+import { Paper, Title, Text, Stack, Grid } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { CommonIcon } from "./CommonIcon";
 import { Marker, Popup } from 'react-leaflet'
@@ -11,16 +11,26 @@ export const AirfieldTitle = ({ad}: {ad: Airfield}) => {
   return (<><CommonIcon iconType={ad.status} /> {ad.name} {ad.fuels?.map(e => <CommonIcon key={e} iconType={e} />)}<CommonIcon iconType={ad.toilet||''} /></>)
 }
 
-export const NearbyAirfields = ({items} : {items: [distance: number, item: Airfield, id: string][]}) => (
-  items.length > 0 && <Paper bg="gray.1" className="nearby">
+export const NearbyAirfields = ({items} : {items: [distance: number, item: Airfield, id: string][]}) => {
+  if(items.length == 0) return
+  return (
+    <Grid.Col span={3}>
+    <Paper 
+      shadow="md"
+      radius="md"
+      p='xs'
+      withBorder
+      bg="gray.0"
+      className="nearby"
+    >
     <Title order={4}>Terrains proches</Title>
     { items.map(([dist,ad]) => (
       <Text key={ad.codeIcao}>
         <Link to={`/airfields/${ad.codeIcao}`}>{Math.round(dist/1000)} km {ad.codeIcao} <AirfieldTitle ad={ad}/></Link>
       </Text>
     ))}
-  </Paper>
-)
+  </Paper></Grid.Col>
+)}
 
 export const ToiletText = ({airfield}:{airfield: Airfield}) => {
   if(airfield.toilet == 'private') return <Text>Toilettes privées</Text>

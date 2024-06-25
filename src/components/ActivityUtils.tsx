@@ -1,4 +1,4 @@
-import { Paper, Text, Title } from "@mantine/core";
+import { Grid, Paper, Text, Title } from "@mantine/core";
 import { Activity, Trip } from "..";
 import { Link } from "react-router-dom";
 import { CommonIcon } from "./CommonIcon";
@@ -9,8 +9,18 @@ export const ActivityTitle = ({activity}: {activity: Activity}) => (
   {activity.type.map((e,i) => <CommonIcon iconType={e} key={i} /> )}
 </Text>)
 
-export const NearbyActivities = ({items} : {items: [distance: number, item: Activity, id: string][]}) => (
-  items.length > 0 && <Paper bg="gray.1" className="nearby">
+export const NearbyActivities = ({items} : {items: [distance: number, item: Activity, id: string][]}) => {
+  if(items.length == 0) return
+  return (
+  <Grid.Col span={3}>
+  <Paper 
+    shadow="md"
+    radius="md"
+    p='xs'
+    withBorder
+    bg="gray.0"
+    className="nearby"
+  >
     <Title order={4}>Activités proches</Title>
     { items.map(([dist, activity, id]) => (
         <Text key={id}>
@@ -20,12 +30,21 @@ export const NearbyActivities = ({items} : {items: [distance: number, item: Acti
         </Text>
     ))}
   </Paper>
-)
+  </Grid.Col>
+)}
 
-export const NearbyTrips = ({itemId, type, trips} : {itemId: string, type:'activities'|'airfields', trips: Map<string, Trip>}) => {
-  const items = [...trips].filter(([,trip]) => trip.steps.some(step => step.type == type && step.id == itemId)).slice(0,8)
+export const NearbyTrips = ({items} : {items: [id: string, trip: Trip][]}) => {
+  if(items.length == 0) return
   return (
-  items.length > 0 && <Paper bg="gray.1" className="nearby">
+  <Grid.Col span={3}>
+  <Paper 
+    shadow="md"
+    radius="md"
+    p='xs'
+    withBorder
+    bg="gray.0"
+    className="nearby"
+  >
     <Title order={4}>Sorties</Title>
     { items.map(([id, trip]) => (
         <Text key={id}>
@@ -35,4 +54,5 @@ export const NearbyTrips = ({itemId, type, trips} : {itemId: string, type:'activ
         </Text>
     ))}
   </Paper>
+  </Grid.Col>
 )}

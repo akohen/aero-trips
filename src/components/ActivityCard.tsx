@@ -13,7 +13,7 @@ const ActivityCard = ({id, activity}: {id:string, activity:Activity}) => {
             p='sm'
             miw={220} maw={260} mih={260}
             style={{
-                backgroundImage: `url(${imgURL}), linear-gradient(transparent 60%, rgba(0,0,0,0.9))`,
+                backgroundImage: `url(${imgURL}), linear-gradient(transparent 50%, rgba(0,0,0,0.5) 80%)`,
                 backgroundBlendMode: 'multiply',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',

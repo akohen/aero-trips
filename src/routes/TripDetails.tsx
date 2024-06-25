@@ -1,12 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import { Activity, Airfield, Data } from "..";
-import { Flex, Group, Paper, Stepper, Text, Title, rem } from "@mantine/core";
+import { Flex, Group, Stepper, Text, Title, rem } from "@mantine/core";
 import EditButton from "../components/EditButton";
 import BackButton from "../components/BackButton";
-import { generateHTML } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit"
-import {default as TiptapLink} from "@tiptap/extension-link"
-import Image from "@tiptap/extension-image"
 import { MapContainer, Polyline, TileLayer } from "react-leaflet";
 import { AirfieldMarker } from "../components/AirfieldUtils";
 import ActivityMarker from '../components/ActivityMarker';
@@ -14,6 +10,7 @@ import { latLngBounds } from "leaflet";
 import { IconBulb, IconDots, IconPlaneArrival } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import ActivityCard from "../components/ActivityCard";
+import Description from "../components/Description";
 
 const TripDetails = ({trips, airfields, activities, profile} : Data) => {
   const params = useParams();
@@ -45,7 +42,7 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
     <Title><BackButton />Fiche {trip.name} {profile && profile.uid == trip.uid && <EditButton />}</Title>
     <Text>{tripTypes[trip.type]}</Text>
 
-    <Group grow preventGrowOverflow={false} align="flex-start">
+    <Group grow preventGrowOverflow={false} align="flex-start" mb="md">
       <Stepper
         active={-1}
         orientation="vertical"
@@ -85,11 +82,7 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
         </MapContainer>
         </div>
     </Group>
-    {trip.description != undefined && <Paper 
-    bg="gray.1" mt={"md"}
-    className="tiptap-content"
-    dangerouslySetInnerHTML={{__html: generateHTML(trip.description,[StarterKit, TiptapLink, Image])}} 
-  />}
+  <Description content={trip.description} />
   <Flex mt='md' gap="xs" wrap="wrap" justify={{ sm: 'center' }}>
     {items.filter( ([, , type]) => type == "activities").map(([item, id, ]) => (
       <ActivityCard key={id} id={id} activity={item as Activity}/>
