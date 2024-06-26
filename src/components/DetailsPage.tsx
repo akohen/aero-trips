@@ -46,6 +46,7 @@ const DetailsPage = ({id, item, airfields, activities, trips} :
         <ToiletText airfield={item} />
         <ButtonVACMap airfield={item} />
       </>}
+      
       <ButtonViewOnMap item={item} />
       <Button
         component={Link}
@@ -55,6 +56,7 @@ const DetailsPage = ({id, item, airfields, activities, trips} :
       >
         Google Maps
       </Button>
+      {item.website && <Text><b>Site internet</b> <Link to={item.website}>{item.website}</Link></Text>}
       </Stack>
     </Paper>
   </Grid.Col>

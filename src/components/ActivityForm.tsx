@@ -26,6 +26,7 @@ const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, 
       position: activity ? activity.position.latitude +', '+activity.position.longitude: '',
       type: activity? activity.type : [] as ActivityType[],
       description: activity ? activity.description : '',
+      website: activity ? activity.website : '',
     },
     validate: {
       name: (value: string) => (value.length < 2 ? 'Le nom doit avoir au moins 2 charactères' : null),
@@ -94,6 +95,12 @@ const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, 
       label="Nom de l'activité"
       placeholder="Nom de l'activité"
       {...form.getInputProps('name')}
+    />
+    <TextInput
+      style = {{ flex: 1 }}
+      label="Site internet"
+      placeholder="Site internet"
+      {...form.getInputProps('website')}
     />
     <TextInput
       style = {{ flex: 1 }}

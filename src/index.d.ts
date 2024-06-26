@@ -17,6 +17,7 @@ type Airfield = {
   status:'CAP'|'PRV'|'RST'|'MIL'|'OFF'
   fuels?: string[],
   toilet?:'no'|'public'|'private',
+  website?: string,
 }
 
 type Runway = {
@@ -30,6 +31,7 @@ type Activity = {
   position: GeoPoint,
   description?: JSONContent,
   type: ActivityType[],
+  website?: string,
 }
 
 type ActivityType =  // food, lodging, bike, hiking, transit, car, poi, historic?

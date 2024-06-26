@@ -1,4 +1,4 @@
-import { Fieldset, Group, Button, Title, Space, Chip, InputLabel } from "@mantine/core"
+import { Fieldset, Group, Button, Title, Space, Chip, InputLabel, TextInput } from "@mantine/core"
 import { useEditor } from "@tiptap/react";
 import { Airfield, Profile } from "..";
 import { StarterKit } from "@tiptap/starter-kit";
@@ -21,6 +21,7 @@ const AirfieldForm = ({airfield, profile}: {airfield: Airfield, profile: Profile
       description: airfield ? airfield.description : {},
       fuels: airfield ? airfield.fuels : [],
       toilet: airfield ? airfield.toilet : '',
+      website: airfield ? airfield.website : '',
     },
   });
 
@@ -60,6 +61,13 @@ const AirfieldForm = ({airfield, profile}: {airfield: Airfield, profile: Profile
   })}>
   <Title><BackButton />Proposer une modification</Title>
   <Fieldset legend={`Terrain de ${airfield.name}`}>
+    <Group justify="center" align="baseline">
+      <InputLabel>Site Internet</InputLabel>
+      <TextInput
+        placeholder="Site internet"
+        {...form.getInputProps('website')}
+      />
+    </Group>
     <Group justify="center" align="baseline">
     <InputLabel>Essence disponible sur le terrain</InputLabel>
     <Chip.Group multiple {...form.getInputProps('fuels')}>
