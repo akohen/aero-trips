@@ -39,7 +39,7 @@ function MapPage({airfields, activities, profile, ADfilter, ActFilter, setADfilt
   const isFilterActive = () => [...Object.values(ADfilter), ...Object.values(ActFilter)].some(x => Array.isArray(x) ? x.length: x)
 
   return (
-    <MapContainer style={{ height: "700px" }} center={center} zoom={10} scrollWheelZoom={true} >
+    <MapContainer className="main-map" center={center} zoom={10} scrollWheelZoom={true} >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

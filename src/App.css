@@ -10,6 +10,10 @@ a { color: steelblue; text-decoration: none;}
 
 .leaflet-container a {  color: #000; }
 
+.main-map {
+  height: calc(95vh - 80px);
+}
+
 .map-top-right {
   position: absolute;
   top: 20px;
