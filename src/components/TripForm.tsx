@@ -54,7 +54,7 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
       steps: (value) => (value.length < 2 ? 'La sortie doit comporter au moins 2 étapes' : null),
       type: (value) => (!value ? 'Choisir une durée de sortie' : null),
       tags: (value: ActivityType[]) => value.length == 0 ? 'Choisir au moins 1 thème' : null,
-      description: (value) => value.length == 0 ? 'La description ne peut pas être vide' : null,
+      description: () => editor!.state.doc.textContent.trim().length == 0 ? 'La description ne peut pas être vide' : null,
     }
   });
 
