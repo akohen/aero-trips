@@ -14,6 +14,7 @@ import AddData from "./routes/AddData";
 import { useState } from "react";
 import { ADfilter } from '.';
 import Profile from "./routes/Profile";
+import Contact from "./routes/Contact";
 
 
 export default function App(data : Data) {
@@ -46,6 +47,7 @@ export default function App(data : Data) {
         <Route path="/trips"                  element={<TripsList {...data} />} />
         <Route path="/:type?/:id?/edit/:lat?/:lng?"       element={<AddData {...data} />} />
         <Route path="/trips/:tripId"          element={<TripDetails {...data} />} />
+        <Route path="/contact"                element={<Contact {...data} />} />
       </Route>
     </Routes>
   );

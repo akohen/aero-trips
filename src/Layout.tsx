@@ -3,7 +3,7 @@ import '@mantine/tiptap/styles.css';
 import { MantineProvider, AppShell, Burger, Group, Button, Stack, em, Title } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { Link, Outlet, matchPath, useLocation, useNavigate } from "react-router-dom";
-import { IconBrandGoogleFilled, IconBulb, IconCirclePlus, IconHome, IconLogout, IconMap, IconMapRoute, IconPlaneArrival, IconUser } from '@tabler/icons-react';
+import { IconBrandGoogleFilled, IconBulb, IconCirclePlus, IconHome, IconLogout, IconMail, IconMap, IconMapRoute, IconPlaneArrival, IconUser } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Data } from '.';
 import TripStepSelect from './components/TripStepSelect';
@@ -116,6 +116,15 @@ function Layout({airfields, activities, profile}: Data) {
             variant={location.pathname.startsWith('/edit') ? 'filled' : 'light'}
           >
             Ajout
+          </Button>
+          <Button 
+            component={Link} 
+            onClick={toggle} 
+            to="/contact" 
+            leftSection={<IconMail size={14} />}
+            variant={location.pathname.startsWith('/contact') ? 'filled' : 'light'}
+          >
+            Contact
           </Button>
           <TripStepSelect
             data={data}
