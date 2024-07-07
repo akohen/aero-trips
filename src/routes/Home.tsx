@@ -8,7 +8,8 @@ const Home = () => {
     shadow="md"
     radius="md"
     p='sm'
-    mt={"md"}
+    mt="md"
+    withBorder
   >
     <Text>
       Aerotrips est un site <b>gratuit</b>, <b>collaboratif</b> et <b>open-source</b>&nbsp;

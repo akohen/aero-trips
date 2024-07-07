@@ -30,7 +30,7 @@ const Contact = ({profile}: Data) => {
 
   if(submitted) return (<>
     <Title><BackButton />Contact</Title>
-    <Paper shadow="md" radius="md" p='sm' mt="md">
+    <Paper shadow="md" radius="md" p='sm' mt="md" withBorder>
       <Text>Votre message a bien été envoyé</Text>
       <Text mt="md">Merci pour votre retour!</Text>
     </Paper>
@@ -38,7 +38,7 @@ const Contact = ({profile}: Data) => {
 
   return (<>
   <Title><BackButton />Contact</Title>
-  <Paper shadow="md" radius="md" p='sm' mt="md">
+  <Paper shadow="md" radius="md" p='sm' mt="md" withBorder>
     <Text>Vous pouvez utiliser le formulaire ci-dessous pour nous signaler un bug, une idée d'amélioration ou tout autre message.</Text>
     <form onSubmit={form.onSubmit(submitFn)}>
       <Space mt={"md"}/>
