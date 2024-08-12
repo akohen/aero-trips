@@ -15,6 +15,7 @@ import { useState } from "react";
 import { ADfilter } from '.';
 import Profile from "./routes/Profile";
 import Contact from "./routes/Contact";
+import ScrollToTop from "./components/ScrollToTop";
 
 
 export default function App(data : Data) {
@@ -35,6 +36,7 @@ export default function App(data : Data) {
   })
   
   return (
+    <ScrollToTop>
     <Routes>
       <Route element={<Layout {...data} />}>
         <Route path="/"                       element={<Home />}/>
@@ -50,5 +52,6 @@ export default function App(data : Data) {
         <Route path="/contact"                element={<Contact {...data} />} />
       </Route>
     </Routes>
+    </ScrollToTop>
   );
 }
