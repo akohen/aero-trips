@@ -62,8 +62,8 @@ const DetailsPage = ({id, item, airfields, activities, trips} :
   </Grid.Col>
   {item.description && <Grid.Col span={6}><Description content={item.description} /></Grid.Col>}
   <NearbyAirfields items={nearbyAirfields} />
-  <NearbyActivities items={nearbyActivities} />
   <NearbyTrips items={nearbyTrips} />
+  <NearbyActivities items={nearbyActivities} />
   </Grid>
 </>)
 }

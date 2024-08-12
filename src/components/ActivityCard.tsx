@@ -1,9 +1,9 @@
-import { Button, Group, Paper, Stack } from '@mantine/core';
+import { Button, Group, Paper, Stack, Text } from '@mantine/core';
 import { Activity } from '..';
 import { Link } from 'react-router-dom';
 import { CommonIcon } from './CommonIcon';
 
-const ActivityCard = ({id, activity}: {id:string, activity:Activity}) => {
+const ActivityCard = ({id, activity, distance}: {id:string, activity:Activity, distance?:number}) => {
     const imgNode = activity.description?.content != undefined ? activity.description.content.find( (a: { type: string }) => a.type =='image') : undefined
     const imgURL = imgNode ? imgNode.attrs.src : 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/991px-Placeholder_view_vector.svg.png'
     return (
@@ -25,6 +25,7 @@ const ActivityCard = ({id, activity}: {id:string, activity:Activity}) => {
             className='activity-card'
         >
             <Stack gap='6px'>
+                {distance && <Text c="white" fw={500} size="sm">à {distance > 2500 ? `${Math.round(distance/1000)}km` : `${Math.round(distance/100)*100}m`}</Text>}
                 <Group gap='6px'>
                     {activity.type.map((e,i) => <CommonIcon iconType={e} key={i} color='white' /> )}
                 </Group>

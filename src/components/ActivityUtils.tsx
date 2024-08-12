@@ -1,7 +1,8 @@
-import { Grid, Paper, Text, Title } from "@mantine/core";
+import { Flex, Grid, Paper, Text, Title } from "@mantine/core";
 import { Activity, Trip } from "..";
 import { Link } from "react-router-dom";
 import { CommonIcon } from "./CommonIcon";
+import ActivityCard from "./ActivityCard";
 
 export const ActivityTitle = ({activity}: {activity: Activity}) => (
 <Text span size="sm" className="list-item-title">
@@ -12,24 +13,13 @@ export const ActivityTitle = ({activity}: {activity: Activity}) => (
 export const NearbyActivities = ({items} : {items: [distance: number, item: Activity, id: string][]}) => {
   if(items.length == 0) return
   return (
-  <Grid.Col span={3}>
-  <Paper 
-    shadow="md"
-    radius="md"
-    p='xs'
-    withBorder
-    bg="gray.0"
-    className="nearby"
-  >
+  <Grid.Col span={12}>
     <Title order={4}>Activités proches</Title>
-    { items.map(([dist, activity, id]) => (
-        <Text key={id}>
-          <Link to={`/activities/${id}`}>
-            <ActivityTitle activity={activity} /><Text span size="sm"> à {dist > 2500 ? `${Math.round(dist/1000)}km` : `${Math.round(dist/100)*100}m`}</Text>
-          </Link>
-        </Text>
-    ))}
-  </Paper>
+    <Flex mt='md' gap="xs" wrap="wrap" justify={{ sm: 'center' }}>
+      { items.map(([dist, activity, id]) => (
+        <ActivityCard key={id} id={id} activity={activity} distance={dist}/>
+      ))}
+    </Flex>
   </Grid.Col>
 )}
 

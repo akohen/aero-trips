@@ -25,7 +25,7 @@ export const NearbyAirfields = ({items} : {items: [distance: number, item: Airfi
     >
     <Title order={4}>Terrains proches</Title>
     { items.map(([dist,ad]) => (
-      <Text key={ad.codeIcao}>
+      <Text size="sm" key={ad.codeIcao}>
         <Link to={`/airfields/${ad.codeIcao}`}>{Math.round(dist/1000)} km {ad.codeIcao} <AirfieldTitle ad={ad}/></Link>
       </Text>
     ))}
