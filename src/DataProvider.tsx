@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import App from './App.tsx'
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
-import { Activity, Airfield, Profile, Trip } from '.';
+import { Activity, Airfield, MapView, Profile, Trip } from '.';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from './data/firebase.ts';
 
@@ -11,6 +11,7 @@ export const DataProvider = () => {
   const [activities, setActivities] = useState<Map<string,Activity>>(new Map())
   const [trips, setTrips] = useState<Map<string,Trip>>(new Map())
   const [profile, setProfile] = useState<Profile|null>(null)
+  const [mapView, setMapView] = useState<MapView>({center:[49, 2.5], zoom:8})
 
   const getAirfields = async () => {
     const query = await getDocs(collection(db, "airfields"));
@@ -58,5 +59,7 @@ export const DataProvider = () => {
     trips={trips}
     profile={profile}
     setProfile={setProfile}
+    mapView={mapView}
+    setMapView={setMapView}
   />)
 }

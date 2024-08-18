@@ -9,7 +9,7 @@ import AirfieldsFilters from '../components/AirfieldsFilters';
 import { AirfieldTitle } from '../components/AirfieldUtils';
 import { ButtonVACMap, ButtonViewOnMap } from '../components/CommonButtons';
 
-function AirfieldsPage({airfields, activities, filters, setFilters} : 
+function AirfieldsPage({airfields, activities, filters, setFilters, setMapView} : 
   Data & {filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) {
   const [data, setData] = useState(airfields);
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ function AirfieldsPage({airfields, activities, filters, setFilters} :
           <Table.Td {...AdTd(e)}>{Math.max(...e.runways.map(r => r.length))}m</Table.Td>
           <Table.Td ><Group justify="flex-end">
             <ButtonVACMap airfield={e} compact />
-            <ButtonViewOnMap item={e} compact />
+            <ButtonViewOnMap item={e} setMapView={setMapView} compact />
             </Group>
           </Table.Td>
         </Table.Tr>

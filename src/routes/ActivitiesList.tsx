@@ -10,7 +10,7 @@ import { ButtonViewOnMap } from '../components/CommonButtons';
 import { ActivityTitle } from '../components/ActivityUtils';
 
 
-function ActivitiesList({airfields, activities, filters, setFilters} : 
+function ActivitiesList({airfields, activities, filters, setFilters, setMapView} : 
   Data & {filters: ActivityFilter, setFilters: Dispatch<SetStateAction<ActivityFilter>>}) {
   
   const [data, setData] = useState(activities);
@@ -34,7 +34,7 @@ function ActivitiesList({airfields, activities, filters, setFilters} :
       row={([key, e]) => (
         <Table.Tr key={key}>
           <Table.Td {...ActivityTd(key)}><ActivityTitle activity={e}/></Table.Td>
-          <Table.Td align='right'><ButtonViewOnMap item={e} compact/></Table.Td>
+          <Table.Td align='right'><ButtonViewOnMap item={e} setMapView={setMapView} compact/></Table.Td>
         </Table.Tr>
       )}
     />

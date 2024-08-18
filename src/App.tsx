@@ -34,6 +34,8 @@ export default function App(data : Data) {
     target: '',
     type: [],
   })
+
+  const mapProps = {...data, ADfilter, ActFilter, setADfilter, setActFilter}
   
   return (
     <ScrollToTop>
@@ -45,7 +47,7 @@ export default function App(data : Data) {
         <Route path="/airfields/:airfieldId"  element={<AirfieldDetails {...data} />} />
         <Route path="/activities"             element={<ActivitiesList {...data} filters={ActFilter} setFilters={setActFilter} />} />
         <Route path="/activities/:activityId" element={<ActivityDetails {...data}/>} />
-        <Route path="/map/:lat?/:lng?"        element={<MapPage {...data} ADfilter={ADfilter} ActFilter={ActFilter} setADfilter={setADfilter} setActFilter={setActFilter} />} />
+        <Route path="/map/"                   element={<MapPage {...mapProps} />} />
         <Route path="/trips"                  element={<TripsList {...data} />} />
         <Route path="/:type?/:id?/edit/:lat?/:lng?"       element={<AddData {...data} />} />
         <Route path="/trips/:tripId"          element={<TripDetails {...data} />} />

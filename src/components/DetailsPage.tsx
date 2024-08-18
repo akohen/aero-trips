@@ -1,7 +1,7 @@
 import { Title, Text, Button, Paper, Grid, Stack } from "@mantine/core"
 import BackButton from "./BackButton"
 import EditButton from "./EditButton"
-import { Activity, Airfield, Trip } from ".."
+import { Activity, Airfield, Data } from ".."
 import { findNearest, iconsList } from "../utils"
 import { NearbyActivities, NearbyTrips } from "./ActivityUtils"
 import { NearbyAirfields, ToiletText } from "./AirfieldUtils"
@@ -10,8 +10,7 @@ import { IconBrandGoogleMaps } from "@tabler/icons-react"
 import { Link } from "react-router-dom"
 import Description from "./Description"
 
-const DetailsPage = ({id, item, airfields, activities, trips} : 
-{id: string, item: Airfield|Activity, airfields: Map<string,Airfield>, activities:Map<string,Activity>, trips:Map<string,Trip>}) => {
+const DetailsPage = ({id, item, airfields, activities, trips, setMapView} : Data & {id: string, item: Airfield|Activity}) => {
   const nearbyAirfields = findNearest(item, airfields, 50000).slice(0,8)
   const nearbyActivities = findNearest(item, activities).slice(0,8)
   const nearbyTrips = [...trips].filter(([,trip]) => trip.steps.some(step => step.type == (('codeIcao' in item) ? 'airfields' : 'activities') && step.id == id)).slice(0,8)
@@ -47,7 +46,7 @@ const DetailsPage = ({id, item, airfields, activities, trips} :
         <ButtonVACMap airfield={item} />
       </>}
       
-      <ButtonViewOnMap item={item} />
+      <ButtonViewOnMap item={item} setMapView={setMapView} />
       <Button
         component={Link}
         to={`https://www.google.fr/maps/place/${item.position.latitude},${item.position.longitude}`}

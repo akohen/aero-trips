@@ -5,7 +5,9 @@ type Data = {
   activities: Map<string,Activity>,
   trips: Map<string,Trip>,
   profile: Profile?,
-  setProfile: React.Dispatch<React.SetStateAction<Profile | null>>,
+  setProfile: (user: Profile | null) => void,
+  mapView: MapView,
+  setMapView: React.Dispatch<React.SetStateAction<MapView>>,
 }
 
 type Airfield = {
@@ -79,4 +81,9 @@ type Profile = {
   uid: string,
   email: string,
   homebase?: string,
+}
+
+type MapView = {
+  center: LatLng,
+  zoom: number
 }
