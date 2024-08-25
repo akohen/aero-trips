@@ -2,12 +2,12 @@ import { useParams } from "react-router-dom";
 import { Data } from "..";
 import DetailsPage from "../components/DetailsPage";
 
-const AirfieldDetails = ({airfields, activities, trips} : Data) => {
+const AirfieldDetails = (data : Data) => {
   const params = useParams();
-  const airfield = params.airfieldId ? airfields.get(params.airfieldId) : undefined;
+  const airfield = params.airfieldId ? data.airfields.get(params.airfieldId) : undefined;
   
-  return airfields.size > 0 ? airfield ? (
-    <DetailsPage id={params.airfieldId!} item={airfield} airfields={airfields} activities={activities} trips={trips} />
+  return data.airfields.size > 0 ? airfield ? (
+    <DetailsPage id={params.airfieldId!} item={airfield} {...data} />
   ) : (
     <p>Pas de terrain trouvé</p>
   ) : (

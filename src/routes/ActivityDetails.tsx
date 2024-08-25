@@ -2,13 +2,13 @@ import { useParams } from "react-router-dom";
 import { Data } from "..";
 import DetailsPage from "../components/DetailsPage";
 
-const ActivityDetails = ({activities, airfields, trips} : Data) => {
+const ActivityDetails = (data : Data) => {
   const params = useParams();
-  const activity = params.activityId ? activities.get(params.activityId) : undefined;
+  const activity = params.activityId ? data.activities.get(params.activityId) : undefined;
 
 
-  return activities.size > 0 ? activity ? (
-    <DetailsPage id={params.activityId!} item={activity} airfields={airfields} activities={activities} trips={trips} />
+  return data.activities.size > 0 ? activity ? (
+    <DetailsPage id={params.activityId!} item={activity} {...data} />
   ) : (
     <p>Activité/lieu inconnu</p>
   ) : (
