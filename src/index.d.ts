@@ -81,6 +81,7 @@ type Profile = {
   uid: string,
   email: string,
   homebase?: string,
+  favorites?: string[],
 }
 
 type MapView = {
