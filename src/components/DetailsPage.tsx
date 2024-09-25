@@ -6,10 +6,10 @@ import { findNearest, iconsList } from "../utils"
 import { NearbyActivities, NearbyTrips } from "./ActivityUtils"
 import { NearbyAirfields, ToiletText } from "./AirfieldUtils"
 import { ButtonVACMap, ButtonViewOnMap } from "./CommonButtons"
-import { IconBrandGoogleMaps, IconHeart, IconHeartFilled } from "@tabler/icons-react"
+import { IconBrandGoogleMaps } from "@tabler/icons-react"
 import { Link } from "react-router-dom"
 import Description from "./Description"
-import { addFavorite, removeFavorite } from "../data/profileUtils"
+import FavoriteButton from "./FavoriteButton"
 
 const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profile, setProfile} : Data & {id: string, item: Airfield|Activity}) => {
   const nearbyAirfields = findNearest(item, airfields, 50000).slice(0,8)
@@ -57,11 +57,8 @@ const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profil
         Google Maps
       </Button>
       {item.website && <Text><b>Site internet</b> <Link to={item.website}>{item.website}</Link></Text>}
-      {('codeIcao' in item) && 
-        (profile?.favorites?.includes(item.codeIcao) ? 
-        <Text onClick={() => removeFavorite(profile, setProfile, item.codeIcao)}>Retirer des favoris<IconHeartFilled size={20} /></Text>
-        : 
-        <>Add to favorites<IconHeart size={20} onClick={() => addFavorite(profile, setProfile, item.codeIcao)}/></>)
+      {('codeIcao' in item) && profile &&
+        <FavoriteButton item={item} profile={profile} setProfile={setProfile} />
       }
       </Stack>
     </Paper>
