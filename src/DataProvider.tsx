@@ -39,15 +39,29 @@ export const DataProvider = () => {
   },[])
 
   useEffect(() => {
+    class userProfile implements Profile {
+      displayName!: string;
+      uid!: string;
+      email!: string;
+      update: (changes: Partial<Profile>) => void;
+      constructor(params: Omit<Profile, "update">) {
+        Object.assign(this, params);
+        this.update = (changes: Partial<Profile>) => {
+          setDoc(doc(db, "profiles", this.uid), changes, {merge:true})
+          setProfile({...this, ...changes} as Profile)
+        }
+      }
+    }
+
     return onAuthStateChanged(auth, async (user) => {
       if (user) {
         const uid = user.uid;
         const query = await getDoc(doc(db, "profiles", uid))
         if(query.exists()) {
-          setProfile({...query.data(), uid} as Profile)
+          setProfile(new userProfile({...query.data(), uid} as Profile))
         } else {
           setDoc(doc(db, "profiles", uid), {email:user.email, displayName:user.displayName})
-          setProfile({email:user.email, displayName:user.displayName, uid} as Profile)
+          setProfile(new userProfile({email:user.email!, displayName:user.displayName!, uid}))
         }
       } else { setProfile(null) }
     })
@@ -58,7 +72,6 @@ export const DataProvider = () => {
     activities={activities}
     trips={trips}
     profile={profile}
-    setProfile={setProfile}
     mapView={mapView}
     setMapView={setMapView}
   />)

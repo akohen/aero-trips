@@ -10,11 +10,13 @@ import { IconBrandGoogleMaps } from "@tabler/icons-react"
 import { Link } from "react-router-dom"
 import Description from "./Description"
 import FavoriteButton from "./FavoriteButton"
+import VisitedButton from "./VisitedButton"
 
-const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profile, setProfile} : Data & {id: string, item: Airfield|Activity}) => {
+const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profile} : Data & {id: string, item: Airfield|Activity}) => {
   const nearbyAirfields = findNearest(item, airfields, 50000).slice(0,8)
   const nearbyActivities = findNearest(item, activities).slice(0,8)
   const nearbyTrips = [...trips].filter(([,trip]) => trip.steps.some(step => step.type == (('codeIcao' in item) ? 'airfields' : 'activities') && step.id == id)).slice(0,8)
+  const type = 'codeIcao' in item ? 'airfields' : 'activities'
 
   return (<>
   <Title order={1}>
@@ -42,7 +44,7 @@ const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profil
           <Title order={4}>Pistes</Title>
           {item.runways.map((r,i) => (<div key={i}>{r.designation} - {r.length}m {r.composition == 'GRASS' ? 'Non revêtue' : 'Revêtue'}</div>))}
         </div>
-        {(item.fuels && item.fuels.length > 0) ? `Essences: ${item.fuels?.join(' ')}` : `Pas d'essence disponible`}
+        {(item.fuels && item.fuels.length > 0) ? `Avitaillement: ${item.fuels?.join(' ')}` : `Pas d'avitaillement disponible`}
         <ToiletText airfield={item} />
         <ButtonVACMap airfield={item} />
       </>}
@@ -57,8 +59,9 @@ const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profil
         Google Maps
       </Button>
       {item.website && <Text><b>Site internet</b> <Link to={item.website}>{item.website}</Link></Text>}
+      {profile && <VisitedButton item={{ type, id }} profile={profile} />}
       {('codeIcao' in item) && profile &&
-        <FavoriteButton item={item} profile={profile} setProfile={setProfile} />
+        <FavoriteButton item={item} profile={profile} />
       }
       </Stack>
     </Paper>

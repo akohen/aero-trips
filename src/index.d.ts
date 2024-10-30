@@ -5,7 +5,6 @@ type Data = {
   activities: Map<string,Activity>,
   trips: Map<string,Trip>,
   profile: Profile?,
-  setProfile: (user: Profile | null) => void,
   mapView: MapView,
   setMapView: React.Dispatch<React.SetStateAction<MapView>>,
 }
@@ -76,12 +75,14 @@ type ActivityFilter = {
   type: string[],
 }
 
-type Profile = {
+interface Profile {
   displayName: string,
   uid: string,
   email: string,
   homebase?: string,
   favorites?: string[],
+  visited?: {type: 'activities'|'airfields', id:string}[],
+  update: (changes: Partial<Profile>) => void,
 }
 
 type MapView = {
