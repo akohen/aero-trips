@@ -13,7 +13,6 @@ const testData: Data = {
   activities: new Map([["XXXX", { name: "name", position: new GeoPoint(0, 0), type: ["other"], description: "description" }]]),
   trips: new Map(),
   profile: null,
-  setProfile: vi.fn(),
   mapView: {center:[], zoom:0},
   setMapView: vi.fn()
 }

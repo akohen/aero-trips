@@ -1,12 +1,13 @@
-import { Button, Fieldset, Select, TextInput } from "@mantine/core"
+import { Button, Fieldset, Paper, Select, TextInput, Title, Text } from "@mantine/core"
 import { IconBrandGoogleFilled } from "@tabler/icons-react"
 import { Data } from ".."
-import { googleLogin, db } from "../data/firebase"
+import { googleLogin } from "../data/firebase"
 import { useForm } from "@mantine/form"
 import { useEffect } from "react"
-import { doc, setDoc } from "firebase/firestore"
+import { AirfieldTitle } from "../components/AirfieldUtils"
+import { Link } from "react-router-dom"
 
-const Profile = ({profile, setProfile, airfields} : Data) => {
+const Profile = ({profile, airfields} : Data) => {
 
   const data = [...airfields].map(([id, ad]) => (
     {label: `${ad.codeIcao} - ${ad.name}`, value:id}
@@ -32,17 +33,26 @@ const Profile = ({profile, setProfile, airfields} : Data) => {
 
   const saveProfile = (values: typeof form.values) => {
     if(!profile) return
-    setDoc(doc(db, "profiles", profile.uid), {
-      displayName: values.displayName,
-      homebase: values.homebase,
-    }, {merge:true})
-    setProfile({...profile, ...values})
+    profile.update({displayName:values.displayName, homebase:values.homebase})
   }
 
-  return (<>
+  const AirfieldLink = ({id}: {id: string}) => {
+    const ad = airfields.get(id)
+    if(!ad) return 'Terrain inconnu'
+    return <Text size="sm" className="ad-list"><Link to={`/airfields/${ad.codeIcao}`}>{ad.codeIcao} <AirfieldTitle ad={ad}/></Link></Text>
+  }
+
+  return (profile ? <>
   <h1>Votre profil utilisateur</h1>
-  <div className="card">
-    { profile ? 
+  <Paper shadow="md" radius="md" p='sm' mt="md" withBorder>
+    <Title order={4}>Terrains visités</Title>
+    <ul>
+      { profile.visited?.filter(v => v.type === 'airfields').map( (v, i) => (
+        <li key={i}><AirfieldLink id={v.id}/></li>
+      ))}
+    </ul>
+  </Paper>
+  <Paper shadow="md" radius="md" p='sm' mt="md" withBorder>
       <form onSubmit={form.onSubmit(saveProfile)}>
         <Fieldset legend='Modifier vos informations'>
         <TextInput
@@ -61,11 +71,13 @@ const Profile = ({profile, setProfile, airfields} : Data) => {
         <Button mt="md" type="submit">Enregistrer</Button>
         </Fieldset>
       </form>
-      :
-      <p><Button leftSection={<IconBrandGoogleFilled />} onClick={googleLogin} variant='filled'>Se connecter avec Google</Button></p>
-    }
-  </div>
-</>)}
+  </Paper>
+</> 
+: 
+  <Paper shadow="md" radius="md" p='sm' mt="md" withBorder>
+    <p><Button leftSection={<IconBrandGoogleFilled />} onClick={googleLogin} variant='filled'>Se connecter avec Google</Button></p>
+  </Paper>
+)}
 
 export default Profile
 
