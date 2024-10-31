@@ -13,6 +13,7 @@ export const AirfieldTitle = ({ad, profile}: {ad: Airfield, profile?: Profile}) 
     {ad.name} 
     {ad.fuels?.map(e => <CommonIcon key={e} iconType={e} />)}
     {profile && profile.visited?.find(v => v.type == 'airfields' && v.id == ad.codeIcao) && <CommonIcon iconType="visited" />}
+    {profile && profile.favorites?.find(v => v.type == 'airfields' && v.id == ad.codeIcao) && <CommonIcon iconType="favorite" />}
   </>)
 }
 

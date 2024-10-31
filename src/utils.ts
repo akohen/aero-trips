@@ -1,6 +1,10 @@
 import haversineDistance from "haversine-distance";
 import { Activity, Airfield, ADfilter, ActivityFilter, ActivityType, Profile } from ".";
-import { IconBan, IconBed, IconBike, IconBulb, IconBus, IconCar, IconCircleCheck, IconEye, IconForbid, IconGasStation, IconHistory, IconPaw, IconPlane, IconSailboat, IconShoe, IconSoup, IconToiletPaper, IconTower } from "@tabler/icons-react";
+import { 
+  IconBan, IconBed, IconBike, IconBulb, IconBus, IconCar, IconCircleCheck, IconEye, 
+  IconForbid, IconGasStation, IconHistory, IconPaw, IconPlane, IconSailboat, IconShoe, IconSoup, 
+  IconStar, IconToiletPaper, IconTower 
+} from "@tabler/icons-react";
 import { Slice } from "@tiptap/pm/model";
 import { EditorView } from "@tiptap/pm/view";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
@@ -47,6 +51,7 @@ export const iconsList = new Map<string, {label: string,icon: React.FC,style: ob
   ['SP95', {label:"Essence SP95/98 disponible", icon:IconGasStation, style:{...iconStyle, color:"green"}}],
   ['SP98', {label:"Essence SP95/98 disponible", icon:IconGasStation, style:{...iconStyle, color:"green"}}],
   ['visited', {label:"Déjà visité", icon:IconHistory, style:iconStyle}],
+  ['favorite', {label:"Favori", icon:IconStar, style:iconStyle}],
 ])
 
 
