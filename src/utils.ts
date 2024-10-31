@@ -1,6 +1,6 @@
 import haversineDistance from "haversine-distance";
 import { Activity, Airfield, ADfilter, ActivityFilter, ActivityType, Profile } from ".";
-import { IconBan, IconBed, IconBike, IconBulb, IconBus, IconCar, IconCircleCheck, IconEye, IconForbid, IconGasStation, IconPaw, IconPlane, IconSailboat, IconShoe, IconSoup, IconToiletPaper, IconTower } from "@tabler/icons-react";
+import { IconBan, IconBed, IconBike, IconBulb, IconBus, IconCar, IconCircleCheck, IconEye, IconForbid, IconGasStation, IconHistory, IconPaw, IconPlane, IconSailboat, IconShoe, IconSoup, IconToiletPaper, IconTower } from "@tabler/icons-react";
 import { Slice } from "@tiptap/pm/model";
 import { EditorView } from "@tiptap/pm/view";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
@@ -46,6 +46,7 @@ export const iconsList = new Map<string, {label: string,icon: React.FC,style: ob
   ['100LL', {label:"Essence 100LL disponible", icon:IconGasStation, style:{...iconStyle, color:"darkblue"}}],
   ['SP95', {label:"Essence SP95/98 disponible", icon:IconGasStation, style:{...iconStyle, color:"green"}}],
   ['SP98', {label:"Essence SP95/98 disponible", icon:IconGasStation, style:{...iconStyle, color:"green"}}],
+  ['visited', {label:"Déjà visité", icon:IconHistory, style:iconStyle}],
 ])
 
 
@@ -100,7 +101,7 @@ export const filterActivities = (airfields: Map<string,Airfield>, activities: Ma
 }
 
 
-export const editorProps = (profile: Profile|null) => ({
+export const editorProps = (profile?: Profile) => ({
   handleDrop: function(view: EditorView, event: DragEvent, _slice: Slice, moved: boolean) {
     if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) { // if dropping external files
       const file = event.dataTransfer.files[0]; 
@@ -113,7 +114,7 @@ export const editorProps = (profile: Profile|null) => ({
 })
 
 
-export const uploadImage = (view: EditorView, pos: number, file: File, profile: Profile|null) => {
+export const uploadImage = (view: EditorView, pos: number, file: File, profile?: Profile) => {
   if ((file.type === "image/jpeg" || file.type === "image/png") && file.size < 2**19) { // check valid image type under 512kB
     if(profile) {
       const storage = getStorage();

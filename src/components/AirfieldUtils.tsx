@@ -1,4 +1,4 @@
-import { Airfield } from "..";
+import { Airfield, Profile } from "..";
 import { Paper, Title, Text, Stack, Grid } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { CommonIcon } from "./CommonIcon";
@@ -7,8 +7,13 @@ import { Icon } from 'leaflet';
 import pinRunway from '/map-pin-runway.svg'
 
 
-export const AirfieldTitle = ({ad}: {ad: Airfield}) => {
-  return (<><CommonIcon iconType={ad.status} /> {ad.name} {ad.fuels?.map(e => <CommonIcon key={e} iconType={e} />)}</>)
+export const AirfieldTitle = ({ad, profile}: {ad: Airfield, profile?: Profile}) => {
+  return (<>
+    <CommonIcon iconType={ad.status} /> 
+    {ad.name} 
+    {ad.fuels?.map(e => <CommonIcon key={e} iconType={e} />)}
+    {profile && profile.visited?.find(v => v.type == 'airfields' && v.id == ad.codeIcao) && <CommonIcon iconType="visited" />}
+  </>)
 }
 
 export const NearbyAirfields = ({items} : {items: [distance: number, item: Airfield, id: string][]}) => {
