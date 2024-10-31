@@ -9,7 +9,7 @@ import { IconFilterX } from '@tabler/icons-react';
 import MapMenu from '../components/MapMenu';
 import MapViewTracker from '../components/MapViewTracker';
 
-function MapPage({airfields, activities, ADfilter, ActFilter, setADfilter, setActFilter, mapView, setMapView} : 
+function MapPage({airfields, activities, ADfilter, ActFilter, setADfilter, setActFilter, mapView, setMapView, profile} : 
   Data & {
     ADfilter: ADfilter, 
     ActFilter:ActivityFilter, 
@@ -17,7 +17,7 @@ function MapPage({airfields, activities, ADfilter, ActFilter, setADfilter, setAc
     setActFilter:Dispatch<SetStateAction<ActivityFilter>>,
 }) {
 
-  const airfieldsMarkers = [...filterAirfields(airfields, activities, ADfilter)].map( ([key,e]) => <AirfieldMarker key={key} id={key} airfield={e} />);
+  const airfieldsMarkers = [...filterAirfields(airfields, activities, ADfilter, profile)].map( ([key,e]) => <AirfieldMarker key={key} id={key} airfield={e} />);
 
   const activitiesMarkers = [...filterActivities(airfields, activities, ActFilter)].map( ([key,e]) => <ActivityMarker key={key} id={key} activity={e} />);
   const resetFilters = () => {

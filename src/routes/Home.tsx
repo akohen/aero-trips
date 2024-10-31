@@ -28,7 +28,7 @@ const Home = () => {
         <li>Valider automatiquement vos changements sur des activités</li>
         <li>Partager des voyages</li>
         <li>Enregistrer votre aérodrome de base</li>
-        <li>Lister les terrains que vous avez visités (bientôt)</li>
+        <li>Lister les terrains que vous avez visités</li>
       </ul>
     <Text>
       Utilisez les filtres sur la liste des <Link to={'/airfields'}>terrains</Link> ou des <Link to={'/activities'}>activités</Link> pour choisir les éléments qui sont affichés sur la <Link to={'/map'}>carte</Link>.

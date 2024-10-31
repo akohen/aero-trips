@@ -19,11 +19,11 @@ function AirfieldsPage({airfields, activities, filters, setFilters, setMapView, 
   })
 
   useEffect(()=>{
-    setData( filterAirfields(airfields, activities, filters) )
-  },[airfields, activities, filters])
+    setData( filterAirfields(airfields, activities, filters, profile) )
+  },[airfields, activities, filters, profile])
 
   return (<>
-    <AirfieldsFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters}/>
+    <AirfieldsFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} profile={profile}/>
     <List
       data={data} 
       columns={['Nom du terrain','Code OACI','Piste','']}
