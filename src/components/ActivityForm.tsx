@@ -15,7 +15,7 @@ import { CommonIcon } from "./CommonIcon";
 import { GeoPoint, addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { db } from "../data/firebase";
 
-const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, profile: Profile|null, id: string|undefined, activities: Map<string,Activity>}) => {
+const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, profile?: Profile, id: string|undefined, activities: Map<string,Activity>}) => {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate();

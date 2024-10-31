@@ -13,7 +13,7 @@ import { editorProps } from "../utils";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../data/firebase";
 
-const AirfieldForm = ({airfield, profile}: {airfield: Airfield, profile: Profile|null}) => {
+const AirfieldForm = ({airfield, profile}: {airfield: Airfield, profile?: Profile}) => {
   const [submitted, setSubmitted] = useState(false)
 
   const form = useForm({

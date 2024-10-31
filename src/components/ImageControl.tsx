@@ -5,7 +5,7 @@ import { Editor } from '@tiptap/react';
 import { uploadImage } from '../utils';
 import { Profile } from '..';
 
-export const ImageControl = ({editor, profile}:{editor:Editor|null, profile: Profile|null}) => {
+export const ImageControl = ({editor, profile}:{editor:Editor|null, profile?: Profile}) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const handleClick = () => {
     if(!inputRef.current) return

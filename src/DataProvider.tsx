@@ -10,7 +10,7 @@ export const DataProvider = () => {
   const [airfields, setAirfields] = useState<Map<string,Airfield>>(new Map())
   const [activities, setActivities] = useState<Map<string,Activity>>(new Map())
   const [trips, setTrips] = useState<Map<string,Trip>>(new Map())
-  const [profile, setProfile] = useState<Profile|null>(null)
+  const [profile, setProfile] = useState<Profile|undefined>(undefined)
   const [mapView, setMapView] = useState<MapView>({center:[49, 2.5], zoom:8})
 
   const getAirfields = async () => {
@@ -65,7 +65,7 @@ export const DataProvider = () => {
           setDoc(doc(db, "profiles", uid), {email:user.email, displayName:user.displayName})
           setProfile(new userProfile({email:user.email!, displayName:user.displayName!, uid}))
         }
-      } else { setProfile(null) }
+      } else { setProfile(undefined) }
     })
   },[])
 

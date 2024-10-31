@@ -4,7 +4,7 @@ type Data = {
   airfields: Map<string,Airfield>,
   activities: Map<string,Activity>,
   trips: Map<string,Trip>,
-  profile: Profile?,
+  profile?: Profile,
   mapView: MapView,
   setMapView: React.Dispatch<React.SetStateAction<MapView>>,
 }

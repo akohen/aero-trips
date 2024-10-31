@@ -5,7 +5,7 @@ import { Profile } from "..";
 import { em } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
-const TextEditor = ({editor, profile}:{editor:Editor|null, profile: Profile|null}) => (
+const TextEditor = ({editor, profile}:{editor:Editor|null, profile?: Profile}) => (
   <RichTextEditor editor={editor}>
     <RichTextEditor.Toolbar sticky stickyOffset={useMediaQuery(`(max-width: ${em(768)})`) ? 80 : 0}>
       <RichTextEditor.ControlsGroup>
