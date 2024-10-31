@@ -10,7 +10,7 @@ import App from './App';
 
 const testData: Data = {
   airfields: new Map([["LFNW", { codeIcao: "LFNW", name: "test", position: new GeoPoint(0, 1), runways: [], status:"CAP" }]]),
-  activities: new Map([["XXXX", { name: "name", position: new GeoPoint(0, 0), type: ["other"], description: "description" }]]),
+  activities: new Map([["XXXX", { id:"XXXX", name: "name", position: new GeoPoint(0, 0), type: ["other"], description: "description" }]]),
   trips: new Map(),
   profile: undefined,
   mapView: {center:[], zoom:0},

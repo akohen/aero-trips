@@ -22,7 +22,7 @@ export const DataProvider = () => {
   const getActivities = async () => {
     const query = await getDocs(collection(db, "activities"));
     const newActivities = new Map<string, Activity>()
-    query.docs.forEach(e => newActivities.set(e.id, e.data() as Activity))
+    query.docs.forEach(e => newActivities.set(e.id, {...e.data(), id:e.id} as Activity))
     setActivities(newActivities)
   }
   const getTrips = async () => {

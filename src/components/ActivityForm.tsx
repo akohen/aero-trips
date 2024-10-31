@@ -60,7 +60,7 @@ const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, 
     if(profile) {
       setDoc(doc(db, "activities", activityID), newActivity, {merge:true})
       .then(() => {
-        activities.set(activityID, newActivity)
+        activities.set(activityID, {...newActivity, id: activityID})
         navigate(`/activities/${activityID}`)
       })
       .catch(e => setError(e.message as string))

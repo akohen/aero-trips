@@ -28,6 +28,7 @@ type Runway = {
 }
 
 type Activity = {
+  id: string,
   name: string,
   position: GeoPoint,
   description?: JSONContent,
