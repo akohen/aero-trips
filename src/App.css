@@ -2,6 +2,7 @@ td a, .nearby a, .ad-list a { color: #000; text-decoration: none;}
 a { color: steelblue; text-decoration: none;}
 
 .clickable { cursor: pointer; }
+.title-button { margin-left: 4px; }
 
 .tiptap-content > img { max-width: calc(min(500px, 100%));}
 .tiptap-content a { color: steelblue; }

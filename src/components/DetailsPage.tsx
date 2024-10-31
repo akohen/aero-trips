@@ -20,8 +20,10 @@ const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profil
 
   return (<>
   <Title order={1}>
-    <BackButton />{item.name} {('codeIcao' in item) && (<> - {item.codeIcao}</>)}
-    &nbsp;<EditButton />
+    <BackButton />{item.name}{('codeIcao' in item) && (<> - {item.codeIcao}</>)}
+    {profile && <VisitedButton item={{ type, id }} profile={profile} icon />}
+    {profile && <FavoriteButton item={{ type, id }} profile={profile} icon />}
+    <EditButton />
   </Title>
   {('codeIcao' in item) ? (
     <Text {...(item.status != 'CAP' ? {c:'red',fw:'bold'} : {})}>{iconsList.get(item.status)?.label}</Text>
@@ -59,10 +61,6 @@ const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profil
         Google Maps
       </Button>
       {item.website && <Text><b>Site internet</b> <Link to={item.website}>{item.website}</Link></Text>}
-      {profile && <VisitedButton item={{ type, id }} profile={profile} />}
-      {('codeIcao' in item) && profile &&
-        <FavoriteButton item={item} profile={profile} />
-      }
       </Stack>
     </Paper>
   </Grid.Col>

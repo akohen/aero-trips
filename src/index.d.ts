@@ -80,7 +80,7 @@ interface Profile {
   uid: string,
   email: string,
   homebase?: string,
-  favorites?: string[],
+  favorites?: {type: 'activities'|'airfields', id:string}[],
   visited?: {type: 'activities'|'airfields', id:string}[],
   update: (changes: Partial<Profile>) => void,
 }

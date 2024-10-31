@@ -48,7 +48,9 @@ export const DataProvider = () => {
         Object.assign(this, params);
         this.update = (changes: Partial<Profile>) => {
           setDoc(doc(db, "profiles", this.uid), changes, {merge:true})
-          setProfile({...this, ...changes} as Profile)
+          const updatedProfile = { ...this, ...changes };
+          Object.assign(this, updatedProfile); // I think this whole update function is weird, and this is why
+          setProfile(updatedProfile)
         }
       }
     }
