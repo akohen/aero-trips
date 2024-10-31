@@ -148,3 +148,9 @@ export const uploadImage = (view: EditorView, pos: number, file: File, profile?:
     }
   } else {window.alert("Les images doivent être au format .png ou .jpg et faire moins de 500 ko")}
 }
+
+export const shortener = (str: string, length: number) => {
+  const returnString = str.replace(/(^\w+:|^)\/\//, '');
+  if(returnString.length < length) return returnString;
+  return returnString.slice(0,15) + '...' + returnString.slice(-10);
+}

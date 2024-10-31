@@ -2,7 +2,7 @@ import { Title, Text, Button, Paper, Grid, Stack } from "@mantine/core"
 import BackButton from "./BackButton"
 import EditButton from "./EditButton"
 import { Activity, Airfield, Data } from ".."
-import { findNearest, iconsList } from "../utils"
+import { findNearest, iconsList, shortener } from "../utils"
 import { NearbyActivities, NearbyTrips } from "./ActivityUtils"
 import { NearbyAirfields, ToiletText } from "./AirfieldUtils"
 import { ButtonVACMap, ButtonViewOnMap } from "./CommonButtons"
@@ -60,7 +60,7 @@ const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profil
       >
         Google Maps
       </Button>
-      {item.website && <Text><b>Site internet</b> <Link to={item.website}>{item.website}</Link></Text>}
+      {item.website && <Text><b>Site internet</b> <Link to={item.website}>{shortener(item.website, 35)}</Link></Text>}
       </Stack>
     </Paper>
   </Grid.Col>
