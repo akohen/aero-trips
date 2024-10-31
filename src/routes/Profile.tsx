@@ -41,13 +41,14 @@ const Profile = ({profile, airfields} : Data) => {
     if(!ad) return 'Terrain inconnu'
     return <Text size="sm" className="ad-list"><Link to={`/airfields/${ad.codeIcao}`}>{ad.codeIcao} <AirfieldTitle ad={ad}/></Link></Text>
   }
+  const visitedAirfields = profile?.visited?.filter(v => v.type === 'airfields')
 
   return (profile ? <>
   <h1>Votre profil utilisateur</h1>
   <Paper shadow="md" radius="md" p='sm' mt="md" withBorder>
-    <Title order={4}>Terrains visités</Title>
+    <Title order={4}>Terrains visités ({visitedAirfields?.length})</Title>
     <ul>
-      { profile.visited?.filter(v => v.type === 'airfields').map( (v, i) => (
+      { visitedAirfields?.map( (v, i) => (
         <li key={i}><AirfieldLink id={v.id}/></li>
       ))}
     </ul>
