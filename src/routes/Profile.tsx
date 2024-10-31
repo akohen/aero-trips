@@ -6,6 +6,7 @@ import { useForm } from "@mantine/form"
 import { useEffect } from "react"
 import { AirfieldTitle } from "../components/AirfieldUtils"
 import { Link } from "react-router-dom"
+import BackButton from "../components/BackButton"
 
 const Profile = ({profile, airfields} : Data) => {
 
@@ -44,7 +45,7 @@ const Profile = ({profile, airfields} : Data) => {
   const visitedAirfields = profile?.visited?.filter(v => v.type === 'airfields')
 
   return (profile ? <>
-  <h1>Votre profil utilisateur</h1>
+  <Title order={1}><BackButton />Votre profil utilisateur</Title>
   <Paper shadow="md" radius="md" p='sm' mt="md" withBorder>
     <Title order={4}>Terrains visités ({visitedAirfields?.length})</Title>
     <ul>
