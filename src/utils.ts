@@ -122,7 +122,7 @@ export const editorProps = (profile?: Profile) => ({
 
 
 export const uploadImage = (view: EditorView, pos: number, file: File, profile?: Profile) => {
-  if ((file.type === "image/jpeg" || file.type === "image/png") && file.size < 2**19) { // check valid image type under 512kB
+  if ((file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/webp") && file.size < 2**19) { // check valid image type under 512kB
     if(profile) {
       const storage = getStorage();
       const storageRef = ref(storage, `img/${profile.uid}/${Math.random().toString(36).substring(2)}`);
