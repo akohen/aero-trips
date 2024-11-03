@@ -43,6 +43,7 @@ export const DataProvider = () => {
       displayName!: string;
       uid!: string;
       email!: string;
+      visited?: { type: 'activities' | 'airfields'; id: string; }[] = [];
       update: (changes: Partial<Profile>) => void;
       constructor(params: Omit<Profile, "update">) {
         Object.assign(this, params);
