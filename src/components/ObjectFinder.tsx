@@ -1,40 +1,49 @@
 import { ComboboxItem, Select } from "@mantine/core";
 import { Activity, Airfield } from "..";
-import { useEffect, useState } from "react";
 
-const ObjectFinder = ({activities, airfields, value, onChange, ...props}: 
-  {activities: Map<string,Activity>, airfields: Map<string,Airfield>, value: string|null, onChange: (value: string | null, option: ComboboxItem) => void}) => {
-    type FinderOptions = {group: string, items: {label: string, value: string}[]}[]
-    const [data, setData] = useState<FinderOptions>([])
+const ObjectFinder = ({
+  activities,
+  airfields,
+  value,
+  onChange,
+  ...props
+}: {
+  activities: Map<string, Activity>;
+  airfields: Map<string, Airfield>;
+  value: string | null;
+  onChange: (value: string | null, option: ComboboxItem) => void;
+}) => {
+  const options = [
+    {
+      group: "Terrains",
+      items: [...airfields].map(([id, ad]) => ({
+        label: `${ad.name} - ${ad.codeIcao}`,
+        value: `airfields/${id}`
+      }))
+    },
+    {
+      group: "Activités",
+      items: [...activities].map(([id, activity]) => ({
+        label: activity.name,
+        value: `activities/${id}`
+      }))
+    }
+  ];
 
-    useEffect(() => {
-      const activitiesOptions = [...airfields] 
-        .map(([id, ad]) => (
-          {label: `${ad.name} - ${ad.codeIcao}`, value:`airfields/${id}`}
-        ))
-      const airfieldsOptions = [...activities] 
-        .map(([id, activity]) => (
-          {label: activity.name, value:`activities/${id}`}
-        ))
+  return (
+    <Select
+      value={value}
+      onChange={onChange}
+      data={options}
+      placeholder="Terrain ou activité"
+      searchable
+      clearable
+      limit={8}
+      size="xs"
+      w={250}
+      {...props}
+    />
+  );
+};
 
-      setData([
-        {group:'Terrains', items:airfieldsOptions},
-        {group:'Activités', items:activitiesOptions},
-      ])
-
-    },[airfields, activities])
-    
-  
-  return (<Select 
-    value={value}
-    onChange={onChange}
-    data={data}
-    placeholder="Terrain ou activité"
-    limit={8} searchable clearable
-    size="xs"
-    style={{width:'250px'}}
-    {...props}
-  />)
-}
-
-export default ObjectFinder
+export default ObjectFinder;
