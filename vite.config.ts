@@ -17,4 +17,13 @@ export default defineConfig({
     environment: 'happy-dom',
   },
   base: '/',
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          data: ['src/data/airfields.json', 'src/data/activities.json'],
+        },
+      },
+    },
+  },
 })

@@ -53,6 +53,7 @@
     "postcss": "^8.4.33",
     "postcss-preset-mantine": "^1.12.3",
     "postcss-simple-vars": "^7.0.1",
+    "tsx": "^4.19.2",
     "typescript": "^5.2.2",
     "vite": "^5.2.12",
     "vite-plugin-pwa": "^0.20.0",
