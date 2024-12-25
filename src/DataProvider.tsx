@@ -34,8 +34,11 @@ export const DataProvider = () => {
     activitiesData.activities.forEach(e => newActivities.set(e.id, e as Activity))
     setActivities(newActivities)
     
-    const query = await getDocs(collection(db, "activities"));
-    query.docs.forEach(e => newActivities.set(e.id, {...e.data(), id:e.id} as Activity))
+    const req = await getDocs(query(
+      collection(db, "activities"), 
+      where("updated_at", ">=", new Date(activitiesData.updated_at))
+    ));
+    req.docs.forEach(e => newActivities.set(e.id, {...e.data(), id:e.id} as Activity))
     setActivities(new Map<string, Activity>(newActivities.entries()))
   }
 
