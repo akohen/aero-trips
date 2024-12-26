@@ -42,7 +42,12 @@ const AirfieldForm = ({airfield, profile, airfields}: {airfield: Airfield, profi
 
   const submitFn = (document: typeof form.values) => {
     // Carry all data from the existing airfield, mostly as its easier to test prod data on dev/staging where the entry might not exist
-    const updatedAirfield = {...airfield, ...document, updated_at: Timestamp.fromDate(new Date())} as Airfield
+    const updatedAirfield = {
+      ...airfield,
+      ...document,
+      updated_at: Timestamp.fromDate(new Date()),
+      updated_by: profile ? profile.uid : 'anonymous',
+    } as Airfield
 
     if(profile) {
       setDoc(doc(db, "airfields", airfield.codeIcao), updatedAirfield, {merge:true})

@@ -55,6 +55,7 @@ const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, 
       ...values, 
       position: new GeoPoint(...values.position.split(', ').map(parseFloat) as [number, number]),
       updated_at: Timestamp.fromDate(new Date()),
+      updated_by: profile ? profile.uid : 'anonymous',
     }
     const activityID = id ? id : slug(values.name)
 
