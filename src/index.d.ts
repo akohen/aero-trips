@@ -1,4 +1,4 @@
-import { GeoPoint } from "firebase/firestore"
+import { GeoPoint, Timestamp } from "firebase/firestore"
 
 type Data = {
   airfields: Map<string,Airfield>,
@@ -19,7 +19,7 @@ type Airfield = {
   fuels?: string[],
   toilet?:'no'|'public'|'private',
   website?: string,
-  updated_at?: {seconds: number, nanoseconds: number},
+  updated_at?: Timestamp,
 }
 
 type Runway = {
@@ -35,7 +35,7 @@ type Activity = {
   description?: JSONContent,
   type: ActivityType[],
   website?: string,
-  updated_at?: {seconds: number, nanoseconds: number},
+  updated_at?: Timestamp,
 }
 
 type ActivityType =  // food, lodging, bike, hiking, transit, car, poi, historic?

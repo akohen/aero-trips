@@ -12,7 +12,7 @@ import { default as TiptapImage } from "@tiptap/extension-image";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { editorProps, slug } from "../utils";
 import { CommonIcon } from "./CommonIcon";
-import { GeoPoint, addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { GeoPoint, Timestamp, addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { db } from "../data/firebase";
 
 const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, profile?: Profile, id: string|undefined, activities: Map<string,Activity>}) => {
@@ -53,7 +53,7 @@ const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, 
     const newActivity = {
       ...values, 
       position: new GeoPoint(...values.position.split(', ').map(parseFloat) as [number, number]),
-      updated_at: new Date(),
+      updated_at: Timestamp.fromDate(new Date()),
     }
     const activityID = id ? id : slug(values.name)
 

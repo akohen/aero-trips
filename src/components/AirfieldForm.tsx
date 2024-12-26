@@ -10,7 +10,7 @@ import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
 import { default as TiptapImage } from "@tiptap/extension-image";
 import { editorProps } from "../utils";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { db } from "../data/firebase";
 
 const AirfieldForm = ({airfield, profile}: {airfield: Airfield, profile?: Profile}) => {
@@ -42,7 +42,7 @@ const AirfieldForm = ({airfield, profile}: {airfield: Airfield, profile?: Profil
     addDoc(collection(db, "changes"), {
       ...document,
       targetDocument:`airfields/${airfield.codeIcao}`,
-      updated_at: new Date(),
+      updated_at: Timestamp.fromDate(new Date()),
     })
   }
 
