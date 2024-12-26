@@ -61,6 +61,11 @@ const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profil
         Google Maps
       </Button>
       {item.website && <Text><b>Site internet</b> <Link to={item.website}>{shortener(item.website, 35)}</Link></Text>}
+      {item.updated_at && (
+        <Text size="xs" ta={"right"}>
+          Mis à jour le {new Date(item.updated_at.seconds * 1000).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+        </Text>
+      )}
       </Stack>
     </Paper>
   </Grid.Col>

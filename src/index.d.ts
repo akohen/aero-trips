@@ -19,6 +19,7 @@ type Airfield = {
   fuels?: string[],
   toilet?:'no'|'public'|'private',
   website?: string,
+  updated_at?: {seconds: number, nanoseconds: number},
 }
 
 type Runway = {
@@ -34,6 +35,7 @@ type Activity = {
   description?: JSONContent,
   type: ActivityType[],
   website?: string,
+  updated_at?: {seconds: number, nanoseconds: number},
 }
 
 type ActivityType =  // food, lodging, bike, hiking, transit, car, poi, historic?
