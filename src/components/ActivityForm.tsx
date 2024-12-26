@@ -5,7 +5,7 @@ import { StarterKit } from "@tiptap/starter-kit";
 import { Link } from "@tiptap/extension-link";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
 import { default as TiptapImage } from "@tiptap/extension-image";
@@ -14,6 +14,7 @@ import { editorProps, slug } from "../utils";
 import { CommonIcon } from "./CommonIcon";
 import { GeoPoint, Timestamp, addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { db } from "../data/firebase";
+import AnonymousSubmission from "./AnonymousSubmission";
 
 const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, profile?: Profile, id: string|undefined, activities: Map<string,Activity>}) => {
   const [submitted, setSubmitted] = useState(false)
@@ -74,8 +75,6 @@ const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, 
   }
 
 
-
-
   const PositionTooltip = () => (
     <Tooltip label={"Pour obtenir la position, sur Google Maps, clic droit sur le lieu, cliquer sur la première ligne qui s'affiche, puis coller la valeur dans la case ci-dessous"}>
       <InputLabel>Position
@@ -83,11 +82,10 @@ const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, 
       </InputLabel>
     </Tooltip>)
 
-  return (submitted) ? (
-    <><Title><BackButton />{activity ? 'Proposer une modification' : 'Proposer une nouvelle activité ou lieu'}</Title>
-    <p>Modifications enregistrées. Elles seront visibles d'ici quelques jours. <RouterLink to=".." relative="path">Retour</RouterLink></p></>
-  ) : (<form onSubmit={form.onSubmit(saveActivity)}>
-  <Title><BackButton />{activity ? 'Proposer une modification' : 'Proposer une nouvelle activité ou lieu'}</Title>
+
+  return (submitted) ? <AnonymousSubmission activity={activity}/> : (
+  <form onSubmit={form.onSubmit(saveActivity)}>
+  <Title><BackButton />{activity && activity.id ? 'Proposer une modification' : 'Proposer une nouvelle activité ou lieu'}</Title>
   <Fieldset>
   <Group justify="space-between" align="top">
     <TextInput

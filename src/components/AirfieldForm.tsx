@@ -5,16 +5,18 @@ import { StarterKit } from "@tiptap/starter-kit";
 import { Link } from "@tiptap/extension-link";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
 import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
 import { default as TiptapImage } from "@tiptap/extension-image";
 import { editorProps } from "../utils";
-import { addDoc, collection, Timestamp } from "firebase/firestore";
+import { addDoc, collection, doc, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "../data/firebase";
+import AnonymousSubmission from "./AnonymousSubmission";
+import { useNavigate } from "react-router-dom";
 
-const AirfieldForm = ({airfield, profile}: {airfield: Airfield, profile?: Profile}) => {
+const AirfieldForm = ({airfield, profile, airfields}: {airfield: Airfield, profile?: Profile, airfields: Map<string,Airfield>}) => {
   const [submitted, setSubmitted] = useState(false)
+  const navigate = useNavigate();
 
   const form = useForm({
     initialValues: {
@@ -38,27 +40,30 @@ const AirfieldForm = ({airfield, profile}: {airfield: Airfield, profile?: Profil
     }
   }, [profile]);
 
-  const submitFn = (document: {name?: string, position?: string}) => {
-    addDoc(collection(db, "changes"), {
-      ...document,
-      targetDocument:`airfields/${airfield.codeIcao}`,
-      updated_at: Timestamp.fromDate(new Date()),
-    })
+  const submitFn = (document: typeof form.values) => {
+    // Carry all data from the existing airfield, mostly as its easier to test prod data on dev/staging where the entry might not exist
+    const updatedAirfield = {...airfield, ...document, updated_at: Timestamp.fromDate(new Date())} as Airfield
+
+    if(profile) {
+      setDoc(doc(db, "airfields", airfield.codeIcao), updatedAirfield, {merge:true})
+      .then(() => {
+        airfields.set(airfield.codeIcao, updatedAirfield)
+        navigate(`/airfields/${airfield.codeIcao}`)
+      })
+      .catch(e => console.error(e.message as string))
+    } else {
+      addDoc(collection(db, "changes"), {
+        ...document,
+        targetDocument:`airfields/${airfield.codeIcao}`,
+        updated_at: Timestamp.fromDate(new Date()),
+      })
+      setSubmitted(true)
+    }
   }
 
 
-  return (submitted) ? (<>
-    <Title><BackButton />Proposer une modification</Title>
-    <p>Votre modification a bien été enregistrée, elle sera ajoutée au site d'ici quelques jours!</p>
-    <p><RouterLink to=".." relative="path">Retour</RouterLink></p>
-  </>) : (
-  <form onSubmit={form.onSubmit((values) => {
-    submitFn(Object.keys(values)
-      .filter((k) => form.isDirty(k))
-      .reduce((a, k) => ({ ...a, [k]: values[k as 'description'] }), {})
-    )
-    setSubmitted(true)
-  })}>
+  return (submitted) ? <AnonymousSubmission /> : (
+  <form onSubmit={form.onSubmit(submitFn)}>
   <Title><BackButton />Proposer une modification</Title>
   <Fieldset legend={`Terrain de ${airfield.name}`}>
     <Group justify="center" align="baseline">
