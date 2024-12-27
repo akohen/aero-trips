@@ -24,6 +24,7 @@ export const ButtonVACMap = ({airfield, compact}: {airfield:Airfield, compact?:b
     target='_blank'
     size={compact ? "compact-sm" : 'sm'}
     leftSection={<IconMapCheck size={20} />}
+    title={`Voir la carte VAC de ${airfield.codeIcao} - ${airfield.name} dans un nouvel onglet`}
   >
     Carte VAC
   </Button>
