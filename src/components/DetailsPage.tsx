@@ -72,7 +72,7 @@ const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profil
   {item.description && <Grid.Col span={6}><Description content={item.description} /></Grid.Col>}
   <NearbyAirfields items={nearbyAirfields} />
   <NearbyTrips items={nearbyTrips} />
-  <NearbyActivities items={nearbyActivities} />
+  <NearbyActivities items={nearbyActivities} profile={profile} />
   </Grid>
 </>)
 }

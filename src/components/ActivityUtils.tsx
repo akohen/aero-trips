@@ -12,14 +12,14 @@ export const ActivityTitle = ({activity, profile}: {activity: Activity, profile?
   {profile?.favorites?.find(v => v.type == 'activities' && v.id == activity.id) && <CommonIcon iconType="favorite" />}
 </Text>)
 
-export const NearbyActivities = ({items} : {items: [distance: number, item: Activity, id: string][]}) => {
+export const NearbyActivities = ({items, profile} : {items: [distance: number, item: Activity, id: string][], profile?:Profile}) => {
   if(items.length == 0) return
   return (
   <Grid.Col span={12}>
     <Title order={4}>Activités proches</Title>
     <Flex mt='md' gap="xs" wrap="wrap" justify={{ sm: 'center' }}>
       { items.map(([dist, activity, id]) => (
-        <ActivityCard key={id} activity={activity} distance={dist}/>
+        <ActivityCard key={id} activity={activity} distance={dist} profile={profile} />
       ))}
     </Flex>
   </Grid.Col>
