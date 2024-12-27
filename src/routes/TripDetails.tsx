@@ -27,18 +27,17 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
   
   const tripTypes = {short:'Vol de quelques heures', day:'Sortie à la journée', multi:'Voyage sur plusieurs jours'}
   const items = trip.steps
-    .map((e,i) => ([{activities, airfields}[e.type].get(e.id), i, e.type] as [Activity|Airfield, number, 'activities'|'airfields']))
-    .filter(([, e]) => e != undefined)
+    .map(e => ({activities, airfields}[e.type].get(e.id) as Activity|Airfield))
+    .filter(e => e != undefined)
   const markers = items
-    .map( ([e, key, type]) => type == 'airfields' ? 
-      <AirfieldMarker key={key} airfield={e as Airfield} /> : 
-      <ActivityMarker key={key} activity={e as Activity} />
+    .map( (e,i) => 'codeIcao' in e ? 
+      <AirfieldMarker key={i} airfield={e as Airfield} /> : 
+      <ActivityMarker key={i} activity={e as Activity} />
     );
-  const linePositions = items.map( ([e,]) => ({lat: e.position.latitude, lng: e.position.longitude}))
-  const uniqueItems = items.filter((e,i) => items.findIndex(([f,]) => f == e[0]) == i)
+  const linePositions = items.map( e => ({lat: e.position.latitude, lng: e.position.longitude}))
   
   const bounds = latLngBounds([])
-  items.forEach(([e]) => bounds.extend([e.position.latitude,e.position.longitude]))
+  items.forEach(e => bounds.extend([e.position.latitude,e.position.longitude]))
   
   return (<>
     <Title><BackButton />Fiche {trip.name} {profile && profile.uid == trip.uid && <EditButton />}</Title>
@@ -54,7 +53,8 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
           verticalSeparator: {borderLeftColor:"#ccc"},
         }}
       >
-        {items.map(([e, , type],i) => {
+        {items.map((e,i) => {
+          const type = 'codeIcao' in e ? 'airfields' : 'activities'
           if(skip && i == 2) return (
           <Stepper.Step
             key={i}
@@ -86,8 +86,8 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
     </Group>
   <Description content={trip.description} />
   <Flex mt='md' gap="xs" wrap="wrap" justify={{ sm: 'center' }}>
-    {uniqueItems.map(([item, id, type]) => 
-      type == 'airfields' ? 
+    {[...new Set(items)].map((item, id) => 
+      'codeIcao' in item ? 
       <AirfieldCard key={id} airfield={item as Airfield} profile={profile} /> :
       <ActivityCard key={id} activity={item as Activity} profile={profile} />
     )}
