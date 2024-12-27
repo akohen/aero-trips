@@ -30,7 +30,7 @@ const selectIcon = (types: ActivityType[]) => {
   return pinActivity
 }
 
-const ActivityMarker = ({id, activity}: {id:string, activity:Activity}) => {
+const ActivityMarker = ({activity}: {activity:Activity}) => {
     const imgNode = activity.description?.content != undefined ? activity.description.content.find( (a: { type: string }) => a.type =='image') : undefined
     return (
     <Marker
@@ -38,7 +38,7 @@ const ActivityMarker = ({id, activity}: {id:string, activity:Activity}) => {
       icon={new Icon({iconUrl: selectIcon(activity.type), iconAnchor:[25,49], iconSize:[50,50]})}
     >
       <Popup>
-        <Link to={`/activities/${id}`}>
+        <Link to={`/activities/${activity.id}`}>
           <Stack align="center" gap={"xs"}>
             <div><ActivityTitle activity={activity}/></div>      
             {imgNode != undefined && <img src={imgNode.attrs.src} width="150px" />}

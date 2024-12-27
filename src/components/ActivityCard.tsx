@@ -1,9 +1,9 @@
 import { Button, Group, Paper, Stack, Text } from '@mantine/core';
-import { Activity, ActivityType } from '..';
+import { Activity, ActivityType, Profile } from '..';
 import { Link } from 'react-router-dom';
 import { CommonIcon } from './CommonIcon';
 
-const ActivityCard = ({id, activity, distance}: {id:string, activity:Activity, distance?:number}) => {
+const ActivityCard = ({activity, distance, profile}: {activity:Activity, distance?:number, profile?:Profile}) => {
     const imgNode = activity.description?.content != undefined ? activity.description.content.find( (a: { type: string }) => a.type =='image') : undefined
     const imgURL = getImage(imgNode, activity.type)
     return (
@@ -21,13 +21,15 @@ const ActivityCard = ({id, activity, distance}: {id:string, activity:Activity, d
                 alignItems: 'flex-end',
             }}
             component={Link}
-            to={`/activities/${id}`}
+            to={`/activities/${activity.id}`}
             className='activity-card'
         >
             <Stack gap='6px'>
                 {distance && <Text c="white" fw={500} size="sm">à {distance > 2500 ? `${Math.round(distance/1000)}km` : `${Math.round(distance/100)*100}m`}</Text>}
                 <Group gap='6px'>
                     {activity.type.map((e,i) => <CommonIcon iconType={e} key={i} color='white' /> )}
+                    {profile?.visited?.find(v => v.type == 'activities' && v.id == activity.id) && <CommonIcon iconType="visited" color='white' />}
+                    {profile?.favorites?.find(v => v.type == 'activities' && v.id == activity.id) && <CommonIcon iconType="favorite" color='white' />}
                 </Group>
                 <Button
                     maw={235}

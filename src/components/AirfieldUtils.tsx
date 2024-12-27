@@ -43,7 +43,7 @@ export const ToiletText = ({airfield}:{airfield: Airfield}) => {
   if(airfield.toilet == 'public') return <Text>Toilettes publiques</Text>
 }
 
-export const AirfieldMarker = ({id, airfield}: {id:string, airfield:Airfield}) => {
+export const AirfieldMarker = ({airfield}: {airfield:Airfield}) => {
   const imgNode = airfield.description?.content != undefined ? airfield.description.content.find( (a: { type: string }) => a.type =='image') : undefined
   return (
   <Marker 
@@ -52,7 +52,7 @@ export const AirfieldMarker = ({id, airfield}: {id:string, airfield:Airfield}) =
     zIndexOffset={1000}
   >
     <Popup>
-      <Link to={`/airfields/${id}`}>
+      <Link to={`/airfields/${airfield.codeIcao}`}>
         <Stack align="center" gap={"xs"}>
           <div><AirfieldTitle ad={airfield}/></div>      
           {imgNode != undefined && <img src={imgNode.attrs.src} width="150px" />}

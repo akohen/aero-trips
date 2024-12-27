@@ -11,6 +11,7 @@ import { IconBulb, IconDots, IconPlaneArrival } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import ActivityCard from "../components/ActivityCard";
 import Description from "../components/Description";
+import AirfieldCard from "../components/AirfieldCard";
 
 const TripDetails = ({trips, airfields, activities, profile} : Data) => {
   const params = useParams();
@@ -26,14 +27,15 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
   
   const tripTypes = {short:'Vol de quelques heures', day:'Sortie à la journée', multi:'Voyage sur plusieurs jours'}
   const items = trip.steps
-    .map(e => ([{activities, airfields}[e.type].get(e.id), e.id, e.type] as [Activity|Airfield, string, string]))
+    .map((e,i) => ([{activities, airfields}[e.type].get(e.id), i, e.type] as [Activity|Airfield, number, 'activity'|'airfields']))
     .filter(([, e]) => e != undefined)
   const markers = items
     .map( ([e, key, type]) => type == 'airfields' ? 
-      <AirfieldMarker key={key} id={key} airfield={e as Airfield} /> : 
-      <ActivityMarker key={key} id={key} activity={e as Activity} />
+      <AirfieldMarker key={key} airfield={e as Airfield} /> : 
+      <ActivityMarker key={key} activity={e as Activity} />
     );
   const linePositions = items.map( ([e,]) => ({lat: e.position.latitude, lng: e.position.longitude}))
+  const uniqueItems = items.filter((e,i) => items.findIndex(([f,]) => f == e[0]) == i)
   
   const bounds = latLngBounds([])
   items.forEach(([e]) => bounds.extend([e.position.latitude,e.position.longitude]))
@@ -84,9 +86,11 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
     </Group>
   <Description content={trip.description} />
   <Flex mt='md' gap="xs" wrap="wrap" justify={{ sm: 'center' }}>
-    {items.filter( ([, , type]) => type == "activities").map(([item, id, ]) => (
-      <ActivityCard key={id} id={id} activity={item as Activity}/>
-    ))}
+    {uniqueItems.map(([item, id, type]) => 
+      type == 'airfields' ? 
+      <AirfieldCard key={id} airfield={item as Airfield} profile={profile} /> :
+      <ActivityCard key={id} activity={item as Activity} profile={profile} />
+    )}
   </Flex>
     
   </>)
