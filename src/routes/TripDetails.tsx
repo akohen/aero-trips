@@ -27,7 +27,7 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
   
   const tripTypes = {short:'Vol de quelques heures', day:'Sortie à la journée', multi:'Voyage sur plusieurs jours'}
   const items = trip.steps
-    .map((e,i) => ([{activities, airfields}[e.type].get(e.id), i, e.type] as [Activity|Airfield, number, 'activity'|'airfields']))
+    .map((e,i) => ([{activities, airfields}[e.type].get(e.id), i, e.type] as [Activity|Airfield, number, 'activities'|'airfields']))
     .filter(([, e]) => e != undefined)
   const markers = items
     .map( ([e, key, type]) => type == 'airfields' ? 
@@ -54,7 +54,7 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
           verticalSeparator: {borderLeftColor:"#ccc"},
         }}
       >
-        {items.map(([e, id, type],i) => {
+        {items.map(([e, , type],i) => {
           if(skip && i == 2) return (
           <Stepper.Step
             key={i}
@@ -66,7 +66,7 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
           return (
             <Stepper.Step
               key={i}
-              label={<Link to={`/${type}/${id}`}>{e.name}</Link>}
+              label={<Link to={`/${type}/${type === 'activities' ? (e as Activity).id : (e as Airfield).codeIcao}`}>{e.name}</Link>}
               icon={type == 'airfields' ? <IconPlaneArrival style={{ width: rem(18), height: rem(18) }} /> : <IconBulb style={{ width: rem(18), height: rem(18) }} />}
               styles={skip && i == 1 ? {verticalSeparator: {borderLeftStyle:"dashed"}} : {}}
             />)
