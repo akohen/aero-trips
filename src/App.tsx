@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Layout from "./Layout";
 import Home from "./routes/Home";
 import MapPage from "./routes/MapPage";
@@ -11,7 +11,7 @@ import ActivityDetails from "./routes/ActivityDetails";
 import TripsList from "./routes/TripsList";
 import TripDetails from "./routes/TripDetails";
 import AddData from "./routes/AddData";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ADfilter } from '.';
 import Profile from "./routes/Profile";
 import Contact from "./routes/Contact";
@@ -34,6 +34,12 @@ export default function App(data : Data) {
     target: '',
     type: [],
   })
+  const location = useLocation();
+  useEffect(() => {
+    if(!location.pathname.startsWith('/activities/') && !location.pathname.startsWith('/airfields/')) {
+      document.title = "AeroTrips"
+    }
+  }, [location]);
 
   const mapProps = {...data, ADfilter, ActFilter, setADfilter, setActFilter}
   

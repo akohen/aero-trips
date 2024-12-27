@@ -11,12 +11,16 @@ import { Link } from "react-router-dom"
 import Description from "./Description"
 import FavoriteButton from "./FavoriteButton"
 import VisitedButton from "./VisitedButton"
+import { useEffect } from "react"
 
 const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profile} : Data & {id: string, item: Airfield|Activity}) => {
   const nearbyAirfields = findNearest(item, airfields, 50000).slice(0,8)
   const nearbyActivities = findNearest(item, activities).slice(0,8)
   const nearbyTrips = [...trips].filter(([,trip]) => trip.steps.some(step => step.type == (('codeIcao' in item) ? 'airfields' : 'activities') && step.id == id)).slice(0,8)
   const type = 'codeIcao' in item ? 'airfields' : 'activities'
+  useEffect(() => {
+    document.title = ('codeIcao' in item ? `${item.codeIcao} - ` : '') + item.name + ' - AeroTrips'
+  }, [item]);
 
   return (<>
   <Title order={1}>
