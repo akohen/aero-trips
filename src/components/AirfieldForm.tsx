@@ -61,6 +61,7 @@ const AirfieldForm = ({airfield, profile, airfields}: {airfield: Airfield, profi
         ...document,
         targetDocument:`airfields/${airfield.codeIcao}`,
         updated_at: Timestamp.fromDate(new Date()),
+        updated_by: 'anonymous'
       })
       setSubmitted(true)
     }
