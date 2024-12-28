@@ -3,14 +3,14 @@ import { Group, Table, Text } from '@mantine/core';
 import { ADfilter, Airfield, Data } from '..';
 import { useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
-import { useEffect, useState, Dispatch, SetStateAction } from 'react';
+import { useEffect, useState } from 'react';
 import { filterAirfields } from '../utils';
 import AirfieldsFilters from '../components/AirfieldsFilters';
 import { AirfieldTitle } from '../components/AirfieldUtils';
 import { ButtonVACMap, ButtonViewOnMap } from '../components/CommonButtons';
 
 function AirfieldsPage({airfields, activities, filters, setFilters, setMapView, profile} : 
-  Data & {filters: ADfilter, setFilters: Dispatch<SetStateAction<ADfilter>>}) {
+  Data & {filters: ADfilter, setFilters: (newFilters: ADfilter) => void}) {
   const [data, setData] = useState(airfields);
   const navigate = useNavigate();
   const AdTd = (e: Airfield) => ({
@@ -21,6 +21,11 @@ function AirfieldsPage({airfields, activities, filters, setFilters, setMapView, 
   useEffect(()=>{
     setData( filterAirfields(airfields, activities, filters, profile) )
   },[airfields, activities, filters, profile])
+  
+  useEffect(() => {
+    setFilters(filters)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (<>
     <AirfieldsFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} profile={profile}/>
