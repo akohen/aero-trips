@@ -19,7 +19,7 @@ function TableList<T>( {data, row, empty, columns} :
     if(data.size === 0) return // Wait for data to be loaded before resetting to page 1
     const pageId = Math.max(1, Math.min(page, chunks.length))
     setPage(pageId)
-    setSearchParams({page: pageId.toString()})
+    setSearchParams(params => {params.set("page", pageId.toString()); return params})
   }
 
   useEffect(() => {
