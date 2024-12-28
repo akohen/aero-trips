@@ -1,19 +1,22 @@
-import { Button, Group, Paper, Stack, Text } from '@mantine/core';
+import { Button, em, Group, Paper, Stack, Text } from '@mantine/core';
 import { Activity, ActivityType, Profile } from '..';
 import { Link } from 'react-router-dom';
 import { CommonIcon } from './CommonIcon';
+import { useMediaQuery } from '@mantine/hooks';
 
 const ActivityCard = ({activity, distance, profile}: {activity:Activity, distance?:number, profile?:Profile}) => {
     const imgNode = activity.description?.content != undefined ? activity.description.content.find( (a: { type: string }) => a.type =='image') : undefined
     const imgURL = getImage(imgNode, activity.type)
+    const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
+    const maxNameLength = isMobile ? 23 : 30
     return (
         <Paper
             shadow="md"
             radius="md"
-            p='sm'
-            miw={220} maw={260} mih={260}
+            p='xs'
+            miw={isMobile ? 150 : 220} maw={isMobile ? 150 : 260} mih={isMobile ? 150 : 260}
             style={{
-                backgroundImage: `url(${imgURL}), linear-gradient(transparent 50%, rgba(0,0,0,0.5) 80%)`,
+                backgroundImage: `url(${imgURL}), linear-gradient(transparent 25%, rgba(0,0,0,0.5) 75%)`,
                 backgroundBlendMode: 'multiply',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -24,20 +27,21 @@ const ActivityCard = ({activity, distance, profile}: {activity:Activity, distanc
             to={`/activities/${activity.id}`}
             className='activity-card'
         >
-            <Stack gap='6px'>
-                {distance && <Text c="white" fw={500} size="sm">à {distance > 2500 ? `${Math.round(distance/1000)}km` : `${Math.round(distance/100)*100}m`}</Text>}
-                <Group gap='6px'>
+            <Stack gap='3px'>
+                <Group gap='3px'>
                     {activity.type.map((e,i) => <CommonIcon iconType={e} key={i} color='white' /> )}
                     {profile?.visited?.find(v => v.type == 'activities' && v.id == activity.id) && <CommonIcon iconType="visited" color='white' />}
                     {profile?.favorites?.find(v => v.type == 'activities' && v.id == activity.id) && <CommonIcon iconType="favorite" color='white' />}
+                    {distance && <Text c="white" fw={500} size={isMobile ? 'xs' : 'sm'}>à {distance > 2500 ? `${Math.round(distance/1000)}km` : `${Math.round(distance/100)*100}m`}</Text>}
                 </Group>
                 <Button
-                    maw={235}
+                    maw={isMobile ? 130 : 235}
                     radius="md"
                     variant='white'
-                    size='sm'
-                    >
-                    {activity.name}
+                    size='xs'
+                    px={isMobile ? '3' : 'sm'} 
+                >
+                    <Text size={isMobile ? 'xs' : 'sm'} fw={isMobile ? 300 : 500}>{activity.name.length > maxNameLength ? activity.name.slice(0,maxNameLength-4) + ".." : activity.name}</Text>
                 </Button>
             </Stack>
         </Paper>
