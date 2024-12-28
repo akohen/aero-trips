@@ -13,7 +13,7 @@ const Home = () => {
   >
     <Text>
       Aerotrips est un site <b>gratuit</b>, <b>collaboratif</b> et <b>open-source</b>&nbsp;
-      pour aider les pilotes privés à partager des idées de sorties en avion,
+      pour aider les pilotes privés à partager des idées de sorties en avion léger,
       ainsi que des activités à proximité des aérodromes.
     </Text>
     <Text>

@@ -17,7 +17,7 @@ export const NearbyActivities = ({items, profile} : {items: [distance: number, i
   return (
   <Grid.Col span={12}>
     <Title order={4}>Activités proches</Title>
-    <Flex mt='md' gap="xs" wrap="wrap" justify={{ sm: 'center' }}>
+    <Flex mt='md' gap="xs" wrap="wrap">
       { items.map(([dist, activity, id]) => (
         <ActivityCard key={id} activity={activity} distance={dist} profile={profile} />
       ))}
