@@ -1,5 +1,5 @@
-import { Group, Chip, InputLabel, TextInput, rem, NumberInput, Button, Collapse, CloseButton } from "@mantine/core"
-import { IconCircleCheck, IconForbid, IconGasStation, IconHistory, IconRoad, IconSearch, IconStar, IconToiletPaper } from "@tabler/icons-react"
+import { Group, Chip, InputLabel, TextInput, rem, NumberInput, Button, Collapse, CloseButton, Popover, Text } from "@mantine/core"
+import { IconCircleCheck, IconForbid, IconGasStation, IconHistory, IconRoad, IconSearch, IconShare, IconStar, IconToiletPaper } from "@tabler/icons-react"
 import { ADfilter, Activity, Airfield, Profile } from ".."
 import { useDisclosure } from "@mantine/hooks"
 import { CommonIcon } from "./CommonIcon"
@@ -9,6 +9,11 @@ const AirfieldsFilters = ({airfields, activities, profile, filters, setFilters}:
 {airfields:Map<string, Airfield>, activities:Map<string, Activity>, profile?: Profile, filters: ADfilter, setFilters: (newFilters: ADfilter) => void}) => {
 
   const [opened, { toggle }] = useDisclosure(true)
+  const [openedShare, { toggle: toggleShare}] = useDisclosure(false)
+  const share = () => {
+    navigator.clipboard.writeText(location.href);
+    toggleShare();
+  }
 
 return (<>
 <Collapse in={opened}>
@@ -66,6 +71,16 @@ return (<>
       style={{flexGrow:2}}
       rightSection={filters.search ? <CloseButton size={18} onClick={() => setFilters({...filters, search: ''})} style={{cursor:'pointer'}}/> : undefined}
     />
+    <Popover width={200} position="bottom" withArrow shadow="md"opened={openedShare} onChange={toggleShare}>
+      <Popover.Target>
+        <Button onClick={share} leftSection={<IconShare size={18} />}>
+          Partager
+        </Button>
+      </Popover.Target>
+      <Popover.Dropdown>
+        <Text size="xs">L'URL des résultats à été copiée dans le presse-papier.</Text>
+      </Popover.Dropdown>
+    </Popover>
     <Button onClick={toggle}>Filtres avancés</Button>
     <Button onClick={() => setFilters({
       search:'',
