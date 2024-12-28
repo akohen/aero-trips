@@ -39,7 +39,7 @@ export default function App(data : Data) {
       if(newFilters.search === '') params.delete("adSearch")
       if(newFilters.services.length === 0) params.delete("adServices")
       if(newFilters.ad.length === 0) params.delete("adMisc")
-      if(newFilters.runway === 0 || newFilters.runway === '') params.delete("rwyLen")
+      if(!newFilters.runway) params.delete("rwyLen")
       if(!newFilters.distance) params.delete("adDist")
       if(!newFilters.target) params.delete("adTgt")
       return params
