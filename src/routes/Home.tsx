@@ -20,7 +20,7 @@ const Home = () => {
       Ce site permet par exemple de:
     </Text>
     <ul>
-      <li>Consulter les informations des terrains, accéder aux dernières cartes VAC</li>
+      <li>Consulter les informations des terrains accessibles aux vols VFR, accéder aux dernières cartes VAC</li>
       <li>Trouver facilement les aérodromes avec un restaurant, un hôtel ou une autre activité à proximité</li>
       <li>Partager les sorties que vous avez réalisées</li>
       <li>Préparer un itinéraire de voyage à proposer à vos passagers</li>
@@ -49,8 +49,8 @@ const Home = () => {
     mt="md"
     withBorder
   >
-    <Text>Les modifications des visiteurs anonymes sont validées manuellement, votre modification n'apparaîtra pas immédiatement sur le site.</Text>
     <Text>
+      Les modifications des visiteurs anonymes sont validées manuellement, votre modification n'apparaîtra pas immédiatement sur le site.
       Vous pouvez vous connecter (uniquement avec un compte Google pour le moment) 
       afin de pouvoir:
     </Text>
