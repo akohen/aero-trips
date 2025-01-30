@@ -2,7 +2,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/
 import { FirebaseOptions, initializeApp } from "firebase/app";
 import { initializeFirestore } from "firebase/firestore";
 
-const firebaseConfig: FirebaseOptions = process.env.NODE_ENV === 'production' ? {
+export const firebaseConfig: FirebaseOptions = process.env.NODE_ENV === 'production' ? {
   apiKey: "AIzaSyAleHj_gty6XncQLEDlLn3Ih7X08KuQ-jw",
   authDomain: "aero-trips.firebaseapp.com",
   projectId: "aero-trips",

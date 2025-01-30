@@ -19,6 +19,7 @@ type Airfield = {
   fuels?: string[],
   toilet?:'no'|'public'|'private',
   website?: string,
+  nightVFR?: boolean,
   updated_at?: Timestamp,
 }
 
