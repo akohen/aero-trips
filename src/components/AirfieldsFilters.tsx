@@ -1,5 +1,5 @@
 import { Group, Chip, InputLabel, TextInput, rem, NumberInput, Button, Collapse, CloseButton, Popover, Text } from "@mantine/core"
-import { IconCircleCheck, IconForbid, IconGasStation, IconHistory, IconRoad, IconSearch, IconShare, IconStar, IconToiletPaper } from "@tabler/icons-react"
+import { IconCircleCheck, IconForbid, IconGasStation, IconHistory, IconMoon, IconRoad, IconSearch, IconShare, IconStar, IconToiletPaper } from "@tabler/icons-react"
 import { ADfilter, Activity, Airfield, Profile } from ".."
 import { useDisclosure } from "@mantine/hooks"
 import { CommonIcon } from "./CommonIcon"
@@ -41,6 +41,7 @@ return (<>
         <Chip value="100LL" size='xs'><IconGasStation size={16} color="darkblue" /> 100LL</Chip>
         <Chip value="SP9X" size='xs'><IconGasStation size={16} color="green" /> SP95/98</Chip>
         <Chip value="concrete" size='xs'><IconRoad size={16} /> Piste en dur</Chip>
+        <Chip value="nvfr" size='xs'><IconMoon size={16} /> VFR de nuit</Chip>
         {profile && <Chip value="visited" size='xs'><IconHistory size={16} /> Déjà visité</Chip>}
         {profile && <Chip value="favorite" size='xs'><IconStar size={16} /> Favori</Chip>}
       </Group>

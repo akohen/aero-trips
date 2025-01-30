@@ -75,6 +75,7 @@ export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map
       if( filters.ad.includes('SP9X') && !item.fuels?.some(f => f.startsWith('SP9'))) return false
       if( filters.runway && Math.max(...item.runways.map(r => r.length)) < filters.runway) return false
       if( filters.ad.includes('toilet') && (item.toilet == 'no' || !item.toilet)) return false
+      if( filters.ad.includes('nvfr') && !item.nightVFR) return false
       if( filters.ad.includes('concrete') && !item.runways.some(r => r.composition != 'GRASS') ) return false
       if( profile && filters.ad.includes('visited') && !profile.visited?.find(v => v.type == 'airfields' && v.id == key)) return false
       if( profile && filters.ad.includes('favorite') && !profile.favorites?.find(f => f.type == 'airfields' && f.id == key)) return false
