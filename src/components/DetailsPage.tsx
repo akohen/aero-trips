@@ -50,6 +50,7 @@ const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profil
           <Title order={4}>Pistes</Title>
           {item.runways.map((r,i) => (<div key={i}>{r.designation} - {r.length}m {r.composition == 'GRASS' ? 'Non revêtue' : 'Revêtue'}</div>))}
         </div>
+        {item.nightVFR && <Text>Agréé VFR de nuit</Text>}
         {(item.fuels && item.fuels.length > 0) ? `Avitaillement: ${item.fuels?.join(' ')}` : `Pas d'avitaillement disponible`}
         <ToiletText airfield={item} />
         <ButtonVACMap airfield={item} />
