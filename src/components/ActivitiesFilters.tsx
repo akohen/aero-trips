@@ -1,13 +1,12 @@
 import { Group, TextInput, rem, NumberInput, Button, Collapse, CloseButton, Chip } from "@mantine/core"
 import { IconSearch } from "@tabler/icons-react"
 import { Activity, ActivityFilter, Airfield } from ".."
-import { Dispatch, SetStateAction } from "react"
 import { useDisclosure } from "@mantine/hooks"
 import { CommonIcon } from "./CommonIcon"
 import ObjectFinder from "./ObjectFinder"
 
 const ActivitiesFilters = ({airfields, activities, filters, setFilters}: 
-{airfields:Map<string, Airfield>, activities:Map<string, Activity>, filters: ActivityFilter, setFilters: Dispatch<SetStateAction<ActivityFilter>>}) => {
+{airfields:Map<string, Airfield>, activities:Map<string, Activity>, filters: ActivityFilter, setFilters: (newFilters: ActivityFilter) => void}) => {
 
   const [opened, { toggle }] = useDisclosure(true)//Object.values(filters).some(x => Array.isArray(x) ? x.length: x));
 

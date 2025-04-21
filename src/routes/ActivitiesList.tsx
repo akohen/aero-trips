@@ -3,7 +3,7 @@ import { Table, Text } from '@mantine/core';
 import { ActivityFilter, Data } from '..';
 import { useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ActivitiesFilters from '../components/ActivitiesFilters';
 import { filterActivities } from '../utils';
 import { ButtonViewOnMap } from '../components/CommonButtons';
@@ -11,7 +11,7 @@ import { ActivityTitle } from '../components/ActivityUtils';
 
 
 function ActivitiesList({airfields, activities, filters, setFilters, setMapView, profile} : 
-  Data & {filters: ActivityFilter, setFilters: Dispatch<SetStateAction<ActivityFilter>>}) {
+  Data & {filters: ActivityFilter, setFilters: (newFilters: ActivityFilter) => void}) {
   
   const [data, setData] = useState(activities);
   const navigate = useNavigate();
@@ -24,6 +24,10 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
     setData( filterActivities( airfields, activities, filters) )
   },[activities, airfields, filters])
 
+  useEffect(() => {
+    setFilters(filters)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   
   return (<>
     <ActivitiesFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} />

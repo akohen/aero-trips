@@ -24,9 +24,9 @@ export default function App(data : Data) {
     search:searchParams.get("adSearch") || '',
     services: searchParams.get("adServices") ? searchParams.get("adServices")!.split(',') : [],
     ad: searchParams.get("adMisc") ? searchParams.get("adMisc")!.split(',') : [],
-    runway: searchParams.get("rwylLen") != '' ? parseInt(searchParams.get("rwyLen") as string) : '',
-    distance: '',
-    target: '',
+    runway: searchParams.get("rwyLen") != '' ? parseInt(searchParams.get("rwyLen") as string) : '',
+    distance: searchParams.get("adDist") != '' ? parseInt(searchParams.get("adDist") as string) : '',
+    target: searchParams.get("adTgt") || '',
   });
   const setAirfieldFilters = (newFilters: ADfilter) => {
     setSearchParams(params => {
@@ -48,11 +48,25 @@ export default function App(data : Data) {
   }
 
   const [ActFilter, setActFilter] = useState<ActivityFilter>({
-    distance: '',
-    search: '',
-    target: '',
-    type: [],
+    distance: searchParams.get("d") != '' ? parseInt(searchParams.get("d") as string) : '',
+    search: searchParams.get("s") || '',
+    target: searchParams.get("a") || '',
+    type: searchParams.get("t") ? searchParams.get("t")!.split(',') : [],
   })
+  const setActivityFilters = (newFilters: ActivityFilter) => {
+    setSearchParams(params => {
+      params.set("s", newFilters.search)
+      params.set("d", newFilters.distance ? newFilters.distance.toString():'')
+      params.set("t", newFilters.type.join(','))
+      params.set("a", newFilters.target?.toString()||'')
+      if(newFilters.search === '') params.delete("s")
+      if(!newFilters.distance) params.delete("d")
+      if(newFilters.type.length === 0) params.delete("t")
+      if(!newFilters.target) params.delete("a")
+      return params
+    })
+    return setActFilter(newFilters)
+  }
 
   const location = useLocation();
   useEffect(() => {
@@ -71,7 +85,7 @@ export default function App(data : Data) {
         <Route path="/profile"                element={<Profile {...data} />}/>
         <Route path="/airfields"              element={<AirfieldsList {...data} filters={ADfilter} setFilters={setAirfieldFilters} />} />
         <Route path="/airfields/:airfieldId"  element={<AirfieldDetails {...data} />} />
-        <Route path="/activities"             element={<ActivitiesList {...data} filters={ActFilter} setFilters={setActFilter} />} />
+        <Route path="/activities"             element={<ActivitiesList {...data} filters={ActFilter} setFilters={setActivityFilters} />} />
         <Route path="/activities/:activityId" element={<ActivityDetails {...data}/>} />
         <Route path="/map/:lat?/:lng?"        element={<MapPage {...mapProps} />} />
         <Route path="/trips"                  element={<TripsList {...data} />} />
