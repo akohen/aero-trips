@@ -23,9 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
-AIXM*.xml
-XML_SIA*.xml
 **/.firebaserc
+scripts/*.xml
+scripts/*.json
 
 ### Firebase Patch ###
 .runtimeconfig.json
