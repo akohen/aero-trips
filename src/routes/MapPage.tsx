@@ -8,6 +8,7 @@ import { ActionIcon } from '@mantine/core';
 import { IconFilterX } from '@tabler/icons-react';
 import MapMenu from '../components/MapMenu';
 import MapViewTracker from '../components/MapViewTracker';
+import { useParams } from 'react-router-dom';
 
 function MapPage({airfields, activities, ADfilter, ActFilter, setADfilter, setActFilter, mapView, setMapView, profile} : 
   Data & {
@@ -16,7 +17,7 @@ function MapPage({airfields, activities, ADfilter, ActFilter, setADfilter, setAc
     setADfilter: Dispatch<SetStateAction<ADfilter>>, 
     setActFilter:Dispatch<SetStateAction<ActivityFilter>>,
 }) {
-
+  const params = useParams();
   const airfieldsMarkers = [...filterAirfields(airfields, activities, ADfilter, profile)].map( ([key,e]) => <AirfieldMarker key={key} airfield={e} />);
 
   const activitiesMarkers = [...filterActivities(airfields, activities, ActFilter)].map( ([key,e]) => <ActivityMarker key={key} activity={e} />);
@@ -37,9 +38,13 @@ function MapPage({airfields, activities, ADfilter, ActFilter, setADfilter, setAc
     })
   }
   const isFilterActive = () => [...Object.values(ADfilter), ...Object.values(ActFilter)].some(x => Array.isArray(x) ? x.length: x)
+  const view = params.lat && params.lng ? {
+    center: [parseFloat(params.lat), parseFloat(params.lng)],
+    zoom: 12,
+  } : mapView;
 
   return (
-    <MapContainer className="main-map" center={mapView.center} zoom={mapView.zoom} scrollWheelZoom={true} >
+    <MapContainer className="main-map" center={view.center} zoom={view.zoom} scrollWheelZoom={true}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
