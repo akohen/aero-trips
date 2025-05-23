@@ -11,4 +11,4 @@ export function nextAirac(start: Date) {
   return nextDate;
 }
 
-export const getVacUrl = (codeIcao: string) => `https://www.sia.aviation-civile.gouv.fr/dvd/eAIP_${getAirac()}/Atlas-VAC/PDF_AIPparSSection/VAC/AD/AD-2.${codeIcao}.pdf`
+export const getVacUrl = (codeIcao: string) => `https://www.sia.aviation-civile.gouv.fr/media/dvd/eAIP_${getAirac()}/Atlas-VAC/PDF_AIPparSSection/VAC/AD/AD-2.${codeIcao}.pdf`
