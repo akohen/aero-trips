@@ -1,4 +1,5 @@
 import { Fieldset, Group, Button, TextInput, InputLabel, Title, Center, Text, Radio, Chip } from "@mantine/core"
+import { DatePickerInput } from '@mantine/dates';
 import { useEditor } from "@tiptap/react";
 import { ActivityType, Data } from "..";
 import { StarterKit } from "@tiptap/starter-kit";
@@ -44,6 +45,7 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
   const form = useForm({
     initialValues: {
       name: trip ? trip.name : '',
+      date: trip ? trip.date : undefined,
       description: trip ? trip.description: '',
       steps: trip ? trip.steps : [] as {type: 'activities'|'airfields', id:string}[],
       type: trip ? trip.type : '' as "short" | "day" | "multi",
@@ -133,21 +135,28 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
   return (<form onSubmit={form.onSubmit(saveTrip)}>
   <Title><BackButton />Proposer une sortie</Title>
   <Fieldset legend="Modifier une sortie">
+    <TextInput
+      withAsterisk
+      miw={180}
+      label="Nom de la sortie"
+      placeholder="Nom de la sortie"
+      {...form.getInputProps('name')}
+    />
     
-    <Group justify="space-between" align="top">
-      <TextInput
-        withAsterisk
+    <Group justify="space-between" align="top" mt={"xs"}>
+      <DatePickerInput
+        label="Date de la sortie"
+        placeholder="Laisser vide pour une sortie en projet"
+        clearable
+        valueFormat="DD/MM/YYYY"
         style = {{ flex: 1 }}
-        miw={180}
-        label="Nom de la sortie"
-        placeholder="Nom de la sortie"
-        {...form.getInputProps('name')}
+        {...form.getInputProps('date')}
       />
       <Radio.Group
-      {...form.getInputProps('type')}
-      label="Durée de la sortie"
-      withAsterisk
-    >
+        {...form.getInputProps('type')}
+        label="Durée de la sortie"
+        withAsterisk
+      >
       <Group mt="xs">
         <Radio value="short" label="Vol court" />
         <Radio value="day" label="Sortie à la journée" />

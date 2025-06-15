@@ -61,6 +61,8 @@ type Trip = {
   tags: ActivityType[],
   uid: string,
   author: string,
+  date?: Timestamp,
+  updated_at?: Timestamp,
 }
 
 type ADfilter = {

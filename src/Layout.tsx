@@ -1,5 +1,6 @@
 import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
+import '@mantine/dates/styles.css';
 import { MantineProvider, AppShell, Burger, Group, Button, Stack, em, Title } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { Link, Outlet, matchPath, useLocation, useNavigate } from "react-router-dom";
