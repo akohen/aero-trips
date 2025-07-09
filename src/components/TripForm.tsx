@@ -15,8 +15,9 @@ import TripStepSelect from "./TripStepSelect";
 import { CommonIcon } from "./CommonIcon";
 import { editorProps, slug } from "../utils";
 import { db, googleLogin } from "../data/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 
 const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: string|undefined}) => {
   type FinderOptions = {group: string, items: {label: string, value: string}[]}[]
@@ -45,7 +46,7 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
   const form = useForm({
     initialValues: {
       name: trip ? trip.name : '',
-      date: trip ? trip.date : undefined,
+      date: trip && trip.date ? dayjs(trip.date?.toDate()).format('DD/MM/YYYY') : undefined,
       description: trip ? trip.description: '',
       steps: trip ? trip.steps : [] as {type: 'activities'|'airfields', id:string}[],
       type: trip ? trip.type : '' as "short" | "day" | "multi",
@@ -71,9 +72,11 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
   const saveTrip = (values: typeof form.values) => {
     if(!profile) return
 
-    const newTrip = {...values, uid: profile.uid, author: profile.displayName}
+    const date = values.date ? Timestamp.fromMillis(dayjs(values.date?.toString(), 'DD/MM/YYYY').valueOf()) : undefined;
+    const newTrip = {...values, uid: profile.uid, author: profile.displayName, date}
+    console.log(newTrip)
     const tripID = id ? id : slug(newTrip.name)
-    setDoc(doc(db, "trips", tripID), newTrip, {merge:true})
+    setDoc(doc(db, "trips", tripID), newTrip, {merge:false})
       .then(() => {
         trips.set(tripID!, newTrip)
         navigate(`/trips/${tripID}`)
