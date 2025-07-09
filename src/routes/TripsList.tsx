@@ -32,7 +32,7 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
   function filterData(data: Map<string,Trip>, search: string) {
     const query = search.toLowerCase().trim();
     return new Map([...data].filter(([key, item]) => 
-      [key, item.name, item.description].some((x) => x?.toLowerCase().includes(query.normalize("NFD").replace(/\p{Diacritic}/gu, "")))
+      [key, item.name, item.author].some((x) => x?.toLowerCase().includes(query.normalize("NFD").replace(/\p{Diacritic}/gu, "")))
     ))
   }
   
