@@ -48,8 +48,10 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
   const bounds = latLngBounds([])
   items.forEach(e => bounds.extend([e.position.latitude,e.position.longitude]))
   
-  const countAirfields = items.filter(e => 'codeIcao' in e).length;
-  const countActivities = items.length - countAirfields;
+  const uniqueItems = [...new Set(items)]
+  
+  const countAirfields = uniqueItems.filter(e => 'codeIcao' in e).length;
+  const countActivities = uniqueItems.length - countAirfields;
   return (<>
     <Title><BackButton />{trip.name} {profile && profile.uid == trip.uid && <EditButton />}</Title>
     <Text>{tripTypes[trip.type]}</Text>
@@ -94,7 +96,7 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
     </Grid>
   <Description content={trip.description} />
   <Flex mt='md' gap="xs" wrap="wrap" justify={{ sm: 'center' }}>
-    {[...new Set(items)].map((item, id) => 
+    {uniqueItems.map((item, id) => 
       'codeIcao' in item ? 
       <AirfieldCard key={id} airfield={item as Airfield} profile={profile} /> :
       <ActivityCard key={id} activity={item as Activity} profile={profile} />
