@@ -159,6 +159,7 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
         clearable
         valueFormat="DD/MM/YYYY"
         style = {{ flex: 1 }}
+        miw={250}
         {...form.getInputProps('date')}
       />
       <Radio.Group
@@ -187,6 +188,7 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
       <Text c="red">{form.getInputProps('tags').error}</Text>
     </Group>
   </Chip.Group>
+  <InputLabel mt={"md"}>Liste des étapes</InputLabel>
     <DragDropContext
         onDragEnd={({ destination, source }) =>
           destination?.index !== undefined && form.reorderListItem('steps', { from: source.index, to: destination.index })
@@ -201,14 +203,14 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
           )}
         </Droppable>
       </DragDropContext>
-      <InputLabel style={{width: '100%'}}>Ajouter une étape</InputLabel>
+      <InputLabel mt={"md"}>Ajouter une étape</InputLabel>
       <TripStepSelect
         data={data}
         addItem={addStep}
         placeholder="Chercher un lieu, une activité ou un terrain"
         {...{error:form.getInputProps('steps').error}}
       />
-    <InputLabel style={{width: '100%'}}>Description</InputLabel>
+    <InputLabel mt={"md"}>Description</InputLabel>
     <TextEditor editor={editor} profile={profile} />
     <Text c="red">{form.getInputProps('description').error}</Text>
     
