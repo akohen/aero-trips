@@ -9,7 +9,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest",
-    "export": "npx -p node-firestore-import-export firestore-export -a serviceAccountKey.json -b backups/$(date +\"%Y-%m-%d\").json"
+    "backup": "npx -p node-firestore-import-export firestore-export -a serviceAccountKey.json -b backups/$(date +\"%Y-%m-%d\").json",
+    "export": "NODE_ENV=production tsx scripts/export-data.ts"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
