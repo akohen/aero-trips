@@ -1,5 +1,5 @@
 
-import { Button, Group, Table, Text, TextInput, rem } from '@mantine/core';
+import { Button, Group, Table, TextInput, rem } from '@mantine/core';
 import { Trip } from '..';
 import { useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
@@ -55,7 +55,6 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
     <List
       data={data} 
       columns={['Nom','Durée', 'Date', 'Proposée par']}
-      empty={(<Text fw={500} ta="center">Aucun résultat</Text>)}
       row={([key, e]) => (
         <Table.Tr key={key}>
           <Table.Td {...TripTd(key)}>{<TripTitle trip={e} />}</Table.Td>

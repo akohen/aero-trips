@@ -1,5 +1,5 @@
 
-import { Table, Text } from '@mantine/core';
+import { Table } from '@mantine/core';
 import { ActivityFilter, Data } from '..';
 import { useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
@@ -34,7 +34,6 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
     <List
       data={data} 
       columns={["Nom du lieu ou de l'activité", '']}
-      empty={(<Text fw={500} ta="center">Aucun résultat</Text>)}
       row={([key, e]) => (
         <Table.Tr key={key}>
           <Table.Td {...ActivityTd(key)}><ActivityTitle activity={e} profile={profile} /></Table.Td>

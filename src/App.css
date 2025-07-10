@@ -32,3 +32,15 @@ a { color: steelblue; text-decoration: none;}
 }
 
 main { background-color: #faf8f8;}
+
+
+th .aligner {
+  display: flex;
+  align-items: center;
+}
+
+.aligner .icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

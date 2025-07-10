@@ -1,5 +1,5 @@
 
-import { Group, Table, Text } from '@mantine/core';
+import { Group, Table } from '@mantine/core';
 import { ADfilter, Airfield, Data } from '..';
 import { useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
@@ -31,8 +31,12 @@ function AirfieldsPage({airfields, activities, filters, setFilters, setMapView, 
     <AirfieldsFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} profile={profile}/>
     <List
       data={data} 
-      columns={['Nom du terrain','Code OACI','Piste','']}
-      empty={(<Text fw={500} ta="center">Aucun résultat</Text>)}
+      columns={[
+        ['Nom du terrain', (a,b) => a.name.localeCompare(b.name)],
+        ['Code OACI', (a,b) => a.codeIcao.localeCompare(b.codeIcao)],
+        ['Piste',(a,b) => Math.max(...a.runways.map(r => r.length)) - Math.max(...b.runways.map(r => r.length))],
+        ''
+      ]}
       row={([key, e]) => (
         <Table.Tr key={key}>
           <Table.Td {...AdTd(e)}><AirfieldTitle ad={e} profile={profile} /></Table.Td>
