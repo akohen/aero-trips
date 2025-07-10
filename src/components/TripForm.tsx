@@ -73,7 +73,13 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
     if(!profile) return
 
     const date = values.date ? Timestamp.fromMillis(dayjs(values.date?.toString(), 'DD/MM/YYYY').valueOf()) : undefined;
-    const newTrip = {...values, uid: profile.uid, author: profile.displayName, date}
+    const newTrip = {
+      ...values,
+      uid: profile.uid,
+      author: profile.displayName,
+      date,
+      updated_at: Timestamp.fromDate(new Date()),
+    }
     console.log(newTrip)
     const tripID = id ? id : slug(newTrip.name)
     setDoc(doc(db, "trips", tripID), newTrip, {merge:false})
