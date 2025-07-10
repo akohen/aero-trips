@@ -3,6 +3,7 @@ import { Activity, Profile, Trip } from "..";
 import { Link } from "react-router-dom";
 import { CommonIcon } from "./CommonIcon";
 import ActivityCard from "./ActivityCard";
+import { TripTitle } from "./TripsUtils";
 
 export const ActivityTitle = ({activity, profile}: {activity: Activity, profile?: Profile}) => (
 <Text span size="sm" className="list-item-title">
@@ -39,11 +40,9 @@ export const NearbyTrips = ({items} : {items: [id: string, trip: Trip][]}) => {
   >
     <Title order={4}>Sorties</Title>
     { items.map(([id, trip]) => (
-        <Text key={id}>
-          <Link to={`/trips/${id}`}>
-            <Text span size="sm">{trip.name}</Text>
-          </Link>
-        </Text>
+      <Link key={id} to={`/trips/${id}`}>
+        <TripTitle trip={trip} />
+      </Link>
     ))}
   </Paper>
   </Grid.Col>
