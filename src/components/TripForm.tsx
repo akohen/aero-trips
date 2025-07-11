@@ -4,6 +4,7 @@ import { useEditor } from "@tiptap/react";
 import { ActivityType, Data } from "..";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Link } from "@tiptap/extension-link";
+import Youtube from '@tiptap/extension-youtube';
 import { useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
 import TextEditor from "./TextEditor";
@@ -121,6 +122,9 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
       StarterKit,
       Link,
       TiptapImage.configure({allowBase64: false}),
+      Youtube.configure({
+        controls: true,
+      }),
     ],
     editorProps: editorProps(profile),
     content: form.values['description'],

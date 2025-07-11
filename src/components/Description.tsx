@@ -3,6 +3,7 @@ import { generateHTML, JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit"
 import {default as TiptapLink} from "@tiptap/extension-link"
 import Image from "@tiptap/extension-image"
+import Youtube from "@tiptap/extension-youtube";
 
 const Description = ({content}: {content: JSONContent}) => {
   if(!content) return
@@ -14,7 +15,7 @@ const Description = ({content}: {content: JSONContent}) => {
     withBorder
     bg="gray.0"
     className="tiptap-content"
-    dangerouslySetInnerHTML={{__html: generateHTML(content, [StarterKit, TiptapLink, Image])}} 
+    dangerouslySetInnerHTML={{__html: generateHTML(content, [StarterKit, TiptapLink, Image, Youtube])}} 
   />
 )}
 

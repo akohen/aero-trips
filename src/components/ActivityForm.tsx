@@ -3,6 +3,7 @@ import { useEditor } from "@tiptap/react";
 import { Activity, ActivityType, Profile } from "..";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Link } from "@tiptap/extension-link";
+import Youtube from '@tiptap/extension-youtube';
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -41,6 +42,9 @@ const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, 
       StarterKit,
       Link,
       TiptapImage.configure({allowBase64: false}),
+      Youtube.configure({
+        controls: true,
+      }),
     ],
     editorProps: editorProps(profile),
     content: form.values['description'],

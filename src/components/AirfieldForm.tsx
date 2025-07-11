@@ -3,6 +3,7 @@ import { useEditor } from "@tiptap/react";
 import { Airfield, Profile } from "..";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Link } from "@tiptap/extension-link";
+import Youtube from '@tiptap/extension-youtube';
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import TextEditor from "./TextEditor";
@@ -32,6 +33,9 @@ const AirfieldForm = ({airfield, profile, airfields}: {airfield: Airfield, profi
       StarterKit,
       Link,
       TiptapImage.configure({allowBase64: false}),
+      Youtube.configure({
+        controls: true,
+      }),
     ],
     editorProps: editorProps(profile),
     content: form.values['description'],

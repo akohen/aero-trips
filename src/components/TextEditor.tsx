@@ -4,6 +4,7 @@ import { ImageControl } from "./ImageControl";
 import { Profile } from "..";
 import { em } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import { YoutubeControl } from "./YoutubeControl";
 
 const TextEditor = ({editor, profile}:{editor:Editor|null, profile?: Profile}) => (
   <RichTextEditor editor={editor}>
@@ -18,6 +19,10 @@ const TextEditor = ({editor, profile}:{editor:Editor|null, profile?: Profile}) =
 
       <RichTextEditor.ControlsGroup>
         <ImageControl editor={editor} profile={profile}/>
+      </RichTextEditor.ControlsGroup>
+
+      <RichTextEditor.ControlsGroup>
+        <YoutubeControl editor={editor} />
       </RichTextEditor.ControlsGroup>
 
       <RichTextEditor.ControlsGroup>
