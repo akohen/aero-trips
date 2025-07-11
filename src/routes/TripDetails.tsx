@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Activity, Airfield, Data } from "..";
 import { Flex, Grid, Paper, Stack, Text, Title } from "@mantine/core";
 import EditButton from "../components/EditButton";
@@ -76,7 +76,7 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
           
           {trip.updated_at && (
             <Text size="xs" c="dimmed" ta={"right"}>
-              Sortie proposée par {trip.author}, mis à jour le {new Date(trip.updated_at.seconds * 1000).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+              Sortie proposée par <Link to={`/profile/${trip.uid}`}>{trip.author}</Link>, mis à jour le {new Date(trip.updated_at.seconds * 1000).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
             </Text>
           )}
           </Stack>

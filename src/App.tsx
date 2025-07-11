@@ -16,6 +16,7 @@ import { ADfilter } from '.';
 import Profile from "./routes/Profile";
 import Contact from "./routes/Contact";
 import ScrollToTop from "./components/ScrollToTop";
+import UserDetails from "./routes/UserDetails";
 
 
 export default function App(data : Data) {
@@ -83,6 +84,7 @@ export default function App(data : Data) {
       <Route element={<Layout {...data} />}>
         <Route path="/"                       element={<Home />}/>
         <Route path="/profile"                element={<Profile {...data} />}/>
+        <Route path="/profile/:userId"        element={<UserDetails {...data} />}/>
         <Route path="/airfields"              element={<AirfieldsList {...data} filters={ADfilter} setFilters={setAirfieldFilters} />} />
         <Route path="/airfields/:airfieldId"  element={<AirfieldDetails {...data} />} />
         <Route path="/activities"             element={<ActivitiesList {...data} filters={ActFilter} setFilters={setActivityFilters} />} />

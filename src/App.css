@@ -1,4 +1,4 @@
-td a, .nearby a, .ad-list a { color: #000; text-decoration: none;}
+td a, .nearby a, .ad-list a, .list-item-title { color: #000; text-decoration: none;}
 a { color: steelblue; text-decoration: none;}
 
 .clickable { cursor: pointer; }
