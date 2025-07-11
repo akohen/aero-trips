@@ -1,7 +1,7 @@
 import { Table, Pagination, Center, Text } from '@mantine/core';
 import { IconCaretDownFilled, IconCaretUpDownFilled, IconCaretUpFilled } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
 function chunk<T>(array: T[], size: number): T[][] {
   if (!array.length) {return [];}
@@ -11,19 +11,26 @@ function chunk<T>(array: T[], size: number): T[][] {
 }
 
 function TableList<T>({
-  data, row, columns
+  data, columns, defaultSortColumn, defaultSortDir
 } : {
   data: Map<string,T>,
-  row:(arg0: [string,T], arg1: number)=>JSX.Element,
-  columns: (string|[string, (a:T, b:T) => number])[],
+  columns: {
+    row: (arg0: T)=>JSX.Element,
+    title?: string,
+    sortFn?: (a: T, b: T) => number,
+    linkTo?: (arg0: T, key?: string) => string,
+  }[],
+  defaultSortColumn?: number,
+  defaultSortDir?: 1 | -1,
 }) {
   
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams()
   const [activePage, setPage] = useState(Number(searchParams.get("page")) || 1);
-  const [sortColumn, setSortColumn] = useState<number>();
-  const [sortDir, setSortDir] = useState<1 | -1>(1);
-  const sortedData = sortColumn !== undefined
-    ? [...data].sort((a, b) => sortDir * (columns[sortColumn][1] as (a: T, b: T) => number)(a[1], b[1]))
+  const [sortColumn, setSortColumn] = useState<number>(defaultSortColumn !== undefined ? defaultSortColumn : -1);
+  const [sortDir, setSortDir] = useState<1 | -1>(defaultSortDir || 1);
+  const sortedData = sortColumn !== -1 && columns[sortColumn].sortFn !== undefined
+    ? [...data].sort((a, b) => sortDir * (columns[sortColumn].sortFn?.(a[1], b[1]) ?? 0))
     : [...data];
   const chunks = chunk(sortedData, 15)
   const updatePage = (page: number) => {
@@ -46,20 +53,29 @@ function TableList<T>({
       setSortDir(1)
     }
   };
-  const rows = chunks.length > 0 ? chunks[activePage-1]?.map(row) : (
-  <Table.Tr>
-    <Table.Td colSpan={columns.length}>
-      <Text fw={500} ta="center">Aucun résultat</Text>
-    </Table.Td>
-  </Table.Tr>
+  const rows = chunks.length > 0 ? 
+    chunks[activePage-1]?.map(([key, e]) => (
+      <Table.Tr key={key}>
+        {columns.map(c => (
+          <Table.Td {...c.linkTo ? {className:"clickable", onClick:() => navigate(c.linkTo!(e, key))} : {}} >
+            {c.row(e)}
+          </Table.Td>
+        ))}
+      </Table.Tr>
+  )) : (
+    <Table.Tr>
+      <Table.Td colSpan={columns.length}>
+        <Text fw={500} ta="center">Aucun résultat</Text>
+      </Table.Td>
+    </Table.Tr>
   );
   
   return (<>
     <Table stickyHeader stickyHeaderOffset={60} highlightOnHover>
       <Table.Thead bg={'#faf8f8'}>
         <Table.Tr>
-          {columns.map((value,id) => typeof value === 'string' ? (
-            <Table.Th key={id}>{value}</Table.Th>
+          {columns.map((value,id) => value.sortFn == undefined? (
+            <Table.Th key={id}>{value.title}</Table.Th>
           ) : (
             <Table.Th 
               key={id}
@@ -74,7 +90,7 @@ function TableList<T>({
                     <IconCaretUpDownFilled size={18} />
                   }
                 </div>
-                <div className="text">{value[0]}</div>
+                <div className="text">{value.title}</div>
               </div>
             </Table.Th>
           ) )}

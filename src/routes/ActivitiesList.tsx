@@ -1,7 +1,6 @@
 
-import { Table } from '@mantine/core';
+import { Group } from '@mantine/core';
 import { ActivityFilter, Data } from '..';
-import { useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
 import { useEffect, useState } from 'react';
 import ActivitiesFilters from '../components/ActivitiesFilters';
@@ -14,11 +13,6 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
   Data & {filters: ActivityFilter, setFilters: (newFilters: ActivityFilter) => void}) {
   
   const [data, setData] = useState(activities);
-  const navigate = useNavigate();
-  const ActivityTd = (id: string) => ({
-    className:'clickable',
-    onClick:() => navigate(`/activities/${id}`)
-  })
 
   useEffect(()=>{
     setData( filterActivities( airfields, activities, filters) )
@@ -32,14 +26,18 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
   return (<>
     <ActivitiesFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} />
     <List
-      data={data} 
-      columns={["Nom du lieu ou de l'activité", '']}
-      row={([key, e]) => (
-        <Table.Tr key={key}>
-          <Table.Td {...ActivityTd(key)}><ActivityTitle activity={e} profile={profile} /></Table.Td>
-          <Table.Td align='right'><ButtonViewOnMap item={e} setMapView={setMapView} compact/></Table.Td>
-        </Table.Tr>
-      )}
+      data={data} defaultSortColumn={0}
+      columns={[
+        {
+          title:"Nom du lieu ou de l'activité",
+          row: (e) => (<ActivityTitle activity={e} profile={profile} />),
+          sortFn: (a, b) => a.name.localeCompare(b.name),
+          linkTo: (e) => `/activities/${e.id}`,
+        },
+        {
+          row: (e) => (<Group justify="flex-end"><ButtonViewOnMap item={e} setMapView={setMapView} compact /></Group>),
+        }
+      ]}
     />
   </>)
 }

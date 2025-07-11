@@ -1,5 +1,5 @@
 
-import { Button, Group, Table, TextInput, rem } from '@mantine/core';
+import { Button, Group, TextInput, rem } from '@mantine/core';
 import { Trip } from '..';
 import { useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
@@ -13,10 +13,6 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
   const [search, setSearch] = useState('');
   const [data, setData] = useState(trips);
   const navigate = useNavigate();
-  const TripTd = (id: string) => ({
-    className:'clickable',
-    onClick:() => navigate(`/trips/${id}`)
-  })
   const tripTypes = {short:'Quelques heures', day:'A la journée', multi:'Sur plusieurs jours'}
 
   useEffect(()=>{
@@ -53,16 +49,40 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
       </Button>
     </Group>
     <List
-      data={data} 
-      columns={['Nom','Durée', 'Date', 'Proposée par']}
-      row={([key, e]) => (
-        <Table.Tr key={key}>
-          <Table.Td {...TripTd(key)}>{<TripTitle trip={e} />}</Table.Td>
-          <Table.Td {...TripTd(key)}>{tripTypes[e.type]}</Table.Td>
-          <Table.Td {...TripTd(key)}>{e.date ? dayjs(e.date.toMillis()).format('MMMM YYYY') : 'En projet'}</Table.Td>
-          <Table.Td>{e.author ? e.author : 'Aero Trips'}</Table.Td>
-        </Table.Tr>
-      )}
+      data={data} defaultSortColumn={2} defaultSortDir={-1}
+      columns={[
+        {
+          title:'Nom',
+          row: (e) => <TripTitle trip={e} />,
+          linkTo: (_,key) => `/trips/${key}`,
+          sortFn: (a, b) => a.name.localeCompare(b.name),
+        },
+        {
+          title:'Durée',
+          row: (e) => <>{tripTypes[e.type]}</>,
+          linkTo: (_,key) => `/trips/${key}`,
+          sortFn: (a, b) => {
+            const types = {short:0, day:1, multi:2};
+            return (types[a.type] ?? 0) - (types[b.type] ?? 0);
+          }
+        },
+        {
+          title:'Date',
+          row: (e) => <>{e.date ? dayjs(e.date.toMillis()).format('MMMM YYYY') : 'En projet'}</>,
+          linkTo: (_,key) => `/trips/${key}`,
+          sortFn: (a, b) => {
+            if(!a.date && !b.date) return (a.updated_at?.toMillis() || 0) - (b.updated_at?.toMillis() || 0);
+            if(!a.date) return -1;
+            if(!b.date) return 1;
+            return a.date.toMillis() - b.date.toMillis();
+          }
+        },
+        {
+          title:'Proposée par',
+          row: (e) => <>{e.author ? e.author : 'Aero Trips'}</>,
+          sortFn: (a, b) => a.author?.localeCompare(b.author ?? '') ?? 0,
+        },
+      ]}
     />
   </>)
 }
