@@ -3,6 +3,7 @@ import Layout from "./Layout";
 import Home from "./routes/Home";
 import MapPage from "./routes/MapPage";
 import './App.css'
+import 'dayjs/locale/fr';
 import AirfieldDetails from "./routes/AirfieldDetails";
 import { ActivityFilter, Data } from ".";
 import ActivitiesList from "./routes/ActivitiesList";
@@ -17,6 +18,8 @@ import Profile from "./routes/Profile";
 import Contact from "./routes/Contact";
 import ScrollToTop from "./components/ScrollToTop";
 import UserDetails from "./routes/UserDetails";
+import { DatesProvider } from "@mantine/dates";
+import dayjs from "dayjs";
 
 
 export default function App(data : Data) {
@@ -77,9 +80,11 @@ export default function App(data : Data) {
   }, [location]);
 
   const mapProps = {...data, ADfilter, ActFilter, setADfilter, setActFilter}
+  dayjs.locale('fr')
   
   return (
     <ScrollToTop>
+    <DatesProvider settings={{ locale: 'fr' }}>
     <Routes>
       <Route element={<Layout {...data} />}>
         <Route path="/"                       element={<Home />}/>
@@ -96,6 +101,7 @@ export default function App(data : Data) {
         <Route path="/contact"                element={<Contact {...data} />} />
       </Route>
     </Routes>
+    </DatesProvider>
     </ScrollToTop>
   );
 }

@@ -47,7 +47,7 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
   const form = useForm({
     initialValues: {
       name: trip ? trip.name : '',
-      date: trip && trip.date ? dayjs(trip.date?.toDate()).format('DD/MM/YYYY') : undefined,
+      date: trip && trip.date ? dayjs(trip.date?.toDate()).format('MM/DD/YYYY') : undefined, // Use MM/DD/YYYY for compatibility with DatePickerInput !?
       description: trip ? trip.description: '',
       steps: trip ? trip.steps : [] as {type: 'activities'|'airfields', id:string}[],
       type: trip ? trip.type : '' as "short" | "day" | "multi",
