@@ -72,14 +72,14 @@ return (<>
       style={{flexGrow:2}}
       rightSection={filters.search ? <CloseButton size={18} onClick={() => setFilters({...filters, search: ''})} style={{cursor:'pointer'}}/> : undefined}
     />
-    <Popover width={200} position="bottom" withArrow shadow="md"opened={openedShare} onChange={toggleShare}>
+    <Popover width={200} position="bottom" withArrow shadow="md" opened={openedShare} onChange={toggleShare}>
       <Popover.Target>
         <Button onClick={share} leftSection={<IconShare size={18} />}>
           Partager
         </Button>
       </Popover.Target>
       <Popover.Dropdown>
-        <Text size="xs">L'URL des résultats à été copiée dans le presse-papier.</Text>
+        <Text size="xs">L'URL des résultats a été copiée dans le presse-papier.</Text>
       </Popover.Dropdown>
     </Popover>
     <Button onClick={toggle}>Filtres avancés</Button>
