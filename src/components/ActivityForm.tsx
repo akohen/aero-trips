@@ -62,6 +62,9 @@ const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, 
       updated_by: profile ? profile.uid : 'anonymous',
     }
     const activityID = id ? id : slug(values.name)
+    if(newActivity.website && !newActivity.website.startsWith('http')) {
+      newActivity.website = 'https://' + newActivity.website;
+    }
 
     if(profile) {
       setDoc(doc(db, "activities", activityID), newActivity, {merge:true})

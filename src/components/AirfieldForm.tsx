@@ -53,6 +53,10 @@ const AirfieldForm = ({airfield, profile, airfields}: {airfield: Airfield, profi
       updated_by: profile ? profile.uid : 'anonymous',
     } as Airfield
 
+    if(updatedAirfield.website && !updatedAirfield.website.startsWith('http')) {
+      updatedAirfield.website = 'https://' + updatedAirfield.website;
+    }
+
     if(profile) {
       setDoc(doc(db, "airfields", airfield.codeIcao), updatedAirfield, {merge:true})
       .then(() => {
