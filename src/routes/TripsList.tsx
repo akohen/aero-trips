@@ -81,6 +81,7 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
           title:'Proposée par',
           row: (e) => <>{e.author ? e.author : 'Aero Trips'}</>,
           sortFn: (a, b) => a.author?.localeCompare(b.author ?? '') ?? 0,
+          linkTo: (e) => e.uid ? `/profile/${e.uid}` : '',
         },
       ]}
     />
