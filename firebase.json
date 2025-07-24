@@ -8,6 +8,10 @@
     ],
     "rewrites": [
       {
+        "source": "sitemap",
+        "destination": "/sitemap.txt"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
