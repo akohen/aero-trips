@@ -44,6 +44,7 @@ export default function TripStepSelect({data, addItem, placeholder,...rest}:
     <Combobox
       store={combobox}
       withinPortal={false}
+      size='xs'
       onOptionSubmit={(val) => {
         setValue('');
         setSearch('');

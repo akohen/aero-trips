@@ -40,7 +40,7 @@ const ObjectFinder = ({
       clearable
       limit={8}
       size="xs"
-      w={250}
+      w={220}
       {...props}
     />
   );

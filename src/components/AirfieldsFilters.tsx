@@ -49,7 +49,7 @@ return (<>
     <Group justify="space-between">
     A moins de
     <NumberInput
-      style={{width:'90px'}}
+      style={{width:'70px'}}
       size="xs"
       suffix="km"
       min={0} max={9999} step={5}
