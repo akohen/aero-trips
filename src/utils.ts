@@ -8,6 +8,7 @@ import {
 import { Slice } from "@tiptap/pm/model";
 import { EditorView } from "@tiptap/pm/view";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { Timestamp } from "firebase/firestore";
 
 export const slug = (str: string) => {
   return str
@@ -155,4 +156,8 @@ export const shortener = (str: string, length: number) => {
   const returnString = str.replace(/(^\w+:|^)\/\//, '');
   if(returnString.length < length) return returnString;
   return returnString.slice(0,15) + '...' + returnString.slice(-10);
+}
+
+export const formatDate = (date: Timestamp) => {
+  return new Date(date.seconds * 1000).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })
 }

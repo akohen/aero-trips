@@ -20,6 +20,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import UserDetails from "./routes/UserDetails";
 import { DatesProvider } from "@mantine/dates";
 import dayjs from "dayjs";
+import LastChanges from "./routes/LastChanges";
 
 
 export default function App(data : Data) {
@@ -99,6 +100,7 @@ export default function App(data : Data) {
         <Route path="/:type?/:id?/edit/:lat?/:lng?"       element={<AddData {...data} />} />
         <Route path="/trips/:tripId"          element={<TripDetails {...data} />} />
         <Route path="/contact"                element={<Contact {...data} />} />
+        <Route path="/changes"                element={<LastChanges {...data} />} />
       </Route>
     </Routes>
     </DatesProvider>
