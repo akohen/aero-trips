@@ -95,17 +95,21 @@ export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map
 }
 
 export const filterActivities = (airfields: Map<string,Airfield>, activities: Map<string,Activity>, filters: ActivityFilter) => {
-  const query = filters.search.toLowerCase().trim().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+  const searchWords = filters.search.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().split(' ')
+  const checkItem = (txt:string) => {
+    const words = txt.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().split(' ')
+    return searchWords.every(searchWord => words.some(word => word.includes(searchWord)))
+  }
   
   return new Map([...activities]
-    .filter(([key, item]) => {
+    .filter(([, item]) => {
       if( filters.distance && filters.target ) {
         const [targetType, targetId] = filters.target.split('/')
         const target = {activities, airfields}[targetType]?.get(targetId)
         if(target && (haversineDistance(item.position, target.position) > filters.distance*1000)) return false
       } 
       if( filters.type.length > 0 && !filters.type.some(t => item.type.includes(t as ActivityType))) return false
-      return [item.name, key].some(x => x?.toLowerCase().includes(query))
+      return checkItem(item.name)
     })
   )
 }
