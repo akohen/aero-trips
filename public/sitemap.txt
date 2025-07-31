@@ -442,6 +442,7 @@ https://aero-trips.web.app/activities/abbeville-somme-karting-8ur0n
 https://aero-trips.web.app/activities/abeille-parachutisme-ko8ve
 https://aero-trips.web.app/activities/aeroclub-du-giennois-velos-de-location-w1dsa5
 https://aero-trips.web.app/activities/aerogites-chambley-85572
+https://aero-trips.web.app/activities/aeroplume-ypo71h
 https://aero-trips.web.app/activities/aeroscopia-rgwjuo
 https://aero-trips.web.app/activities/aerotel-8uak5j
 https://aero-trips.web.app/activities/ailes-anciennes-toulouse-mz0oul
@@ -492,6 +493,7 @@ https://aero-trips.web.app/activities/brasserie-le-rail-otemik
 https://aero-trips.web.app/activities/brasserie-leduc-2k09gb
 https://aero-trips.web.app/activities/brit-hotel-du-dauphin-3kxgv5
 https://aero-trips.web.app/activities/cabana-velos-qudft
+https://aero-trips.web.app/activities/calaise-bicycle-ggthl
 https://aero-trips.web.app/activities/campanile-chartres-9pl9m
 https://aero-trips.web.app/activities/camping-capfun-route-blanche-1j4mo
 https://aero-trips.web.app/activities/camping-les-dunes-zwraf
@@ -551,6 +553,7 @@ https://aero-trips.web.app/activities/chateau-de-menars-e7k2ka
 https://aero-trips.web.app/activities/chateau-de-mez-le-marechal-6ys9zp
 https://aero-trips.web.app/activities/chateau-de-miromesnil-s4baz9
 https://aero-trips.web.app/activities/chateau-de-montjeu-0bb153
+https://aero-trips.web.app/activities/chateau-de-nacqueville-rw358h
 https://aero-trips.web.app/activities/chateau-de-nitray-5r7qb
 https://aero-trips.web.app/activities/chateau-de-peyrepertuse-a8hwti
 https://aero-trips.web.app/activities/chateau-de-pierrefonds-bow6yp
@@ -566,6 +569,7 @@ https://aero-trips.web.app/activities/chateau-de-sedan-5ktemg
 https://aero-trips.web.app/activities/chateau-de-sullysurloire-gvgzp
 https://aero-trips.web.app/activities/chateau-de-tallard-9ph0r
 https://aero-trips.web.app/activities/chateau-de-tanlay-nrjwex
+https://aero-trips.web.app/activities/chateau-de-val-mz490s
 https://aero-trips.web.app/activities/chateau-de-valencay-4n8h4j
 https://aero-trips.web.app/activities/chateau-de-vauxlevicomte-zpc8vi
 https://aero-trips.web.app/activities/chateau-de-versailles-16eyn
@@ -643,10 +647,12 @@ https://aero-trips.web.app/activities/hippodrome-du-bequet-td3jec
 https://aero-trips.web.app/activities/hostellerie-de-la-renaissance-00hsr9
 https://aero-trips.web.app/activities/hotel-de-plein-air-saint-hubert-8a0utt
 https://aero-trips.web.app/activities/hotel-kyriad-bourges-sud-rhmwjp
+https://aero-trips.web.app/activities/hotel-la-desirade-nww8jp
 https://aero-trips.web.app/activities/hotel-restaurant-la-chaumiere-rgy86d
 https://aero-trips.web.app/activities/hotel-restaurant-la-fontaine-xoilae
 https://aero-trips.web.app/activities/hotel-restaurant-laerodrome-de-la-baie-de-somme-7nqqmg
 https://aero-trips.web.app/activities/hotel-restaurant-le-coeur-dor-im9sd8
+https://aero-trips.web.app/activities/httpschateaudommervillecom-h3qqsc
 https://aero-trips.web.app/activities/hurricane-bar-brasserie-zcilfo
 https://aero-trips.web.app/activities/ibis-styles-colmar-nord-0c0fib
 https://aero-trips.web.app/activities/il-giardino-ditalia-2pq1h
@@ -741,6 +747,7 @@ https://aero-trips.web.app/activities/lhelice-w6uvmd
 https://aero-trips.web.app/activities/lhorizon-d06va9
 https://aero-trips.web.app/activities/location-alpmoto-pccgv9
 https://aero-trips.web.app/activities/location-de-velos-aeroport-du-touquet-cdchgq
+https://aero-trips.web.app/activities/location-de-voiture-a-laeroclub-3gznx
 https://aero-trips.web.app/activities/location-voiture-lognes-emerainville-ilcj7
 https://aero-trips.web.app/activities/location-voitures-et-taxi-aeroport-de-rennes-y7ft23
 https://aero-trips.web.app/activities/locigo-cosne-sur-loire-qy6xu
@@ -782,6 +789,7 @@ https://aero-trips.web.app/activities/plage-de-berck-y8x9w
 https://aero-trips.web.app/activities/plage-de-deauville-klqsb
 https://aero-trips.web.app/activities/plage-des-phoques-gr120-ddefk
 https://aero-trips.web.app/activities/plage-du-prieure-gr34-rt8oz
+https://aero-trips.web.app/activities/plage-du-touquet-v0peta
 https://aero-trips.web.app/activities/pointe-du-decolle-gr34-67xxa
 https://aero-trips.web.app/activities/pointe-du-hoc-qlsbb9
 https://aero-trips.web.app/activities/pont-de-brotonne-d6lde
@@ -845,6 +853,7 @@ https://aero-trips.web.app/trips/canoe-a-joigny-0r9yed
 https://aero-trips.web.app/trips/canoe-et-escalade-dans-le-parc-de-la-brenne-8yd06e
 https://aero-trips.web.app/trips/chateau-de-chenonceau-en-canoe-6oaefe
 https://aero-trips.web.app/trips/falaises-detretat-puis-journee-a-deauville-c77ves
+https://aero-trips.web.app/trips/journee-au-touquet-z4d6cf
 https://aero-trips.web.app/trips/les-circuits-icaunais-an7cv
 https://aero-trips.web.app/trips/mont-saint-michel-et-dejeuner-a-granville-is422f
 https://aero-trips.web.app/trips/phoques-de-la-baie-dauthie-wq83
