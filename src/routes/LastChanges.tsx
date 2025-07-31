@@ -25,7 +25,9 @@ function LastChanges({airfields, activities, setMapView, profile} : Data) {
   return (<>
     <Title order={2}>Dernières modifications</Title>
     <List
-      data={data} 
+      data={data}
+      defaultSortColumn={1}
+      defaultSortDir={-1}
       columns={[
         {
           title:"Nom",
