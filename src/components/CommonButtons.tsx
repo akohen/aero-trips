@@ -13,10 +13,10 @@ export const ButtonViewOnMap = ({item, setMapView, compact}:{item:{position:GeoP
     component={Link}
     to={`/map`}
     size={compact ? "compact-sm" : 'sm'}
-    leftSection={isMobile ? undefined : <IconMapPinSearch size={20} />}
+    leftSection={compact && isMobile ? undefined : <IconMapPinSearch size={20} />}
     onClick={() => setMapView({center:[item.position.latitude, item.position.longitude], zoom: 12})}
   >
-    {isMobile ? <IconMapPinSearch size={20} /> : 'Voir sur la carte'}
+    {compact && isMobile ? <IconMapPinSearch size={20} /> : 'Voir sur la carte'}
   </Button>
 )}
 
@@ -28,9 +28,9 @@ export const ButtonVACMap = ({airfield, compact}: {airfield:Airfield, compact?:b
     to={getVacUrl(airfield.codeIcao)}
     target='_blank'
     size={compact ? "compact-sm" : 'sm'}
-    leftSection={isMobile ? undefined : <IconMapCheck size={20} />}
+    leftSection={compact && isMobile ? undefined : <IconMapCheck size={20} />}
     title={`Voir la carte VAC de ${airfield.codeIcao} - ${airfield.name} dans un nouvel onglet`}
   >
-    {isMobile ? <IconMapCheck size={20} /> : 'Carte VAC'}
+    {compact && isMobile ? <IconMapCheck size={20} /> : 'Carte VAC'}
   </Button>
 )}
