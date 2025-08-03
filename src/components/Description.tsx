@@ -15,7 +15,7 @@ const Description = ({content}: {content: JSONContent}) => {
     withBorder
     bg="gray.0"
     className="tiptap-content"
-    miw={400}
+    miw={320}
     dangerouslySetInnerHTML={{__html: generateHTML(content, [StarterKit, TiptapLink, Image, Youtube])}} 
   />
 )}

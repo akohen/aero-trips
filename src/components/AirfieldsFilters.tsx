@@ -46,8 +46,8 @@ return (<>
         {profile && <Chip value="favorite" size='xs'><IconStar size={16} /> Favori</Chip>}
       </Group>
     </Chip.Group>
-    <Group justify="space-between">
-    A moins de
+    <Group justify="space-between" gap={'xs'}>
+    Moins de
     <NumberInput
       style={{width:'70px'}}
       size="xs"
