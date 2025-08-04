@@ -1,5 +1,5 @@
 import { Airfield, Profile } from "..";
-import { Paper, Title, Text, Stack, Grid } from "@mantine/core";
+import { Text, Stack } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { CommonIcon } from "./CommonIcon";
 import { Marker, Popup } from 'react-leaflet'
@@ -16,27 +16,6 @@ export const AirfieldTitle = ({ad, profile}: {ad: Airfield, profile?: Profile}) 
     {profile && profile.favorites?.find(v => v.type == 'airfields' && v.id == ad.codeIcao) && <CommonIcon iconType="favorite" />}
   </>)
 }
-
-export const NearbyAirfields = ({items} : {items: [distance: number, item: Airfield, id: string][]}) => {
-  if(items.length == 0) return
-  return (
-    <Grid.Col span={3}>
-    <Paper 
-      shadow="md"
-      radius="md"
-      p='xs'
-      withBorder
-      bg="gray.0"
-      className="nearby"
-    >
-    <Title order={4}>Terrains proches</Title>
-    { items.map(([dist,ad]) => (
-      <Text size="sm" key={ad.codeIcao}>
-        <Link to={`/airfields/${ad.codeIcao}`}>{Math.round(dist/1000)} km {ad.codeIcao} <AirfieldTitle ad={ad}/></Link>
-      </Text>
-    ))}
-  </Paper></Grid.Col>
-)}
 
 export const ToiletText = ({airfield}:{airfield: Airfield}) => {
   if(airfield.toilet == 'private') return <Text>Toilettes privées</Text>
