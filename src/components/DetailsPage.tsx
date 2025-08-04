@@ -77,7 +77,14 @@ const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profil
   </Grid.Col>
   {item.description && <Grid.Col span={6}><Description content={item.description} /></Grid.Col>}
   <NearbyTrips items={nearbyTrips} />
-  <Nearby items={[...nearbyActivities, ...nearbyAirfields]} profile={profile} />
+  <Grid.Col span={12}>
+    <Title order={4}>Activités à proximité</Title>
+    <Nearby items={nearbyActivities} profile={profile} />
+  </Grid.Col>
+  <Grid.Col span={12}>
+    <Title order={4}>Terrains à proximité</Title>
+    <Nearby items={nearbyAirfields} profile={profile} />
+  </Grid.Col>
   </Grid>
 </>)
 }

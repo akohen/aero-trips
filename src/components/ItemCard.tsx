@@ -9,7 +9,7 @@ const ItemCard = ({item, distance, profile}: {item:Airfield|Activity, distance?:
     const imgURL = 'codeIcao' in item ? getAirfieldImage(imgNode, item.runways) : getActivityImage(imgNode, item.type);
     const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
     const fullTitle = 'codeIcao' in item ? `${item.codeIcao} - ${item.name}` : item.name;
-    const maxNameLength = isMobile ? 22 : 25
+    const maxNameLength = isMobile ? 19 : 22
     const title = fullTitle.length > maxNameLength ? `${fullTitle.slice(0,maxNameLength-3)}..` : fullTitle;
     
     return (
@@ -55,7 +55,7 @@ const ItemCard = ({item, distance, profile}: {item:Airfield|Activity, distance?:
 const getAirfieldImage = (imgNode:{attrs:{src:string}}, runways:Runway[]) => {
     if(imgNode) return imgNode.attrs.src
     if(runways.some(r => r.composition != 'GRASS')) return 'https://static.wixstatic.com/media/249296_6c727c318fd340f4856e5041e95c07c7~mv2.jpg'
-    return 'https://media.flighttrainingcentral.com/wp-content/uploads/2019/06/05172620/maxresdefault-5-1030x579.jpg'
+    return 'https://pbs.twimg.com/media/ETyrrMJWkAA-Kd9?format=jpg&name=large'
 }
 
 const getActivityImage = (imgNode:{attrs:{src:string}}, types:ActivityType[]) => {
