@@ -7,10 +7,9 @@ import { MapContainer, Polyline, TileLayer } from "react-leaflet";
 import { AirfieldMarker } from "../components/AirfieldUtils";
 import ActivityMarker from '../components/ActivityMarker';
 import { latLngBounds } from "leaflet";
-import ActivityCard from "../components/ActivityCard";
 import Description from "../components/Description";
-import AirfieldCard from "../components/AirfieldCard";
 import dayjs from "dayjs";
+import ItemCard from "../components/ItemCard";
 
 const TripDetails = ({trips, airfields, activities, profile} : Data) => {
   const params = useParams();
@@ -96,11 +95,7 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
     </Grid>
   <Description content={trip.description} />
   <Flex mt='md' gap="xs" wrap="wrap" justify={{ sm: 'center' }}>
-    {uniqueItems.map((item, id) => 
-      'codeIcao' in item ? 
-      <AirfieldCard key={id} airfield={item as Airfield} profile={profile} /> :
-      <ActivityCard key={id} activity={item as Activity} profile={profile} />
-    )}
+    { uniqueItems.map((item, id) => <ItemCard key={id} item={item} profile={profile} />) }
   </Flex>
     
   </>)
