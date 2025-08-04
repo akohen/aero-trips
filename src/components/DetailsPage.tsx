@@ -3,8 +3,6 @@ import BackButton from "./BackButton"
 import EditButton from "./EditButton"
 import { Activity, Airfield, Data } from ".."
 import { findNearest, iconsList, shortener } from "../utils"
-import { NearbyActivities, NearbyTrips } from "./ActivityUtils"
-import { NearbyAirfields, ToiletText } from "./AirfieldUtils"
 import { ButtonVACMap, ButtonViewOnMap } from "./CommonButtons"
 import { IconBrandGoogleMaps } from "@tabler/icons-react"
 import { Link } from "react-router-dom"
@@ -12,6 +10,9 @@ import Description from "./Description"
 import FavoriteButton from "./FavoriteButton"
 import VisitedButton from "./VisitedButton"
 import { useEffect } from "react"
+import { Nearby } from "./Nearby"
+import { NearbyTrips } from "./ActivityUtils"
+import { ToiletText } from "./AirfieldUtils"
 
 const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profile} : Data & {id: string, item: Airfield|Activity}) => {
   const nearbyAirfields = findNearest(item, airfields, 50000).slice(0,8)
@@ -75,9 +76,8 @@ const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profil
     </Paper>
   </Grid.Col>
   {item.description && <Grid.Col span={6}><Description content={item.description} /></Grid.Col>}
-  <NearbyAirfields items={nearbyAirfields} />
   <NearbyTrips items={nearbyTrips} />
-  <NearbyActivities items={nearbyActivities} profile={profile} />
+  <Nearby items={[...nearbyActivities, ...nearbyAirfields]} profile={profile} />
   </Grid>
 </>)
 }
