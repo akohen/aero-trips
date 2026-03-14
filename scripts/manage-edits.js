@@ -65,7 +65,7 @@ for(const {targetDocument, newDoc, id} of results) {
       if(field == "position") {
         newField = newDoc[field].latitude +','+newDoc[field].longitude
         if(currentField) {currentField = currentDoc[field].latitude +','+currentDoc[field].longitude}
-      } else if(field == 'description') {
+      } else if(field == 'description' && newField) {
         newField = generateHTML(newField,[StarterKit,Link, Image])
           .replace(/<img src="data:image\/(jpg|png|jpeg);base64.*?">/gi,'<BASE 64 IMAGE>')
         if(currentField) {currentField = generateHTML(currentField,[StarterKit,Link, Image])}
