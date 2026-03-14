@@ -7,7 +7,24 @@ import react from '@vitejs/plugin-react-swc'
 export default defineConfig({
   plugins: [
     react(),
-    VitePWA({ registerType: 'autoUpdate', devOptions: { enabled: false }, selfDestroying: true}),
+    VitePWA({ 
+      registerType: 'autoUpdate', 
+      devOptions: { enabled: false }, 
+      selfDestroying: true,
+      workbox: {
+        globIgnores: ['**/sitemap.xml', '**/robots.txt'],
+        navigateFallbackDenylist: [
+          /^\/sitemap\.xml$/,
+          /^\/robots\.txt$/,
+        ],
+        runtimeCaching: [
+          {
+            urlPattern: /^\/(sitemap\.xml|robots\.txt)$/,
+            handler: 'NetworkOnly',
+          },
+        ],
+      },
+    }),
   ],
   resolve: {
     alias: {
