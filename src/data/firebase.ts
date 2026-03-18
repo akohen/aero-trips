@@ -4,7 +4,7 @@ import { initializeFirestore } from "firebase/firestore";
 
 export const firebaseConfig: FirebaseOptions = process.env.NODE_ENV === 'production' ? {
   apiKey: "AIzaSyAleHj_gty6XncQLEDlLn3Ih7X08KuQ-jw",
-  authDomain: "aero-trips.firebaseapp.com",
+  authDomain: "aerotrips.fr",
   projectId: "aero-trips",
   storageBucket: "aero-trips.appspot.com",
   messagingSenderId: "484361364174",
