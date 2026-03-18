@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://aero-trips.web.app/sitemap.xml
+Sitemap: https://aerotrips.fr/sitemap.xml

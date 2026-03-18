@@ -3,7 +3,7 @@ import { collection, getDocs, Firestore } from "firebase/firestore";
 import { Activity, Airfield } from '../src';
 import fs from 'fs';
 
-const ROOT_URL = 'https://aero-trips.web.app'
+const ROOT_URL = 'https://aerotrips.fr'
 const updateAirfields = async (db: Firestore) => {
     const airfields: Airfield[] = []
     const querySnapshot = await getDocs(collection(db, "airfields"))

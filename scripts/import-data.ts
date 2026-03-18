@@ -60,7 +60,7 @@ const getPOIs = (activities: Map<string, Activity>, search: string) => {
         const position = {lat: poi[1], lng: poi[2]}
         for (const activity of activities.values()) {
             if(haversineDistance(position, activity.position) < 500) {
-                console.log(`${chalk.red(activity.name)} too close to ${chalk.red(poi[0])} - https://aero-trips.web.app/map/${poi[1]}/${poi[2]}`)
+                console.log(`${chalk.red(activity.name)} too close to ${chalk.red(poi[0])} - https://aerotrips.fr/map/${poi[1]}/${poi[2]}`)
                 return false
             }
         }
@@ -90,7 +90,7 @@ if(process.argv.includes('--poi')) {
     console.log(`Found ${poi.length} POIs`)
     poi.slice(0, 50).forEach(poi => {
         console.log(`New POI ${chalk.bold.blue(poi[0])}
-https://aero-trips.web.app/map/${poi[1]}/${poi[2]}
+https://aerotrips.fr/map/${poi[1]}/${poi[2]}
 https://google.com/search?q=${encodeURIComponent(poi[0]).replace(/'/g, "%27")}
 `)
     })
