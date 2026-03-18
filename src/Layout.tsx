@@ -34,6 +34,18 @@ function Layout({airfields, activities, profile}: Data) {
       ])
 
     },[airfields, activities])
+
+  useEffect(() => {
+    try{
+      let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
+      if(!link){
+        link = document.createElement('link') as HTMLLinkElement
+        link.setAttribute('rel','canonical')
+        document.head.appendChild(link)
+      }
+      link.href = 'https://aerotrips.fr' + location.pathname + location.search
+    }catch(e){/* ignore */}
+  }, [location.pathname, location.search])
   
   return (
     <MantineProvider>
