@@ -449,6 +449,7 @@ https://aerotrips.fr/activities/ailes-anciennes-toulouse-mz0oul
 https://aerotrips.fr/activities/air-libre-parachutisme-g4ksli
 https://aerotrips.fr/activities/alambike-shop-1h75l
 https://aerotrips.fr/activities/albi-arret-de-bus-ligne-r-b7ph3d
+https://aerotrips.fr/activities/aqueduc-de-la-vanne-yavkrh
 https://aerotrips.fr/activities/arcachon-parachutisme-5tm6g
 https://aerotrips.fr/activities/ardennes-karting-alpjes
 https://aerotrips.fr/activities/arret-bus-r-garros-fw3mm
@@ -473,6 +474,7 @@ https://aerotrips.fr/activities/avis-aurillac-9wirr7
 https://aerotrips.fr/activities/baie-dauthie-fsi5is
 https://aerotrips.fr/activities/baie-de-somme-iqcdb
 https://aerotrips.fr/activities/bar-de-laeroclub-dannemasse-5csjrt
+https://aerotrips.fr/activities/bar-de-laeroclub-de-la-hautesaone-ozcaf
 https://aerotrips.fr/activities/bar-de-laeroclub-j25ht8
 https://aerotrips.fr/activities/bar-des-ailes-18h94k
 https://aerotrips.fr/activities/base-de-plein-air-le-blanc-canoe-evasion-z4yz0c
@@ -734,6 +736,7 @@ https://aerotrips.fr/activities/les-ailes-volantes-bqdv7j
 https://aerotrips.fr/activities/les-argonautes-1omju
 https://aerotrips.fr/activities/les-papilles-dstiv
 https://aerotrips.fr/activities/les-terrasses-de-saumur-ctbjkw
+https://aerotrips.fr/activities/les-tetes-brulees-0dr4e
 https://aerotrips.fr/activities/les-valseuses-sur-mer-ddsnb8
 https://aerotrips.fr/activities/les-velos-de-leon-bsogqg
 https://aerotrips.fr/activities/lescale-a06xfw
