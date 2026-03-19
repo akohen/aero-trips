@@ -9,13 +9,13 @@ export default defineConfig({
     react(),
     VitePWA({ 
       registerType: 'autoUpdate', 
-      devOptions: { enabled: false }, 
-      selfDestroying: true,
+      devOptions: { enabled: false },
       workbox: {
         globIgnores: ['**/sitemap.xml', '**/robots.txt'],
         navigateFallbackDenylist: [
           /^\/sitemap\.xml$/,
           /^\/robots\.txt$/,
+          /__/,
         ],
         runtimeCaching: [
           {
