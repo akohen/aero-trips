@@ -15,6 +15,7 @@ import hikingActivity from '/map-pin-hiking.svg'
 import nauticalActivity from '/map-pin-nautical.svg'
 import natureActivity from '/map-pin-nature.svg'
 import cultureActivity from '/map-pin-culture.svg'
+import { getResizedUrl } from "../utils/image"
 
 const selectIcon = (types: ActivityType[]) => {
   if(types.includes('lodging')) return lodgingActivity
@@ -41,7 +42,18 @@ const ActivityMarker = ({activity}: {activity:Activity}) => {
         <Link to={`/activities/${activity.id}`}>
           <Stack align="center" gap={"xs"}>
             <div><ActivityTitle activity={activity}/></div>      
-            {imgNode != undefined && <img src={imgNode.attrs.src} width="150px" />}
+            {imgNode != undefined && (
+              <img
+                src={imgNode.attrs.src} width="150px"
+                onError={(e) => {
+                  const img = e.currentTarget;
+                  if (!img.dataset.fallbackAttempted) {
+                    img.dataset.fallbackAttempted = 'true';
+                    img.src = getResizedUrl(imgNode.attrs.src);
+                  }
+                }}
+              />
+            )}
             <span>Voir plus de détails...</span>
           </Stack>
         </Link>

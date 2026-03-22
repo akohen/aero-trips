@@ -5,6 +5,7 @@ import { CommonIcon } from "./CommonIcon";
 import { Marker, Popup } from 'react-leaflet'
 import { Icon } from 'leaflet';
 import pinRunway from '/map-pin-runway.svg'
+import { getResizedUrl } from "../utils/image";
 
 
 export const AirfieldTitle = ({ad, profile}: {ad: Airfield, profile?: Profile}) => {
@@ -33,8 +34,19 @@ export const AirfieldMarker = ({airfield}: {airfield:Airfield}) => {
     <Popup>
       <Link to={`/airfields/${airfield.codeIcao}`}>
         <Stack align="center" gap={"xs"}>
-          <div><AirfieldTitle ad={airfield}/></div>      
-          {imgNode != undefined && <img src={imgNode.attrs.src} width="150px" />}
+          <div><AirfieldTitle ad={airfield}/></div>
+          {imgNode != undefined && (
+            <img
+              src={imgNode.attrs.src} width="150px"
+              onError={(e) => {
+                const img = e.currentTarget;
+                if (!img.dataset.fallbackAttempted) {
+                  img.dataset.fallbackAttempted = 'true';
+                  img.src = getResizedUrl(imgNode.attrs.src);
+                }
+              }}
+            />
+          )}
           <span>Voir plus de détails...</span>
         </Stack>
       </Link>

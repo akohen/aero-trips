@@ -28,12 +28,12 @@ export const uploadImage = (view: EditorView, pos: number, file: File, profile?:
     window.alert("Les images doivent être au format .png, .jpg ou .webp");
     return;
   }
-  if (file.size >= 2 ** 19) {
-    window.alert("Les images doivent faire moins de 500 ko");
-    return;
-  }
   
   if(profile) {
+    if (file.size >= 2 ** 23) {
+      window.alert("Les images doivent faire moins de 8mo.");
+      return;
+    }
     const storage = getStorage();
     const storageRef = ref(storage, `img/${profile.uid}/${Math.random().toString(36).substring(2)}`);
     uploadBytes(storageRef, file, {contentType: file.type})
@@ -47,6 +47,10 @@ export const uploadImage = (view: EditorView, pos: number, file: File, profile?:
       })
     })
   } else {
+    if (file.size >= 2 ** 19) {
+      window.alert("Les images doivent faire moins de 500 ko. Inscrivez-vous pour uploader des images plus lourdes");
+      return;
+    }
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = function () {
@@ -57,3 +61,14 @@ export const uploadImage = (view: EditorView, pos: number, file: File, profile?:
     }
   }
 }
+
+
+export const getResizedUrl = (src: string): string => {
+  try {
+    const url = new URL(src);
+    url.pathname += '_1000x1000';
+    return url.toString();
+  } catch {
+    return src + '_1000x1000';
+  }
+};
