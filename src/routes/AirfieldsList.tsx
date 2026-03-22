@@ -3,7 +3,7 @@ import { Group, Text } from '@mantine/core';
 import { ADfilter, Airfield, Data } from '..';
 import List from '../components/TableList';
 import { useEffect, useState } from 'react';
-import { filterAirfields } from '../utils';
+import { filterAirfields } from '../utils/utils';
 import AirfieldsFilters from '../components/AirfieldsFilters';
 import { AirfieldTitle } from '../components/AirfieldUtils';
 import { ButtonVACMap, ButtonViewOnMap } from '../components/CommonButtons';

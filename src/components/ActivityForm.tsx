@@ -1,21 +1,17 @@
 import { Fieldset, TextInput, Chip, Group, Space, Button, Text, Title, InputLabel, Center, Tooltip } from "@mantine/core"
-import { useEditor } from "@tiptap/react";
 import { Activity, ActivityType, Profile } from "..";
-import { StarterKit } from "@tiptap/starter-kit";
-import { Link } from "@tiptap/extension-link";
-import Youtube from '@tiptap/extension-youtube';
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
-import { default as TiptapImage } from "@tiptap/extension-image";
 import { IconInfoCircle } from "@tabler/icons-react";
-import { editorProps, slug } from "../utils";
+import { slug } from "../utils/utils";
 import { CommonIcon } from "./CommonIcon";
 import { GeoPoint, Timestamp, addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { db } from "../data/firebase";
 import AnonymousSubmission from "./AnonymousSubmission";
+import useTextEditor from "../hooks/useTextEditor";
 
 const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, profile?: Profile, id: string|undefined, activities: Map<string,Activity>}) => {
   const [submitted, setSubmitted] = useState(false)
@@ -37,21 +33,11 @@ const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, 
     }
   });
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Link,
-      TiptapImage.configure({allowBase64: false}),
-      Youtube.configure({
-        controls: true,
-      }),
-    ],
-    editorProps: editorProps(profile),
-    content: form.values['description'],
-    onUpdate({ editor }) {
-      form.setFieldValue('description', editor.getJSON());
-    }
-  }, [profile]);
+  const editor = useTextEditor({
+    profile,
+    content: form.values.description,
+    onUpdate: (content) => form.setFieldValue('description', content),
+  });
 
 
   const saveActivity = (values: typeof form.values) => {

@@ -2,7 +2,7 @@ import { Button } from '@mantine/core';
 import { IconPhotoUp } from '@tabler/icons-react';
 import { ChangeEvent, useRef } from 'react';
 import { Editor } from '@tiptap/react';
-import { uploadImage } from '../utils';
+import { uploadImage } from '../utils/image';
 import { Profile } from '..';
 
 export const ImageControl = ({editor, profile}:{editor:Editor|null, profile?: Profile}) => {

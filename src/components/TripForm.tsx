@@ -1,24 +1,20 @@
 import { Fieldset, Group, Button, TextInput, InputLabel, Title, Center, Text, Radio, Chip } from "@mantine/core"
 import { DatePickerInput } from '@mantine/dates';
-import { useEditor } from "@tiptap/react";
 import { ActivityType, Data } from "..";
-import { StarterKit } from "@tiptap/starter-kit";
-import { Link } from "@tiptap/extension-link";
-import Youtube from '@tiptap/extension-youtube';
 import { useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
 import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
-import { default as TiptapImage } from "@tiptap/extension-image";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { IconBrandGoogleFilled, IconGripVertical, IconX } from "@tabler/icons-react";
 import TripStepSelect from "./TripStepSelect";
 import { CommonIcon } from "./CommonIcon";
-import { editorProps, slug } from "../utils";
+import { slug } from "../utils/utils";
 import { db, googleLogin } from "../data/firebase";
 import { doc, setDoc, Timestamp } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import useTextEditor from "../hooks/useTextEditor";
 
 const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: string|undefined}) => {
   type FinderOptions = {group: string, items: {label: string, value: string}[]}[]
@@ -117,21 +113,11 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
     </Draggable>
   ))
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Link,
-      TiptapImage.configure({allowBase64: false}),
-      Youtube.configure({
-        controls: true,
-      }),
-    ],
-    editorProps: editorProps(profile),
-    content: form.values['description'],
-    onUpdate({ editor }) {
-      form.setFieldValue('description', editor?.getJSON());
-    }
-  }, [profile]);
+  const editor = useTextEditor({
+    profile,
+    content: form.values.description,
+    onUpdate: (content) => form.setFieldValue('description', content),
+  });
 
   if(!profile || (trip && profile.uid != trip.uid)) return (<>
     <Title><BackButton />Proposer une sortie</Title>

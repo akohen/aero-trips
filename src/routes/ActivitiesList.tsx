@@ -4,7 +4,7 @@ import { ActivityFilter, Data } from '..';
 import List from '../components/TableList';
 import { useEffect, useState } from 'react';
 import ActivitiesFilters from '../components/ActivitiesFilters';
-import { filterActivities } from '../utils';
+import { filterActivities } from '../utils/utils';
 import { ButtonViewOnMap } from '../components/CommonButtons';
 import { ActivityTitle } from '../components/ActivityUtils';
 

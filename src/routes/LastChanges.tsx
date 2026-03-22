@@ -4,7 +4,7 @@ import { Activity, Airfield, Data } from '..';
 import List from '../components/TableList';
 import { ButtonViewOnMap } from '../components/CommonButtons';
 import { ActivityTitle } from '../components/ActivityUtils';
-import { formatDate } from '../utils';
+import { formatDate } from '../utils/utils';
 import { AirfieldTitle } from '../components/AirfieldUtils';
 
 

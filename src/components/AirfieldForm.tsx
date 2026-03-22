@@ -1,19 +1,14 @@
 import { Fieldset, Group, Button, Title, Space, Chip, InputLabel, TextInput } from "@mantine/core"
-import { useEditor } from "@tiptap/react";
 import { Airfield, Profile } from "..";
-import { StarterKit } from "@tiptap/starter-kit";
-import { Link } from "@tiptap/extension-link";
-import Youtube from '@tiptap/extension-youtube';
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
-import { default as TiptapImage } from "@tiptap/extension-image";
-import { editorProps } from "../utils";
 import { addDoc, collection, doc, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "../data/firebase";
 import AnonymousSubmission from "./AnonymousSubmission";
 import { useNavigate } from "react-router-dom";
+import useTextEditor from "../hooks/useTextEditor";
 
 const AirfieldForm = ({airfield, profile, airfields}: {airfield: Airfield, profile?: Profile, airfields: Map<string,Airfield>}) => {
   const [submitted, setSubmitted] = useState(false)
@@ -28,21 +23,11 @@ const AirfieldForm = ({airfield, profile, airfields}: {airfield: Airfield, profi
     },
   });
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Link,
-      TiptapImage.configure({allowBase64: false}),
-      Youtube.configure({
-        controls: true,
-      }),
-    ],
-    editorProps: editorProps(profile),
-    content: form.values['description'],
-    onUpdate({ editor }) {
-      form.setFieldValue('description', editor.getJSON());
-    }
-  }, [profile]);
+  const editor = useTextEditor({
+    profile,
+    content: form.values.description,
+    onUpdate: (content) => form.setFieldValue('description', content),
+  });
 
   const submitFn = (document: typeof form.values) => {
     // Carry all data from the existing airfield, mostly as its easier to test prod data on dev/staging where the entry might not exist

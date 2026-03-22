@@ -1,6 +1,6 @@
 import { LayerGroup, LayersControl, MapContainer, TileLayer } from 'react-leaflet'
 import { ADfilter, ActivityFilter, Data } from '..';
-import { filterActivities, filterAirfields } from '../utils';
+import { filterActivities, filterAirfields } from '../utils/utils';
 import { AirfieldMarker } from '../components/AirfieldUtils';
 import ActivityMarker from '../components/ActivityMarker';
 import { Dispatch, SetStateAction } from 'react';

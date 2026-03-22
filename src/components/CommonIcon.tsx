@@ -1,5 +1,5 @@
 import { Tooltip } from "@mantine/core"
-import { iconsList } from "../utils"
+import { iconsList } from "../utils/utils"
 
 export const CommonIcon = ({iconType, color}: {iconType: string, color?: string}) => {
   const {label, icon, style} = iconsList.get(iconType) || {}
