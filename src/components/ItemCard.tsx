@@ -3,15 +3,18 @@ import { Activity, ActivityType, Airfield, Profile, Runway } from '..';
 import { Link } from 'react-router-dom';
 import { CommonIcon } from './CommonIcon';
 import { useMediaQuery } from '@mantine/hooks';
+import { useState } from 'react';
+import { getResizedUrl } from '../utils/image';
 
 const ItemCard = ({item, distance, profile}: {item:Airfield|Activity, distance?:number, profile?:Profile}) => {
     const imgNode = item.description?.content != undefined ? item.description.content.find( (a: { type: string }) => a.type =='image') : undefined
     const imgURL = 'codeIcao' in item ? getAirfieldImage(imgNode, item.runways) : getActivityImage(imgNode, item.type);
+    const [currentImgURL, setCurrentImgURL] = useState(imgURL);
     const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
     const fullTitle = 'codeIcao' in item ? `${item.codeIcao} - ${item.name}` : item.name;
     const maxNameLength = isMobile ? 19 : 22
     const title = fullTitle.length > maxNameLength ? `${fullTitle.slice(0,maxNameLength-3)}..` : fullTitle;
-    
+
     return (
         <Paper
             shadow="md"
@@ -19,7 +22,7 @@ const ItemCard = ({item, distance, profile}: {item:Airfield|Activity, distance?:
             p='xs'
             w={isMobile ? 150 : 220} h={isMobile ? 150 : 260}
             style={{
-                backgroundImage: `url(${imgURL}), linear-gradient(transparent 25%, rgba(0,0,0,0.5) 75%)`,
+                backgroundImage: `url(${currentImgURL}), linear-gradient(transparent 25%, rgba(0,0,0,0.5) 75%)`,
                 backgroundBlendMode: 'multiply',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -30,6 +33,13 @@ const ItemCard = ({item, distance, profile}: {item:Airfield|Activity, distance?:
             to={'codeIcao' in item ? `/airfields/${item.codeIcao}` : `/activities/${item.id}`}
             className='activity-card'
         >
+            {imgNode && <img src={currentImgURL} style={{display: 'none'}} onError={(e) => {
+                const img = e.currentTarget;
+                if (!img.dataset.fallbackAttempted) {
+                    img.dataset.fallbackAttempted = 'true';
+                    setCurrentImgURL(getResizedUrl(imgNode.attrs.src));
+                }
+            }} />}
             <Stack gap='6px'>
                 <Group gap='3px'>
                 {'codeIcao' in item ? 
