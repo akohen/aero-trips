@@ -29,6 +29,35 @@ const useTextEditor = ({profile, content, onUpdate}: UseTextEditorOptions) => (
     content,
     onUpdate: ({ editor }) => onUpdate?.(editor.getJSON()),
     editorProps: {
+      handlePaste: function(view: EditorView, event: ClipboardEvent) {
+        const clipboardData = event.clipboardData;
+        if (!clipboardData) return false;
+
+        // Actual image binary data
+        if (clipboardData.files && clipboardData.files[0]?.type.startsWith('image/')) {
+          event.preventDefault();
+          const pos = view.state.selection.from;
+          uploadImage(view, pos, clipboardData.files[0], profile);
+          return true;
+        }
+
+        // Remote image URL
+        const html = clipboardData.getData('text/html');
+        if (html) {
+          const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+          if (match) {
+            const imageUrl = match[1];
+            if (!imageUrl.startsWith('data:')) {
+              event.preventDefault();
+              const pos = view.state.selection.from;
+              fetchAndUploadImageUrl(view, pos, imageUrl, profile);
+              return true;
+            }
+          }
+        }
+
+        return false;
+      },
       handleDrop: function(view: EditorView, event: DragEvent, _slice: Slice, moved: boolean) {
         if (!moved && event.dataTransfer) {
           if (event.dataTransfer.files && event.dataTransfer.files[0]) {
