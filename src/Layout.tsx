@@ -4,7 +4,7 @@ import '@mantine/dates/styles.css';
 import { MantineProvider, AppShell, Burger, Group, Button, Stack, em, Title } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { Link, Outlet, matchPath, useLocation, useNavigate } from "react-router-dom";
-import { IconBrandGoogleFilled, IconBulb, IconCirclePlus, IconHome, IconLogout, IconMail, IconMap, IconMapRoute, IconPlaneArrival, IconUser } from '@tabler/icons-react';
+import { IconBrandGoogleFilled, IconBulb, IconCalendarEvent, IconCirclePlus, IconHome, IconLogout, IconMail, IconMap, IconMapRoute, IconPlaneArrival, IconUser } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Data } from '.';
 import TripStepSelect from './components/TripStepSelect';
@@ -112,10 +112,19 @@ function Layout({airfields, activities, profile}: Data) {
           >
             Sorties
           </Button>
-          <Button 
-            component={Link} 
-            onClick={toggle} 
-            to="/map"  
+          <Button
+            component={Link}
+            onClick={toggle}
+            to="/events"
+            leftSection={<IconCalendarEvent size={14} />}
+            variant={location.pathname.startsWith('/events') ? 'filled' : 'light'}
+          >
+            Événements
+          </Button>
+          <Button
+            component={Link}
+            onClick={toggle}
+            to="/map"
             leftSection={<IconMap size={14} />}
             variant={location.pathname.startsWith('/map') ? 'filled' : 'light'}
           >

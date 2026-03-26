@@ -4,6 +4,7 @@ type Data = {
   airfields: Map<string,Airfield>,
   activities: Map<string,Activity>,
   trips: Map<string,Trip>,
+  events: Map<string,Event>,
   profile?: Profile,
   mapView: MapView,
   setMapView: React.Dispatch<React.SetStateAction<MapView>>,
@@ -94,4 +95,16 @@ interface Profile {
 type MapView = {
   center: LatLng,
   zoom: number
+}
+
+type Event = {
+  id: string,
+  title: string,
+  airfieldId: string,
+  startDate: Timestamp,
+  endDate?: Timestamp,
+  description: JSONContent,
+  link?: string,
+  author?: string,
+  updated_at?: Timestamp,
 }

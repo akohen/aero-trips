@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import App from './App.tsx'
 import { collection, doc, getDoc, getDocs, setDoc, query, where } from "firebase/firestore";
-import { Activity, Airfield, MapView, Profile, Trip } from '.';
+import { Activity, Airfield, Event, MapView, Profile, Trip } from '.';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from './data/firebase.ts';
 import airfieldsData from './data/airfields.json'
@@ -12,6 +12,7 @@ export const DataProvider = () => {
   const [airfields, setAirfields] = useState<Map<string,Airfield>>(new Map())
   const [activities, setActivities] = useState<Map<string,Activity>>(new Map())
   const [trips, setTrips] = useState<Map<string,Trip>>(new Map())
+  const [events, setEvents] = useState<Map<string,Event>>(new Map())
   const [profile, setProfile] = useState<Profile|undefined>(undefined)
   const [mapView, setMapView] = useState<MapView>({center:[49, 2.5], zoom:8})
 
@@ -49,10 +50,18 @@ export const DataProvider = () => {
     setTrips(newTrips)
   }
 
+  const getEvents = async () => {
+    const query = await getDocs(collection(db, "events"));
+    const newEvents = new Map<string, Event>()
+    query.docs.forEach(e => newEvents.set(e.id, {...e.data(), id: e.id} as Event))
+    setEvents(newEvents)
+  }
+
   useEffect(() => {
     getAirfields()
     getActivities()
     getTrips()
+    getEvents()
   },[])
 
   useEffect(() => {
@@ -91,6 +100,7 @@ export const DataProvider = () => {
     airfields={airfields}
     activities={activities}
     trips={trips}
+    events={events}
     profile={profile}
     mapView={mapView}
     setMapView={setMapView}

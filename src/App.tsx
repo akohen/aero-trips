@@ -21,6 +21,8 @@ import UserDetails from "./routes/UserDetails";
 import { DatesProvider } from "@mantine/dates";
 import dayjs from "dayjs";
 import LastChanges from "./routes/LastChanges";
+import EventsList from "./routes/EventsList";
+import EventDetails from "./routes/EventDetails";
 
 
 export default function App(data : Data) {
@@ -88,7 +90,7 @@ export default function App(data : Data) {
     <DatesProvider settings={{ locale: 'fr' }}>
     <Routes>
       <Route element={<Layout {...data} />}>
-        <Route path="/"                       element={<Home />}/>
+        <Route path="/"                       element={<Home {...data} />}/>
         <Route path="/profile"                element={<Profile {...data} />}/>
         <Route path="/profile/:userId"        element={<UserDetails {...data} />}/>
         <Route path="/airfields"              element={<AirfieldsList {...data} filters={ADfilter} setFilters={setAirfieldFilters} />} />
@@ -99,6 +101,8 @@ export default function App(data : Data) {
         <Route path="/trips"                  element={<TripsList {...data} />} />
         <Route path="/:type?/:id?/edit/:lat?/:lng?"       element={<AddData {...data} />} />
         <Route path="/trips/:tripId"          element={<TripDetails {...data} />} />
+        <Route path="/events"                 element={<EventsList {...data} />} />
+        <Route path="/events/:eventId"        element={<EventDetails {...data} />} />
         <Route path="/contact"                element={<Contact {...data} />} />
         <Route path="/changes"                element={<LastChanges {...data} />} />
       </Route>

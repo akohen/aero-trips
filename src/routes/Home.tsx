@@ -1,7 +1,18 @@
-import { Paper, Text, Title } from "@mantine/core"
+import { Paper, Stack, Text, Title } from "@mantine/core"
 import { Link } from "react-router-dom"
+import { Data } from ".."
+import { formatDate } from "../utils/utils"
 
-const Home = () => {
+const Home = ({ events, airfields }: Data) => {
+  const now = new Date()
+  const upcomingEvents = [...events.values()]
+    .filter(e => {
+      const end = e.endDate ? new Date(e.endDate.seconds * 1000) : new Date(e.startDate.seconds * 1000)
+      return end >= now
+    })
+    .sort((a, b) => a.startDate.seconds - b.startDate.seconds)
+    .slice(0, 3)
+
   return (<>
   <Title>Bienvenue sur Aero trips</Title>
   <Paper
@@ -42,27 +53,28 @@ const Home = () => {
       Utilisez les filtres sur la liste des <Link to={'/airfields'}>terrains</Link> ou des <Link to={'/activities'}>activités</Link> pour choisir les éléments qui sont affichés sur la <Link to={'/map'}>carte</Link>.
     </Text>
   </Paper>
-  <Paper
-    shadow="md"
-    radius="md"
-    p='sm'
-    mt="md"
-    withBorder
-  >
-    <Text>
-      Les modifications des visiteurs anonymes sont validées manuellement, votre modification n'apparaîtra pas immédiatement sur le site.
-      Vous pouvez vous connecter (uniquement avec un compte Google pour le moment) 
-      afin de pouvoir:
-    </Text>
-    <ul>
-        <li>Valider automatiquement vos changements sur des activités</li>
-        <li>Partager des voyages</li>
-        <li>Choisir votre aérodrome de base</li>
-        <li>Enregistrer les terrains que vous avez visités</li>
-      </ul>
-    
-    
-  </Paper>
+  
+  {upcomingEvents.length > 0 && (
+    <Paper shadow="md" radius="md" p="sm" mt="md" withBorder>
+      <Title order={3}>Prochains événements</Title>
+      <Stack mt="sm" gap="xs">
+        {upcomingEvents.map(e => {
+          const ad = airfields.get(e.airfieldId)
+          const dateLabel = e.endDate
+            ? `${formatDate(e.startDate)} → ${formatDate(e.endDate)}`
+            : formatDate(e.startDate)
+          return (
+            <Text key={e.id}>
+              <Link to={`/events/${e.id}`}><b>{e.title}</b></Link>
+              {' — '}{ad ? `${ad.name} (${ad.codeIcao})` : e.airfieldId}
+              {' — '}{dateLabel}
+            </Text>
+          )
+        })}
+      </Stack>
+      <Text mt="sm" size="sm"><Link to="/events">Voir tous les événements →</Link></Text>
+    </Paper>
+  )}
   <Text mt={"md"}>
     ⚠ Ce site n'est pas une source d'information aéronautique, et ne peut pas se substituer à la documentation réglementaire lors de la préparation d'un vol.
   </Text>

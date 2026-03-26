@@ -14,10 +14,13 @@ import { Nearby } from "./Nearby"
 import { NearbyTrips } from "./ActivityUtils"
 import { ToiletText } from "./AirfieldUtils"
 
-const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profile} : Data & {id: string, item: Airfield|Activity}) => {
+const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView, profile} : Data & {id: string, item: Airfield|Activity}) => {
   const nearbyAirfields = findNearest(item, airfields, 50000).slice(0,8)
   const nearbyActivities = findNearest(item, activities).slice(0,8)
   const nearbyTrips = [...trips].filter(([,trip]) => trip.steps.some(step => step.type == (('codeIcao' in item) ? 'airfields' : 'activities') && step.id == id)).slice(0,8)
+  const airfieldEvents = 'codeIcao' in item
+    ? [...events.values()].filter(e => e.airfieldId === id).sort((a, b) => b.startDate.seconds - a.startDate.seconds).slice(0,5)
+    : []
   const type = 'codeIcao' in item ? 'airfields' : 'activities'
   useEffect(() => {
     document.title = ('codeIcao' in item ? `${item.codeIcao} - ` : '') + item.name + ' - AeroTrips'
@@ -76,7 +79,7 @@ const DetailsPage = ({id, item, airfields, activities, trips, setMapView, profil
     </Paper>
   </Grid.Col>
   {item.description && <Grid.Col span={6}><Description content={item.description} /></Grid.Col>}
-  <NearbyTrips items={nearbyTrips} />
+  <NearbyTrips items={nearbyTrips} events={airfieldEvents} />
   <Grid.Col span={12}>
     <Title order={4}>Activités à proximité</Title>
     <Nearby items={nearbyActivities} profile={profile} />
