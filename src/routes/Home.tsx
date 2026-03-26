@@ -14,7 +14,11 @@ const Home = ({ events, airfields }: Data) => {
     .slice(0, 3)
 
   return (<>
-  <Title>Bienvenue sur Aero trips</Title>
+  <div style={{ position: 'relative', borderRadius: '8px', overflow: 'hidden' }}>
+    <img src="/hero-image.jpg" alt="Aero trips" style={{ width: '100%', maxHeight: '300px', objectFit: 'cover', objectPosition: 'bottom', display: 'block' }} />
+    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%)' }} />
+    <Title style={{ position: 'absolute', bottom: '1rem', left: '1rem', color: 'white', textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>Bienvenue sur Aero trips</Title>
+  </div>
   <Paper
     shadow="md"
     radius="md"
