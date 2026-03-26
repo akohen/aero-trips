@@ -437,6 +437,7 @@ https://aerotrips.fr/activities/abbaye-de-fontenay-q4qlq
 https://aerotrips.fr/activities/abbaye-de-jumieges-rop5t9
 https://aerotrips.fr/activities/abbaye-de-pontigny-cosrx
 https://aerotrips.fr/activities/abbaye-de-saint-wandrille-uhgh5l
+https://aerotrips.fr/activities/abbaye-notre-dame-de-longpont-pjm5x
 https://aerotrips.fr/activities/abbaye-royale-de-chaalis-w0xs7t
 https://aerotrips.fr/activities/abbeville-somme-karting-8ur0n
 https://aerotrips.fr/activities/abeille-parachutisme-ko8ve
@@ -480,6 +481,7 @@ https://aerotrips.fr/activities/bar-des-ailes-18h94k
 https://aerotrips.fr/activities/base-de-plein-air-le-blanc-canoe-evasion-z4yz0c
 https://aerotrips.fr/activities/base-nautique-de-quiberon-0awim
 https://aerotrips.fr/activities/basilique-de-sion-yhazuy
+https://aerotrips.fr/activities/basilique-notredame-de-lepine-7koox8
 https://aerotrips.fr/activities/basilique-notredame-de-montligeon-lld8hs
 https://aerotrips.fr/activities/beach-bikes-quiberon-3f500o
 https://aerotrips.fr/activities/beaux-de-provence-5fqlj9
@@ -494,6 +496,7 @@ https://aerotrips.fr/activities/brasserie-la-salmagne-ddp8qc
 https://aerotrips.fr/activities/brasserie-le-rail-otemik
 https://aerotrips.fr/activities/brasserie-leduc-2k09gb
 https://aerotrips.fr/activities/brit-hotel-du-dauphin-3kxgv5
+https://aerotrips.fr/activities/butte-de-vauquois-el1hbs
 https://aerotrips.fr/activities/cabana-velos-qudft
 https://aerotrips.fr/activities/calaise-bicycle-ggthl
 https://aerotrips.fr/activities/campanile-chartres-9pl9m
@@ -506,6 +509,7 @@ https://aerotrips.fr/activities/canopee-ad24sz
 https://aerotrips.fr/activities/cap-blanc-nez-1ulz6
 https://aerotrips.fr/activities/cap-gris-nez-m3j5gv
 https://aerotrips.fr/activities/cathedrale-de-chartres
+https://aerotrips.fr/activities/cathedrale-notredame-de-sees-2ran4aq
 https://aerotrips.fr/activities/center-parcs-les-bois-francs-tcp6r
 https://aerotrips.fr/activities/centre-commercial-amiens-grand-a-pvxug
 https://aerotrips.fr/activities/centre-commercial-les-portes-de-laigle-38le
@@ -522,9 +526,11 @@ https://aerotrips.fr/activities/chateau-dapremont-n9ur8n
 https://aerotrips.fr/activities/chateau-darques-la-bataille-k2bqz
 https://aerotrips.fr/activities/chateau-daugerville-mkiqdk
 https://aerotrips.fr/activities/chateau-de-beauharnais-kf2l1
+https://aerotrips.fr/activities/chateau-de-berzylesec-xlojhj
 https://aerotrips.fr/activities/chateau-de-blancafort-m9xt0j
 https://aerotrips.fr/activities/chateau-de-blandy-nloaee
 https://aerotrips.fr/activities/chateau-de-boucard-futnrf
+https://aerotrips.fr/activities/chateau-de-boursault-89mvyl
 https://aerotrips.fr/activities/chateau-de-buranlure-9i6guc
 https://aerotrips.fr/activities/chateau-de-bussyrabutin-65r4r
 https://aerotrips.fr/activities/chateau-de-canybarville-b7qiwn
@@ -544,11 +550,13 @@ https://aerotrips.fr/activities/chateau-de-gisors-gwghdk
 https://aerotrips.fr/activities/chateau-de-haroue-r5k9nw
 https://aerotrips.fr/activities/chateau-de-la-chapelle-dangillon-fx60vg
 https://aerotrips.fr/activities/chateau-de-la-ferte-imbault-rde088
+https://aerotrips.fr/activities/chateau-de-la-fertemilon-kmq0t
 https://aerotrips.fr/activities/chateau-de-la-motte-josserand-bnvni
 https://aerotrips.fr/activities/chateau-de-la-motte-tilly-157eic
 https://aerotrips.fr/activities/chateau-de-la-rocheguyon-jxboz
 https://aerotrips.fr/activities/chateau-de-la-verrerie-k92hb
 https://aerotrips.fr/activities/chateau-de-lortenbourg-8rgoqg
+https://aerotrips.fr/activities/chateau-de-mareilleguyon-8r0o09
 https://aerotrips.fr/activities/chateau-de-maulnes-cz24ri
 https://aerotrips.fr/activities/chateau-de-meauce-dxvt6n
 https://aerotrips.fr/activities/chateau-de-menars-e7k2ka
@@ -559,7 +567,9 @@ https://aerotrips.fr/activities/chateau-de-nacqueville-rw358h
 https://aerotrips.fr/activities/chateau-de-nitray-5r7qb
 https://aerotrips.fr/activities/chateau-de-peyrepertuse-a8hwti
 https://aerotrips.fr/activities/chateau-de-pierrefonds-bow6yp
+https://aerotrips.fr/activities/chateau-de-plaisir-kdwj7
 https://aerotrips.fr/activities/chateau-de-pont-saintpierre-fzyjyj
+https://aerotrips.fr/activities/chateau-de-pontchartrain-dvq8vb
 https://aerotrips.fr/activities/chateau-de-queribus-b5voa
 https://aerotrips.fr/activities/chateau-de-rambouillet-sb4yp
 https://aerotrips.fr/activities/chateau-de-saintbrissonsurloire-83z7fa
@@ -568,6 +578,7 @@ https://aerotrips.fr/activities/chateau-de-sassetot-lkecqb
 https://aerotrips.fr/activities/chateau-de-saumur-d2536
 https://aerotrips.fr/activities/chateau-de-savignylesbeaune-3o8h4
 https://aerotrips.fr/activities/chateau-de-sedan-5ktemg
+https://aerotrips.fr/activities/chateau-de-septmonts-2y8b
 https://aerotrips.fr/activities/chateau-de-sullysurloire-gvgzp
 https://aerotrips.fr/activities/chateau-de-tallard-9ph0r
 https://aerotrips.fr/activities/chateau-de-tanlay-nrjwex
@@ -785,6 +796,8 @@ https://aerotrips.fr/activities/parc-disneyland-4dw44n
 https://aerotrips.fr/activities/parc-naturel-regional-de-la-brenne-6e4tn8
 https://aerotrips.fr/activities/parc-ornithologique-du-marquenterre-nvy1f
 https://aerotrips.fr/activities/paris-blois-parachutisme-cb5vy
+https://aerotrips.fr/activities/picardie-forets-vertes-01p28g
+https://aerotrips.fr/activities/picardie-forets-vertes-soissons-8g0tq
 https://aerotrips.fr/activities/piper-pub-6zg82k
 https://aerotrips.fr/activities/piscine-du-chevalet-q5ajv
 https://aerotrips.fr/activities/pizzinella-la-baule-mun85s
