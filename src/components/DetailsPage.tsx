@@ -23,8 +23,71 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
     : []
   const type = 'codeIcao' in item ? 'airfields' : 'activities'
   useEffect(() => {
-    document.title = ('codeIcao' in item ? `${item.codeIcao} - ` : '') + item.name + ' - AeroTrips'
-  }, [item]);
+    const isAirfield = 'codeIcao' in item
+    const title = (isAirfield ? `${item.codeIcao} - ` : '') + item.name + ' - AeroTrips'
+    const url = `https://aerotrips.fr/${type}/${id}`
+
+    const description = isAirfield
+      ? `Terrain d'aviation ${item.name} (${item.codeIcao}) — pistes, services, activités à proximité et sorties de la communauté.`
+      : `${item.name} — activité à découvrir en avion avec AeroTrips.`
+
+    document.title = title
+
+    const setMeta = (sel: string, attr: string, val: string) => {
+      let el = document.querySelector(sel)
+      if (!el) {
+        el = document.createElement('meta')
+        sel.includes('property') ? el.setAttribute('property', attr) : el.setAttribute('name', attr)
+        document.head.appendChild(el)
+      }
+      el.setAttribute('content', val)
+    }
+
+    setMeta('meta[name="description"]', 'description', description)
+    setMeta('meta[property="og:title"]', 'og:title', title)
+    setMeta('meta[property="og:description"]', 'og:description', description)
+    setMeta('meta[property="og:url"]', 'og:url', url)
+    setMeta('meta[property="og:type"]', 'og:type', 'place')
+    setMeta('meta[name="twitter:title"]', 'twitter:title', title)
+    setMeta('meta[name="twitter:description"]', 'twitter:description', description)
+
+    // JSON-LD structured data
+    const schemaType = isAirfield ? 'Airport' : 'TouristAttraction'
+    const schema: Record<string, unknown> = {
+      '@context': 'https://schema.org',
+      '@type': schemaType,
+      name: item.name,
+      url,
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: item.position.latitude,
+        longitude: item.position.longitude,
+      },
+    }
+    if (isAirfield && item.website) schema.sameAs = item.website
+    if (!isAirfield && item.website) schema.sameAs = item.website
+
+    let scriptEl = document.querySelector('script[data-schema="item"]') as HTMLScriptElement | null
+    if (!scriptEl) {
+      scriptEl = document.createElement('script')
+      scriptEl.setAttribute('type', 'application/ld+json')
+      scriptEl.setAttribute('data-schema', 'item')
+      document.head.appendChild(scriptEl)
+    }
+    scriptEl.textContent = JSON.stringify(schema)
+
+    return () => {
+      document.title = 'AeroTrips'
+      setMeta('meta[name="description"]', 'description', 'Découvrez des idées de sorties aériennes en France : terrains d\'aviation, activités à proximité, événements et itinéraires partagés par la communauté.')
+      setMeta('meta[property="og:title"]', 'og:title', 'AeroTrips')
+      setMeta('meta[property="og:description"]', 'og:description', 'Découvrez des idées de sorties aériennes en France : terrains d\'aviation, activités à proximité, événements et itinéraires partagés par la communauté.')
+      setMeta('meta[property="og:url"]', 'og:url', 'https://aerotrips.fr/')
+      setMeta('meta[property="og:type"]', 'og:type', 'website')
+      setMeta('meta[name="twitter:title"]', 'twitter:title', 'AeroTrips')
+      setMeta('meta[name="twitter:description"]', 'twitter:description', 'Découvrez des idées de sorties aériennes en France : terrains d\'aviation, activités à proximité, événements et itinéraires partagés par la communauté.')
+      scriptEl?.remove()
+    }
+  }, [item, id, type]);
 
   return (<>
   <Title order={1}>
