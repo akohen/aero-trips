@@ -48,6 +48,7 @@ export const iconsList = new Map<string, {label: string,icon: React.FC,style: ob
   ['100LL', {label:"Essence 100LL disponible", icon:IconGasStation, style:{...iconStyle, color:"darkblue"}}],
   ['SP95', {label:"Essence SP95/98 disponible", icon:IconGasStation, style:{...iconStyle, color:"green"}}],
   ['SP98', {label:"Essence SP95/98 disponible", icon:IconGasStation, style:{...iconStyle, color:"green"}}],
+  ['UL91', {label:"Essence UL91 disponible", icon:IconGasStation, style:{...iconStyle, color:"red"}}],
   ['visited', {label:"Déjà visité", icon:IconHistory, style:iconStyle}],
   ['favorite', {label:"Favori", icon:IconStar, style:iconStyle}],
   ['airfield', {label:"Aérodrome", icon:IconBuildingAirport, style:iconStyle}],
@@ -71,6 +72,7 @@ export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map
       if( status.length > 0 && !status.includes(item.status)) return false
       if( filters.ad.includes('100LL') && !item.fuels?.includes('100LL')) return false
       if( filters.ad.includes('SP9X') && !item.fuels?.some(f => f.startsWith('SP9'))) return false
+      if( filters.ad.includes('UL91') && !item.fuels?.includes('UL91')) return false
       if( filters.runway && Math.max(...item.runways.map(r => r.length)) < filters.runway) return false
       if( filters.ad.includes('toilet') && (item.toilet == 'no' || !item.toilet)) return false
       if( filters.ad.includes('nvfr') && !item.nightVFR) return false

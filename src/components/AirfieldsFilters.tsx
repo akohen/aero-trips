@@ -40,6 +40,7 @@ return (<>
         <Chip value="toilet" size='xs'><IconToiletPaper size={16} /> Toilettes</Chip>
         <Chip value="100LL" size='xs'><IconGasStation size={16} color="darkblue" /> 100LL</Chip>
         <Chip value="SP9X" size='xs'><IconGasStation size={16} color="green" /> SP95/98</Chip>
+        <Chip value="UL91" size='xs'><IconGasStation size={16} color="red" /> UL91</Chip>
         <Chip value="concrete" size='xs'><IconRoad size={16} /> Piste en dur</Chip>
         <Chip value="nvfr" size='xs'><IconMoon size={16} /> VFR de nuit</Chip>
         {profile && <Chip value="visited" size='xs'><IconHistory size={16} /> Déjà visité</Chip>}
