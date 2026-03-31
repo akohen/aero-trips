@@ -1,59 +1,118 @@
-import { Group, TextInput, rem, NumberInput, Button, Collapse, CloseButton, Chip } from "@mantine/core"
-import { IconSearch } from "@tabler/icons-react"
+import { Group, Badge, TextInput, rem, Button, Stack, ActionIcon, Popover, Text } from "@mantine/core"
+import { IconFilter, IconSearch, IconShare, IconX } from "@tabler/icons-react"
 import { Activity, ActivityFilter, Airfield } from ".."
 import { useDisclosure } from "@mantine/hooks"
-import { CommonIcon } from "./CommonIcon"
-import ObjectFinder from "./ObjectFinder"
+import ActivitiesFilterModal from "./ActivitiesFilterModal"
 
-const ActivitiesFilters = ({airfields, activities, filters, setFilters}: 
-{airfields:Map<string, Airfield>, activities:Map<string, Activity>, filters: ActivityFilter, setFilters: (newFilters: ActivityFilter) => void}) => {
+const TYPE_LABELS: Record<string, string> = {
+  food: 'Restauration', lodging: 'Hébergement', bike: 'Vélo',
+  transit: 'Transport', car: 'Voiture', hiking: 'Randonnée',
+  culture: 'Culture', poi: 'À voir du ciel', aero: 'Aéro',
+  nautical: 'Nautique', nature: 'Nature', other: 'Autre',
+}
 
-  const [opened, { toggle }] = useDisclosure(true)//Object.values(filters).some(x => Array.isArray(x) ? x.length: x));
+const ActivitiesFilters = ({ airfields, activities, filters, setFilters }:
+  { airfields: Map<string, Airfield>, activities: Map<string, Activity>, filters: ActivityFilter, setFilters: (newFilters: ActivityFilter) => void }) => {
 
-return (<>
-<Collapse in={opened}>
-  <Group justify="space-between">
-    <Chip.Group multiple={true} value={filters.type} onChange={(v) => setFilters({...filters, type: v})}>
-      <Group>
-        {['food','lodging','bike','transit', 'car', 'hiking', 'culture', 'poi', 'aero', 'nautical', 'nature', 'other'].map(e => <Chip value={e} key={e} size='xs'><CommonIcon iconType={e} />&nbsp;</Chip>)}
-      </Group>
-    </Chip.Group>
-    <Group justify="space-between">
-    A moins de
-    <NumberInput
-      style={{width:'90px'}}
-      size="xs"
-      suffix="km"
-      min={0} max={9999} step={5}
-      placeholder="5km"
-      value={filters.distance} onChange={v => setFilters({...filters, distance: v as number})}
+  const [modalOpened, { open, close }] = useDisclosure(false)
+  const [openedShare, { toggle: toggleShare }] = useDisclosure(false)
+
+  const share = () => {
+    navigator.clipboard.writeText(location.href)
+    toggleShare()
+  }
+
+  type ActiveBadge = { key: string, label: string, onRemove: () => void }
+  const activeBadges: ActiveBadge[] = []
+
+  for (const v of filters.type) {
+    activeBadges.push({
+      key: `type-${v}`,
+      label: TYPE_LABELS[v] ?? v,
+      onRemove: () => setFilters({ ...filters, type: filters.type.filter(x => x !== v) }),
+    })
+  }
+
+  const validDist = filters.distance !== '' && Number.isFinite(filters.distance)
+  if (validDist && filters.target) {
+    const [targetType, targetId] = filters.target.split('/')
+    const target = { activities, airfields }[targetType]?.get(targetId)
+    const targetLabel = target && 'codeIcao' in target
+      ? target.codeIcao
+      : target
+        ? (target.name.length > 16 ? target.name.slice(0, 15) + '…' : target.name)
+        : filters.target
+    activeBadges.push({
+      key: 'distance',
+      label: `< ${filters.distance}km de ${targetLabel}`,
+      onRemove: () => setFilters({ ...filters, distance: '', target: null }),
+    })
+  }
+
+  const activeCount = activeBadges.length
+
+  return (
+    <>
+      <Stack gap="xs" mb="sm">
+        {activeBadges.length > 0 && (
+          <Group gap="xs" wrap="wrap">
+            {activeBadges.map(b => (
+              <Badge
+                key={b.key}
+                variant="light"
+                rightSection={
+                  <ActionIcon variant="transparent" size="xs" onClick={b.onRemove} color="gray">
+                    <IconX size={10} />
+                  </ActionIcon>
+                }
+              >
+                {b.label}
+              </Badge>
+            ))}
+          </Group>
+        )}
+
+        <Group gap="xs" wrap="nowrap">
+          <TextInput
+            placeholder="Chercher une activité"
+            leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+            value={filters.search}
+            onChange={(e) => setFilters({ ...filters, search: e.currentTarget.value })}
+            style={{ flexGrow: 1 }}
+            rightSection={filters.search
+              ? <ActionIcon variant="subtle" size="sm" onClick={() => setFilters({ ...filters, search: '' })}><IconX size={14} /></ActionIcon>
+              : undefined}
+          />
+          <Button
+            leftSection={<IconFilter size={16} />}
+            onClick={open}
+            variant={activeCount > 0 ? 'filled' : 'default'}
+          >
+            Filtres{activeCount > 0 ? ` (${activeCount})` : ''}
+          </Button>
+          <Popover width={200} position="bottom" withArrow shadow="md" opened={openedShare} onChange={toggleShare}>
+            <Popover.Target>
+              <Button onClick={share} leftSection={<IconShare size={16} />} variant="default">
+                Partager
+              </Button>
+            </Popover.Target>
+            <Popover.Dropdown>
+              <Text size="xs">L'URL des résultats a été copiée dans le presse-papier.</Text>
+            </Popover.Dropdown>
+          </Popover>
+        </Group>
+      </Stack>
+
+      <ActivitiesFilterModal
+        opened={modalOpened}
+        onClose={close}
+        airfields={airfields}
+        activities={activities}
+        filters={filters}
+        setFilters={setFilters}
       />
-    de
-    <ObjectFinder
-      activities={activities} airfields={airfields}
-      value={filters.target} onChange={v => setFilters({...filters, target: v})} />
-    </Group>
-  </Group>
-  </Collapse>
-  <Group justify="space-between"  mt={'md'}>
-    <TextInput
-      placeholder="Chercher une activité"
-      leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-      value={filters.search}
-      onChange={(e) => setFilters({...filters, search: e.currentTarget.value})}
-      style={{flexGrow:2}}
-      rightSection={filters.search ? <CloseButton size={18} onClick={() => setFilters({...filters, search: ''})} style={{cursor:'pointer'}}/> : undefined}
-    />
-    <Button onClick={toggle}>Filtres avancés</Button>
-    <Button onClick={() => setFilters({
-      search:'',
-      distance: '',
-      target: null,
-      type: [],
-    })}>
-      Supprimer tous les filtres
-    </Button>
-  </Group>
-</>)}
+    </>
+  )
+}
 
 export default ActivitiesFilters
