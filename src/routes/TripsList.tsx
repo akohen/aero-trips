@@ -33,7 +33,7 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
   }
   
   return (<>
-    <Group justify="space-between"  mt={'md'}>
+    <Group justify="space-between" mb={'sm'}>
       <TextInput
         placeholder="Chercher une sortie / voyage"
         leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
