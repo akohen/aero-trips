@@ -1,8 +1,9 @@
-import { Group, Badge, TextInput, rem, Button, Stack, ActionIcon, Popover, Text } from "@mantine/core"
-import { IconFilter, IconSearch, IconShare, IconX } from "@tabler/icons-react"
+import { Group, Badge, TextInput, rem, Button, Stack, ActionIcon } from "@mantine/core"
+import { IconFilter, IconSearch, IconX } from "@tabler/icons-react"
 import { Activity, ActivityFilter, Airfield } from ".."
 import { useDisclosure } from "@mantine/hooks"
 import ActivitiesFilterModal from "./ActivitiesFilterModal"
+import ShareButton from "./ShareButton"
 
 const TYPE_LABELS: Record<string, string> = {
   food: 'Restauration', lodging: 'Hébergement', bike: 'Vélo',
@@ -15,13 +16,6 @@ const ActivitiesFilters = ({ airfields, activities, filters, setFilters }:
   { airfields: Map<string, Airfield>, activities: Map<string, Activity>, filters: ActivityFilter, setFilters: (newFilters: ActivityFilter) => void }) => {
 
   const [modalOpened, { open, close }] = useDisclosure(false)
-  const [openedShare, { toggle: toggleShare }] = useDisclosure(false)
-
-  const share = () => {
-    navigator.clipboard.writeText(location.href)
-    toggleShare()
-  }
-
   type ActiveBadge = { key: string, label: string, onRemove: () => void }
   const activeBadges: ActiveBadge[] = []
 
@@ -90,16 +84,7 @@ const ActivitiesFilters = ({ airfields, activities, filters, setFilters }:
           >
             Filtres{activeCount > 0 ? ` (${activeCount})` : ''}
           </Button>
-          <Popover width={200} position="bottom" withArrow shadow="md" opened={openedShare} onChange={toggleShare}>
-            <Popover.Target>
-              <Button onClick={share} leftSection={<IconShare size={16} />} variant="default">
-                Partager
-              </Button>
-            </Popover.Target>
-            <Popover.Dropdown>
-              <Text size="xs">L'URL des résultats a été copiée dans le presse-papier.</Text>
-            </Popover.Dropdown>
-          </Popover>
+          <ShareButton />
         </Group>
       </Stack>
 

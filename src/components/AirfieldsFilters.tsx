@@ -1,8 +1,9 @@
-import { Group, Badge, TextInput, rem, Button, Text, Stack, ActionIcon, Popover } from "@mantine/core"
-import { IconFilter, IconSearch, IconShare, IconX } from "@tabler/icons-react"
+import { Group, Badge, TextInput, rem, Button, Stack, ActionIcon } from "@mantine/core"
+import { IconFilter, IconSearch, IconX } from "@tabler/icons-react"
 import { ADfilter, Activity, Airfield, Profile } from ".."
 import { useDisclosure } from "@mantine/hooks"
 import AirfieldsFilterModal from "./AirfieldsFilterModal"
+import ShareButton from "./ShareButton"
 
 const AD_LABELS: Record<string, string> = {
   CAP: 'Accès public',
@@ -27,13 +28,6 @@ const AirfieldsFilters = ({ airfields, activities, profile, filters, setFilters 
   { airfields: Map<string, Airfield>, activities: Map<string, Activity>, profile?: Profile, filters: ADfilter, setFilters: (newFilters: ADfilter) => void }) => {
 
   const [modalOpened, { open, close }] = useDisclosure(false)
-  const [openedShare, { toggle: toggleShare }] = useDisclosure(false)
-
-  const share = () => {
-    navigator.clipboard.writeText(location.href)
-    toggleShare()
-  }
-
   // Derive active filter badges from current filter state
   type ActiveBadge = { key: string, label: string, onRemove: () => void }
   const activeBadges: ActiveBadge[] = []
@@ -118,16 +112,7 @@ const AirfieldsFilters = ({ airfields, activities, profile, filters, setFilters 
           >
             Filtres{activeCount > 0 ? ` (${activeCount})` : ''}
           </Button>
-          <Popover width={200} position="bottom" withArrow shadow="md" opened={openedShare} onChange={toggleShare}>
-            <Popover.Target>
-              <Button onClick={share} leftSection={<IconShare size={16} />} variant="default">
-                Partager
-              </Button>
-            </Popover.Target>
-            <Popover.Dropdown>
-              <Text size="xs">L'URL des résultats a été copiée dans le presse-papier.</Text>
-            </Popover.Dropdown>
-          </Popover>
+          <ShareButton />
         </Group>
       </Stack>
 
