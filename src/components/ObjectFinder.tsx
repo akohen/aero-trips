@@ -1,49 +1,25 @@
-import { ComboboxItem, Select } from "@mantine/core";
+import { useMemo } from 'react';
 import { Activity, Airfield } from "..";
+import TripStepSelect from './TripStepSelect';
 
-const ObjectFinder = ({
-  activities,
-  airfields,
-  value,
-  onChange,
-  ...props
-}: {
+const ObjectFinder = ({ activities, airfields, value, onChange }: {
   activities: Map<string, Activity>;
   airfields: Map<string, Airfield>;
   value: string | null;
-  onChange: (value: string | null, option: ComboboxItem) => void;
+  onChange: (value: string | null) => void;
 }) => {
-  const options = [
+  const data = useMemo(() => [
     {
-      group: "Terrains",
-      items: [...airfields].map(([id, ad]) => ({
-        label: `${ad.name} - ${ad.codeIcao}`,
-        value: `airfields/${id}`
-      }))
+      group: 'Terrains',
+      items: [...airfields].map(([id, ad]) => ({ label: `${ad.name} - ${ad.codeIcao}`, value: `airfields/${id}` })),
     },
     {
-      group: "Activités",
-      items: [...activities].map(([id, activity]) => ({
-        label: activity.name,
-        value: `activities/${id}`
-      }))
-    }
-  ];
+      group: 'Activités',
+      items: [...activities].map(([id, activity]) => ({ label: activity.name, value: `activities/${id}` })),
+    },
+  ], [airfields, activities])
 
-  return (
-    <Select
-      value={value}
-      onChange={onChange}
-      data={options}
-      placeholder="Terrain ou activité"
-      searchable
-      clearable
-      limit={8}
-      size="xs"
-      w={210}
-      {...props}
-    />
-  );
-};
+  return <TripStepSelect data={data} value={value} onChange={onChange} w={210} />
+}
 
 export default ObjectFinder;
