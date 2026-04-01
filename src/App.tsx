@@ -101,7 +101,7 @@ export default function App(data : Data) {
         <Route path="/trips"                  element={<TripsList {...data} />} />
         <Route path="/:type?/:id?/edit/:lat?/:lng?"       element={<AddData {...data} />} />
         <Route path="/trips/:tripId"          element={<TripDetails {...data} />} />
-        <Route path="/events"                 element={<EventsList {...data} />} />
+        <Route path="/events"                 element={<EventsList {...data} setADfilter={setAirfieldFilters} />} />
         <Route path="/events/:eventId"        element={<EventDetails {...data} />} />
         <Route path="/contact"                element={<Contact {...data} />} />
         <Route path="/changes"                element={<LastChanges {...data} />} />

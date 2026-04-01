@@ -1,12 +1,13 @@
 import { Button, Group, SegmentedControl, Title } from "@mantine/core"
 import { useState } from "react"
-import { Link } from "react-router-dom"
-import { Data, Event } from ".."
+import { Link, useNavigate } from "react-router-dom"
+import { ADfilter, Data, Event } from ".."
 import TableList from "../components/TableList"
 import { formatDate, isUpcomingEvent } from "../utils/utils"
-import { IconCalendarEvent, IconExternalLink } from "@tabler/icons-react"
+import { IconCalendarEvent, IconExternalLink, IconMap } from "@tabler/icons-react"
 
-const EventsList = ({ events, airfields }: Data) => {
+const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f: ADfilter) => void }) => {
+  const navigate = useNavigate()
   const [view, setView] = useState<'upcoming' | 'past'>('upcoming')
 
   const filtered = new Map(
@@ -62,6 +63,16 @@ const EventsList = ({ events, airfields }: Data) => {
     <>
       <Group justify="space-between" mb="md">
         <Title>Événements</Title>
+        <Button
+          variant="light"
+          leftSection={<IconMap size={14} />}
+          onClick={() => {
+            setADfilter({ search: '', services: [], ad: ['upcomingEvents'], runway: '', distance: '', target: '' })
+            navigate('/map')
+          }}
+        >
+          Voir sur la carte
+        </Button>
         <Button component={Link} to="/events/edit" leftSection={<IconCalendarEvent size={14} />}>
           Ajouter un événement
         </Button>
