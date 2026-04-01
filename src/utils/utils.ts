@@ -1,5 +1,5 @@
 import haversineDistance from "haversine-distance";
-import { Activity, Airfield, ADfilter, ActivityFilter, ActivityType, Profile } from "..";
+import { Activity, Airfield, ADfilter, ActivityFilter, ActivityType, Event, Profile } from "..";
 import { 
   IconBan, IconBed, IconBike, IconBuildingAirport, IconBulb, IconBus, IconCar, IconCircleCheck, IconEye, 
   IconForbid, IconGasStation, IconHistory, IconPaw, IconPlane, IconSailboat, IconShoe, IconSoup, 
@@ -63,7 +63,7 @@ export function findNearest<T extends Airfield|Activity>(reference: Airfield|Act
 }
 
 
-export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map<string,Activity>, filters: ADfilter, profile?: Profile) => {
+export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map<string,Activity>, filters: ADfilter, profile?: Profile, events?: Map<string,Event>) => {
   const query = filters.search.toLowerCase().trim().normalize("NFD").replace(/\p{Diacritic}/gu, "");
   const status = ['CAP', 'PRV', 'RST'].filter( e => filters.ad.includes(e))
 
@@ -79,6 +79,10 @@ export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map
       if( filters.ad.includes('concrete') && !item.runways.some(r => r.composition != 'GRASS') ) return false
       if( profile && filters.ad.includes('visited') && !profile.visited?.find(v => v.type == 'airfields' && v.id == key)) return false
       if( profile && filters.ad.includes('favorite') && !profile.favorites?.find(f => f.type == 'airfields' && f.id == key)) return false
+      if( filters.ad.includes('upcomingEvents') ) {
+        const hasUpcoming = [...(events?.values() ?? [])].some(e => e.airfieldId === key && isUpcomingEvent(e))
+        if (!hasUpcoming) return false
+      }
       if( filters.distance && filters.target ) {
         const [targetType, targetId] = filters.target.split('/')
         const target = {activities, airfields}[targetType]?.get(targetId)
@@ -121,4 +125,9 @@ export const shortener = (str: string, length: number) => {
 
 export const formatDate = (date: Timestamp) => {
   return new Date(date.seconds * 1000).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })
+}
+
+export const isUpcomingEvent = (e: Event): boolean => {
+  const end = e.endDate ? new Date(e.endDate.seconds * 1000) : new Date(e.startDate.seconds * 1000)
+  return end >= new Date()
 }

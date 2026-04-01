@@ -3,18 +3,14 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Data, Event } from ".."
 import TableList from "../components/TableList"
-import { formatDate } from "../utils/utils"
+import { formatDate, isUpcomingEvent } from "../utils/utils"
 import { IconCalendarEvent, IconExternalLink } from "@tabler/icons-react"
 
 const EventsList = ({ events, airfields }: Data) => {
   const [view, setView] = useState<'upcoming' | 'past'>('upcoming')
-  const now = new Date()
 
   const filtered = new Map(
-    [...events].filter(([, e]) => {
-      const end = e.endDate ? new Date(e.endDate.seconds * 1000) : new Date(e.startDate.seconds * 1000)
-      return view === 'upcoming' ? end >= now : end < now
-    })
+    [...events].filter(([, e]) => view === 'upcoming' ? isUpcomingEvent(e) : !isUpcomingEvent(e))
   )
 
   const columns = [

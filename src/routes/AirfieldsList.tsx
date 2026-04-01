@@ -8,13 +8,13 @@ import AirfieldsFilters from '../components/AirfieldsFilters';
 import { AirfieldTitle } from '../components/AirfieldUtils';
 import { ButtonVACMap, ButtonViewOnMap } from '../components/CommonButtons';
 
-function AirfieldsPage({airfields, activities, filters, setFilters, setMapView, profile} : 
+function AirfieldsPage({airfields, activities, events, filters, setFilters, setMapView, profile} :
   Data & {filters: ADfilter, setFilters: (newFilters: ADfilter) => void}) {
   const [data, setData] = useState(airfields);
 
   useEffect(()=>{
-    setData( filterAirfields(airfields, activities, filters, profile) )
-  },[airfields, activities, filters, profile])
+    setData( filterAirfields(airfields, activities, filters, profile, events) )
+  },[airfields, activities, filters, profile, events])
   
   useEffect(() => {
     setFilters(filters)

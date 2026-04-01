@@ -1,15 +1,11 @@
 import { Paper, Stack, Text, Title } from "@mantine/core"
 import { Link } from "react-router-dom"
 import { Data } from ".."
-import { formatDate } from "../utils/utils"
+import { formatDate, isUpcomingEvent } from "../utils/utils"
 
 const Home = ({ events, airfields }: Data) => {
-  const now = new Date()
   const upcomingEvents = [...events.values()]
-    .filter(e => {
-      const end = e.endDate ? new Date(e.endDate.seconds * 1000) : new Date(e.startDate.seconds * 1000)
-      return end >= now
-    })
+    .filter(isUpcomingEvent)
     .sort((a, b) => a.startDate.seconds - b.startDate.seconds)
     .slice(0, 3)
 

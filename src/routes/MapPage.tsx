@@ -10,7 +10,7 @@ import MapMenu from '../components/MapMenu';
 import MapViewTracker from '../components/MapViewTracker';
 import { useParams } from 'react-router-dom';
 
-function MapPage({airfields, activities, ADfilter, ActFilter, setADfilter, setActFilter, mapView, setMapView, profile} : 
+function MapPage({airfields, activities, events, ADfilter, ActFilter, setADfilter, setActFilter, mapView, setMapView, profile} :
   Data & {
     ADfilter: ADfilter, 
     ActFilter:ActivityFilter, 
@@ -18,7 +18,7 @@ function MapPage({airfields, activities, ADfilter, ActFilter, setADfilter, setAc
     setActFilter:Dispatch<SetStateAction<ActivityFilter>>,
 }) {
   const params = useParams();
-  const airfieldsMarkers = [...filterAirfields(airfields, activities, ADfilter, profile)].map( ([key,e]) => <AirfieldMarker key={key} airfield={e} />);
+  const airfieldsMarkers = [...filterAirfields(airfields, activities, ADfilter, profile, events)].map( ([key,e]) => <AirfieldMarker key={key} airfield={e} />);
 
   const activitiesMarkers = [...filterActivities(airfields, activities, ActFilter)].map( ([key,e]) => <ActivityMarker key={key} activity={e} />);
   const resetFilters = () => {

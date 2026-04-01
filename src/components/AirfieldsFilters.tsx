@@ -16,6 +16,7 @@ const AD_LABELS: Record<string, string> = {
   nvfr: 'VFR de nuit',
   visited: 'Visité',
   favorite: 'Favori',
+  upcomingEvents: 'Événements',
 }
 
 const SERVICE_LABELS: Record<string, string> = {

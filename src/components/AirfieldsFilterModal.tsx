@@ -1,5 +1,5 @@
 import { Group, Button, Modal, NumberInput, Chip, Divider, Text, Stack, ScrollArea, em } from "@mantine/core"
-import { IconCircleCheck, IconForbid, IconGasStation, IconHistory, IconMoon, IconRoad, IconStar, IconToiletPaper, IconTrash } from "@tabler/icons-react"
+import { IconCalendarEvent, IconCircleCheck, IconForbid, IconGasStation, IconHistory, IconMoon, IconRoad, IconStar, IconToiletPaper, IconTrash } from "@tabler/icons-react"
 import { ADfilter, Activity, Airfield, Profile } from ".."
 import { useMediaQuery } from "@mantine/hooks"
 import { CommonIcon } from "./CommonIcon"
@@ -79,6 +79,14 @@ const AirfieldsFilterModal = ({ airfields, activities, profile, filters, setFilt
               <Chip value="100LL" size="sm"><IconGasStation size={14} color="darkblue" /> 100LL</Chip>
               <Chip value="SP9X" size="sm"><IconGasStation size={14} color="green" /> SP95/98</Chip>
               <Chip value="UL91" size="sm"><IconGasStation size={14} color="red" /> UL91</Chip>
+            </Group>
+          </Chip.Group>
+        </Stack>
+
+        <Stack gap="xs">
+          <Chip.Group multiple value={filters.ad} onChange={(v) => setFilters({ ...filters, ad: v })}>
+            <Group gap="xs">
+              <Chip value="upcomingEvents" size="sm"><IconCalendarEvent size={14} /> Événements à venir</Chip>
             </Group>
           </Chip.Group>
         </Stack>
