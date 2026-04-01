@@ -1,8 +1,8 @@
-import { Button, Popover, Text } from "@mantine/core"
+import { ActionIcon, Button, Popover, Text } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { IconShare } from "@tabler/icons-react"
 
-const ShareButton = () => {
+const ShareButton = ({ iconOnly = false }: { iconOnly?: boolean }) => {
   const [opened, { toggle }] = useDisclosure(false)
 
   const share = () => {
@@ -11,11 +11,12 @@ const ShareButton = () => {
   }
 
   return (
-    <Popover width={200} position="bottom" withArrow shadow="md" opened={opened} onChange={toggle}>
+    <Popover width={200} position="bottom" withArrow shadow="md" opened={opened} onChange={toggle} zIndex={1000}>
       <Popover.Target>
-        <Button onClick={share} leftSection={<IconShare size={16} />} variant="default">
-          Partager
-        </Button>
+        {iconOnly
+          ? <ActionIcon onClick={share} variant="default" aria-label="Partager"><IconShare size={16} /></ActionIcon>
+          : <Button onClick={share} leftSection={<IconShare size={16} />} variant="default">Partager</Button>
+        }
       </Popover.Target>
       <Popover.Dropdown>
         <Text size="xs">L'URL des résultats a été copiée dans le presse-papier.</Text>

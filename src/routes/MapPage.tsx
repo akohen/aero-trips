@@ -3,21 +3,24 @@ import { ADfilter, ActivityFilter, Data } from '..';
 import { filterActivities, filterAirfields } from '../utils/utils';
 import { AirfieldMarker } from '../components/AirfieldUtils';
 import ActivityMarker from '../components/ActivityMarker';
-import { Dispatch, SetStateAction } from 'react';
-import { ActionIcon } from '@mantine/core';
+import { ActionIcon, Group } from '@mantine/core';
+import { useEffect } from 'react';
 import { IconFilterX } from '@tabler/icons-react';
 import MapMenu from '../components/MapMenu';
 import MapViewTracker from '../components/MapViewTracker';
 import { useParams } from 'react-router-dom';
+import ShareButton from '../components/ShareButton';
 
 function MapPage({airfields, activities, events, ADfilter, ActFilter, setADfilter, setActFilter, mapView, setMapView, profile} :
   Data & {
-    ADfilter: ADfilter, 
-    ActFilter:ActivityFilter, 
-    setADfilter: Dispatch<SetStateAction<ADfilter>>, 
-    setActFilter:Dispatch<SetStateAction<ActivityFilter>>,
+    ADfilter: ADfilter,
+    ActFilter:ActivityFilter,
+    setADfilter: (f: ADfilter) => void,
+    setActFilter: (f: ActivityFilter) => void,
 }) {
   const params = useParams();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setADfilter(ADfilter); setActFilter(ActFilter) }, [])
   const airfieldsMarkers = [...filterAirfields(airfields, activities, ADfilter, profile, events)].map( ([key,e]) => <AirfieldMarker key={key} airfield={e} />);
 
   const activitiesMarkers = [...filterActivities(airfields, activities, ActFilter)].map( ([key,e]) => <ActivityMarker key={key} activity={e} />);
@@ -51,14 +54,18 @@ function MapPage({airfields, activities, events, ADfilter, ActFilter, setADfilte
       />
       <MapMenu />
       <MapViewTracker setView={setMapView} />
-      {isFilterActive() && <ActionIcon
-        variant='default'
-        aria-label="Supprimer les filtres"
-        className='map-top-right'
-        onClick={resetFilters}
-      >
-        <IconFilterX stroke={1.5} />
-      </ActionIcon>}
+      {isFilterActive() && (
+        <Group className='map-top-right' gap="xs" wrap="nowrap">
+          <ShareButton iconOnly />
+          <ActionIcon
+            variant='default'
+            aria-label="Supprimer les filtres"
+            onClick={resetFilters}
+          >
+            <IconFilterX stroke={1.5} />
+          </ActionIcon>
+        </Group>
+      )}
       
       <LayersControl position="topleft">
         <LayersControl.Overlay checked name="Terrains">

@@ -82,7 +82,7 @@ export default function App(data : Data) {
     }
   }, [location]);
 
-  const mapProps = {...data, ADfilter, ActFilter, setADfilter, setActFilter}
+  const mapProps = {...data, ADfilter, ActFilter, setADfilter: setAirfieldFilters, setActFilter: setActivityFilters}
   dayjs.locale('fr')
   
   return (
