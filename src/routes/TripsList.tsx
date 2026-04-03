@@ -14,11 +14,11 @@ import dayjs from 'dayjs';
 
 
 function TripsList({trips} : {trips: Map<string,Trip>}) {
+  const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
   const [search, setSearch] = useState('');
   const [data, setData] = useState(trips);
-  const [view, setView] = useState<'list' | 'cards'>('list');
+  const [view, setView] = useState<'list' | 'cards'>(isMobile ? 'cards' : 'list');
   const navigate = useNavigate();
-  const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
   const tripTypes = {short:'Quelques heures', day:'A la journée', multi:'Sur plusieurs jours'}
 
   useEffect(()=>{
