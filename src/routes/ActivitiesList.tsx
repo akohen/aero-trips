@@ -41,7 +41,7 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
     }
   ]
 
-  if (isMobile === undefined) return null;
+  if (useMediaQuery(`(max-width: ${em(768)})`) === undefined) return null;
 
   return (<>
     <ActivitiesFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} />
