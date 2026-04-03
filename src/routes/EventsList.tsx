@@ -1,17 +1,27 @@
-import { Button, Group, SegmentedControl, Title } from "@mantine/core"
+import { ActionIcon, Button, Group, rem, SegmentedControl, TextInput } from "@mantine/core"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { ADfilter, Data, Event } from ".."
 import TableList from "../components/TableList"
 import { formatDate, isUpcomingEvent } from "../utils/utils"
-import { IconCalendarEvent, IconExternalLink, IconMap } from "@tabler/icons-react"
+import { IconCalendarEvent, IconExternalLink, IconMap, IconSearch, IconX } from "@tabler/icons-react"
 
 const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f: ADfilter) => void }) => {
   const navigate = useNavigate()
   const [view, setView] = useState<'upcoming' | 'past'>('upcoming')
+  const [search, setSearch] = useState('')
 
   const filtered = new Map(
-    [...events].filter(([, e]) => view === 'upcoming' ? isUpcomingEvent(e) : !isUpcomingEvent(e))
+    [...events]
+      .filter(([, e]) => view === 'upcoming' ? isUpcomingEvent(e) : !isUpcomingEvent(e))
+      .filter(([, e]) => {
+        if (!search) return true
+        const q = search.toLowerCase()
+        const ad = airfields.get(e.airfieldId)
+        return e.title.toLowerCase().includes(q)
+          || ad?.name.toLowerCase().includes(q)
+          || ad?.codeIcao.toLowerCase().includes(q)
+      })
   )
 
   const columns = [
@@ -61,8 +71,15 @@ const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f
 
   return (
     <>
-      <Group justify="space-between" mb="md">
-        <Title>Événements</Title>
+      <Group mb="md">
+        <SegmentedControl
+          value={view}
+          onChange={(v) => setView(v as 'upcoming' | 'past')}
+          data={[
+            { label: 'À venir', value: 'upcoming' },
+            { label: 'Passés', value: 'past' },
+          ]}
+        />
         <Button
           variant="light"
           leftSection={<IconMap size={14} />}
@@ -77,14 +94,16 @@ const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f
           Ajouter un événement
         </Button>
       </Group>
-      <SegmentedControl
+      
+      <TextInput
         mb="md"
-        value={view}
-        onChange={(v) => setView(v as 'upcoming' | 'past')}
-        data={[
-          { label: 'À venir', value: 'upcoming' },
-          { label: 'Passés', value: 'past' },
-        ]}
+        placeholder="Chercher un événement"
+        leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+        value={search}
+        onChange={(e) => setSearch(e.currentTarget.value)}
+        rightSection={search
+          ? <ActionIcon variant="subtle" size="sm" onClick={() => setSearch('')}><IconX size={14} /></ActionIcon>
+          : undefined}
       />
       <TableList
         data={filtered}
