@@ -11,6 +11,7 @@ import { AirfieldIcon, AirfieldTitle } from '../components/AirfieldUtils';
 import { ButtonVACMap, ButtonViewOnMap } from '../components/CommonButtons';
 import { getAirfieldImage, getImgNode } from '../utils/itemImages';
 import type { CardColumn, CardConfig } from '../components/CardList';
+import { IconRoad } from '@tabler/icons-react';
 
 function AirfieldsPage({airfields, activities, events, filters, setFilters, setMapView, profile} :
   Data & {filters: ADfilter, setFilters: (newFilters: ADfilter) => void}) {
@@ -58,9 +59,9 @@ function AirfieldsPage({airfields, activities, events, filters, setFilters, setM
   ]
 
   const cardConfig: CardConfig<Airfield> = {
-    title: (e) => e.name,
+    title: (e) => `${e.codeIcao} — ${e.name}`,
     icons: (e, _key, hasImage) => <AirfieldIcon airfield={e} profile={profile} color={hasImage ? 'white' : undefined} />,
-    content: (e) => <Text size="xs">{e.codeIcao} — {Math.max(...e.runways.map(r => r.length))}m</Text>,
+    content: (e) => <Group gap='3px'><IconRoad /><Text size="xs">{Math.max(...e.runways.map(r => r.length))}m</Text></Group>,
     actions: (e) => (
       <Group gap="xs">
         <ButtonVACMap airfield={e} compact />
