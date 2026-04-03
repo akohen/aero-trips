@@ -13,7 +13,7 @@ const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f
   const navigate = useNavigate()
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`)
   const [view, setView] = useState<'upcoming' | 'past'>('upcoming')
-  const [displayMode, setDisplayMode] = useState<'list' | 'cards'>('list')
+  const [displayMode, setDisplayMode] = useState<'list' | 'cards'>(isMobile ? 'cards' : 'list')
   const [search, setSearch] = useState('')
 
   const filtered = new Map(
@@ -74,6 +74,8 @@ const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f
       ),
     },
   ]
+
+  if (isMobile === undefined) return null;
 
   return (
     <>

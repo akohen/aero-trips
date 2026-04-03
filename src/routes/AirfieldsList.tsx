@@ -16,7 +16,7 @@ function AirfieldsPage({airfields, activities, events, filters, setFilters, setM
   Data & {filters: ADfilter, setFilters: (newFilters: ADfilter) => void}) {
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
   const [data, setData] = useState(airfields);
-  const [view, setView] = useState<'list' | 'cards'>('list');
+  const [view, setView] = useState<'list' | 'cards'>(isMobile ? 'cards' : 'list');
 
   useEffect(()=>{
     setData( filterAirfields(airfields, activities, filters, profile, events) )
@@ -54,6 +54,8 @@ function AirfieldsPage({airfields, activities, events, filters, setFilters, setM
             </Group>)
         },
   ]
+
+  if (isMobile === undefined) return null;
 
   return (<>
     <AirfieldsFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} profile={profile}/>

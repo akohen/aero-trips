@@ -18,7 +18,7 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
   
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
   const [data, setData] = useState(activities);
-  const [view, setView] = useState<'list' | 'cards'>('list');
+  const [view, setView] = useState<'list' | 'cards'>(isMobile ? 'cards' : 'list');
 
   useEffect(()=>{
     setData( filterActivities( airfields, activities, filters) )
@@ -40,6 +40,8 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
       row: (e) => (<Group justify="flex-end"><ButtonViewOnMap item={e} setMapView={setMapView} compact /></Group>),
     }
   ]
+
+  if (isMobile === undefined) return null;
 
   return (<>
     <ActivitiesFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} />
