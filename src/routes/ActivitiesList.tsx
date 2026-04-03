@@ -1,5 +1,5 @@
 
-import { em } from '@mantine/core';
+import { em, Group } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Activity, ActivityFilter, Data } from '..';
 import TableList from '../components/TableList';
@@ -37,7 +37,7 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
       linkTo: (e) => `/activities/${e.id}`,
     },
     {
-      row: (e) => (<ButtonViewOnMap item={e} setMapView={setMapView} compact />),
+      row: (e) => (<Group justify="flex-end"><ButtonViewOnMap item={e} setMapView={setMapView} compact /></Group>),
     }
   ]
 
