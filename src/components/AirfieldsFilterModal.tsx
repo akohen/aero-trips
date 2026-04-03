@@ -25,14 +25,11 @@ const AirfieldsFilterModal = ({ airfields, activities, profile, filters, setFilt
     <Modal
       opened={opened}
       onClose={onClose}
-      title="Filtres des terrains"
+      withCloseButton={false}
       size="lg"
       scrollAreaComponent={ScrollArea.Autosize}
-      styles={{
-        inner: isMobile
-          ? { paddingTop: 90 }   // clear the 80px AppShell.Header
-          : { paddingLeft: 200, paddingRight: 0 } // center within the 200px-offset content panel
-      }}
+      fullScreen={isMobile}
+      zIndex={1500}
     >
       <Stack gap="md">
 

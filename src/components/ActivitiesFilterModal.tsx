@@ -25,14 +25,11 @@ const ActivitiesFilterModal = ({ airfields, activities, filters, setFilters, ope
     <Modal
       opened={opened}
       onClose={onClose}
-      title="Filtres des activités"
+      withCloseButton={false}
       size="lg"
       scrollAreaComponent={ScrollArea.Autosize}
-      styles={{
-        inner: isMobile
-          ? { paddingTop: 90 }
-          : { paddingLeft: 200, paddingRight: 0 }
-      }}
+      fullScreen={isMobile}
+      zIndex={1500}
     >
       <Stack gap="md">
 
@@ -70,7 +67,6 @@ const ActivitiesFilterModal = ({ airfields, activities, filters, setFilters, ope
           </Group>
         </Stack>
 
-        <Divider mt="xs" />
         <Group justify="space-between">
           <Button
             variant="subtle"
