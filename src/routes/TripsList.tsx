@@ -1,5 +1,6 @@
 
-import { Button, Group, TextInput, rem } from '@mantine/core';
+import { Button, em, Group, TextInput, rem } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { Trip } from '..';
 import { useNavigate } from 'react-router-dom';
 import List from '../components/TableList';
@@ -13,6 +14,7 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
   const [search, setSearch] = useState('');
   const [data, setData] = useState(trips);
   const navigate = useNavigate();
+  const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
   const tripTypes = {short:'Quelques heures', day:'A la journée', multi:'Sur plusieurs jours'}
 
   useEffect(()=>{
@@ -43,9 +45,9 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
         />
       <Button
         onClick={() => navigate(`/trips/edit`)}
-        leftSection={<IconCirclePlus size={14} />}
+        leftSection={isMobile ? undefined : <IconCirclePlus size={16} />}
         >
-        Proposer une nouvelle sortie
+        {isMobile ? <IconCirclePlus size={16} /> : 'Proposer une nouvelle sortie'}
       </Button>
     </Group>
     <List

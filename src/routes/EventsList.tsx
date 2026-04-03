@@ -1,13 +1,15 @@
-import { ActionIcon, Button, Group, rem, SegmentedControl, TextInput } from "@mantine/core"
+import { ActionIcon, Button, em, Group, rem, SegmentedControl, TextInput } from "@mantine/core"
+import { useMediaQuery } from "@mantine/hooks"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { ADfilter, Data, Event } from ".."
 import TableList from "../components/TableList"
 import { formatDate, isUpcomingEvent } from "../utils/utils"
-import { IconCalendarEvent, IconExternalLink, IconMap, IconSearch, IconX } from "@tabler/icons-react"
+import { IconCirclePlus, IconExternalLink, IconMap, IconSearch, IconX } from "@tabler/icons-react"
 
 const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f: ADfilter) => void }) => {
   const navigate = useNavigate()
+  const isMobile = useMediaQuery(`(max-width: ${em(768)})`)
   const [view, setView] = useState<'upcoming' | 'past'>('upcoming')
   const [search, setSearch] = useState('')
 
@@ -82,7 +84,7 @@ const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f
         />
         <Button
           variant="light"
-          leftSection={<IconMap size={14} />}
+          leftSection={<IconMap size={16} />}
           onClick={() => {
             setADfilter({ search: '', services: [], ad: ['upcomingEvents'], runway: '', distance: '', target: '' })
             navigate('/map')
@@ -90,8 +92,8 @@ const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f
         >
           Voir sur la carte
         </Button>
-        <Button component={Link} to="/events/edit" leftSection={<IconCalendarEvent size={14} />}>
-          Ajouter un événement
+        <Button component={Link} to="/events/edit" leftSection={isMobile ? undefined : <IconCirclePlus size={16} />}>
+          {isMobile ? <IconCirclePlus size={16} /> : 'Ajouter un événement'}
         </Button>
       </Group>
       
