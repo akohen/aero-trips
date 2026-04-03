@@ -1,11 +1,12 @@
 import { Button, Group, Paper, Stack, Text, em } from '@mantine/core';
 import { Activity, Airfield, Profile } from '..';
 import { Link } from 'react-router-dom';
-import { CommonIcon } from './CommonIcon';
 import { useMediaQuery } from '@mantine/hooks';
 import { useState } from 'react';
 import { getResizedUrl } from '../utils/image';
 import { getAirfieldImage, getActivityImage } from '../utils/itemImages';
+import { AirfieldIcon } from './AirfieldUtils';
+import { ActivityIcon } from './ActivityUtils';
 
 const ItemCard = ({item, distance, profile}: {item:Airfield|Activity, distance?:number, profile?:Profile}) => {
     const imgNode = item.description?.content != undefined ? item.description.content.find( (a: { type: string }) => a.type =='image') : undefined
@@ -43,9 +44,9 @@ const ItemCard = ({item, distance, profile}: {item:Airfield|Activity, distance?:
             }} />}
             <Stack gap='6px'>
                 <Group gap='3px'>
-                {'codeIcao' in item ? 
-                    <AirfieldIcon airfield={item} profile={profile} /> : 
-                    <ActivityIcon activity={item} profile={profile} />
+                {'codeIcao' in item ?
+                    <AirfieldIcon airfield={item} profile={profile} color='white' /> :
+                    <ActivityIcon activity={item} profile={profile} color='white' />
                 }
                     {distance && <Text c="white" fw={500} size="sm">à {distance > 2500 ? `${Math.round(distance/1000)}km` : `${Math.round(distance/100)*100}m`}</Text>}
                 </Group>
@@ -63,23 +64,5 @@ const ItemCard = ({item, distance, profile}: {item:Airfield|Activity, distance?:
     );
 }
 
-
-const AirfieldIcon = ({airfield, profile}: {airfield: Airfield, profile?: Profile}) => (
-    <>
-        <CommonIcon iconType='airfield' color='white' />
-        <CommonIcon iconType={airfield.status} color='white' />
-        {airfield.fuels?.includes('100LL') && <CommonIcon iconType='100LL' color='white' />}
-        {profile && profile.visited?.find(v => v.type == 'airfields' && v.id == airfield.codeIcao) && <CommonIcon iconType='visited' color='white' />}
-        {profile && profile.favorites?.find(v => v.type == 'airfields' && v.id == airfield.codeIcao) && <CommonIcon iconType='favorite' color='white' />}
-    </>
-)
-
-const ActivityIcon = ({activity, profile}: {activity: Activity, profile?: Profile}) => (
-    <>
-        {activity.type.map((e,i) => <CommonIcon iconType={e} key={i} color='white' /> )}
-        {profile?.visited?.find(v => v.type == 'activities' && v.id == activity.id) && <CommonIcon iconType="visited" color='white' />}
-        {profile?.favorites?.find(v => v.type == 'activities' && v.id == activity.id) && <CommonIcon iconType="favorite" color='white' />}
-    </>
-)
 
 export default ItemCard

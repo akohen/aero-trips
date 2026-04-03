@@ -18,8 +18,15 @@ export type CardColumn<T> = {
   linkTo?: (arg0: T, key?: string) => string,
 }
 
+export type CardConfig<T> = {
+  title: (item: T, key: string) => string,
+  icons?: (item: T, key: string, hasImage: boolean) => React.ReactNode,
+  content?: (item: T, key: string) => React.ReactNode,
+  actions?: (item: T, key: string) => React.ReactNode,
+}
+
 function CardList<T>({
-  data, columns, defaultSortColumn, defaultSortDir, getImage, onViewChange
+  data, columns, defaultSortColumn, defaultSortDir, getImage, onViewChange, cardConfig
 }: {
   data: Map<string, T>,
   columns: CardColumn<T>[],
@@ -27,6 +34,7 @@ function CardList<T>({
   defaultSortDir?: 1 | -1,
   getImage?: (item: T, key: string) => string | undefined,
   onViewChange?: () => void,
+  cardConfig: CardConfig<T>,
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activePage, setPage] = useState(Number(searchParams.get('page')) || 1);
@@ -61,8 +69,6 @@ function CardList<T>({
     return '';
   };
 
-  const namedColumns = columns.filter(c => c.title);
-  const actionColumns = columns.filter(c => !c.title);
   const items = chunks.length > 0 ? chunks[activePage - 1] : [];
 
   return (
@@ -104,8 +110,7 @@ function CardList<T>({
               item={item}
               imgUrl={getImage ? getImage(item, key) : undefined}
               link={primaryLinkTo(item, key)}
-              namedColumns={namedColumns}
-              actionColumns={actionColumns}
+              cardConfig={cardConfig}
               itemKey={key}
             />
           ))}

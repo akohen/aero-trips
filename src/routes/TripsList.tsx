@@ -1,12 +1,12 @@
 
-import { Button, em, Group, TextInput, rem } from '@mantine/core';
+import { Button, em, Group, Stack, Text, TextInput, rem } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Trip } from '..';
 import { useNavigate } from 'react-router-dom';
 import TableList from '../components/TableList';
 import CardList from '../components/CardList';
 import { getImgNode } from '../utils/itemImages';
-import type { CardColumn } from '../components/CardList';
+import type { CardColumn, CardConfig } from '../components/CardList';
 import { useEffect, useState } from 'react';
 import { IconCirclePlus, IconSearch } from '@tabler/icons-react';
 import { TripTitle } from '../components/TripsUtils';
@@ -91,9 +91,19 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
           linkTo: (e) => e.uid ? `/profile/${e.uid}` : '',
         },
       ];
+      const cardConfig: CardConfig<Trip> = {
+        title: (e) => e.name,
+        content: (e) => (
+          <Stack gap={2}>
+            <Text size="xs">{tripTypes[e.type]}</Text>
+            <Text size="xs">{e.date ? dayjs(e.date.toMillis()).format('MMMM YYYY') : 'En projet'}</Text>
+            <Text size="xs">{e.author ?? 'Aero Trips'}</Text>
+          </Stack>
+        ),
+      }
       return (!isMobile && view === 'list')
         ? <TableList data={data} defaultSortColumn={2} defaultSortDir={-1} columns={columns} onViewChange={() => setView('cards')} />
-        : <CardList data={data} defaultSortColumn={2} defaultSortDir={-1} columns={columns} getImage={(e) => getImgNode(e.description)?.attrs?.src} onViewChange={isMobile ? undefined : () => setView('list')} />;
+        : <CardList data={data} defaultSortColumn={2} defaultSortDir={-1} columns={columns} cardConfig={cardConfig} getImage={(e) => getImgNode(e.description)?.attrs?.src} onViewChange={isMobile ? undefined : () => setView('list')} />;
     })()}
   </>)
 }

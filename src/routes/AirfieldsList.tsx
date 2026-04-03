@@ -7,10 +7,10 @@ import CardList from '../components/CardList';
 import { useEffect, useState } from 'react';
 import { filterAirfields } from '../utils/utils';
 import AirfieldsFilters from '../components/AirfieldsFilters';
-import { AirfieldTitle } from '../components/AirfieldUtils';
+import { AirfieldIcon, AirfieldTitle } from '../components/AirfieldUtils';
 import { ButtonVACMap, ButtonViewOnMap } from '../components/CommonButtons';
 import { getAirfieldImage, getImgNode } from '../utils/itemImages';
-import type { CardColumn } from '../components/CardList';
+import type { CardColumn, CardConfig } from '../components/CardList';
 
 function AirfieldsPage({airfields, activities, events, filters, setFilters, setMapView, profile} :
   Data & {filters: ADfilter, setFilters: (newFilters: ADfilter) => void}) {
@@ -57,13 +57,25 @@ function AirfieldsPage({airfields, activities, events, filters, setFilters, setM
         },
   ]
 
+  const cardConfig: CardConfig<Airfield> = {
+    title: (e) => e.name,
+    icons: (e, _key, hasImage) => <AirfieldIcon airfield={e} profile={profile} color={hasImage ? 'white' : undefined} />,
+    content: (e) => <Text size="xs">{e.codeIcao} — {Math.max(...e.runways.map(r => r.length))}m</Text>,
+    actions: (e) => (
+      <Group gap="xs">
+        <ButtonVACMap airfield={e} compact />
+        <ButtonViewOnMap item={e} setMapView={setMapView} compact />
+      </Group>
+    ),
+  }
+
   if (useMediaQuery(`(max-width: ${em(768)})`) === undefined) return null;
 
   return (<>
     <AirfieldsFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} profile={profile}/>
     {(!isMobile && view === 'list')
       ? <TableList data={data} defaultSortColumn={1} columns={columns} onViewChange={() => setView('cards')} />
-      : <CardList data={data} defaultSortColumn={1} columns={columns} getImage={(e) => getAirfieldImage(getImgNode(e.description), e.runways)} onViewChange={isMobile ? undefined : () => setView('list')} />
+      : <CardList data={data} defaultSortColumn={1} columns={columns} cardConfig={cardConfig} getImage={(e) => getAirfieldImage(getImgNode(e.description), e.runways)} onViewChange={isMobile ? undefined : () => setView('list')} />
     }
   </>)
 }

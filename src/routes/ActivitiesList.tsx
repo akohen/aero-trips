@@ -1,5 +1,5 @@
 
-import { em, Group } from '@mantine/core';
+import { em } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Activity, ActivityFilter, Data } from '..';
 import TableList from '../components/TableList';
@@ -8,14 +8,14 @@ import { useEffect, useState } from 'react';
 import ActivitiesFilters from '../components/ActivitiesFilters';
 import { filterActivities } from '../utils/utils';
 import { ButtonViewOnMap } from '../components/CommonButtons';
-import { ActivityTitle } from '../components/ActivityUtils';
+import { ActivityIcon, ActivityTitle } from '../components/ActivityUtils';
 import { getActivityImage, getImgNode } from '../utils/itemImages';
-import type { CardColumn } from '../components/CardList';
+import type { CardColumn, CardConfig } from '../components/CardList';
 
 
-function ActivitiesList({airfields, activities, filters, setFilters, setMapView, profile} : 
+function ActivitiesList({airfields, activities, filters, setFilters, setMapView, profile} :
   Data & {filters: ActivityFilter, setFilters: (newFilters: ActivityFilter) => void}) {
-  
+
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
   const [data, setData] = useState(activities);
   const [view, setView] = useState<'list' | 'cards'>(isMobile ? 'cards' : 'list');
@@ -28,7 +28,7 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
     setFilters(filters)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  
+
   const columns: CardColumn<Activity>[] = [
     {
       title: "Nom du lieu ou de l'activité",
@@ -37,9 +37,15 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
       linkTo: (e) => `/activities/${e.id}`,
     },
     {
-      row: (e) => (<Group justify="flex-end"><ButtonViewOnMap item={e} setMapView={setMapView} compact /></Group>),
+      row: (e) => (<ButtonViewOnMap item={e} setMapView={setMapView} compact />),
     }
   ]
+
+  const cardConfig: CardConfig<Activity> = {
+    title: (e) => e.name,
+    icons: (e, _key, hasImage) => <ActivityIcon activity={e} profile={profile} color={hasImage ? 'white' : undefined} />,
+    actions: (e) => <ButtonViewOnMap item={e} setMapView={setMapView} compact />,
+  }
 
   if (useMediaQuery(`(max-width: ${em(768)})`) === undefined) return null;
 
@@ -47,7 +53,7 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
     <ActivitiesFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} />
     {(!isMobile && view === 'list')
       ? <TableList data={data} defaultSortColumn={0} columns={columns} onViewChange={() => setView('cards')} />
-      : <CardList data={data} defaultSortColumn={0} columns={columns} getImage={(e) => getActivityImage(getImgNode(e.description), e.type)} onViewChange={isMobile ? undefined : () => setView('list')} />
+      : <CardList data={data} defaultSortColumn={0} columns={columns} cardConfig={cardConfig} getImage={(e) => getActivityImage(getImgNode(e.description), e.type)} onViewChange={isMobile ? undefined : () => setView('list')} />
     }
   </>)
 }

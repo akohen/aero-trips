@@ -1,10 +1,11 @@
-import { ActionIcon, Button, em, Group, rem, SegmentedControl, TextInput } from "@mantine/core"
+import { ActionIcon, Button, em, Group, rem, SegmentedControl, Stack, Text, TextInput } from "@mantine/core"
 import { useMediaQuery } from "@mantine/hooks"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { ADfilter, Data, Event } from ".."
 import TableList from "../components/TableList"
 import CardList from "../components/CardList"
+import type { CardConfig } from "../components/CardList"
 import { getImgNode } from "../utils/itemImages"
 import { formatDate, isUpcomingEvent } from "../utils/utils"
 import { IconCirclePlus, IconExternalLink, IconMap, IconSearch, IconX } from "@tabler/icons-react"
@@ -75,6 +76,25 @@ const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f
     },
   ]
 
+  const cardConfig: CardConfig<Event> = {
+    title: (e) => e.title,
+    content: (e) => {
+      const ad = airfields.get(e.airfieldId)
+      return (
+        <Stack gap={2}>
+          <Text size="xs">{ad ? `${ad.name} (${ad.codeIcao})` : e.airfieldId}</Text>
+          <Text size="xs">{formatDate(e.startDate)}{e.endDate ? ` → ${formatDate(e.endDate)}` : ''}</Text>
+        </Stack>
+      )
+    },
+    actions: (e) => e.link ? (
+      <Button component={Link} to={e.link} target="_blank" size="xs" variant="light"
+        leftSection={<IconExternalLink size={14} />} onClick={(ev: React.MouseEvent) => ev.stopPropagation()}>
+        Site
+      </Button>
+    ) : undefined,
+  }
+
   if (isMobile === undefined) return null;
 
   return (
@@ -116,7 +136,7 @@ const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f
       />
       {(!isMobile && displayMode === 'list')
         ? <TableList data={filtered} columns={columns} defaultSortColumn={2} defaultSortDir={1} onViewChange={() => setDisplayMode('cards')} />
-        : <CardList data={filtered} columns={columns} defaultSortColumn={2} defaultSortDir={1} getImage={(e) => getImgNode(e.description)?.attrs?.src} onViewChange={isMobile ? undefined : () => setDisplayMode('list')} />
+        : <CardList data={filtered} columns={columns} cardConfig={cardConfig} defaultSortColumn={2} defaultSortDir={1} getImage={(e) => getImgNode(e.description)?.attrs?.src} onViewChange={isMobile ? undefined : () => setDisplayMode('list')} />
       }
     </>
   )

@@ -1,17 +1,17 @@
-import { Paper, Button, Stack, Group } from "@mantine/core";
+import { Paper, Button, Group } from "@mantine/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getResizedUrl } from "../utils/image";
-import { CardColumn } from "./CardList";
+import { shortener } from "../utils/utils";
+import { CardConfig } from "./CardList";
 
 function CardListItem<T>({
-  item, imgUrl, link, namedColumns, actionColumns,
+  item, imgUrl, link, cardConfig, itemKey,
 }: {
   item: T,
   imgUrl: string | undefined,
   link: string,
-  namedColumns: CardColumn<T>[],
-  actionColumns: CardColumn<T>[],
+  cardConfig: CardConfig<T>,
   itemKey: string,
 }) {
   const navigate = useNavigate();
@@ -51,27 +51,26 @@ function CardListItem<T>({
           }}
         />
       )}
-      {namedColumns[0] && (
-        <div className={hasImage ? 'card-with-image' : ''}>
-          <Button variant={hasImage ? 'white' : 'default'} size="xs" radius="md" style={{ pointerEvents: 'none' }}>
-            {namedColumns[0].row(item)}
-          </Button>
-        </div>
-      )}
-      <Stack gap="4px" style={{ width: '100%' }}>
-        {namedColumns.slice(1).map((col, i) => (
-          <div key={i} className={hasImage ? 'card-with-image' : ''} style={hasImage ? { color: 'white' } : {}}>
-            {col.row(item)}
-          </div>
-        ))}
-        {actionColumns.length > 0 && (
-          <Group justify="flex-end" onClick={(e) => e.stopPropagation()}>
-            {actionColumns.map((col, i) => (
-              <span key={i}>{col.row(item)}</span>
-            ))}
+
+      <div>
+        <Button variant={hasImage ? 'white' : 'default'} size="xs" radius="md" style={{ pointerEvents: 'none' }}>
+          {shortener(cardConfig.title(item, itemKey), 25)}
+        </Button>
+        {cardConfig.icons && (
+          <Group gap="xs" mt={4}>
+            {cardConfig.icons(item, itemKey, hasImage)}
           </Group>
         )}
-      </Stack>
+      </div>
+
+      <Group justify="space-between" align="flex-end">
+        <div style={hasImage ? { color: 'white' } : undefined} onClick={(e) => e.stopPropagation()}>
+          {cardConfig.content?.(item, itemKey)}
+        </div>
+        <Group onClick={(e) => e.stopPropagation()}>
+          {cardConfig.actions?.(item, itemKey)}
+        </Group>
+      </Group>
     </Paper>
   );
 }

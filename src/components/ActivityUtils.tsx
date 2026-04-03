@@ -5,6 +5,14 @@ import { CommonIcon } from "./CommonIcon";
 import { TripTitle } from "./TripsUtils";
 import { formatDate } from "../utils/utils";
 
+export const ActivityIcon = ({ activity, profile, color }: { activity: Activity, profile?: Profile, color?: string }) => (
+  <>
+    {activity.type.map((e, i) => <CommonIcon iconType={e} key={i} color={color} />)}
+    {profile?.visited?.find(v => v.type == 'activities' && v.id == activity.id) && <CommonIcon iconType="visited" color={color} />}
+    {profile?.favorites?.find(v => v.type == 'activities' && v.id == activity.id) && <CommonIcon iconType="favorite" color={color} />}
+  </>
+)
+
 export const ActivityTitle = ({activity, profile}: {activity: Activity, profile?: Profile}) => (
 <>
   {activity.name}

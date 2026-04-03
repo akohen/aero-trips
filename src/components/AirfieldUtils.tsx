@@ -8,6 +8,16 @@ import pinRunway from '/map-pin-runway.svg'
 import { getResizedUrl } from "../utils/image";
 
 
+export const AirfieldIcon = ({ airfield, profile, color }: { airfield: Airfield, profile?: Profile, color?: string }) => (
+  <>
+    <CommonIcon iconType='airfield' color={color} />
+    <CommonIcon iconType={airfield.status} color={color} />
+    {airfield.fuels?.includes('100LL') && <CommonIcon iconType='100LL' color={color} />}
+    {profile && profile.visited?.find(v => v.type == 'airfields' && v.id == airfield.codeIcao) && <CommonIcon iconType='visited' color={color} />}
+    {profile && profile.favorites?.find(v => v.type == 'airfields' && v.id == airfield.codeIcao) && <CommonIcon iconType='favorite' color={color} />}
+  </>
+)
+
 export const AirfieldTitle = ({ad, profile}: {ad: Airfield, profile?: Profile}) => {
   return (<>
     <CommonIcon iconType={ad.status} /> 
