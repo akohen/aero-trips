@@ -16,7 +16,7 @@ import type { CardColumn, CardConfig } from '../components/CardList';
 function ActivitiesList({airfields, activities, filters, setFilters, setMapView, profile} :
   Data & {filters: ActivityFilter, setFilters: (newFilters: ActivityFilter) => void}) {
 
-  const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
+  const isMobile = useMediaQuery(`(max-width: ${em(768)})`, undefined, { getInitialValueInEffect: false });
   const [data, setData] = useState(activities);
   const [view, setView] = useState<'list' | 'cards'>(isMobile ? 'cards' : 'list');
 
@@ -46,8 +46,6 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
     icons: (e, _key, hasImage) => <ActivityIcon activity={e} profile={profile} color={hasImage ? 'white' : undefined} />,
     actions: (e) => <ButtonViewOnMap item={e} setMapView={setMapView} compact />,
   }
-
-  if (useMediaQuery(`(max-width: ${em(768)})`) === undefined) return null;
 
   return (<>
     <ActivitiesFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} />

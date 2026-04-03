@@ -38,8 +38,6 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
     ))
   }
 
-  if (isMobile === undefined) return null;
-  
   return (<>
     <Group justify="space-between" mb={'sm'}>
       <TextInput

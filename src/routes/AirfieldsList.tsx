@@ -15,7 +15,7 @@ import { IconRoad } from '@tabler/icons-react';
 
 function AirfieldsPage({airfields, activities, events, filters, setFilters, setMapView, profile} :
   Data & {filters: ADfilter, setFilters: (newFilters: ADfilter) => void}) {
-  const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
+  const isMobile = useMediaQuery(`(max-width: ${em(768)})`, undefined, { getInitialValueInEffect: false });
   const [data, setData] = useState(airfields);
   const [view, setView] = useState<'list' | 'cards'>(isMobile ? 'cards' : 'list');
 
@@ -69,8 +69,6 @@ function AirfieldsPage({airfields, activities, events, filters, setFilters, setM
       </Group>
     ),
   }
-
-  if (useMediaQuery(`(max-width: ${em(768)})`) === undefined) return null;
 
   return (<>
     <AirfieldsFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} profile={profile}/>

@@ -95,8 +95,6 @@ const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f
     ) : undefined,
   }
 
-  if (isMobile === undefined) return null;
-
   return (
     <>
       <Group mb="md">
