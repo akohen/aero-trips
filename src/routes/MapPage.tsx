@@ -3,7 +3,7 @@ import { ADfilter, ActivityFilter, Data } from '..';
 import { filterActivities, filterAirfields } from '../utils/utils';
 import { AirfieldMarker } from '../components/AirfieldUtils';
 import ActivityMarker from '../components/ActivityMarker';
-import { ActionIcon, Group } from '@mantine/core';
+import { Button, Group } from '@mantine/core';
 import { useEffect } from 'react';
 import { IconFilterX } from '@tabler/icons-react';
 import MapMenu from '../components/MapMenu';
@@ -57,13 +57,13 @@ function MapPage({airfields, activities, events, ADfilter, ActFilter, setADfilte
       {isFilterActive() && (
         <Group className='map-top-right' gap="xs" wrap="nowrap">
           <ShareButton iconOnly />
-          <ActionIcon
+          <Button
             variant='default'
             aria-label="Supprimer les filtres"
             onClick={resetFilters}
           >
-            <IconFilterX stroke={1.5} />
-          </ActionIcon>
+            <IconFilterX size={16} />
+          </Button>
         </Group>
       )}
       

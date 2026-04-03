@@ -1,5 +1,6 @@
-import { Group, Badge, TextInput, rem, Button, Stack, ActionIcon } from "@mantine/core"
-import { IconFilter, IconSearch, IconX } from "@tabler/icons-react"
+import { Group, Badge, TextInput, rem, Stack, ActionIcon } from "@mantine/core"
+import { IconSearch, IconX } from "@tabler/icons-react"
+import ButtonFilter from "./ButtonFilter"
 import { ADfilter, Activity, Airfield, Profile } from ".."
 import { useDisclosure } from "@mantine/hooks"
 import AirfieldsFilterModal from "./AirfieldsFilterModal"
@@ -106,13 +107,7 @@ const AirfieldsFilters = ({ airfields, activities, profile, filters, setFilters 
               ? <ActionIcon variant="subtle" size="sm" onClick={() => setFilters({ ...filters, search: '' })}><IconX size={14} /></ActionIcon>
               : undefined}
           />
-          <Button
-            leftSection={<IconFilter size={16} />}
-            onClick={open}
-            variant={activeCount > 0 ? 'filled' : 'default'}
-          >
-            Filtres{activeCount > 0 ? ` (${activeCount})` : ''}
-          </Button>
+          <ButtonFilter onClick={open} activeCount={activeCount} />
           <ShareButton />
         </Group>
       </Stack>
