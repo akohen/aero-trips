@@ -3,7 +3,10 @@ import { Button, em, Group, TextInput, rem } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Trip } from '..';
 import { useNavigate } from 'react-router-dom';
-import List from '../components/TableList';
+import TableList from '../components/TableList';
+import CardList from '../components/CardList';
+import { getImgNode } from '../utils/itemImages';
+import type { CardColumn } from '../components/CardList';
 import { useEffect, useState } from 'react';
 import { IconCirclePlus, IconSearch } from '@tabler/icons-react';
 import { TripTitle } from '../components/TripsUtils';
@@ -13,6 +16,7 @@ import dayjs from 'dayjs';
 function TripsList({trips} : {trips: Map<string,Trip>}) {
   const [search, setSearch] = useState('');
   const [data, setData] = useState(trips);
+  const [view, setView] = useState<'list' | 'cards'>('list');
   const navigate = useNavigate();
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
   const tripTypes = {short:'Quelques heures', day:'A la journée', multi:'Sur plusieurs jours'}
@@ -50,9 +54,8 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
         {isMobile ? <IconCirclePlus size={16} /> : 'Proposer une nouvelle sortie'}
       </Button>
     </Group>
-    <List
-      data={data} defaultSortColumn={2} defaultSortDir={-1}
-      columns={[
+    {(() => {
+      const columns: CardColumn<Trip>[] = [
         {
           title:'Nom',
           row: (e) => <TripTitle trip={e} />,
@@ -85,8 +88,11 @@ function TripsList({trips} : {trips: Map<string,Trip>}) {
           sortFn: (a, b) => a.author?.localeCompare(b.author ?? '') ?? 0,
           linkTo: (e) => e.uid ? `/profile/${e.uid}` : '',
         },
-      ]}
-    />
+      ];
+      return (!isMobile && view === 'list')
+        ? <TableList data={data} defaultSortColumn={2} defaultSortDir={-1} columns={columns} onViewChange={() => setView('cards')} />
+        : <CardList data={data} defaultSortColumn={2} defaultSortDir={-1} columns={columns} getImage={(e) => getImgNode(e.description)?.attrs?.src} onViewChange={isMobile ? undefined : () => setView('list')} />;
+    })()}
   </>)
 }
 

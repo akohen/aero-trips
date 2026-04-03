@@ -6,12 +6,12 @@ import { TripTitle } from "./TripsUtils";
 import { formatDate } from "../utils/utils";
 
 export const ActivityTitle = ({activity, profile}: {activity: Activity, profile?: Profile}) => (
-<Text span size="sm" className="list-item-title">
+<>
   {activity.name}
   {activity.type.map((e,i) => <CommonIcon iconType={e} key={i} /> )}
   {profile?.visited?.find(v => v.type == 'activities' && v.id == activity.id) && <CommonIcon iconType="visited" />}
   {profile?.favorites?.find(v => v.type == 'activities' && v.id == activity.id) && <CommonIcon iconType="favorite" />}
-</Text>)
+</>)
 
 export const NearbyTrips = ({items, events} : {items: [id: string, trip: Trip][], events: Event[]}) => {
   if(items.length == 0 && events.length == 0) return

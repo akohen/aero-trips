@@ -4,6 +4,8 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { ADfilter, Data, Event } from ".."
 import TableList from "../components/TableList"
+import CardList from "../components/CardList"
+import { getImgNode } from "../utils/itemImages"
 import { formatDate, isUpcomingEvent } from "../utils/utils"
 import { IconCirclePlus, IconExternalLink, IconMap, IconSearch, IconX } from "@tabler/icons-react"
 
@@ -11,6 +13,7 @@ const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f
   const navigate = useNavigate()
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`)
   const [view, setView] = useState<'upcoming' | 'past'>('upcoming')
+  const [displayMode, setDisplayMode] = useState<'list' | 'cards'>('list')
   const [search, setSearch] = useState('')
 
   const filtered = new Map(
@@ -35,6 +38,7 @@ const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f
     },
     {
       title: 'Terrain',
+      sortFn: (a: Event,b: Event) => a.airfieldId.localeCompare(b.airfieldId),
       row: (e: Event) => {
         const ad = airfields.get(e.airfieldId)
         return <>{ad ? `${ad.name} - ${ad.codeIcao}` : e.airfieldId}</>
@@ -82,6 +86,7 @@ const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f
             { label: 'Passés', value: 'past' },
           ]}
         />
+
         <Button
           variant="light"
           leftSection={<IconMap size={16} />}
@@ -107,12 +112,10 @@ const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f
           ? <ActionIcon variant="subtle" size="sm" onClick={() => setSearch('')}><IconX size={14} /></ActionIcon>
           : undefined}
       />
-      <TableList
-        data={filtered}
-        columns={columns}
-        defaultSortColumn={2}
-        defaultSortDir={1}
-      />
+      {(!isMobile && displayMode === 'list')
+        ? <TableList data={filtered} columns={columns} defaultSortColumn={2} defaultSortDir={1} onViewChange={() => setDisplayMode('cards')} />
+        : <CardList data={filtered} columns={columns} defaultSortColumn={2} defaultSortDir={1} getImage={(e) => getImgNode(e.description)?.attrs?.src} onViewChange={isMobile ? undefined : () => setDisplayMode('list')} />
+      }
     </>
   )
 }

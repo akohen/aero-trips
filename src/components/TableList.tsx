@@ -1,5 +1,5 @@
-import { Table, Pagination, Center, Text } from '@mantine/core';
-import { IconCaretDownFilled, IconCaretUpDownFilled, IconCaretUpFilled } from '@tabler/icons-react';
+import { Table, Pagination, Center, Text, ActionIcon, Group } from '@mantine/core';
+import { IconCaretDownFilled, IconCaretUpDownFilled, IconCaretUpFilled, IconLayoutGrid } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 
@@ -11,7 +11,7 @@ function chunk<T>(array: T[], size: number): T[][] {
 }
 
 function TableList<T>({
-  data, columns, defaultSortColumn, defaultSortDir
+  data, columns, defaultSortColumn, defaultSortDir, onViewChange
 } : {
   data: Map<string,T>,
   columns: {
@@ -22,6 +22,7 @@ function TableList<T>({
   }[],
   defaultSortColumn?: number,
   defaultSortDir?: 1 | -1,
+  onViewChange?: () => void,
 }) {
   
   const navigate = useNavigate();
@@ -74,26 +75,35 @@ function TableList<T>({
     <Table stickyHeader stickyHeaderOffset={60} highlightOnHover>
       <Table.Thead bg={'#faf8f8'}>
         <Table.Tr>
-          {columns.map((value,id) => value.sortFn == undefined? (
-            <Table.Th key={id}>{value.title}</Table.Th>
-          ) : (
-            <Table.Th 
-              key={id}
-              onClick={() => handleHeaderClick(id)}
-              style={{ cursor: 'pointer', userSelect: 'none'}}
-            >
-              <div className="aligner">
-                <div className="icon">
-                  {sortColumn === id ? 
-                    (sortDir === 1 ? <IconCaretUpFilled size={18} /> : <IconCaretDownFilled size={18} />) 
-                  : 
-                    <IconCaretUpDownFilled size={18} />
-                  }
+          {columns.map((value, id) => {
+            const isLast = onViewChange && id === columns.length - 1;
+            const viewToggle = isLast ? (
+              <ActionIcon variant="subtle" size="sm" title="Vue cartes" onClick={(e) => { e.stopPropagation(); onViewChange(); }} color='black'>
+                <IconLayoutGrid size={16} />
+              </ActionIcon>
+            ) : null;
+
+            if (value.sortFn === undefined) {
+              return (
+                <Table.Th key={id}>
+                  <Group justify="flex-end" gap="xs">{value.title}{viewToggle}</Group>
+                </Table.Th>
+              );
+            }
+            return (
+              <Table.Th key={id} onClick={() => handleHeaderClick(id)} style={{ cursor: 'pointer', userSelect: 'none' }}>
+                <div className="aligner">
+                  <div className="icon">
+                    {sortColumn === id
+                      ? (sortDir === 1 ? <IconCaretUpFilled size={18} /> : <IconCaretDownFilled size={18} />)
+                      : <IconCaretUpDownFilled size={18} />}
+                  </div>
+                  <div className="text">{value.title}</div>
+                  {viewToggle}
                 </div>
-                <div className="text">{value.title}</div>
-              </div>
-            </Table.Th>
-          ) )}
+              </Table.Th>
+            );
+          })}
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>{rows}</Table.Tbody>

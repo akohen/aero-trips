@@ -1,16 +1,22 @@
 
-import { Group, Text } from '@mantine/core';
+import { em, Group, Text } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { ADfilter, Airfield, Data } from '..';
-import List from '../components/TableList';
+import TableList from '../components/TableList';
+import CardList from '../components/CardList';
 import { useEffect, useState } from 'react';
 import { filterAirfields } from '../utils/utils';
 import AirfieldsFilters from '../components/AirfieldsFilters';
 import { AirfieldTitle } from '../components/AirfieldUtils';
 import { ButtonVACMap, ButtonViewOnMap } from '../components/CommonButtons';
+import { getAirfieldImage, getImgNode } from '../utils/itemImages';
+import type { CardColumn } from '../components/CardList';
 
 function AirfieldsPage({airfields, activities, events, filters, setFilters, setMapView, profile} :
   Data & {filters: ADfilter, setFilters: (newFilters: ADfilter) => void}) {
+  const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
   const [data, setData] = useState(airfields);
+  const [view, setView] = useState<'list' | 'cards'>('list');
 
   useEffect(()=>{
     setData( filterAirfields(airfields, activities, filters, profile, events) )
@@ -21,12 +27,7 @@ function AirfieldsPage({airfields, activities, events, filters, setFilters, setM
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return (<>
-    <AirfieldsFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} profile={profile}/>
-    <List
-      data={data}
-      defaultSortColumn={1}
-      columns={[
+  const columns: CardColumn<Airfield>[] = [
         {
           title: 'Nom du terrain',
           sortFn: (a: Airfield, b: Airfield) => a.name.localeCompare(b.name),
@@ -52,8 +53,14 @@ function AirfieldsPage({airfields, activities, events, filters, setFilters, setM
               <ButtonViewOnMap item={e} setMapView={setMapView} compact />
             </Group>)
         },
-      ]}
-    />
+  ]
+
+  return (<>
+    <AirfieldsFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} profile={profile}/>
+    {(!isMobile && view === 'list')
+      ? <TableList data={data} defaultSortColumn={1} columns={columns} onViewChange={() => setView('cards')} />
+      : <CardList data={data} defaultSortColumn={1} columns={columns} getImage={(e) => getAirfieldImage(getImgNode(e.description), e.runways)} onViewChange={isMobile ? undefined : () => setView('list')} />
+    }
   </>)
 }
 
