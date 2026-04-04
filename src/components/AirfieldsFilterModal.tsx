@@ -52,8 +52,8 @@ const AirfieldsFilterModal = ({ airfields, activities, profile, filters, setFilt
           {!isMobile && <Text size="sm" fw={500}>Statut d'accès</Text>}
           <Chip.Group multiple value={filters.ad} onChange={(v) => setFilters({ ...filters, ad: v })}>
             <Group gap="xs">
-              <Chip value="CAP" size="sm"><IconCircleCheck size={14} color="teal" /> Accès public</Chip>
-              <Chip value="RST" size="sm"><IconForbid size={14} color="orange" /> Accès restreint</Chip>
+              <Chip value="CAP" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconCircleCheck size={14} color="teal" /> Accès public</span></Chip>
+              <Chip value="RST" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconForbid size={14} color="orange" /> Accès restreint</span></Chip>
             </Group>
           </Chip.Group>
         </Stack>
@@ -62,9 +62,9 @@ const AirfieldsFilterModal = ({ airfields, activities, profile, filters, setFilt
           {!isMobile && <Text size="sm" fw={500}>Équipements</Text>}
           <Chip.Group multiple value={filters.ad} onChange={(v) => setFilters({ ...filters, ad: v })}>
             <Group gap="xs">
-              <Chip value="toilet" size="sm"><IconToiletPaper size={14} /> Toilettes</Chip>
-              <Chip value="concrete" size="sm"><IconRoad size={14} /> Piste en dur</Chip>
-              <Chip value="nvfr" size="sm"><IconMoon size={14} /> VFR de nuit</Chip>
+              <Chip value="toilet" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconToiletPaper size={14} /> Toilettes</span></Chip>
+              <Chip value="concrete" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconRoad size={14} /> Piste en dur</span></Chip>
+              <Chip value="nvfr" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconMoon size={14} /> VFR de nuit</span></Chip>
             </Group>
           </Chip.Group>
         </Stack>
@@ -73,17 +73,9 @@ const AirfieldsFilterModal = ({ airfields, activities, profile, filters, setFilt
           {!isMobile && <Text size="sm" fw={500}>Carburant disponible</Text>}
           <Chip.Group multiple value={filters.ad} onChange={(v) => setFilters({ ...filters, ad: v })}>
             <Group gap="xs">
-              <Chip value="100LL" size="sm"><IconGasStation size={14} color="darkblue" /> 100LL</Chip>
-              <Chip value="SP9X" size="sm"><IconGasStation size={14} color="green" /> SP95/98</Chip>
-              <Chip value="UL91" size="sm"><IconGasStation size={14} color="red" /> UL91</Chip>
-            </Group>
-          </Chip.Group>
-        </Stack>
-
-        <Stack gap="xs">
-          <Chip.Group multiple value={filters.ad} onChange={(v) => setFilters({ ...filters, ad: v })}>
-            <Group gap="xs">
-              <Chip value="upcomingEvents" size="sm"><IconCalendarEvent size={14} /> Événements à venir</Chip>
+              <Chip value="100LL" size="sm"><CommonIcon iconType="100LL" />100LL</Chip>
+              <Chip value="SP9X" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconGasStation size={14} color="green" /> SP95/98</span></Chip>
+              <Chip value="UL91" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconGasStation size={14} color="red" /> UL91</span></Chip>
             </Group>
           </Chip.Group>
         </Stack>
@@ -93,8 +85,8 @@ const AirfieldsFilterModal = ({ airfields, activities, profile, filters, setFilt
             {!isMobile && <Text size="sm" fw={500}>Mon profil</Text>}
             <Chip.Group multiple value={filters.ad} onChange={(v) => setFilters({ ...filters, ad: v })}>
               <Group gap="xs">
-                <Chip value="visited" size="sm"><IconHistory size={14} /> Déjà visité</Chip>
-                <Chip value="favorite" size="sm"><IconStar size={14} /> Favori</Chip>
+                <Chip value="visited" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconHistory size={14} /> Déjà visité</span></Chip>
+                <Chip value="favorite" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconStar size={14} /> Favori</span></Chip>
               </Group>
             </Chip.Group>
           </Stack>
@@ -112,6 +104,11 @@ const AirfieldsFilterModal = ({ airfields, activities, profile, filters, setFilt
                   <CommonIcon iconType={e} />&nbsp;{SERVICE_LABELS[e]}
                 </Chip>
               ))}
+            </Group>
+          </Chip.Group>
+          <Chip.Group multiple value={filters.ad} onChange={(v) => setFilters({ ...filters, ad: v })}>
+            <Group gap="xs">
+              <Chip value="upcomingEvents" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconCalendarEvent size={14} /> Événements à venir</span></Chip>
             </Group>
           </Chip.Group>
         </Stack>
