@@ -13,7 +13,7 @@ import { CommonIcon } from "./CommonIcon";
 import { slug } from "../utils/utils";
 import { db, googleLogin } from "../data/firebase";
 import { doc, setDoc, Timestamp } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import useTextEditor from "../hooks/useTextEditor";
 
@@ -97,9 +97,9 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
 
 
   const DisplayItem = ({item}: {item:{type:'activities'|'airfields', id:string}}) => item.type == 'activities' ? (
-    <Text>{activities.get(item.id)?.name}</Text>
+    <Text component={Link} to={`/activities/${item.id}`}>{activities.get(item.id)?.name}</Text>
   ) : (
-    <Text>{airfields.get(item.id)?.name} - {airfields.get(item.id)?.codeIcao}</Text>
+    <Text component={Link} to={`/airfields/${item.id}`}>{airfields.get(item.id)?.name} - {airfields.get(item.id)?.codeIcao}</Text>
   )
 
 
