@@ -15,7 +15,7 @@ const AddData = (data: Data) => {
   const params = useParams();
   const [entity, setEntity] = useState<Activity|Airfield|Trip|Event>()
   const [type, setType] = useState<'activities'|'airfields'|'trips'|'events'>()
-  const { hasDraft } = useDraftTrip()
+  const { hasNewTripDraft } = useDraftTrip()
 
 
   useEffect(() => {
@@ -25,12 +25,12 @@ const AddData = (data: Data) => {
     } else if(params.lat && params.lng) {
       setType('activities')
       setEntity({name: '', position: new GeoPoint(parseFloat(params.lat), parseFloat(params.lng))} as Activity)
-    } else if(!params.type && hasDraft) {
+    } else if(!params.type && hasNewTripDraft) {
       setType('trips')
     } else {
       setEntity(undefined)
     }
-  },[data, params, hasDraft])
+  },[data, params, hasNewTripDraft])
 
 
   return type ? (params.id != undefined && !entity) ? (

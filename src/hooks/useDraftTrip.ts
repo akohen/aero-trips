@@ -3,6 +3,7 @@ import { JSONContent } from '@tiptap/react'
 import { ActivityType } from '..'
 
 type TripDraft = {
+  id?: string
   name: string
   date: string | undefined
   description: JSONContent
@@ -12,6 +13,7 @@ type TripDraft = {
 }
 
 const EMPTY_DRAFT: TripDraft = {
+  id: undefined,
   name: '',
   date: undefined,
   description: { type: 'doc', content: [] },
@@ -28,7 +30,8 @@ export function useDraftTrip() {
   })
 
   const clearDraft = () => setDraft(EMPTY_DRAFT)
-  const hasDraft = draft.name !== '' || draft.steps.length > 0
+  const hasNewTripDraft = !draft.id && (draft.name !== '' || draft.steps.length > 0)
+  const hasDraftForTrip = (id: string) => draft.id === id
 
-  return { draft, setDraft, clearDraft, hasDraft }
+  return { draft, setDraft, clearDraft, hasNewTripDraft, hasDraftForTrip }
 }

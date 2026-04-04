@@ -23,7 +23,8 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
   const [data, setData] = useState<FinderOptions>([])
   const [error, setError] = useState('')
   const navigate = useNavigate();
-  const { draft, setDraft, clearDraft } = useDraftTrip();
+  const { draft, setDraft, clearDraft, hasDraftForTrip } = useDraftTrip();
+  const draftApplies = id ? hasDraftForTrip(id) : !draft.id
   
   useEffect(() => {
     const airfieldsOptions = [...airfields] 
@@ -44,12 +45,12 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
 
   const form = useForm({
     initialValues: {
-      name: trip ? trip.name : draft.name,
-      date: trip && trip.date ? dayjs(trip.date?.toDate()).format('MM/DD/YYYY') : (id ? undefined : draft.date),
-      description: trip ? trip.description : draft.description,
-      steps: trip ? trip.steps : draft.steps as {type: 'activities'|'airfields', id:string}[],
-      type: trip ? trip.type : draft.type as "short" | "day" | "multi",
-      tags: trip ? trip.tags : draft.tags,
+      name: draftApplies ? draft.name : (trip?.name ?? ''),
+      date: draftApplies ? draft.date : (trip?.date ? dayjs(trip.date.toDate()).format('MM/DD/YYYY') : undefined),
+      description: draftApplies ? draft.description : (trip?.description ?? ''),
+      steps: draftApplies ? draft.steps : (trip?.steps ?? []) as {type: 'activities'|'airfields', id:string}[],
+      type: (draftApplies ? draft.type : (trip?.type ?? '')) as "short" | "day" | "multi",
+      tags: draftApplies ? draft.tags : (trip?.tags ?? []),
     },
     validate: {
       name: (value) => (value.length < 2 ? 'Le nom doit avoir au moins 2 charactères' : null),
@@ -61,7 +62,7 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
   });
 
   useEffect(() => {
-    if (!id) setDraft(form.values)
+    setDraft({ ...form.values, id })
   }, [form.values, id, setDraft])
 
   const addStep = (a: string) => {
