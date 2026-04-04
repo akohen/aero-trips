@@ -54,7 +54,7 @@ function CardListItem<T>({
 
       <div>
         <Button variant={hasImage ? 'white' : 'default'} size="xs" radius="md" style={{ pointerEvents: 'none' }}>
-          {shortener(cardConfig.title(item, itemKey), 35)}
+          {shortener(cardConfig.title(item, itemKey), 40)}
         </Button>
         {cardConfig.icons && (
           <Group gap="xs" mt={4}>
