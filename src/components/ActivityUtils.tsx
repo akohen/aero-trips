@@ -1,5 +1,5 @@
 import { Grid, Paper, Stack, Text, Title } from "@mantine/core";
-import { Activity, Event, Profile, Trip } from "..";
+import { Activity, ActivityFilter, Airfield, Event, Profile, Trip } from "..";
 import { Link } from "react-router-dom";
 import { CommonIcon } from "./CommonIcon";
 import { TripTitle } from "./TripsUtils";
@@ -60,3 +60,48 @@ export const NearbyTrips = ({items, events} : {items: [id: string, trip: Trip][]
   </Paper>
   </Grid.Col>
 )}
+
+
+
+const TYPE_LABELS: Record<string, string> = {
+  food: 'Restauration', lodging: 'Hébergement', bike: 'Vélo',
+  transit: 'Transport', car: 'Voiture', hiking: 'Randonnée',
+  culture: 'Culture', poi: 'À voir du ciel', aero: 'Aéro',
+  nautical: 'Nautique', nature: 'Nature', other: 'Autre',
+}
+
+export const ActivityBadges = ({ airfields, activities, filters, setFilters } : {
+  airfields: Map<string, Airfield>,
+  activities: Map<string, Activity>,
+  filters: ActivityFilter,
+  setFilters: (newFilters: ActivityFilter) => void
+}) => {
+
+  type ActiveBadge = { key: string, label: string, onRemove: () => void }
+  const activeBadges: ActiveBadge[] = []
+
+  for (const v of filters.type) {
+    activeBadges.push({
+      key: `type-${v}`,
+      label: TYPE_LABELS[v] ?? v,
+      onRemove: () => setFilters({ ...filters, type: filters.type.filter(x => x !== v) }),
+    })
+  }
+
+  const validDist = filters.distance !== '' && Number.isFinite(filters.distance)
+  if (validDist && filters.target) {
+    const [targetType, targetId] = filters.target.split('/')
+    const target = { activities, airfields }[targetType]?.get(targetId)
+    const targetLabel = target && 'codeIcao' in target
+      ? target.codeIcao
+      : target
+        ? (target.name.length > 16 ? target.name.slice(0, 15) + '…' : target.name)
+        : filters.target
+    activeBadges.push({
+      key: 'distance',
+      label: `< ${filters.distance}km de ${targetLabel}`,
+      onRemove: () => setFilters({ ...filters, distance: '', target: null }),
+    })
+  }
+  return activeBadges
+}

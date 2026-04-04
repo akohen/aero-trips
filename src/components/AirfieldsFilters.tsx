@@ -5,26 +5,8 @@ import { ADfilter, Activity, Airfield, Profile } from ".."
 import { useDisclosure } from "@mantine/hooks"
 import AirfieldsFilterModal from "./AirfieldsFilterModal"
 import ShareButton from "./ShareButton"
+import { ActiveBadges } from "./AirfieldUtils"
 
-const AD_LABELS: Record<string, string> = {
-  CAP: 'Accès public',
-  RST: 'Accès restreint',
-  toilet: 'Toilettes',
-  '100LL': '100LL',
-  SP9X: 'SP95/98',
-  UL91: 'UL91',
-  concrete: 'Piste en dur',
-  nvfr: 'VFR de nuit',
-  visited: 'Visité',
-  favorite: 'Favori',
-  upcomingEvents: 'Événements',
-}
-
-const SERVICE_LABELS: Record<string, string> = {
-  food: 'Restauration', lodging: 'Hébergement', bike: 'Vélo',
-  transit: 'Transport', car: 'Voiture', hiking: 'Randonnée',
-  culture: 'Culture', aero: 'Aéro', nautical: 'Nautique', other: 'Autre',
-}
 
 const AirfieldsFilters = ({ airfields, activities, data, profile, filters, setFilters }: { 
   airfields: Map<string, Airfield>,
@@ -36,47 +18,7 @@ const AirfieldsFilters = ({ airfields, activities, data, profile, filters, setFi
 }) => {
 
   const [modalOpened, { open, close }] = useDisclosure(false)
-  // Derive active filter badges from current filter state
-  type ActiveBadge = { key: string, label: string, onRemove: () => void }
-  const activeBadges: ActiveBadge[] = []
-
-  if (filters.runway !== '' && Number.isFinite(filters.runway)) {
-    activeBadges.push({
-      key: 'runway',
-      label: `≥ ${filters.runway}m`,
-      onRemove: () => setFilters({ ...filters, runway: '' }),
-    })
-  }
-  for (const v of filters.ad) {
-    activeBadges.push({
-      key: `ad-${v}`,
-      label: AD_LABELS[v] ?? v,
-      onRemove: () => setFilters({ ...filters, ad: filters.ad.filter(x => x !== v) }),
-    })
-  }
-  for (const v of filters.services) {
-    activeBadges.push({
-      key: `svc-${v}`,
-      label: SERVICE_LABELS[v] ?? v,
-      onRemove: () => setFilters({ ...filters, services: filters.services.filter(x => x !== v) }),
-    })
-  }
-  const validDist = filters.distance !== '' && Number.isFinite(filters.distance)
-  if (validDist && filters.target) {
-    const [targetType, targetId] = filters.target.split('/')
-    const target = {activities, airfields}[targetType]?.get(targetId)
-    const targetLabel = target && 'codeIcao' in target
-      ? target.codeIcao
-      : target
-        ? (target.name.length > 16 ? target.name.slice(0, 15) + '…' : target.name)
-        : filters.target
-    activeBadges.push({
-      key: 'distance',
-      label: `< ${filters.distance}km de ${targetLabel}`,
-      onRemove: () => setFilters({ ...filters, distance: '', target: null }),
-    })
-  }
-
+  const activeBadges = ActiveBadges({ airfields, activities, filters, setFilters })
   const activeCount = activeBadges.length
 
   return (
