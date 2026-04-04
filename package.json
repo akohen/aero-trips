@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "backup": "npx -p node-firestore-import-export firestore-export -a serviceAccountKey.json -b backups/$(date +\"%Y-%m-%d\").json",
-    "export": "NODE_ENV=production tsx scripts/export-data.ts"
+    "export": "NODE_ENV=production tsx scripts/export-data.ts",
+    "postversion": "git push --follow-tags"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
