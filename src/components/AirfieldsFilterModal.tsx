@@ -142,7 +142,7 @@ const AirfieldsFilterModal = ({ airfields, activities, profile, filters, setFilt
             variant="subtle"
             color="red"
             leftSection={<IconTrash size={16} />}
-            onClick={() => setFilters(EMPTY_FILTERS)}
+            onClick={() => {setFilters(EMPTY_FILTERS); onClose()}}
           >
             Supprimer tous les filtres
           </Button>
