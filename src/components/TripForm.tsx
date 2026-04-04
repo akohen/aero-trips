@@ -5,8 +5,9 @@ import { useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
 import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
+import { useDraftTrip } from "../hooks/useDraftTrip";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import { IconBrandGoogleFilled, IconGripVertical, IconX } from "@tabler/icons-react";
+import { IconBrandGoogleFilled, IconGripVertical, IconTrash, IconX } from "@tabler/icons-react";
 import TripStepSelect from "./TripStepSelect";
 import { CommonIcon } from "./CommonIcon";
 import { slug } from "../utils/utils";
@@ -22,6 +23,7 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
   const [data, setData] = useState<FinderOptions>([])
   const [error, setError] = useState('')
   const navigate = useNavigate();
+  const { draft, setDraft, clearDraft } = useDraftTrip();
   
   useEffect(() => {
     const airfieldsOptions = [...airfields] 
@@ -42,12 +44,12 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
 
   const form = useForm({
     initialValues: {
-      name: trip ? trip.name : '',
-      date: trip && trip.date ? dayjs(trip.date?.toDate()).format('MM/DD/YYYY') : undefined, // Use MM/DD/YYYY for compatibility with DatePickerInput !?
-      description: trip ? trip.description: '',
-      steps: trip ? trip.steps : [] as {type: 'activities'|'airfields', id:string}[],
-      type: trip ? trip.type : '' as "short" | "day" | "multi",
-      tags: trip ? trip.tags : [],
+      name: trip ? trip.name : draft.name,
+      date: trip && trip.date ? dayjs(trip.date?.toDate()).format('MM/DD/YYYY') : (id ? undefined : draft.date),
+      description: trip ? trip.description : draft.description,
+      steps: trip ? trip.steps : draft.steps as {type: 'activities'|'airfields', id:string}[],
+      type: trip ? trip.type : draft.type as "short" | "day" | "multi",
+      tags: trip ? trip.tags : draft.tags,
     },
     validate: {
       name: (value) => (value.length < 2 ? 'Le nom doit avoir au moins 2 charactères' : null),
@@ -57,6 +59,10 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
       description: () => editor!.state.doc.textContent.trim().length == 0 ? 'La description ne peut pas être vide' : null,
     }
   });
+
+  useEffect(() => {
+    if (!id) setDraft(form.values)
+  }, [form.values, id, setDraft])
 
   const addStep = (a: string) => {
     form.clearFieldError('steps');
@@ -82,6 +88,7 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
     setDoc(doc(db, "trips", tripID), newTrip, {merge:false})
       .then(() => {
         trips.set(tripID!, newTrip)
+        clearDraft()
         navigate(`/trips/${tripID}`)
       })
       .catch(e => setError(e.message as string))
@@ -206,6 +213,14 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
     
   </Fieldset>
   <Group mt="md">
+    <Button 
+      variant="subtle"
+      color="red"
+      leftSection={<IconTrash size={16} />}
+      onClick={() => { clearDraft(); navigate(-1)}}
+    >
+      Supprimer le brouillon
+    </Button>
     <Button type="submit">Enregistrer</Button>
     <Text c="red">{error}</Text>
   </Group>

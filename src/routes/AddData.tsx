@@ -9,11 +9,13 @@ import AirfieldForm from "../components/AirfieldForm";
 import TripForm from "../components/TripForm";
 import EventForm from "../components/EventForm";
 import BackButton from "../components/BackButton";
+import { useDraftTrip } from "../hooks/useDraftTrip";
 
 const AddData = (data: Data) => {
   const params = useParams();
   const [entity, setEntity] = useState<Activity|Airfield|Trip|Event>()
   const [type, setType] = useState<'activities'|'airfields'|'trips'|'events'>()
+  const { hasDraft } = useDraftTrip()
 
 
   useEffect(() => {
@@ -23,10 +25,12 @@ const AddData = (data: Data) => {
     } else if(params.lat && params.lng) {
       setType('activities')
       setEntity({name: '', position: new GeoPoint(parseFloat(params.lat), parseFloat(params.lng))} as Activity)
+    } else if(!params.type && hasDraft) {
+      setType('trips')
     } else {
       setEntity(undefined)
     }
-  },[data, params])
+  },[data, params, hasDraft])
 
 
   return type ? (params.id != undefined && !entity) ? (
