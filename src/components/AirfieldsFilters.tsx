@@ -26,8 +26,14 @@ const SERVICE_LABELS: Record<string, string> = {
   culture: 'Culture', aero: 'Aéro', nautical: 'Nautique', other: 'Autre',
 }
 
-const AirfieldsFilters = ({ airfields, activities, profile, filters, setFilters }:
-  { airfields: Map<string, Airfield>, activities: Map<string, Activity>, profile?: Profile, filters: ADfilter, setFilters: (newFilters: ADfilter) => void }) => {
+const AirfieldsFilters = ({ airfields, activities, data, profile, filters, setFilters }: { 
+  airfields: Map<string, Airfield>,
+  activities: Map<string, Activity>,
+  data: Map<string, Airfield>,
+  profile?: Profile,
+  filters: ADfilter,
+  setFilters: (newFilters: ADfilter) => void
+}) => {
 
   const [modalOpened, { open, close }] = useDisclosure(false)
   // Derive active filter badges from current filter state
@@ -120,6 +126,7 @@ const AirfieldsFilters = ({ airfields, activities, profile, filters, setFilters 
         profile={profile}
         filters={filters}
         setFilters={setFilters}
+        data={data}
       />
     </>
   )

@@ -71,7 +71,7 @@ function AirfieldsPage({airfields, activities, events, filters, setFilters, setM
   }
 
   return (<>
-    <AirfieldsFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} profile={profile}/>
+    <AirfieldsFilters airfields={airfields} activities={activities} data={data} filters={filters} setFilters={setFilters} profile={profile}/>
     {(!isMobile && view === 'list')
       ? <TableList data={data} defaultSortColumn={1} columns={columns} onViewChange={() => setView('cards')} />
       : <CardList data={data} defaultSortColumn={1} columns={columns} cardConfig={cardConfig} getImage={(e) => getAirfieldImage(getImgNode(e.description), e.runways)} onViewChange={isMobile ? undefined : () => setView('list')} />

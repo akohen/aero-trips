@@ -15,8 +15,14 @@ const EMPTY_FILTERS: ADfilter = {
   search: '', services: [], ad: [], runway: '', distance: '', target: null,
 }
 
-const AirfieldsFilterModal = ({ airfields, activities, profile, filters, setFilters, opened, onClose }:
-  { airfields: Map<string, Airfield>, activities: Map<string, Activity>, profile?: Profile, filters: ADfilter, setFilters: (newFilters: ADfilter) => void, opened: boolean, onClose: () => void }) => {
+const AirfieldsFilterModal = ({ airfields, activities, data, profile, filters, setFilters, opened, onClose }: {
+  airfields: Map<string, Airfield>,
+  activities: Map<string, Activity>,
+  data: Map<string, Airfield>,
+  profile?: Profile,
+  filters: ADfilter,
+  setFilters: (newFilters: ADfilter) => void, opened: boolean, onClose: () => void
+}) => {
 
   // Mirror the AppShell breakpoint from Layout.tsx: navbar on desktop, header on mobile
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`)
@@ -25,7 +31,7 @@ const AirfieldsFilterModal = ({ airfields, activities, profile, filters, setFilt
     <Modal
       opened={opened}
       onClose={onClose}
-      withCloseButton={false}
+      title={`Filtrer les terrains (${data.size} résultats)`}
       size="lg"
       scrollAreaComponent={ScrollArea.Autosize}
       fullScreen={isMobile}

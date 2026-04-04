@@ -55,7 +55,7 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
   }
 
   return (<>
-    <ActivitiesFilters airfields={airfields} activities={activities} filters={filters} setFilters={setFilters} />
+    <ActivitiesFilters airfields={airfields} activities={activities} data={data} filters={filters} setFilters={setFilters} />
     {(!isMobile && view === 'list')
       ? <TableList data={data} defaultSortColumn={0} columns={columns} onViewChange={() => setView('cards')} />
       : <CardList data={data} defaultSortColumn={0} columns={columns} cardConfig={cardConfig} getImage={(e) => getActivityImage(getImgNode(e.description), e.type)} onViewChange={isMobile ? undefined : () => setView('list')} />

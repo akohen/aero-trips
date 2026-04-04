@@ -16,8 +16,15 @@ const EMPTY_FILTERS: ActivityFilter = {
   search: '', type: [], distance: '', target: null,
 }
 
-const ActivitiesFilterModal = ({ airfields, activities, filters, setFilters, opened, onClose }:
-  { airfields: Map<string, Airfield>, activities: Map<string, Activity>, filters: ActivityFilter, setFilters: (newFilters: ActivityFilter) => void, opened: boolean, onClose: () => void }) => {
+const ActivitiesFilterModal = ({ airfields, activities, data, filters, setFilters, opened, onClose }: {
+  airfields: Map<string, Airfield>,
+  activities: Map<string, Activity>,
+  data: Map<string, Activity>,
+  filters: ActivityFilter,
+  setFilters: (newFilters: ActivityFilter) => void,
+  opened: boolean,
+  onClose: () => void
+}) => {
 
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`)
 
@@ -25,7 +32,7 @@ const ActivitiesFilterModal = ({ airfields, activities, filters, setFilters, ope
     <Modal
       opened={opened}
       onClose={onClose}
-      withCloseButton={false}
+      title={`Filtrer les activités (${data.size} résultats)`}
       size="lg"
       scrollAreaComponent={ScrollArea.Autosize}
       fullScreen={isMobile}

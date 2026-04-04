@@ -13,8 +13,13 @@ const TYPE_LABELS: Record<string, string> = {
   nautical: 'Nautique', nature: 'Nature', other: 'Autre',
 }
 
-const ActivitiesFilters = ({ airfields, activities, filters, setFilters }:
-  { airfields: Map<string, Airfield>, activities: Map<string, Activity>, filters: ActivityFilter, setFilters: (newFilters: ActivityFilter) => void }) => {
+const ActivitiesFilters = ({ airfields, activities, data, filters, setFilters } : {
+  airfields: Map<string, Airfield>,
+  activities: Map<string, Activity>,
+  data: Map<string, Activity>,
+  filters: ActivityFilter,
+  setFilters: (newFilters: ActivityFilter) => void
+}) => {
 
   const [modalOpened, { open, close }] = useDisclosure(false)
   type ActiveBadge = { key: string, label: string, onRemove: () => void }
@@ -90,6 +95,7 @@ const ActivitiesFilters = ({ airfields, activities, filters, setFilters }:
         activities={activities}
         filters={filters}
         setFilters={setFilters}
+        data={data}
       />
     </>
   )
