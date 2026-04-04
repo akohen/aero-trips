@@ -10,7 +10,7 @@
 
 ## Build & deploy
 - To test the build `npm run build` and then `npm run preview`
-- Pushing to master will trigger the deployment to firebase
+- To deploy, tag a release with `npm version patch|minor`
 
 ## Admin
 - `node scripts/manage-edits.js` to review the changes submitted by users
