@@ -1,4 +1,4 @@
-import { Fieldset, Group, Button, TextInput, InputLabel, Title, Center, Text, Radio, Chip } from "@mantine/core"
+import { Fieldset, Group, Button, TextInput, InputLabel, Title, Center, Text, Radio, Chip, Box } from "@mantine/core"
 import { DatePickerInput } from '@mantine/dates';
 import { ActivityType, Data } from "..";
 import { useForm } from "@mantine/form";
@@ -97,16 +97,16 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
 
 
   const DisplayItem = ({item}: {item:{type:'activities'|'airfields', id:string}}) => item.type == 'activities' ? (
-    <Text component={Link} to={`/activities/${item.id}`}>{activities.get(item.id)?.name}</Text>
+    <Text truncate component={Link} style={{ display: 'block' }} to={`/activities/${item.id}`}>{activities.get(item.id)?.name}</Text>
   ) : (
-    <Text component={Link} to={`/airfields/${item.id}`}>{airfields.get(item.id)?.name} - {airfields.get(item.id)?.codeIcao}</Text>
+    <Text truncate component={Link} style={{ display: 'block' }} to={`/airfields/${item.id}`}>{airfields.get(item.id)?.name} - {airfields.get(item.id)?.codeIcao}</Text>
   )
 
 
   const steps = form.values.steps.map((_, index) => (
     <Draggable key={index} index={index} draggableId={index.toString()}>
       {(provided) => (
-        <Group ref={provided.innerRef} mt="xs" {...provided.draggableProps}>
+        <Group wrap="nowrap" ref={provided.innerRef} mt="xs" {...provided.draggableProps}>
           <Center {...provided.dragHandleProps}>
             <IconGripVertical size="1.2rem" />
           </Center>
@@ -115,7 +115,9 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
             onClick={() => form.removeListItem('steps',index)}
             size="1rem"
           />
-          <DisplayItem item={form.values.steps[index]} />
+          <Box style={{ flex: 1, minWidth: 0 }}>
+            <DisplayItem item={form.values.steps[index]} />
+          </Box>
         </Group>
       )}
     </Draggable>
