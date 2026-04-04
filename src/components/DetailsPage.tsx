@@ -4,12 +4,13 @@ import EditButton from "./EditButton"
 import { Activity, Airfield, Data } from ".."
 import { findNearest, iconsList, shortener } from "../utils/utils"
 import { ButtonVACMap, ButtonViewOnMap } from "./CommonButtons"
-import { IconBrandGoogleMaps } from "@tabler/icons-react"
+import { IconBrandGoogleMaps, IconRoute } from "@tabler/icons-react"
 import { Link } from "react-router-dom"
 import Description from "./Description"
 import FavoriteButton from "./FavoriteButton"
 import VisitedButton from "./VisitedButton"
 import { useEffect } from "react"
+import { useDraftTrip } from "../hooks/useDraftTrip"
 import { Nearby } from "./Nearby"
 import { NearbyTrips } from "./ActivityUtils"
 import { ToiletText } from "./AirfieldUtils"
@@ -22,6 +23,11 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
     ? [...events.values()].filter(e => e.airfieldId === id).sort((a, b) => b.startDate.seconds - a.startDate.seconds).slice(0,5)
     : []
   const type = 'codeIcao' in item ? 'airfields' : 'activities'
+  const { draft, setDraft } = useDraftTrip()
+  const isInDraft = draft.steps.some(s => s.type === type && s.id === id)
+  const addToDraft = () => {
+    if (!isInDraft) setDraft({ ...draft, steps: [...draft.steps, { type, id }] })
+  }
   useEffect(() => {
     const isAirfield = 'codeIcao' in item
     const title = (isAirfield ? `${item.codeIcao} - ` : '') + item.name + ' - AeroTrips'
@@ -132,6 +138,15 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
       >
         Google Maps
       </Button>
+      {profile && (
+        <Button
+          onClick={addToDraft}
+          disabled={isInDraft}
+          leftSection={<IconRoute size={20} />}
+        >
+          {isInDraft ? 'Ajouté à la sortie' : 'Ajouter à la sortie'}
+        </Button>
+      )}
       {item.website && <Text><b>Site internet</b> <Link to={item.website}>{shortener(item.website, 35)}</Link></Text>}
       {item.updated_at && (
         <Text size="xs" ta={"right"}>

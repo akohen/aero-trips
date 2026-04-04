@@ -1,5 +1,5 @@
 
-import { em, Group } from '@mantine/core';
+import { Button, em, Group } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Activity, ActivityFilter, Data } from '..';
 import TableList from '../components/TableList';
@@ -11,6 +11,8 @@ import { ButtonViewOnMap } from '../components/CommonButtons';
 import { ActivityIcon, ActivityTitle } from '../components/ActivityUtils';
 import { getActivityImage, getImgNode } from '../utils/itemImages';
 import type { CardColumn, CardConfig } from '../components/CardList';
+import { useDraftTrip } from '../hooks/useDraftTrip';
+import { IconRoute } from '@tabler/icons-react';
 
 
 function ActivitiesList({airfields, activities, filters, setFilters, setMapView, profile} :
@@ -19,6 +21,11 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`, undefined, { getInitialValueInEffect: false });
   const [data, setData] = useState(activities);
   const [view, setView] = useState<'list' | 'cards'>(isMobile ? 'cards' : 'list');
+  const { draft, setDraft } = useDraftTrip()
+  const isInDraft = (id: string) => draft.steps.some(s => s.type === 'activities' && s.id === id)
+  const addToDraft = (e: Activity) => {
+    if (!isInDraft(e.id)) setDraft({ ...draft, steps: [...draft.steps, { type: 'activities', id: e.id }] })
+  }
 
   useEffect(()=>{
     setData( filterActivities( airfields, activities, filters) )
@@ -37,14 +44,14 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
       linkTo: (e) => `/activities/${e.id}`,
     },
     {
-      row: (e) => (<Group justify="flex-end"><ButtonViewOnMap item={e} setMapView={setMapView} compact /></Group>),
+      row: (e) => (<Group justify="flex-end"><ButtonViewOnMap item={e} setMapView={setMapView} compact />{profile && <Button size="compact-sm" onClick={() => addToDraft(e)} disabled={isInDraft(e.id)} leftSection={<IconRoute size={16} />}>{isInDraft(e.id) ? 'Ajouté' : 'Ajouter'}</Button>}</Group>),
     }
   ]
 
   const cardConfig: CardConfig<Activity> = {
     title: (e) => e.name,
     icons: (e, _key, hasImage) => <ActivityIcon activity={e} profile={profile} color={hasImage ? 'white' : undefined} />,
-    actions: (e) => <ButtonViewOnMap item={e} setMapView={setMapView} compact />,
+    actions: (e) => <Group gap="xs"><ButtonViewOnMap item={e} setMapView={setMapView} compact />{profile && <Button size="compact-sm" onClick={() => addToDraft(e)} disabled={isInDraft(e.id)} leftSection={<IconRoute size={16} />}>{isInDraft(e.id) ? 'Ajouté' : 'Ajouter'}</Button>}</Group>,
   }
 
   return (<>
