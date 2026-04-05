@@ -1,5 +1,5 @@
 import { Fieldset, TextInput, Chip, Group, Space, Button, Text, Title, InputLabel, Center, Tooltip } from "@mantine/core"
-import { Activity, ActivityType, Profile } from "..";
+import { Activity, ActivityType, Airfield, Profile } from "..";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ import { db } from "../data/firebase";
 import AnonymousSubmission from "./AnonymousSubmission";
 import useTextEditor from "../hooks/useTextEditor";
 
-const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, profile?: Profile, id: string|undefined, activities: Map<string,Activity>}) => {
+const ActivityForm = ({activity, profile, id, activities, airfields}: {activity: Activity, profile?: Profile, id: string|undefined, activities: Map<string,Activity>, airfields: Map<string,Airfield>}) => {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate();
@@ -122,7 +122,7 @@ const ActivityForm = ({activity, profile, id, activities}: {activity: Activity, 
   
   <Space h="md" />
   <Center mt={"md"}><InputLabel>Description de l'activité</InputLabel></Center>
-  <TextEditor editor={editor} profile={profile} />
+  <TextEditor editor={editor} profile={profile} activities={activities} airfields={airfields} />
   </Fieldset>
   <Group mt="md">
     <Button type="submit">Enregistrer</Button>

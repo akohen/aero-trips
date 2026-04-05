@@ -1,5 +1,5 @@
 import { Fieldset, Group, Button, Title, Space, Chip, InputLabel, TextInput } from "@mantine/core"
-import { Airfield, Profile } from "..";
+import { Activity, Airfield, Profile } from "..";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import TextEditor from "./TextEditor";
@@ -10,7 +10,7 @@ import AnonymousSubmission from "./AnonymousSubmission";
 import { useNavigate } from "react-router-dom";
 import useTextEditor from "../hooks/useTextEditor";
 
-const AirfieldForm = ({airfield, profile, airfields}: {airfield: Airfield, profile?: Profile, airfields: Map<string,Airfield>}) => {
+const AirfieldForm = ({airfield, profile, airfields, activities}: {airfield: Airfield, profile?: Profile, airfields: Map<string,Airfield>, activities: Map<string,Activity>}) => {
   const [submitted, setSubmitted] = useState(false)
   const navigate = useNavigate();
 
@@ -94,7 +94,7 @@ const AirfieldForm = ({airfield, profile, airfields}: {airfield: Airfield, profi
     </Chip.Group>
     </Group>
     <Space mt={"md"}/>
-    <TextEditor editor={editor} profile={profile} />
+    <TextEditor editor={editor} profile={profile} airfields={airfields} activities={activities} />
   </Fieldset>
   <Group mt="md">
     <Button type="submit">Enregistrer</Button>

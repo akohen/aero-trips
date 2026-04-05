@@ -1,6 +1,6 @@
 import { Fieldset, TextInput, Group, Space, Button, Text, Title, InputLabel, Center } from "@mantine/core"
 import { DatePickerInput } from "@mantine/dates"
-import { Event, Airfield, Profile } from "..";
+import { Activity, Event, Airfield, Profile } from "..";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ import AnonymousSubmission from "./AnonymousSubmission";
 import useTextEditor from "../hooks/useTextEditor";
 import { Select } from "@mantine/core";
 
-const EventForm = ({event, events, profile, id, airfields}: {event?: Event, events: Map<string,Event>, profile?: Profile, id: string|undefined, airfields: Map<string,Airfield>}) => {
+const EventForm = ({event, events, profile, id, airfields, activities}: {event?: Event, events: Map<string,Event>, profile?: Profile, id: string|undefined, airfields: Map<string,Airfield>, activities: Map<string,Activity>}) => {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate();
@@ -119,7 +119,7 @@ const EventForm = ({event, events, profile, id, airfields}: {event?: Event, even
         </Group>
         <Space h="md" />
         <Center mt="md"><InputLabel>Description de l'événement</InputLabel></Center>
-        <TextEditor editor={editor} profile={profile} />
+        <TextEditor editor={editor} profile={profile} airfields={airfields} activities={activities} />
       </Fieldset>
       <Group mt="md">
         <Button type="submit">Enregistrer</Button>

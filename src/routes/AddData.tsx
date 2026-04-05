@@ -38,8 +38,8 @@ const AddData = (data: Data) => {
   ) : 
   type == 'activities' && (<ActivityForm activity={entity as Activity} id={params.id} {...data} />) 
   || type == 'trips' && (<TripForm id={params.id} {...data} />) 
-  || type == 'airfields' && (<AirfieldForm airfield={entity as Airfield} profile={data.profile} airfields={data.airfields} />)
-  || type == 'events' && (<EventForm event={entity as Event} events={data.events} id={params.id} profile={data.profile} airfields={data.airfields} />)
+  || type == 'airfields' && (<AirfieldForm airfield={entity as Airfield} profile={data.profile} airfields={data.airfields} activities={data.activities} />)
+  || type == 'events' && (<EventForm event={entity as Event} events={data.events} id={params.id} profile={data.profile} airfields={data.airfields} activities={data.activities} />)
   : (
     <>
     <Title><BackButton />Contribuer</Title>
