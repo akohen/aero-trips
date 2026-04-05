@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { Activity, Airfield, Data } from "..";
-import { Flex, Grid, Paper, Stack, Text, Title } from "@mantine/core";
+import { Grid, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import EditButton from "../components/EditButton";
 import BackButton from "../components/BackButton";
 import { MapContainer, Polyline, TileLayer } from "react-leaflet";
@@ -9,7 +9,8 @@ import ActivityMarker from '../components/ActivityMarker';
 import { latLngBounds } from "leaflet";
 import Description from "../components/Description";
 import dayjs from "dayjs";
-import ItemCard from "../components/ItemCard";
+import CardListItem from "../components/CardListItem";
+import { getItemImageUrl, getItemLink, getItemCardConfig } from "../utils/itemCardConfig";
 
 const TripDetails = ({trips, airfields, activities, profile} : Data) => {
   const params = useParams();
@@ -94,9 +95,18 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
       </Grid.Col>
     </Grid>
   <Description content={trip.description} />
-  <Flex mt='md' gap="xs" wrap="wrap" justify={{ sm: 'center' }}>
-    { uniqueItems.map((item, id) => <ItemCard key={id} item={item} profile={profile} />) }
-  </Flex>
+  <SimpleGrid mt='md' cols={{ base: 1, sm: 2, md: 4}}>
+    { uniqueItems.map((item, id) => (
+      <CardListItem
+        key={id}
+        item={item}
+        imgUrl={getItemImageUrl(item)}
+        link={getItemLink(item)}
+        cardConfig={getItemCardConfig({ profile })}
+        itemKey={String(id)}
+      />
+    )) }
+  </SimpleGrid>
     
   </>)
 }

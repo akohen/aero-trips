@@ -1,6 +1,6 @@
 import { Paper, Button, Group } from "@mantine/core";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getResizedUrl } from "../utils/image";
 import { shortener } from "../utils/utils";
 import { CardConfig } from "./CardList";
@@ -14,7 +14,6 @@ function CardListItem<T>({
   cardConfig: CardConfig<T>,
   itemKey: string,
 }) {
-  const navigate = useNavigate();
   const [currentImgUrl, setCurrentImgUrl] = useState(imgUrl);
   const hasImage = Boolean(currentImgUrl);
 
@@ -24,9 +23,11 @@ function CardListItem<T>({
       radius="md"
       p="xs"
       h={200}
+      component={Link}
+      to={link}
       style={{
         ...(hasImage ? {
-          backgroundImage: `url(${currentImgUrl}), linear-gradient(transparent 30%, rgba(0,0,0,0.6) 100%)`,
+          backgroundImage: `url(${currentImgUrl}), linear-gradient(rgba(0,0,0,0.6) 0%, transparent 70%)`,
           backgroundBlendMode: 'multiply',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
@@ -36,7 +37,6 @@ function CardListItem<T>({
         justifyContent: 'space-between',
         cursor: link ? 'pointer' : undefined,
       }}
-      onClick={link ? () => navigate(link) : undefined}
     >
       {imgUrl && (
         <img
@@ -64,10 +64,10 @@ function CardListItem<T>({
       </div>
 
       <Group justify="space-between" align="flex-end">
-        <div style={hasImage ? { color: 'white' } : undefined} onClick={(e) => e.stopPropagation()}>
+        <div style={hasImage ? { color: 'white' } : undefined} onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
           {cardConfig.content?.(item, itemKey)}
         </div>
-        <Group onClick={(e) => e.stopPropagation()}>
+        <Group onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
           {cardConfig.actions?.(item, itemKey)}
         </Group>
       </Group>
