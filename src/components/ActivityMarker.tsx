@@ -1,5 +1,5 @@
 import { Stack } from "@mantine/core"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { Activity, ActivityType } from ".."
 import { ActivityTitle } from "./ActivityUtils"
 import { Marker, Popup } from "react-leaflet"

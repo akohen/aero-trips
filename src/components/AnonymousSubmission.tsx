@@ -1,6 +1,6 @@
 import { Title } from "@mantine/core"
 import BackButton from "./BackButton"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { Activity } from ".."
 
 

@@ -1,6 +1,6 @@
 import { Paper, Button, Group } from "@mantine/core";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { getResizedUrl } from "../utils/image";
 import { shortener } from "../utils/utils";
 import { CardConfig } from "./CardList";

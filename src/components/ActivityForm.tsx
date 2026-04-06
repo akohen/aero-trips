@@ -2,7 +2,7 @@ import { Fieldset, TextInput, Chip, Group, Space, Button, Text, Title, InputLabe
 import { Activity, ActivityType, Airfield, Profile } from "..";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
 import { IconInfoCircle } from "@tabler/icons-react";

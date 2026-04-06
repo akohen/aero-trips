@@ -2,7 +2,7 @@
 import { Button, em, Group, Stack, Text, TextInput, rem } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Trip } from '..';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import TableList from '../components/TableList';
 import CardList from '../components/CardList';
 import { getImgNode } from '../utils/itemImages';

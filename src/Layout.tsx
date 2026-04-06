@@ -3,7 +3,7 @@ import '@mantine/tiptap/styles.css';
 import '@mantine/dates/styles.css';
 import { MantineProvider, AppShell, Burger, Group, Button, Stack, em, Title } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
-import { Link, Outlet, matchPath, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, matchPath, useLocation, useNavigate } from "react-router";
 import { IconBrandGoogleFilled, IconBulb, IconCalendarEvent, IconCirclePlus, IconHome, IconLogout, IconMail, IconMap, IconMapRoute, IconPlaneArrival, IconUser } from '@tabler/icons-react';
 import { useEffect, useMemo } from 'react';
 import { Data } from '.';
@@ -142,7 +142,7 @@ function Layout({airfields, activities, profile}: Data) {
           </Button>
           <TripStepSelect
             data={data}
-            addItem={(value: string) => {navigate(value); close()}}
+            addItem={(value: string) => {navigate(`/${value}`); close()}}
             placeholder="Accès direct"
           />
           </Stack>

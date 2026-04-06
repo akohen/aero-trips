@@ -3,7 +3,7 @@ import { generateHTML, JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit"
 import Youtube from "@tiptap/extension-youtube";
 import { ImageWithFallback } from "../utils/ImageWithFallback";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const Description = ({content}: {content: JSONContent}) => {
   const navigate = useNavigate();

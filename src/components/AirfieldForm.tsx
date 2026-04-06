@@ -7,7 +7,7 @@ import BackButton from "./BackButton";
 import { addDoc, collection, doc, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "../data/firebase";
 import AnonymousSubmission from "./AnonymousSubmission";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import useTextEditor from "../hooks/useTextEditor";
 
 const AirfieldForm = ({airfield, profile, airfields, activities}: {airfield: Airfield, profile?: Profile, airfields: Map<string,Airfield>, activities: Map<string,Activity>}) => {

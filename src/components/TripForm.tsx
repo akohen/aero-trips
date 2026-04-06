@@ -13,7 +13,7 @@ import { CommonIcon } from "./CommonIcon";
 import { slug } from "../utils/utils";
 import { db, googleLogin } from "../data/firebase";
 import { doc, setDoc, Timestamp } from "firebase/firestore";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import dayjs from "dayjs";
 import useTextEditor from "../hooks/useTextEditor";
 

@@ -43,7 +43,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-react': ['react', 'react-dom', 'react-router'],
           'vendor-mantine': ['@mantine/core', '@mantine/dates', '@mantine/form', '@mantine/hooks', '@mantine/tiptap'],
           'vendor-map': ['leaflet', 'react-leaflet'],
           'vendor-tiptap': ['@tiptap/react', '@tiptap/extension-image', '@tiptap/extension-link', '@tiptap/extension-youtube'],

@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router";
 import { Activity, Airfield, Data, Event, Trip } from "..";
 import { Button, Group, Paper, Title } from "@mantine/core";
 import { IconCalendarEvent, IconMapRoute, IconBulb } from "@tabler/icons-react";

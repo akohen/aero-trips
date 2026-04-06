@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router";
 import { Data } from "..";
 import BackButton from "../components/BackButton";
 import { Paper, Title } from "@mantine/core";

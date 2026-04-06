@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router";
 import { Activity, Airfield, Data } from "..";
 import { Grid, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import EditButton from "../components/EditButton";

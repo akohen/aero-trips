@@ -1,5 +1,5 @@
 import { Paper, Stack, Text, Title } from "@mantine/core"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { Data } from ".."
 import { formatDate, isUpcomingEvent } from "../utils/utils"
 

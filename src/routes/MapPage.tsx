@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { IconPlaneArrival, IconEye, IconEyeOff, IconFilterX, IconBulb } from '@tabler/icons-react';
 import MapMenu from '../components/MapMenu';
 import MapViewTracker from '../components/MapViewTracker';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router';
 import ShareButton from '../components/ShareButton';
 import AirfieldsFilterModal from '../components/AirfieldsFilterModal';
 import ButtonFilter from '../components/ButtonFilter';

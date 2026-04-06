@@ -1,6 +1,6 @@
 import { Tooltip } from "@mantine/core";
 import { IconEdit } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const EditButton = () => (
   <Link to={"edit"}>

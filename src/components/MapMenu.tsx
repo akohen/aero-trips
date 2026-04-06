@@ -4,7 +4,7 @@ import { useState } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { Polyline, useMapEvents } from "react-leaflet";
-import { BrowserRouter, Link } from "react-router-dom";
+import { BrowserRouter, Link } from "react-router";
 
 const MapMenu = () => {
   const [opened, setRuler] = useDisclosure()

@@ -1,7 +1,7 @@
 import { ActionIcon, Button, em, Group, rem, SegmentedControl, Stack, Text, TextInput } from "@mantine/core"
 import { useMediaQuery } from "@mantine/hooks"
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router"
 import { ADfilter, Data, Event } from ".."
 import TableList from "../components/TableList"
 import CardList from "../components/CardList"

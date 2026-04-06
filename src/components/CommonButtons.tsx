@@ -1,7 +1,7 @@
 import { Button, em } from "@mantine/core";
 import { IconMapCheck, IconMapPinSearch } from "@tabler/icons-react";
 import { GeoPoint } from "firebase/firestore";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { getVacUrl } from "../data/airac";
 import { Airfield, MapView } from "..";
 import { useMediaQuery } from "@mantine/hooks";

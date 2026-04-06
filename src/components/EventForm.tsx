@@ -3,7 +3,7 @@ import { DatePickerInput } from "@mantine/dates"
 import { Activity, Event, Airfield, Profile } from "..";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
 import { slug } from "../utils/utils";

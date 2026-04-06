@@ -35,7 +35,7 @@ const getActivities = async (db: admin.firestore.Firestore) => {
 
 const updateNightVFR = (airfields: Map<string, Airfield>) => {
     const nvfr = JSON.parse(readFileSync(`./scripts/NVFR.json`, 'utf8'))
-    nvfr.forEach(code => {
+    nvfr.forEach((code: string) => {
         if(airfields.has(code) && !airfields.get(code)!.nightVFR) {
             changes.push({document: `airfields/${code}`, data:{nightVFR: true}})
         } else {
@@ -49,7 +49,7 @@ const getPOIs = (activities: Map<string, Activity>, search: string) => {
     const pois = JSON.parse(readFileSync(`./scripts/POI.json`, 'utf8'))
     console.log(`Loaded ${pois.length} POIs`)
 
-    return pois.filter((poi: { id: string; }) => {
+    return pois.filter((poi: any[]) => {
         if(search && !poi[0].normalize('NFD')
                 .replace(/[\u0300-\u036f]/g, '')
                 .toLowerCase()
@@ -88,7 +88,7 @@ if(process.argv.includes('--poi')) {
     const activities = await getActivities(db)
     const poi = getPOIs(activities, searchString)
     console.log(`Found ${poi.length} POIs`)
-    poi.slice(0, 50).forEach(poi => {
+    poi.slice(0, 50).forEach((poi: any[]) => {
         console.log(`New POI ${chalk.bold.blue(poi[0])}
 https://aerotrips.fr/map/${poi[1]}/${poi[2]}
 https://google.com/search?q=${encodeURIComponent(poi[0]).replace(/'/g, "%27")}

@@ -1,7 +1,7 @@
 import { ActionIcon, Center, Group, Pagination, Select, SimpleGrid, Text } from '@mantine/core';
 import { IconLayoutList, IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { useEffect, useState, type JSX } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 import CardListItem from './CardListItem';
 
 function chunk<T>(array: T[], size: number): T[][] {

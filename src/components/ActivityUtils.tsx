@@ -1,6 +1,6 @@
 import { Grid, Paper, Stack, Text, Title } from "@mantine/core";
 import { Activity, ActivityFilter, Airfield, Event, Profile, Trip } from "..";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { CommonIcon } from "./CommonIcon";
 import { TripTitle } from "./TripsUtils";
 import { formatDate } from "../utils/utils";
