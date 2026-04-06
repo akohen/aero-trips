@@ -33,7 +33,7 @@ function TableList<T>({
   const sortedData = sortColumn !== -1 && columns[sortColumn].sortFn !== undefined
     ? [...data].sort((a, b) => sortDir * (columns[sortColumn].sortFn?.(a[1], b[1]) ?? 0))
     : [...data];
-  const chunks = chunk(sortedData, 15)
+  const chunks = chunk(sortedData, 16)
   const updatePage = (page: number) => {
     if(data.size === 0) return // Wait for data to be loaded before resetting to page 1
     const pageId = Math.max(1, Math.min(page, chunks.length))
