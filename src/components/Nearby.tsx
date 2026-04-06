@@ -7,7 +7,7 @@ export const Nearby = ({items, profile} :
   {items: [distance: number, item: Activity|Airfield, id: string][], profile?:Profile}) => {
   if(items.length == 0) return
   return (
-    <SimpleGrid mt='md' cols={{ base: 1, sm: 2, md: 4 }}>
+    <SimpleGrid mt='md' minColWidth="280px" >
       { items
         .sort((a,b) => a[0]-b[0])
         .map(([dist, item, id]) => (

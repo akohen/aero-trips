@@ -103,7 +103,7 @@ function CardList<T>({
       )}
 
       {items && items.length > 0 ? (
-        <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }} mb="md">
+        <SimpleGrid minColWidth="350px" mb="md">
           {items.map(([key, item]) => (
             <CardListItem
               key={key}
