@@ -13,6 +13,13 @@ import { db } from "../data/firebase";
 import AnonymousSubmission from "./AnonymousSubmission";
 import useTextEditor from "../hooks/useTextEditor";
 
+const PositionTooltip = () => (
+  <Tooltip label={"Pour obtenir la position, sur Google Maps, clic droit sur le lieu, cliquer sur la première ligne qui s'affiche, puis coller la valeur dans la case ci-dessous"}>
+    <InputLabel>Position
+    <IconInfoCircle color="darkblue" size={18} style={{verticalAlign:'middle'}} />
+    </InputLabel>
+  </Tooltip>)
+
 const ActivityForm = ({activity, profile, id, activities, airfields}: {activity: Activity, profile?: Profile, id: string|undefined, activities: Map<string,Activity>, airfields: Map<string,Airfield>}) => {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
@@ -67,14 +74,6 @@ const ActivityForm = ({activity, profile, id, activities, airfields}: {activity:
       setSubmitted(true)    
     }
   }
-
-
-  const PositionTooltip = () => (
-    <Tooltip label={"Pour obtenir la position, sur Google Maps, clic droit sur le lieu, cliquer sur la première ligne qui s'affiche, puis coller la valeur dans la case ci-dessous"}>
-      <InputLabel>Position
-      <IconInfoCircle color="darkblue" size={18} style={{verticalAlign:'middle'}} />
-      </InputLabel>
-    </Tooltip>)
 
 
   return (submitted) ? <AnonymousSubmission activity={activity}/> : (

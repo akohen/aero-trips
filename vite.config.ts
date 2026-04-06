@@ -1,5 +1,4 @@
-/// <reference types="vitest" />
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import { VitePWA } from 'vite-plugin-pwa'
 import react from '@vitejs/plugin-react-swc'
 
@@ -44,6 +43,10 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-mantine': ['@mantine/core', '@mantine/dates', '@mantine/form', '@mantine/hooks', '@mantine/tiptap'],
+          'vendor-map': ['leaflet', 'react-leaflet'],
+          'vendor-tiptap': ['@tiptap/react', '@tiptap/extension-image', '@tiptap/extension-link', '@tiptap/extension-youtube'],
           data: ['src/data/airfields.json', 'src/data/activities.json'],
         },
       },

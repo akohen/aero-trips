@@ -8,6 +8,23 @@ import airfieldsData from './data/airfields.json'
 import activitiesData from './data/activities.json'
 
 
+class UserProfile implements Profile {
+  displayName!: string;
+  uid!: string;
+  email!: string;
+  visited?: { type: 'activities' | 'airfields'; id: string; }[] = [];
+  update: (changes: Partial<Profile>) => void;
+  constructor(params: Omit<Profile, "update">, setProfile: (p: Profile) => void) {
+    Object.assign(this, params);
+    this.update = (changes: Partial<Profile>) => {
+      setDoc(doc(db, "profiles", this.uid), changes, {merge:true})
+      const updatedProfile = { ...this, ...changes };
+      Object.assign(this, updatedProfile);
+      setProfile(updatedProfile)
+    }
+  }
+}
+
 export const DataProvider = () => {
   const [airfields, setAirfields] = useState<Map<string,Airfield>>(new Map())
   const [activities, setActivities] = useState<Map<string,Activity>>(new Map())
@@ -58,6 +75,7 @@ export const DataProvider = () => {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     getAirfields()
     getActivities()
     getTrips()
@@ -65,32 +83,15 @@ export const DataProvider = () => {
   },[])
 
   useEffect(() => {
-    class userProfile implements Profile {
-      displayName!: string;
-      uid!: string;
-      email!: string;
-      visited?: { type: 'activities' | 'airfields'; id: string; }[] = [];
-      update: (changes: Partial<Profile>) => void;
-      constructor(params: Omit<Profile, "update">) {
-        Object.assign(this, params);
-        this.update = (changes: Partial<Profile>) => {
-          setDoc(doc(db, "profiles", this.uid), changes, {merge:true})
-          const updatedProfile = { ...this, ...changes };
-          Object.assign(this, updatedProfile); // I think this whole update function is weird, and this is why
-          setProfile(updatedProfile)
-        }
-      }
-    }
-
     return onAuthStateChanged(auth, async (user) => {
       if (user) {
         const uid = user.uid;
         const query = await getDoc(doc(db, "profiles", uid))
         if(query.exists()) {
-          setProfile(new userProfile({...query.data(), uid} as Profile))
+          setProfile(new UserProfile({...query.data(), uid} as Profile, setProfile))
         } else {
           setDoc(doc(db, "profiles", uid), {email:user.email, displayName:user.displayName})
-          setProfile(new userProfile({email:user.email!, displayName:user.displayName!, uid}))
+          setProfile(new UserProfile({email:user.email!, displayName:user.displayName!, uid}, setProfile))
         }
       } else { setProfile(undefined) }
     })

@@ -1,6 +1,6 @@
 import { Table, Pagination, Center, Text, ActionIcon, Group } from '@mantine/core';
 import { IconCaretDownFilled, IconCaretUpDownFilled, IconCaretUpFilled, IconLayoutGrid } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type JSX } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 
 function chunk<T>(array: T[], size: number): T[][] {

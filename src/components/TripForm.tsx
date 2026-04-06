@@ -2,7 +2,7 @@ import { Fieldset, Group, Button, TextInput, InputLabel, Title, Center, Text, Ra
 import { DatePickerInput } from '@mantine/dates';
 import { ActivityType, Data } from "..";
 import { useForm } from "@mantine/form";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import TextEditor from "./TextEditor";
 import BackButton from "./BackButton";
 import { useDraftTrip } from "../hooks/useDraftTrip";
@@ -20,28 +20,20 @@ import useTextEditor from "../hooks/useTextEditor";
 const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: string|undefined}) => {
   type FinderOptions = {group: string, items: {label: string, value: string}[]}[]
   const trip = id ? trips.get(id) : undefined
-  const [data, setData] = useState<FinderOptions>([])
   const [error, setError] = useState('')
   const navigate = useNavigate();
   const { draft, setDraft, clearDraft, hasDraftForTrip } = useDraftTrip();
   const draftApplies = id ? hasDraftForTrip(id) : !draft.id
-  
-  useEffect(() => {
-    const airfieldsOptions = [...airfields] 
-      .map(([id, ad]) => (
-        {label: `${ad.name} - ${ad.codeIcao}`, value:`airfields/${id}`}
-      ))
-    const activitiesOptions = [...activities] 
-      .map(([id, activity]) => (
-        {label: activity.name, value:`activities/${id}`}
-      ))
-
-    setData([
+  const data = useMemo<FinderOptions>(() => {
+    const airfieldsOptions = [...airfields]
+      .map(([id, ad]) => ({label: `${ad.name} - ${ad.codeIcao}`, value:`airfields/${id}`}))
+    const activitiesOptions = [...activities]
+      .map(([id, activity]) => ({label: activity.name, value:`activities/${id}`}))
+    return [
       {group:'Terrains', items:airfieldsOptions},
       {group:'Activités', items:activitiesOptions},
-    ])
-
-  },[airfields, activities])
+    ]
+  }, [airfields, activities])
 
   const form = useForm({
     initialValues: {

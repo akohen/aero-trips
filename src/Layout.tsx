@@ -5,7 +5,7 @@ import { MantineProvider, AppShell, Burger, Group, Button, Stack, em, Title } fr
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { Link, Outlet, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { IconBrandGoogleFilled, IconBulb, IconCalendarEvent, IconCirclePlus, IconHome, IconLogout, IconMail, IconMap, IconMapRoute, IconPlaneArrival, IconUser } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Data } from '.';
 import TripStepSelect from './components/TripStepSelect';
 import { googleLogin, googleLogout } from './data/firebase';
@@ -16,24 +16,16 @@ function Layout({airfields, activities, profile}: Data) {
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
   const navigate = useNavigate();
   type FinderOptions = {group: string, items: {label: string, value: string}[]}[]
-    const [data, setData] = useState<FinderOptions>([])
-
-    useEffect(() => {
-      const airfieldsOptions = [...airfields] 
-        .map(([id, ad]) => (
-          {label: `${ad.name} - ${ad.codeIcao}`, value:`airfields/${id}`}
-        ))
-      const activitiesOptions = [...activities] 
-        .map(([id, activity]) => (
-          {label: activity.name, value:`activities/${id}`}
-        ))
-
-      setData([
-        {group:'Terrains', items:airfieldsOptions},
-        {group:'Activités', items:activitiesOptions},
-      ])
-
-    },[airfields, activities])
+  const data = useMemo<FinderOptions>(() => {
+    const airfieldsOptions = [...airfields]
+      .map(([id, ad]) => ({label: `${ad.name} - ${ad.codeIcao}`, value:`airfields/${id}`}))
+    const activitiesOptions = [...activities]
+      .map(([id, activity]) => ({label: activity.name, value:`activities/${id}`}))
+    return [
+      {group:'Terrains', items:airfieldsOptions},
+      {group:'Activités', items:activitiesOptions},
+    ]
+  }, [airfields, activities])
 
   useEffect(() => {
     try{
@@ -44,7 +36,7 @@ function Layout({airfields, activities, profile}: Data) {
         document.head.appendChild(link)
       }
       link.href = 'https://aerotrips.fr' + location.pathname + location.search
-    }catch(e){/* ignore */}
+    }catch{/* ignore */}
   }, [location.pathname, location.search])
   
   return (

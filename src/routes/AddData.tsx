@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Activity, Airfield, Data, Event, Trip } from "..";
 import { Button, Group, Paper, Title } from "@mantine/core";
 import { IconCalendarEvent, IconMapRoute, IconBulb } from "@tabler/icons-react";
@@ -13,24 +12,20 @@ import { useDraftTrip } from "../hooks/useDraftTrip";
 
 const AddData = (data: Data) => {
   const params = useParams();
-  const [entity, setEntity] = useState<Activity|Airfield|Trip|Event>()
-  const [type, setType] = useState<'activities'|'airfields'|'trips'|'events'>()
+  const navigate = useNavigate();
   const { hasNewTripDraft } = useDraftTrip()
 
+  const type: 'activities'|'airfields'|'trips'|'events'|undefined =
+    params.lat && params.lng ? 'activities'
+    : !params.type && hasNewTripDraft ? 'trips'
+    : params.type as 'activities'|'airfields'|'trips'|'events'|undefined
 
-  useEffect(() => {
-    setType(params.type as 'activities'|'airfields'|'trips'|'events')
-    if(params.type && params.id && ['activities','airfields','trips','events'].includes(params.type)) {
-      setEntity(data[params.type as 'activities'|'airfields'|'trips'|'events'].get(params.id))
-    } else if(params.lat && params.lng) {
-      setType('activities')
-      setEntity({name: '', position: new GeoPoint(parseFloat(params.lat), parseFloat(params.lng))} as Activity)
-    } else if(!params.type && hasNewTripDraft) {
-      setType('trips')
-    } else {
-      setEntity(undefined)
-    }
-  },[data, params, hasNewTripDraft])
+  const entity: Activity|Airfield|Trip|Event|undefined =
+    params.type && params.id && ['activities','airfields','trips','events'].includes(params.type)
+      ? data[params.type as 'activities'|'airfields'|'trips'|'events'].get(params.id)
+    : params.lat && params.lng
+      ? {name: '', position: new GeoPoint(parseFloat(params.lat), parseFloat(params.lng))} as Activity
+    : undefined
 
 
   return type ? (params.id != undefined && !entity) ? (
@@ -62,8 +57,8 @@ const AddData = (data: Data) => {
         </ul>
       <Group>
         <Button leftSection={<IconBulb size={14} />} component={Link} to="/map">Lieu ou activité</Button>
-        <Button leftSection={<IconMapRoute size={14} />} onClick={() => setType('trips')}>Sortie</Button>
-        <Button leftSection={<IconCalendarEvent size={14} />} onClick={() => setType('events')}>Événement</Button>
+        <Button leftSection={<IconMapRoute size={14} />} onClick={() => navigate('/trips/edit')}>Sortie</Button>
+        <Button leftSection={<IconCalendarEvent size={14} />} onClick={() => navigate('/events/edit')}>Événement</Button>
       </Group>
       <p>En cas de problème ou de questions, n'hésitez pas à <Link to={'/contact'}>nous contacter directement</Link>.</p>
 

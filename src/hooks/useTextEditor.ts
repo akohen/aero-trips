@@ -1,7 +1,6 @@
 import Youtube from "@tiptap/extension-youtube";
 import { JSONContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit";
-import { Link } from "@tiptap/extension-link";
 import { fetchAndUploadImageUrl, uploadImage } from "../utils/image";
 import { Slice } from "@tiptap/pm/model";
 import { EditorView } from "@tiptap/pm/view";
@@ -10,7 +9,6 @@ import { ImageWithFallback } from "../utils/ImageWithFallback";
 
 const extensions = [
   StarterKit,
-  Link,
   ImageWithFallback.configure({ allowBase64: false }),
   Youtube.configure({ controls: true }),
 ];

@@ -8,11 +8,12 @@ import { formatDate } from '../utils/utils';
 import { AirfieldTitle } from '../components/AirfieldUtils';
 
 
+const cutoff = Date.now() - 1000 * 60 * 60 * 24 * 30;
+
 function LastChanges({airfields, activities, setMapView, profile} : Data) {
-  
   const items: [string, Activity | Airfield][] = [...activities, ...airfields]
     .filter(
-      ([, e]) => e.updated_at && (e.updated_at.seconds * 1000) > (Date.now() - 1000 * 60 * 60 * 24 * 30)
+      ([, e]) => e.updated_at && (e.updated_at.seconds * 1000) > cutoff
     );
   const data: Map<string, Activity | Airfield> = new Map(items);
   

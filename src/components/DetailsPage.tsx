@@ -43,7 +43,7 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
       let el = document.querySelector(sel)
       if (!el) {
         el = document.createElement('meta')
-        sel.includes('property') ? el.setAttribute('property', attr) : el.setAttribute('name', attr)
+        if (sel.includes('property')) { el.setAttribute('property', attr) } else { el.setAttribute('name', attr) }
         document.head.appendChild(el)
       }
       el.setAttribute('content', val)

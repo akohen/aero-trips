@@ -1,7 +1,6 @@
 import { Paper } from "@mantine/core";
 import { generateHTML, JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit"
-import {default as TiptapLink} from "@tiptap/extension-link"
 import Youtube from "@tiptap/extension-youtube";
 import { ImageWithFallback } from "../utils/ImageWithFallback";
 import { useNavigate } from "react-router-dom";
@@ -36,7 +35,7 @@ const Description = ({content}: {content: JSONContent}) => {
     className="tiptap-content"
     miw={320}
     onClick={handleClick}
-    dangerouslySetInnerHTML={{__html: generateHTML(content, [StarterKit, TiptapLink, ImageWithFallback, Youtube])}}
+    dangerouslySetInnerHTML={{__html: generateHTML(content, [StarterKit, ImageWithFallback, Youtube])}}
   />
 )}
 

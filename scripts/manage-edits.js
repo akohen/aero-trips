@@ -20,7 +20,6 @@ const firebaseConfig = {
 admin.initializeApp(firebaseConfig);
 const db = admin.firestore();
 db.settings({ ignoreUndefinedProperties: true });
-const storage = admin.storage().bucket()
 
 const options = {
   message: 'Choisir une action pour ce changement',
