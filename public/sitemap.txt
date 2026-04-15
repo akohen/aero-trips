@@ -430,6 +430,7 @@ https://aerotrips.fr/airfields/LFYG
 https://aerotrips.fr/airfields/LFYR
 https://aerotrips.fr/airfields/LFYS
 https://aerotrips.fr/airfields/LFYV
+https://aerotrips.fr/activities/3a-bikes-trelissac-g8w2l0f
 https://aerotrips.fr/activities/abalone-parachutisme-fo6kzr
 https://aerotrips.fr/activities/abaye-de-senanques-l74e1
 https://aerotrips.fr/activities/abbatiale-de-saintriquier-eotesb
@@ -450,6 +451,9 @@ https://aerotrips.fr/activities/ailes-anciennes-toulouse-mz0oul
 https://aerotrips.fr/activities/air-libre-parachutisme-g4ksli
 https://aerotrips.fr/activities/alambike-shop-1h75l
 https://aerotrips.fr/activities/albi-arret-de-bus-ligne-r-b7ph3d
+https://aerotrips.fr/activities/andernos-auto-agence-artis-ii6c99
+https://aerotrips.fr/activities/anse-de-vauville-plage-sports-nautiques-c2j6f9s
+https://aerotrips.fr/activities/aquarium-du-limousin-c7f3h2s
 https://aerotrips.fr/activities/aqueduc-de-la-vanne-yavkrh
 https://aerotrips.fr/activities/arcachon-parachutisme-5tm6g
 https://aerotrips.fr/activities/ardennes-karting-alpjes
@@ -488,6 +492,7 @@ https://aerotrips.fr/activities/beaux-de-provence-5fqlj9
 https://aerotrips.fr/activities/bistrot-du-terroir-98k4qm
 https://aerotrips.fr/activities/bistrotquai-canoe-company-l809hb
 https://aerotrips.fr/activities/boulodrome-de-tronquieres-mdqr4r
+https://aerotrips.fr/activities/boumai-restaurant-f7eff
 https://aerotrips.fr/activities/bourgogne-evasion-elx5j
 https://aerotrips.fr/activities/bourgogne-randonnees-xn4y3x
 https://aerotrips.fr/activities/bowling-de-douzy-puilrb
@@ -510,6 +515,7 @@ https://aerotrips.fr/activities/cap-blanc-nez-1ulz6
 https://aerotrips.fr/activities/cap-gris-nez-m3j5gv
 https://aerotrips.fr/activities/cathedrale-de-chartres
 https://aerotrips.fr/activities/cathedrale-notredame-de-sees-2ran4aq
+https://aerotrips.fr/activities/cathedrale-saintetienne-m5x3j7k
 https://aerotrips.fr/activities/center-parcs-les-bois-francs-tcp6r
 https://aerotrips.fr/activities/centre-commercial-amiens-grand-a-pvxug
 https://aerotrips.fr/activities/centre-commercial-les-portes-de-laigle-38le
@@ -518,6 +524,7 @@ https://aerotrips.fr/activities/centreville-de-compiegne-yade3x
 https://aerotrips.fr/activities/centreville-de-saumur-4cmqmp
 https://aerotrips.fr/activities/centreville-ornans-tr72qh
 https://aerotrips.fr/activities/champalsace-aerodrome--burmi
+https://aerotrips.fr/activities/chapelle-notre-dame-du-pont-lfbj02
 https://aerotrips.fr/activities/chateau-dainaylevieil-jiyeyo
 https://aerotrips.fr/activities/chateau-damboise-ttneey
 https://aerotrips.fr/activities/chateau-dancylefranc-rf3cn
@@ -535,6 +542,7 @@ https://aerotrips.fr/activities/chateau-de-buranlure-9i6guc
 https://aerotrips.fr/activities/chateau-de-bussyrabutin-65r4r
 https://aerotrips.fr/activities/chateau-de-canybarville-b7qiwn
 https://aerotrips.fr/activities/chateau-de-carrouges-e7mbzu
+https://aerotrips.fr/activities/chateau-de-caussade-x9f4q1w
 https://aerotrips.fr/activities/chateau-de-chambord-vrwxgo
 https://aerotrips.fr/activities/chateau-de-chantilly-x8nh8f
 https://aerotrips.fr/activities/chateau-de-chastellux-qae6tn
@@ -572,6 +580,7 @@ https://aerotrips.fr/activities/chateau-de-pont-saintpierre-fzyjyj
 https://aerotrips.fr/activities/chateau-de-pontchartrain-dvq8vb
 https://aerotrips.fr/activities/chateau-de-queribus-b5voa
 https://aerotrips.fr/activities/chateau-de-rambouillet-sb4yp
+https://aerotrips.fr/activities/chateau-de-rognac-b5n8r3j
 https://aerotrips.fr/activities/chateau-de-saintbrissonsurloire-83z7fa
 https://aerotrips.fr/activities/chateau-de-saintfargeau-20vrpr
 https://aerotrips.fr/activities/chateau-de-sassetot-lkecqb
@@ -601,10 +610,13 @@ https://aerotrips.fr/activities/chateau-le-peseau-xstdhk
 https://aerotrips.fr/activities/chateau-parc-et-zoo-de-thoiry-4srath
 https://aerotrips.fr/activities/chateau-rousset-7gfpq
 https://aerotrips.fr/activities/chateaumusee-de-dieppe-ljxd6ib
+https://aerotrips.fr/activities/chicotel-perigueux-boulazac-v7t1z5a
 https://aerotrips.fr/activities/circuit-dalbi-et-karting-n7zx79
+https://aerotrips.fr/activities/cite-du-cuir-saint-junien-lfbj03
 https://aerotrips.fr/activities/cite-medievale-de-semurenauxois-k1fgma
 https://aerotrips.fr/activities/club-de-golf-de-granville-uo47s9
 https://aerotrips.fr/activities/club-hippique-daubigny-p673gl
+https://aerotrips.fr/activities/collegiale-saint-junien-lfbj01
 https://aerotrips.fr/activities/cortexvirtual-akcovr
 https://aerotrips.fr/activities/cote-piste-mgjbw
 https://aerotrips.fr/activities/creperie-les-2-tours-bwyile
@@ -613,6 +625,7 @@ https://aerotrips.fr/activities/cycle-et-sport-v85vo
 https://aerotrips.fr/activities/cyclevasion-jq2ct
 https://aerotrips.fr/activities/cyclo-de-loire-ta7sqa
 https://aerotrips.fr/activities/cyclorail-du-sancerrois-1oog6he
+https://aerotrips.fr/activities/dentelles-de-montmirail-9gf3jj
 https://aerotrips.fr/activities/dieppe-h5gh68
 https://aerotrips.fr/activities/dinard-centre-76yrs
 https://aerotrips.fr/activities/domaine-de-chaumontsurloire-cuhfa
@@ -620,9 +633,11 @@ https://aerotrips.fr/activities/domaine-du-lac-de-douzy-b7j49l
 https://aerotrips.fr/activities/domaine-malar-5k81ji
 https://aerotrips.fr/activities/donjon-de-bours-fv942f
 https://aerotrips.fr/activities/donjon-de-niort-snd42
+https://aerotrips.fr/activities/dune-du-pilat-5e9go
 https://aerotrips.fr/activities/ecole-de-parachutisme-dagen-iuege
 https://aerotrips.fr/activities/ecole-francaise-de-parachutisme-de-saumur-dbm98e
 https://aerotrips.fr/activities/ecosport-37-2n1xmon
+https://aerotrips.fr/activities/eglise-saint-eloi-zew9lkm
 https://aerotrips.fr/activities/entrainement-compagnies-aeriennes-vavqy
 https://aerotrips.fr/activities/espace-air-passion-4cqmhd
 https://aerotrips.fr/activities/europa-park-sqr1l9
@@ -634,9 +649,11 @@ https://aerotrips.fr/activities/fort-boyard-52gg4n
 https://aerotrips.fr/activities/fort-de-bellegarde-ogqeew
 https://aerotrips.fr/activities/fort-de-la-conchee-pvq9pi
 https://aerotrips.fr/activities/futuroscope-ee8gwb
+https://aerotrips.fr/activities/ganterie-agnelle-saint-junien-lfbj04
 https://aerotrips.fr/activities/gare-aulnataeroport-7av4k
 https://aerotrips.fr/activities/gare-de-compiegne-v5yu39
 https://aerotrips.fr/activities/gare-de-granville-79znbi
+https://aerotrips.fr/activities/gare-de-limogesbenedictins-b2k8p4m
 https://aerotrips.fr/activities/gare-de-poitiers-tli08k
 https://aerotrips.fr/activities/gare-saint-cyr-l-ecole
 https://aerotrips.fr/activities/gite-la-palissandre-zazzeo
@@ -655,6 +672,7 @@ https://aerotrips.fr/activities/gr34-pointe-du-conguel-tjkvlo
 https://aerotrips.fr/activities/gr340-bangor-6m7k67
 https://aerotrips.fr/activities/gr64-domme-dtgl5g
 https://aerotrips.fr/activities/guedelon-0pywnc
+https://aerotrips.fr/activities/halles-centrales-w1k5r8p
 https://aerotrips.fr/activities/hippodrome-agen-la-garenne-x08vm
 https://aerotrips.fr/activities/hippodrome-du-bequet-td3jec
 https://aerotrips.fr/activities/hostellerie-de-la-renaissance-00hsr9
@@ -668,10 +686,14 @@ https://aerotrips.fr/activities/hotel-restaurant-le-coeur-dor-im9sd8
 https://aerotrips.fr/activities/httpschateaudommervillecom-h3qqsc
 https://aerotrips.fr/activities/hurricane-bar-brasserie-zcilfo
 https://aerotrips.fr/activities/ibis-styles-colmar-nord-0c0fib
+https://aerotrips.fr/activities/ibis-styles-perigueux-trelissac-m2c6y8s
 https://aerotrips.fr/activities/il-giardino-ditalia-2pq1h
 https://aerotrips.fr/activities/il-gusto-0e8xp
 https://aerotrips.fr/activities/iles-saint-marcouf-lfmq6a
 https://aerotrips.fr/activities/izee-appn9
+https://aerotrips.fr/activities/jardin-botanique-chateau-de-vauville-m3x7k2p
+https://aerotrips.fr/activities/jardin-botanique-de-leveche-q4n8v1z
+https://aerotrips.fr/activities/jetee-d-andernos-6q9x88z
 https://aerotrips.fr/activities/joigny-hp2knb
 https://aerotrips.fr/activities/karting-de-cosne-e3isra
 https://aerotrips.fr/activities/kayakomat-blere-70n02n
@@ -729,8 +751,10 @@ https://aerotrips.fr/activities/le-pigeonnier-fmnz28
 https://aerotrips.fr/activities/le-plan-de-vol-l73k8
 https://aerotrips.fr/activities/le-planeur-q0qgeo
 https://aerotrips.fr/activities/le-pole-nautique-de-saumur-7o1a0o
+https://aerotrips.fr/activities/le-pont-saintetienne-f4g8n1v
 https://aerotrips.fr/activities/le-racer-cafe-rbhz
 https://aerotrips.fr/activities/le-relais-de-mondesir-4cjtcv
+https://aerotrips.fr/activities/le-relais-du-moulin-h4d9e6u
 https://aerotrips.fr/activities/le-rocher-xpbyrm
 https://aerotrips.fr/activities/le-saint-ex-lgiy3
 https://aerotrips.fr/activities/le-site-archeologique-galloromain-de-bois-labbe--xtgioj
@@ -743,6 +767,7 @@ https://aerotrips.fr/activities/lenvol-hzvvl
 https://aerotrips.fr/activities/lenvol-lille-ykpvnh
 https://aerotrips.fr/activities/lenvol-vhpr4d
 https://aerotrips.fr/activities/lenvol-yta74h
+https://aerotrips.fr/activities/les-ailes-ec3sk7
 https://aerotrips.fr/activities/les-ailes-volantes-bqdv7j
 https://aerotrips.fr/activities/les-argonautes-1omju
 https://aerotrips.fr/activities/les-papilles-dstiv
@@ -782,6 +807,7 @@ https://aerotrips.fr/activities/musee-des-debuts-de-laviation-8sxnxu
 https://aerotrips.fr/activities/musee-du-moteur-v5dkbn
 https://aerotrips.fr/activities/musee-estran-cite-de-la-mer-ub9l7
 https://aerotrips.fr/activities/musee-europeen-de-laviation-de-chasse-kt4cgj
+https://aerotrips.fr/activities/musee-national-adrien-dubouche-p9r2t6w
 https://aerotrips.fr/activities/museoparc-alesia-i8n3k
 https://aerotrips.fr/activities/neufbrisach-26x088
 https://aerotrips.fr/activities/new-kashmir-9erhq
@@ -798,12 +824,15 @@ https://aerotrips.fr/activities/parc-ornithologique-du-marquenterre-nvy1f
 https://aerotrips.fr/activities/paris-blois-parachutisme-cb5vy
 https://aerotrips.fr/activities/picardie-forets-vertes-01p28g
 https://aerotrips.fr/activities/picardie-forets-vertes-soissons-8g0tq
+https://aerotrips.fr/activities/pierres-pouquelees-vauville-h5t8b3z
 https://aerotrips.fr/activities/piper-pub-6zg82k
 https://aerotrips.fr/activities/piscine-du-chevalet-q5ajv
 https://aerotrips.fr/activities/pizzinella-la-baule-mun85s
 https://aerotrips.fr/activities/plage-de-berck-y8x9w
 https://aerotrips.fr/activities/plage-de-deauville-klqsb
 https://aerotrips.fr/activities/plage-des-phoques-gr120-ddefk
+https://aerotrips.fr/activities/plage-des-quinconces-vc7h9h7
+https://aerotrips.fr/activities/plage-du-betey-ep2gc7u
 https://aerotrips.fr/activities/plage-du-prieure-gr34-rt8oz
 https://aerotrips.fr/activities/plage-du-touquet-v0peta
 https://aerotrips.fr/activities/pointe-du-decolle-gr34-67xxa
@@ -812,10 +841,12 @@ https://aerotrips.fr/activities/pont-de-brotonne-d6lde
 https://aerotrips.fr/activities/pont-de-normandie-3591rc
 https://aerotrips.fr/activities/pont-de-tancarville-48gzb
 https://aerotrips.fr/activities/pontcanal-de-briare-a3v3xj
+https://aerotrips.fr/activities/port-ostreicole-d-andernos-wu65mo9
 https://aerotrips.fr/activities/provins-59ityh
 https://aerotrips.fr/activities/puy-du-fou-kh7ejc
 https://aerotrips.fr/activities/quiberon-aventure-38ey5s
 https://aerotrips.fr/activities/racing-kart-de-cormeilles-et-le-simone-lkpwqk
+https://aerotrips.fr/activities/reserve-naturelle-mare-de-vauville-q9w4n1r
 https://aerotrips.fr/activities/reserve-ornithologique-du-teich-3ff6qc
 https://aerotrips.fr/activities/restaurant-daeroscopia-9qdv9
 https://aerotrips.fr/activities/restaurants-de-laeroport-de-rennes-i033g
@@ -824,6 +855,7 @@ https://aerotrips.fr/activities/rogny-les-sept-ecluses-k2xby8
 https://aerotrips.fr/activities/saintmalo-2djz9d
 https://aerotrips.fr/activities/saumur-forest-aventures-parc-de-loisirs-vpik4j
 https://aerotrips.fr/activities/saumur-ter-k4fce
+https://aerotrips.fr/activities/sentier-des-feutrieres-lfbj06
 https://aerotrips.fr/activities/site-archeologique-dalesia-73sor
 https://aerotrips.fr/activities/site-descalade-de-beauvoir-p7pd9p
 https://aerotrips.fr/activities/site-descalade-de-la-grosse-roche-7zg48
@@ -847,6 +879,7 @@ https://aerotrips.fr/activities/velistation-migennes-4os7y
 https://aerotrips.fr/activities/velo-baulois-libre-service-7oxdro
 https://aerotrips.fr/activities/velo-taxi-bikes-mnv0vg
 https://aerotrips.fr/activities/velocab-fmwdx
+https://aerotrips.fr/activities/velocation-andernos-dwd89k
 https://aerotrips.fr/activities/veloland-city-cycles-6njm6w
 https://aerotrips.fr/activities/velolive-ardeche-tzju9
 https://aerotrips.fr/activities/velos-yelo-en-libreservice-5s9i5
@@ -857,6 +890,7 @@ https://aerotrips.fr/activities/vezelay-3u8ul
 https://aerotrips.fr/activities/viaduc-de-millau-k8yz4
 https://aerotrips.fr/activities/vignes-de-chablis-19iem
 https://aerotrips.fr/activities/vogue-pyertk
+https://aerotrips.fr/activities/voie-verte-berges-de-lisle-k3m7p2n
 https://aerotrips.fr/activities/vulcania-pmz47k
 https://aerotrips.fr/activities/za-de-lecoparc-du-grandeols-ynthfa
 https://aerotrips.fr/activities/zac-de-marzy-vudqvk
@@ -877,6 +911,8 @@ https://aerotrips.fr/trips/plaine-de-versailles-et-bords-de-seine-l9hy4
 https://aerotrips.fr/trips/randonnee-sur-la-cote-entre-dinard-et-saintmalo-gpd3ov
 https://aerotrips.fr/trips/tour-de-paris-yrnxdr
 https://aerotrips.fr/trips/tour-des-chateaux-de-la-loire-dyleki
+https://aerotrips.fr/trips/versailles-maintenon-thoiry-s3w0si
+https://aerotrips.fr/events/3e-journee-de-laviation-x1pfj
 https://aerotrips.fr/events/4aEHXm5RDKFv1ybM2kPW
 https://aerotrips.fr/events/70e-anniversaire-de-laeroclub-rene-mouchotte-9afi1
 https://aerotrips.fr/events/7aC47lIwufZhRbIQx13b
@@ -896,11 +932,13 @@ https://aerotrips.fr/events/RUzJ7pTlfwblQkkM3BPL
 https://aerotrips.fr/events/Tl0xW7jusFkkfYtpGHyW
 https://aerotrips.fr/events/air-legend-2026-z3ed4g
 https://aerotrips.fr/events/airexpo-2026-3k0f3
+https://aerotrips.fr/events/anr-parissaclayversailles-ur8o39
 https://aerotrips.fr/events/berzyk-2026-ktqy8v
 https://aerotrips.fr/events/cafescroissants-2026-yxii5r
 https://aerotrips.fr/events/cafescroissants-rassemblement-aeronautique-f0ewtp
 https://aerotrips.fr/events/exposition-ailes-contre-elles-rg358f
 https://aerotrips.fr/events/fKdueGGFonta3tBlh8xw
+https://aerotrips.fr/events/festiulm-zfv7ho
 https://aerotrips.fr/events/flyinsoiree-la-baule-bjisuh
 https://aerotrips.fr/events/initiation-anr-nzfrli
 https://aerotrips.fr/events/kPYEjSQrKVslVvLq4SEx
@@ -911,6 +949,7 @@ https://aerotrips.fr/events/nUyZ0A7F30cS54Lda989
 https://aerotrips.fr/events/p6VWJ2ciibPH2i4VKUCv
 https://aerotrips.fr/events/rassemblement-des-femmes-de-lair-m5fb6
 https://aerotrips.fr/events/rbJLlF6zel44MW4xaZq1
+https://aerotrips.fr/events/rencontres-internationales-de-cerfsvolants-de-bercksurmer-7nidif
 https://aerotrips.fr/events/skyEkl0eW9FGLn0Lcxbj
 https://aerotrips.fr/events/tFNuiDoF2IfrQt0Hws7k
 https://aerotrips.fr/events/vJkw18pFs4660wP4IyID
