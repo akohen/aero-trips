@@ -59,8 +59,8 @@ function TableList<T>({
     chunks[activePage-1]?.map(([key, e]) => (
       <ErrorBoundary key={key}>
         <Table.Tr>
-          {columns.map(c => (
-            <Table.Td {...c.linkTo ? {className:"clickable", onClick:() => navigate(c.linkTo!(e, key))} : {}} >
+          {columns.map((c, i) => (
+            <Table.Td key={i} {...c.linkTo ? {className:"clickable", onClick:() => navigate(c.linkTo!(e, key))} : {}} >
               {c.row(e)}
             </Table.Td>
           ))}
