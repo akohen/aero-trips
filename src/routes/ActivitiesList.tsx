@@ -40,7 +40,7 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
     {
       title: "Nom du lieu ou de l'activité",
       row: (e) => (<ActivityTitle activity={e} profile={profile} />),
-      sortFn: (a, b) => a.name.localeCompare(b.name),
+      sortFn: (a, b) => (a.name ?? '').localeCompare(b.name ?? ''),
       linkTo: (e) => `/activities/${e.id}`,
     },
     {

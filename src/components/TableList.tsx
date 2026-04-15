@@ -2,6 +2,7 @@ import { Table, Pagination, Center, Text, ActionIcon, Group } from '@mantine/cor
 import { IconCaretDownFilled, IconCaretUpDownFilled, IconCaretUpFilled, IconLayoutGrid } from '@tabler/icons-react';
 import { useEffect, useState, type JSX } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
+import ErrorBoundary from './ErrorBoundary';
 
 function chunk<T>(array: T[], size: number): T[][] {
   if (!array.length) {return [];}
@@ -54,15 +55,17 @@ function TableList<T>({
       setSortDir(1)
     }
   };
-  const rows = chunks.length > 0 ? 
+  const rows = chunks.length > 0 ?
     chunks[activePage-1]?.map(([key, e]) => (
-      <Table.Tr key={key}>
-        {columns.map(c => (
-          <Table.Td {...c.linkTo ? {className:"clickable", onClick:() => navigate(c.linkTo!(e, key))} : {}} >
-            {c.row(e)}
-          </Table.Td>
-        ))}
-      </Table.Tr>
+      <ErrorBoundary key={key}>
+        <Table.Tr>
+          {columns.map(c => (
+            <Table.Td {...c.linkTo ? {className:"clickable", onClick:() => navigate(c.linkTo!(e, key))} : {}} >
+              {c.row(e)}
+            </Table.Td>
+          ))}
+        </Table.Tr>
+      </ErrorBoundary>
   )) : (
     <Table.Tr>
       <Table.Td colSpan={columns.length}>

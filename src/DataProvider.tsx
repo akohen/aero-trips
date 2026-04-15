@@ -1,11 +1,43 @@
 import { useEffect, useState } from 'react'
 import App from './App.tsx'
-import { collection, doc, getDoc, getDocs, setDoc, query, where } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, query, where, type DocumentData } from "firebase/firestore";
 import { Activity, Airfield, Event, MapView, Profile, Trip } from '.';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from './data/firebase.ts';
 import airfieldsData from './data/airfields.json'
 import activitiesData from './data/activities.json'
+
+const toAirfield = (data: DocumentData, id: string): Airfield | null => {
+  if (!data.codeIcao || !data.name || !data.position || !data.runways || !data.status) {
+    console.warn('[DataProvider] Skipping malformed airfield:', id, data)
+    return null
+  }
+  return data as Airfield
+}
+
+const toActivity = (data: DocumentData, id: string): Activity | null => {
+  if (!data.name || !data.position || !data.type) {
+    console.warn('[DataProvider] Skipping malformed activity:', id, data)
+    return null
+  }
+  return { ...data, id } as Activity
+}
+
+const toTrip = (data: DocumentData, id: string): Trip | null => {
+  if (!data.name || !data.steps || !data.uid) {
+    console.warn('[DataProvider] Skipping malformed trip:', id, data)
+    return null
+  }
+  return data as Trip
+}
+
+const toEvent = (data: DocumentData, id: string): Event | null => {
+  if (!data.title || !data.airfieldId || !data.startDate) {
+    console.warn('[DataProvider] Skipping malformed event:', id, data)
+    return null
+  }
+  return { ...data, id } as Event
+}
 
 
 class UserProfile implements Profile {
@@ -43,7 +75,7 @@ export const DataProvider = () => {
       collection(db, "airfields"), 
       where("updated_at", ">=", new Date(airfieldsData.updated_at))
     ));
-    req.docs.forEach(e => newAirfields.set(e.id, e.data() as Airfield))
+    req.docs.forEach(e => { const a = toAirfield(e.data(), e.id); if (a) newAirfields.set(e.id, a) })
     setAirfields(new Map<string, Airfield>(newAirfields.entries()))
   }
 
@@ -56,21 +88,21 @@ export const DataProvider = () => {
       collection(db, "activities"), 
       where("updated_at", ">=", new Date(activitiesData.updated_at))
     ));
-    req.docs.forEach(e => newActivities.set(e.id, {...e.data(), id:e.id} as Activity))
+    req.docs.forEach(e => { const a = toActivity(e.data(), e.id); if (a) newActivities.set(e.id, a) })
     setActivities(new Map<string, Activity>(newActivities.entries()))
   }
 
   const getTrips = async () => {
     const query = await getDocs(collection(db, "trips"));
     const newTrips = new Map<string, Trip>()
-    query.docs.forEach(e => newTrips.set(e.id, e.data() as Trip))
+    query.docs.forEach(e => { const t = toTrip(e.data(), e.id); if (t) newTrips.set(e.id, t) })
     setTrips(newTrips)
   }
 
   const getEvents = async () => {
     const query = await getDocs(collection(db, "events"));
     const newEvents = new Map<string, Event>()
-    query.docs.forEach(e => newEvents.set(e.id, {...e.data(), id: e.id} as Event))
+    query.docs.forEach(e => { const ev = toEvent(e.data(), e.id); if (ev) newEvents.set(e.id, ev) })
     setEvents(newEvents)
   }
 

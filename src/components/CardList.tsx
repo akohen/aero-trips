@@ -3,6 +3,7 @@ import { IconLayoutList, IconSortAscending, IconSortDescending } from '@tabler/i
 import { useEffect, useState, type JSX } from 'react';
 import { useSearchParams } from 'react-router';
 import CardListItem from './CardListItem';
+import ErrorBoundary from './ErrorBoundary';
 
 function chunk<T>(array: T[], size: number): T[][] {
   if (!array.length) { return []; }
@@ -105,14 +106,15 @@ function CardList<T>({
       {items && items.length > 0 ? (
         <SimpleGrid minColWidth="350px" mb="md">
           {items.map(([key, item]) => (
-            <CardListItem
-              key={key}
-              item={item}
-              imgUrl={getImage ? getImage(item, key) : undefined}
-              link={primaryLinkTo(item, key)}
-              cardConfig={cardConfig}
-              itemKey={key}
-            />
+            <ErrorBoundary key={key}>
+              <CardListItem
+                item={item}
+                imgUrl={getImage ? getImage(item, key) : undefined}
+                link={primaryLinkTo(item, key)}
+                cardConfig={cardConfig}
+                itemKey={key}
+              />
+            </ErrorBoundary>
           ))}
         </SimpleGrid>
       ) : (
