@@ -67,7 +67,7 @@ export const DataProvider = () => {
 
   const getAirfields = async () => {
     const newAirfields = new Map<string, Airfield>()
-    airfieldsData.airfields.forEach(e => newAirfields.set(e.codeIcao, e as Airfield))
+    airfieldsData.airfields.forEach(e => { const a = toAirfield(e, e.codeIcao); if (a) newAirfields.set(e.codeIcao, a) })
     // Called here so that the data is displayed as soon as possible
     setAirfields(newAirfields)
     
@@ -81,7 +81,7 @@ export const DataProvider = () => {
 
   const getActivities = async () => {
     const newActivities = new Map<string, Activity>()
-    activitiesData.activities.forEach(e => newActivities.set(e.id, e as Activity))
+    activitiesData.activities.forEach(e => { const a = toActivity(e, e.id); if (a) newActivities.set(e.id, a) })
     setActivities(newActivities)
     
     const req = await getDocs(query(
