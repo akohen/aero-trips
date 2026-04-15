@@ -4,6 +4,7 @@ import StarterKit from "@tiptap/starter-kit"
 import Youtube from "@tiptap/extension-youtube";
 import { ImageWithFallback } from "../utils/ImageWithFallback";
 import { useNavigate } from "react-router";
+import DOMPurify from "dompurify";
 
 const Description = ({content}: {content: JSONContent}) => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const Description = ({content}: {content: JSONContent}) => {
     className="tiptap-content"
     miw={320}
     onClick={handleClick}
-    dangerouslySetInnerHTML={{__html: generateHTML(content, [StarterKit, ImageWithFallback, Youtube])}}
+    dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(generateHTML(content, [StarterKit, ImageWithFallback, Youtube]), { ADD_TAGS: ['iframe'], ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'] })}}
   />
 )}
 
