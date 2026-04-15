@@ -35,7 +35,7 @@ const ActivityForm = ({activity, profile, id, activities, airfields}: {activity:
     },
     validate: {
       name: (value: string) => (value.length < 2 ? 'Le nom doit avoir au moins 2 charactères' : null),
-      position: (value) => (/^-?\d+.\d+, -?\d+.\d+$/g.test(value) ? null : 'Doit être de la forme "Latitude, Longitude" (eg. "12.345, -6.789")'),
+      position: (value) => (/^-?\d+\.\d+, -?\d+\.\d+$/.test(value) ? null : 'Doit être de la forme "Latitude, Longitude" (eg. "12.345, -6.789")'),
       type: (value: ActivityType[]) => value.length == 0 ? 'Choisir au moins 1 type' : null,
     }
   });
