@@ -23,6 +23,7 @@ import dayjs from "dayjs";
 import LastChanges from "./routes/LastChanges";
 import EventsList from "./routes/EventsList";
 import EventDetails from "./routes/EventDetails";
+import NotFound from "./routes/NotFound";
 
 
 export default function App(data : Data) {
@@ -105,6 +106,7 @@ export default function App(data : Data) {
         <Route path="/events/:eventId"        element={<EventDetails {...data} />} />
         <Route path="/contact"                element={<Contact {...data} />} />
         <Route path="/changes"                element={<LastChanges {...data} />} />
+        <Route path="*"                       element={<NotFound />} />
       </Route>
     </Routes>
     </DatesProvider>
