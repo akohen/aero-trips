@@ -11,7 +11,7 @@ function DMS2DD(str) {
 }
 
 import creds from "../serviceAccountKey.json" with { "type": "json" }
-const firebaseConfig = {
+const config = {
   apiKey: "AIzaSyAleHj_gty6XncQLEDlLn3Ih7X08KuQ-jw",
   authDomain: "aero-trips.firebaseapp.com",
   projectId: "aero-trips",
@@ -22,7 +22,7 @@ const firebaseConfig = {
   credential: admin.credential.cert(creds),
 };
 const firestore = admin.firestore;
-admin.initializeApp(firebaseConfig);
+admin.initializeApp(config);
 const db = admin.firestore();
 db.settings({ ignoreUndefinedProperties: true })
 const batch = db.batch()

@@ -5,19 +5,13 @@ import { generateHTML } from '@tiptap/html'
 import StarterKit from "@tiptap/starter-kit"
 import Link from "@tiptap/extension-link"
 import Image from "@tiptap/extension-image"
+import { firebaseConfig } from '../src/data/firebase.ts'
 import creds from "../serviceAccountKey.json" with { "type": "json" }
-const firebaseConfig = {
-  apiKey: "AIzaSyAleHj_gty6XncQLEDlLn3Ih7X08KuQ-jw",
-  authDomain: "aero-trips.firebaseapp.com",
-  projectId: "aero-trips",
-  storageBucket: "aero-trips.appspot.com",
-  messagingSenderId: "484361364174",
-  appId: "1:484361364174:web:4c4eaf632f931956aca69f",
-  measurementId: "G-CKJYT103VV",
-  credential: admin.credential.cert(creds),
-};
 
-admin.initializeApp(firebaseConfig);
+admin.initializeApp({
+    ...firebaseConfig[process.env.NODE_ENV === 'production' ? 'production' : 'staging'],
+    credential: admin.credential.cert(creds)
+});
 const db = admin.firestore();
 db.settings({ ignoreUndefinedProperties: true });
 

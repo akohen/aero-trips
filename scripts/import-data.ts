@@ -1,15 +1,5 @@
 import { Activity, Airfield } from '../src';
-import { FirebaseOptions } from 'firebase/app';
-
-const firebaseConfig: FirebaseOptions = {
-  apiKey: "AIzaSyAleHj_gty6XncQLEDlLn3Ih7X08KuQ-jw",
-  authDomain: "aerotrips.fr",
-  projectId: "aero-trips",
-  storageBucket: "aero-trips.appspot.com",
-  messagingSenderId: "484361364174",
-  appId: "1:484361364174:web:4c4eaf632f931956aca69f",
-  measurementId: "G-CKJYT103VV"
-};
+import { firebaseConfig } from '../src/data/firebase'
 import { readFileSync } from "fs";
 import creds from "../serviceAccountKey.json" with { "type": "json" }
 import chalk from 'chalk';
@@ -21,7 +11,7 @@ import { select, input } from '@inquirer/prompts';
 const changes: {document: string, data: object}[] = []
 let flags = 0
 admin.initializeApp({
-    ...firebaseConfig,
+    ...firebaseConfig[process.env.NODE_ENV === 'production' ? 'production' : 'staging'],
     credential: admin.credential.cert(creds as admin.ServiceAccount)
 });
 const db = admin.firestore();
