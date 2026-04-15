@@ -76,7 +76,6 @@ const TripForm = ({airfields, activities, trips, profile, id}: Data & {id: strin
       date,
       updated_at: Timestamp.fromDate(new Date()),
     }
-    console.log(newTrip)
     const tripID = id ? id : slug(newTrip.name)
     setDoc(doc(db, "trips", tripID), newTrip, {merge:false})
       .then(() => {
