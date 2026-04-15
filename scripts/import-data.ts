@@ -60,7 +60,7 @@ const getPOIs = (activities: Map<string, Activity>, search: string) => {
     const pois = JSON.parse(readFileSync(`./scripts/POI.json`, 'utf8'))
     console.log(`Loaded ${pois.length} POIs`)
 
-    return pois.filter((poi: any[]) => {
+    return pois.filter((poi: [string, number, number]) => {
         if(search && !poi[0].normalize('NFD')
                 .replace(/[\u0300-\u036f]/g, '')
                 .toLowerCase()
@@ -79,7 +79,7 @@ const getPOIs = (activities: Map<string, Activity>, search: string) => {
     })
 }
 
-const showDiff = (docPath: string, existing: Record<string, any> | null, incoming: Record<string, any>) => {
+const showDiff = (docPath: string, existing: Record<string, unknown> | null, incoming: Record<string, unknown>) => {
     if (!existing) {
         console.log(chalk.green(`  [new] ${docPath}`))
         for (const key of Object.keys(incoming)) {
@@ -113,8 +113,8 @@ const importAirfields = async (filePath: string) => {
         const docPath = `airfields/${airfield.codeIcao}`
         console.log(`Queuing airfield ${chalk.bold.blue(airfield.codeIcao)} - ${airfield.name}`)
         const existing = (await db.doc(docPath).get()).data() ?? null
-        const data = { ...airfield as unknown as Record<string, any>, updated_at: admin.firestore.Timestamp.fromDate(new Date()) }
-        showDiff(docPath, existing as Record<string, any> | null, data)
+        const data = { ...airfield as unknown as Record<string, unknown>, updated_at: admin.firestore.Timestamp.fromDate(new Date()) }
+        showDiff(docPath, existing as Record<string, unknown> | null, data)
         changes.push({document: docPath, data})
     }
     console.log(`Queued ${airfields.length} airfield(s) from ${filePath}`)
@@ -127,8 +127,8 @@ const importActivities = async (filePath: string) => {
         const docPath = `activities/${activity.id}`
         console.log(`Queuing activity ${chalk.bold.blue(activity.id)} - ${activity.name}`)
         const existing = (await db.doc(docPath).get()).data() ?? null
-        const data = { ...activity as unknown as Record<string, any>, updated_at: admin.firestore.Timestamp.fromDate(new Date()) }
-        showDiff(docPath, existing as Record<string, any> | null, data)
+        const data = { ...activity as unknown as Record<string, unknown>, updated_at: admin.firestore.Timestamp.fromDate(new Date()) }
+        showDiff(docPath, existing as Record<string, unknown> | null, data)
         changes.push({document: docPath, data})
     }
     console.log(`Queued ${activities.length} activity/activities from ${filePath}`)
@@ -166,7 +166,7 @@ if(process.argv.includes('--poi')) {
     const activities = await getActivities(db)
     const poi = getPOIs(activities, searchString)
     console.log(`Found ${poi.length} POIs`)
-    poi.slice(0, 50).forEach((poi: any[]) => {
+    poi.slice(0, 50).forEach((poi: [string, number, number]) => {
         console.log(`New POI ${chalk.bold.blue(poi[0])}
 https://aerotrips.fr/map/${poi[1]}/${poi[2]}
 https://google.com/search?q=${encodeURIComponent(poi[0]).replace(/'/g, "%27")}
@@ -215,7 +215,7 @@ if(flags === 0) {
         const activities = await getActivities(db)
         const poi = getPOIs(activities, searchString)
         console.log(`Found ${poi.length} POIs`)
-        poi.slice(0, 50).forEach((poi: any[]) => {
+        poi.slice(0, 50).forEach((poi: [string, number, number]) => {
             console.log(`New POI ${chalk.bold.blue(poi[0])}
 https://aerotrips.fr/map/${poi[1]}/${poi[2]}
 https://google.com/search?q=${encodeURIComponent(poi[0]).replace(/'/g, "%27")}

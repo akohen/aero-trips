@@ -44,9 +44,9 @@ export default defineConfig({
       output: {
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router'],
-          'vendor-mantine': ['@mantine/core', '@mantine/dates', '@mantine/form', '@mantine/hooks', '@mantine/tiptap'],
+          'vendor-mantine': ['@mantine/core', '@mantine/dates', '@mantine/form', '@mantine/hooks'],
           'vendor-map': ['leaflet', 'react-leaflet'],
-          'vendor-tiptap': ['@tiptap/react', '@tiptap/extension-image', '@tiptap/extension-link', '@tiptap/extension-youtube'],
+          'vendor-tiptap': ['@tiptap/react', '@tiptap/extension-image', '@tiptap/extension-link', '@tiptap/extension-youtube', '@mantine/tiptap'],
           data: ['src/data/airfields.json', 'src/data/activities.json'],
         },
       },
