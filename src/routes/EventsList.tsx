@@ -95,6 +95,8 @@ const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f
     ) : undefined,
   }
 
+  if (events.size === 0) return <p>Chargement en cours</p>
+
   return (
     <>
       <Group mb="md">
