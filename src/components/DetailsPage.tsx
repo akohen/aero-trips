@@ -3,6 +3,7 @@ import BackButton from "./BackButton"
 import EditButton from "./EditButton"
 import { Activity, Airfield, Data } from ".."
 import { findNearest, iconsList, shortener, titleCase } from "../utils/utils"
+import { buildItemSeo, DEFAULT_DESCRIPTION, DEFAULT_TITLE } from "../utils/itemSeo"
 import { ButtonVACMap, ButtonViewOnMap } from "./CommonButtons"
 import { IconBrandGoogleMaps, IconRoute } from "@tabler/icons-react"
 import { Link } from "react-router"
@@ -30,18 +31,7 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
     if (!isInDraft) setDraft({ ...draft, steps: [...draft.steps, { type, id }] })
   }
   useEffect(() => {
-    const isAirfield = 'codeIcao' in item
-    const displayName = titleCase(item.name)
-    const url = `https://aerotrips.fr/${type}/${id}`
-
-    const title = isAirfield
-      ? `Aérodrome de ${displayName} (${item.codeIcao}) — activités à proximité | AeroTrips`
-      : `${displayName} — activité à proximité d'un aérodrome | AeroTrips`
-
-    const foodMention = nearbyFoodCount > 0 ? ', dont des restaurants,' : ''
-    const description = isAirfield
-      ? `Que faire près de l'aérodrome de ${displayName} (${item.codeIcao}) ? Activités et bonnes adresses${foodMention} à proximité, pistes, services et sorties partagées par la communauté des pilotes.`
-      : `${displayName} — activité à découvrir en avion à proximité d'un aérodrome, avec les terrains et sorties AeroTrips les plus proches.`
+    const { title, description, url, ogType, jsonLdItem, jsonLdBreadcrumb } = buildItemSeo(item, { nearbyFoodCount })
 
     document.title = title
 
@@ -59,56 +49,9 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
     setMeta('meta[property="og:title"]', 'og:title', title)
     setMeta('meta[property="og:description"]', 'og:description', description)
     setMeta('meta[property="og:url"]', 'og:url', url)
-    setMeta('meta[property="og:type"]', 'og:type', 'place')
+    setMeta('meta[property="og:type"]', 'og:type', ogType)
     setMeta('meta[name="twitter:title"]', 'twitter:title', title)
     setMeta('meta[name="twitter:description"]', 'twitter:description', description)
-
-    // JSON-LD structured data
-    const schemaType = isAirfield ? 'Airport' : 'TouristAttraction'
-    const schema: Record<string, unknown> = {
-      '@context': 'https://schema.org',
-      '@type': schemaType,
-      name: isAirfield ? `Aérodrome de ${displayName}` : displayName,
-      description,
-      url,
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: displayName,
-        addressCountry: 'FR',
-      },
-      geo: {
-        '@type': 'GeoCoordinates',
-        latitude: item.position.latitude,
-        longitude: item.position.longitude,
-      },
-    }
-    if (isAirfield) {
-      schema.alternateName = item.codeIcao
-      schema.iataCode = item.codeIcao
-      if (item.fuels && item.fuels.length > 0) {
-        schema.amenityFeature = item.fuels.map((f) => ({
-          '@type': 'LocationFeatureSpecification',
-          name: `Carburant ${f}`,
-          value: true,
-        }))
-      }
-    }
-    if (item.website) schema.sameAs = item.website
-
-    // Breadcrumb: Accueil › Aérodromes/Activités › item
-    const breadcrumb = {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://aerotrips.fr/' },
-        {
-          '@type': 'ListItem', position: 2,
-          name: isAirfield ? 'Aérodromes' : 'Activités',
-          item: `https://aerotrips.fr/${type}`,
-        },
-        { '@type': 'ListItem', position: 3, name: isAirfield ? `${displayName} (${item.codeIcao})` : displayName, item: url },
-      ],
-    }
 
     const setSchema = (key: string, value: object) => {
       let el = document.querySelector(`script[data-schema="${key}"]`) as HTMLScriptElement | null
@@ -120,22 +63,22 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
       }
       el.textContent = JSON.stringify(value)
     }
-    setSchema('item', schema)
-    setSchema('breadcrumb', breadcrumb)
+    setSchema('item', jsonLdItem)
+    setSchema('breadcrumb', jsonLdBreadcrumb)
 
     return () => {
-      document.title = 'AeroTrips'
-      setMeta('meta[name="description"]', 'description', 'Découvrez des idées de sorties aériennes en France : terrains d\'aviation, activités à proximité, événements et itinéraires partagés par la communauté.')
-      setMeta('meta[property="og:title"]', 'og:title', 'AeroTrips')
-      setMeta('meta[property="og:description"]', 'og:description', 'Découvrez des idées de sorties aériennes en France : terrains d\'aviation, activités à proximité, événements et itinéraires partagés par la communauté.')
+      document.title = DEFAULT_TITLE
+      setMeta('meta[name="description"]', 'description', DEFAULT_DESCRIPTION)
+      setMeta('meta[property="og:title"]', 'og:title', DEFAULT_TITLE)
+      setMeta('meta[property="og:description"]', 'og:description', DEFAULT_DESCRIPTION)
       setMeta('meta[property="og:url"]', 'og:url', 'https://aerotrips.fr/')
       setMeta('meta[property="og:type"]', 'og:type', 'website')
-      setMeta('meta[name="twitter:title"]', 'twitter:title', 'AeroTrips')
-      setMeta('meta[name="twitter:description"]', 'twitter:description', 'Découvrez des idées de sorties aériennes en France : terrains d\'aviation, activités à proximité, événements et itinéraires partagés par la communauté.')
+      setMeta('meta[name="twitter:title"]', 'twitter:title', DEFAULT_TITLE)
+      setMeta('meta[name="twitter:description"]', 'twitter:description', DEFAULT_DESCRIPTION)
       document.querySelector('script[data-schema="item"]')?.remove()
       document.querySelector('script[data-schema="breadcrumb"]')?.remove()
     }
-  }, [item, id, type, nearbyFoodCount]);
+  }, [item, nearbyFoodCount]);
 
   return (<>
   <Title order={1}>
