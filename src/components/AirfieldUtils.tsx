@@ -1,11 +1,6 @@
 import { Activity, ADfilter, Airfield, Profile } from "..";
-import { Text, Stack } from "@mantine/core";
-import { Link } from "react-router";
+import { Text } from "@mantine/core";
 import { CommonIcon } from "./CommonIcon";
-import { Marker, Popup } from 'react-leaflet'
-import { Icon } from 'leaflet';
-import pinRunway from '/map-pin-runway.svg'
-import { getResizedUrl } from "../utils/image";
 
 
 export const AirfieldIcon = ({ airfield, profile, color }: { airfield: Airfield, profile?: Profile, color?: string }) => (
@@ -32,37 +27,6 @@ export const ToiletText = ({airfield}:{airfield: Airfield}) => {
   if(airfield.toilet == 'private') return <Text>Toilettes privées</Text>
   if(airfield.toilet == 'public') return <Text>Toilettes publiques</Text>
 }
-
-export const AirfieldMarker = ({airfield}: {airfield:Airfield}) => {
-  const imgNode = airfield.description?.content != undefined ? airfield.description.content.find( (a: { type: string }) => a.type =='image') : undefined
-  return (
-  <Marker 
-    position={[airfield.position.latitude,airfield.position.longitude]}
-    icon={new Icon({iconUrl: pinRunway, iconAnchor:[25,49], iconSize:[50,50]})}
-    zIndexOffset={1000}
-  >
-    <Popup>
-      <Link to={`/airfields/${airfield.codeIcao}`}>
-        <Stack align="center" gap={"xs"}>
-          <div><AirfieldTitle ad={airfield}/></div>
-          {imgNode != undefined && (
-            <img
-              src={imgNode.attrs.src} width="150px"
-              onError={(e) => {
-                const img = e.currentTarget;
-                if (!img.dataset.fallbackAttempted) {
-                  img.dataset.fallbackAttempted = 'true';
-                  img.src = getResizedUrl(imgNode.attrs.src);
-                }
-              }}
-            />
-          )}
-          <span>Voir plus de détails...</span>
-        </Stack>
-      </Link>
-    </Popup>
-  </Marker>
-)}
 
 const AD_LABELS: Record<string, string> = {
   CAP: 'Accès public',

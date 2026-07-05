@@ -1,7 +1,9 @@
+import 'leaflet/dist/leaflet.css'
 import { MapContainer, TileLayer } from 'react-leaflet'
 import { ADfilter, ActivityFilter, Data } from '..';
 import { filterActivities, filterAirfields } from '../utils/utils';
-import { ActiveBadges, AirfieldMarker } from '../components/AirfieldUtils';
+import { ActiveBadges } from '../components/AirfieldUtils';
+import { AirfieldMarker } from '../components/AirfieldMarker';
 import ActivityMarker from '../components/ActivityMarker';
 import { Button, Stack } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';

@@ -1,7 +1,7 @@
 import { Routes, Route, useLocation, useSearchParams } from "react-router";
+import { Center, Loader } from "@mantine/core";
 import Layout from "./Layout";
 import Home from "./routes/Home";
-import MapPage from "./routes/MapPage";
 import './App.css'
 import 'dayjs/locale/fr';
 import AirfieldDetails from "./routes/AirfieldDetails";
@@ -10,9 +10,12 @@ import ActivitiesList from "./routes/ActivitiesList";
 import AirfieldsList from "./routes/AirfieldsList";
 import ActivityDetails from "./routes/ActivityDetails";
 import TripsList from "./routes/TripsList";
-import TripDetails from "./routes/TripDetails";
 import AddData from "./routes/AddData";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
+// Lazy-loaded: these routes pull in Leaflet (vendor-map, ~45 kB gzip),
+// which is useless on the home/airfield/activity pages that dominate SEO traffic.
+const MapPage = lazy(() => import("./routes/MapPage"));
+const TripDetails = lazy(() => import("./routes/TripDetails"));
 import { ADfilter } from '.';
 import Profile from "./routes/Profile";
 import Contact from "./routes/Contact";
@@ -98,10 +101,10 @@ export default function App(data : Data) {
         <Route path="/airfields/:airfieldId"  element={<AirfieldDetails {...data} />} />
         <Route path="/activities"             element={<ActivitiesList {...data} filters={ActFilter} setFilters={setActivityFilters} />} />
         <Route path="/activities/:activityId" element={<ActivityDetails {...data}/>} />
-        <Route path="/map/:lat?/:lng?"        element={<MapPage {...mapProps} />} />
+        <Route path="/map/:lat?/:lng?"        element={<Suspense fallback={<Center h="80vh"><Loader /></Center>}><MapPage {...mapProps} /></Suspense>} />
         <Route path="/trips"                  element={<TripsList {...data} />} />
         <Route path="/:type?/:id?/edit/:lat?/:lng?"       element={<AddData {...data} />} />
-        <Route path="/trips/:tripId"          element={<TripDetails {...data} />} />
+        <Route path="/trips/:tripId"          element={<Suspense fallback={<Center h="80vh"><Loader /></Center>}><TripDetails {...data} /></Suspense>} />
         <Route path="/events"                 element={<EventsList {...data} setADfilter={setAirfieldFilters} />} />
         <Route path="/events/:eventId"        element={<EventDetails {...data} />} />
         <Route path="/contact"                element={<Contact {...data} />} />
