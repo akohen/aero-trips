@@ -7,6 +7,13 @@ import {
 } from "@tabler/icons-react";
 import { Timestamp } from "firebase/firestore";
 
+// "DIEPPE SAINT AUBIN" -> "Dieppe Saint Aubin", "SAINT-CYR-L'ECOLE" -> "Saint-Cyr-L'Ecole"
+export const titleCase = (str: string) => {
+  return str
+    .toLowerCase()
+    .replace(/(^|[\s\-'/])([a-zà-ÿ])/g, (_, sep, chr) => sep + chr.toUpperCase())
+}
+
 export const slug = (str: string) => {
   return str
     .toString()

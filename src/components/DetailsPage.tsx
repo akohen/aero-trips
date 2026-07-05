@@ -2,7 +2,7 @@ import { Title, Text, Button, Paper, Grid, Stack } from "@mantine/core"
 import BackButton from "./BackButton"
 import EditButton from "./EditButton"
 import { Activity, Airfield, Data } from ".."
-import { findNearest, iconsList, shortener } from "../utils/utils"
+import { findNearest, iconsList, shortener, titleCase } from "../utils/utils"
 import { ButtonVACMap, ButtonViewOnMap } from "./CommonButtons"
 import { IconBrandGoogleMaps, IconRoute } from "@tabler/icons-react"
 import { Link } from "react-router"
@@ -23,6 +23,7 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
     ? [...events.values()].filter(e => e.airfieldId === id).sort((a, b) => b.startDate.seconds - a.startDate.seconds).slice(0,5)
     : []
   const type = 'codeIcao' in item ? 'airfields' : 'activities'
+  const nearbyFoodCount = nearbyActivities.filter(([, a]) => a.type.includes('food')).length
   const { draft, setDraft } = useDraftTrip()
   const isInDraft = draft.steps.some(s => s.type === type && s.id === id)
   const addToDraft = () => {
@@ -30,12 +31,17 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
   }
   useEffect(() => {
     const isAirfield = 'codeIcao' in item
-    const title = (isAirfield ? `${item.codeIcao} - ` : '') + item.name + ' - AeroTrips'
+    const displayName = titleCase(item.name)
     const url = `https://aerotrips.fr/${type}/${id}`
 
+    const title = isAirfield
+      ? `Aérodrome de ${displayName} (${item.codeIcao}) — activités à proximité | AeroTrips`
+      : `${displayName} — activité à proximité d'un aérodrome | AeroTrips`
+
+    const foodMention = nearbyFoodCount > 0 ? ', dont des restaurants,' : ''
     const description = isAirfield
-      ? `Terrain d'aviation ${item.name} (${item.codeIcao}) — pistes, services, activités à proximité et sorties de la communauté.`
-      : `${item.name} — activité à découvrir en avion avec AeroTrips.`
+      ? `Que faire près de l'aérodrome de ${displayName} (${item.codeIcao}) ? Activités et bonnes adresses${foodMention} à proximité, pistes, services et sorties partagées par la communauté des pilotes.`
+      : `${displayName} — activité à découvrir en avion à proximité d'un aérodrome, avec les terrains et sorties AeroTrips les plus proches.`
 
     document.title = title
 
@@ -62,25 +68,60 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
     const schema: Record<string, unknown> = {
       '@context': 'https://schema.org',
       '@type': schemaType,
-      name: item.name,
+      name: isAirfield ? `Aérodrome de ${displayName}` : displayName,
+      description,
       url,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: displayName,
+        addressCountry: 'FR',
+      },
       geo: {
         '@type': 'GeoCoordinates',
         latitude: item.position.latitude,
         longitude: item.position.longitude,
       },
     }
-    if (isAirfield && item.website) schema.sameAs = item.website
-    if (!isAirfield && item.website) schema.sameAs = item.website
-
-    let scriptEl = document.querySelector('script[data-schema="item"]') as HTMLScriptElement | null
-    if (!scriptEl) {
-      scriptEl = document.createElement('script')
-      scriptEl.setAttribute('type', 'application/ld+json')
-      scriptEl.setAttribute('data-schema', 'item')
-      document.head.appendChild(scriptEl)
+    if (isAirfield) {
+      schema.alternateName = item.codeIcao
+      schema.iataCode = item.codeIcao
+      if (item.fuels && item.fuels.length > 0) {
+        schema.amenityFeature = item.fuels.map((f) => ({
+          '@type': 'LocationFeatureSpecification',
+          name: `Carburant ${f}`,
+          value: true,
+        }))
+      }
     }
-    scriptEl.textContent = JSON.stringify(schema)
+    if (item.website) schema.sameAs = item.website
+
+    // Breadcrumb: Accueil › Aérodromes/Activités › item
+    const breadcrumb = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://aerotrips.fr/' },
+        {
+          '@type': 'ListItem', position: 2,
+          name: isAirfield ? 'Aérodromes' : 'Activités',
+          item: `https://aerotrips.fr/${type}`,
+        },
+        { '@type': 'ListItem', position: 3, name: isAirfield ? `${displayName} (${item.codeIcao})` : displayName, item: url },
+      ],
+    }
+
+    const setSchema = (key: string, value: object) => {
+      let el = document.querySelector(`script[data-schema="${key}"]`) as HTMLScriptElement | null
+      if (!el) {
+        el = document.createElement('script')
+        el.setAttribute('type', 'application/ld+json')
+        el.setAttribute('data-schema', key)
+        document.head.appendChild(el)
+      }
+      el.textContent = JSON.stringify(value)
+    }
+    setSchema('item', schema)
+    setSchema('breadcrumb', breadcrumb)
 
     return () => {
       document.title = 'AeroTrips'
@@ -91,13 +132,14 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
       setMeta('meta[property="og:type"]', 'og:type', 'website')
       setMeta('meta[name="twitter:title"]', 'twitter:title', 'AeroTrips')
       setMeta('meta[name="twitter:description"]', 'twitter:description', 'Découvrez des idées de sorties aériennes en France : terrains d\'aviation, activités à proximité, événements et itinéraires partagés par la communauté.')
-      scriptEl?.remove()
+      document.querySelector('script[data-schema="item"]')?.remove()
+      document.querySelector('script[data-schema="breadcrumb"]')?.remove()
     }
-  }, [item, id, type]);
+  }, [item, id, type, nearbyFoodCount]);
 
   return (<>
   <Title order={1}>
-    <BackButton />{item.name}{('codeIcao' in item) && (<> - {item.codeIcao}</>)}
+    <BackButton />{('codeIcao' in item) ? (<>Aérodrome de {titleCase(item.name)} - {item.codeIcao}</>) : titleCase(item.name)}
     {profile && <VisitedButton item={{ type, id }} profile={profile} icon />}
     {profile && <FavoriteButton item={{ type, id }} profile={profile} icon />}
     <EditButton />
