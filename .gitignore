@@ -23,7 +23,9 @@ tmp
 *.njsproj
 *.sln
 *.sw?
-.claude
+.claude/*
+!.claude/skills/
+.claude/settings.local.json
 .agent
 
 **/.firebaserc
