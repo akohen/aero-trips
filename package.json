@@ -12,6 +12,7 @@
     "test": "vitest",
     "backup": "npx -p node-firestore-import-export firestore-export -a serviceAccountKey.json -b backups/$(date +\"%Y-%m-%d\").json",
     "export": "NODE_ENV=production tsx scripts/export-data.ts",
+    "import": "NODE_ENV=production tsx scripts/import-data.ts",
     "manage": "NODE_ENV=production node scripts/manage-edits.js",
     "postversion": "git push --follow-tags"
   },

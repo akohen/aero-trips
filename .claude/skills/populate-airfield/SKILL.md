@@ -535,4 +535,29 @@ print(f'{len(acts) - len(kept)} supprimée(s), {len(kept)} restante(s)')
 
 **3. Reprendre la validation et l'aperçu** : après application, réexécuter les **vérifications automatiques de l'Étape 3** (images HTTP + distances) sur le fichier mis à jour, puis **régénérer l'aperçu** (Étape 4). Réafficher le chemin de l'aperçu pour un nouveau tour de relecture.
 
-Répéter tant que l'utilisateur renvoie des retours. S'arrêter quand il valide — les données restent dans `tmp/`, prêtes pour l'insertion en base (hors périmètre de ce skill).
+Répéter tant que l'utilisateur renvoie des retours. S'arrêter quand il valide — les données restent dans `tmp/`, prêtes pour l'insertion en base (Étape 6).
+
+## Étape 6 — Proposer l'import en base (optionnelle)
+
+Une fois les données validées, **proposer à l'utilisateur** d'importer les fichiers dans Firestore
+(collections `airfields` + `activities`), sans le lancer d'office. L'outil est `npm run import`
+(`scripts/import-data.ts`, cible **production**), qui écrit en **merge** (les champs absents des fichiers
+ne sont pas supprimés) et affiche un diff colorisé avant d'appliquer.
+
+Les fichiers à passer sont ceux dont le suffixe correspond au type attendu par le script :
+`*airfield.json` → collection `airfields`, `*activities.json` → collection `activities`.
+
+**Dry-run (recommandé d'abord)** — affiche le diff puis demande confirmation interactive :
+
+```bash
+npm run import -- --import tmp/$ICAO-airfield.json tmp/$ICAO-activities.json
+```
+
+**Appliquer sans prompt** (après relecture du diff) — ajouter `--apply` :
+
+```bash
+npm run import -- --import tmp/$ICAO-airfield.json tmp/$ICAO-activities.json --apply
+```
+
+Prérequis : `serviceAccountKey.json` à la racine du repo. Après un import réussi, rappeler à
+l'utilisateur de régénérer le snapshot bundlé avec `npm run export`.
