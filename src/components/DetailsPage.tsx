@@ -17,8 +17,8 @@ import { NearbyTrips } from "./ActivityUtils"
 import { ToiletText } from "./AirfieldUtils"
 
 const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView, profile} : Data & {id: string, item: Airfield|Activity}) => {
-  const nearbyAirfields = findNearest(item, airfields, 50000).slice(0,8)
-  const nearbyActivities = findNearest(item, activities).slice(0,8)
+  const nearbyAirfields = findNearest(item, airfields, 50000).slice(0,10)
+  const nearbyActivities = findNearest(item, activities).slice(0,15)
   const nearbyTrips = [...trips].filter(([,trip]) => trip.steps.some(step => step.type == (('codeIcao' in item) ? 'airfields' : 'activities') && step.id == id)).slice(0,8)
   const airfieldEvents = 'codeIcao' in item
     ? [...events.values()].filter(e => e.airfieldId === id).sort((a, b) => b.startDate.seconds - a.startDate.seconds).slice(0,5)
