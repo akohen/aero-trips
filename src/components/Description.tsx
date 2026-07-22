@@ -4,10 +4,11 @@ import StarterKit from "@tiptap/starter-kit"
 import Youtube from "@tiptap/extension-youtube";
 import { ImageWithFallback } from "../utils/ImageWithFallback";
 import { getResizedUrl } from "../utils/image";
+import { fillImageAlt } from "../utils/descriptionAlt";
 import { useNavigate } from "react-router";
 import DOMPurify from "dompurify";
 
-const Description = ({content}: {content: JSONContent}) => {
+const Description = ({content, label}: {content: JSONContent, label?: string}) => {
   const navigate = useNavigate();
   if(!content) return
 
@@ -50,7 +51,7 @@ const Description = ({content}: {content: JSONContent}) => {
     miw={320}
     onClick={handleClick}
     onErrorCapture={handleError}
-    dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(generateHTML(content, [StarterKit, ImageWithFallback, Youtube]), { ADD_TAGS: ['iframe'], ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'] })}}
+    dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(generateHTML(fillImageAlt(content, label), [StarterKit, ImageWithFallback, Youtube]), { ADD_TAGS: ['iframe'], ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'] })}}
   />
 )}
 

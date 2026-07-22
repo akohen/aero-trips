@@ -62,7 +62,7 @@ const EventDetails = ({ events, airfields }: Data) => {
         </Grid.Col>
         {event.description && (
           <Grid.Col span={6}>
-            <Description content={event.description} />
+            <Description content={event.description} label={event.title} />
           </Grid.Col>
         )}
       </Grid>

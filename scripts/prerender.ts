@@ -17,6 +17,7 @@ import Image from '@tiptap/extension-image'
 import Youtube from '@tiptap/extension-youtube'
 import { findNearest, iconsList, titleCase } from '../src/utils/utils.ts'
 import { buildItemSeo } from '../src/utils/itemSeo.ts'
+import { fillImageAlt } from '../src/utils/descriptionAlt.ts'
 import type { Activity, Airfield } from '../src'
 
 const DIST = 'dist'
@@ -54,10 +55,11 @@ const scrub = (html: string) =>
     .replace(/\b(href|src)="([^"]*)"/gi, (m, attr, url) =>
       SAFE_URL.test(String(url).trim()) ? m : `${attr}="#"`)
 
-const descriptionToHtml = (content: unknown) => {
+const descriptionToHtml = (content: unknown, label?: string) => {
   if (!content) return ''
   try {
-    return scrub(generateHTML(content as Parameters<typeof generateHTML>[0], [StarterKit, Image, Youtube]))
+    const doc = fillImageAlt(content as Parameters<typeof fillImageAlt>[0], label)
+    return scrub(generateHTML(doc as Parameters<typeof generateHTML>[0], [StarterKit, Image, Youtube]))
   } catch {
     return ''
   }
@@ -136,7 +138,7 @@ const buildBody = (
   if (af.toilet === 'private') parts.push('<p>Toilettes privées</p>')
   if (af.toilet === 'public') parts.push('<p>Toilettes publiques</p>')
 
-  const descHtml = descriptionToHtml(af.description)
+  const descHtml = descriptionToHtml(af.description, ville)
   if (descHtml) parts.push(`<div>${descHtml}</div>`)
 
   if (af.website) {

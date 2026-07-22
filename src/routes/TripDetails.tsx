@@ -95,7 +95,7 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
         </MapContainer>
       </Grid.Col>
     </Grid>
-  <Description content={trip.description} />
+  <Description content={trip.description} label={trip.name} />
   <SimpleGrid mt='md' cols={{ base: 1, sm: 2, md: 4}}>
     { uniqueItems.map((item, id) => (
       <CardListItem

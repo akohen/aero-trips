@@ -141,7 +141,7 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
       </Stack>
     </Paper>
   </Grid.Col>
-  {item.description && <Grid.Col span={6}><Description content={item.description} /></Grid.Col>}
+  {item.description && <Grid.Col span={6}><Description content={item.description} label={'codeIcao' in item ? titleCase(item.name) : item.name} /></Grid.Col>}
   <NearbyTrips items={nearbyTrips} events={airfieldEvents} />
   <Grid.Col span={12}>
     <Title order={4}>Activités à proximité</Title>
