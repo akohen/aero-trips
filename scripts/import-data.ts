@@ -1,6 +1,8 @@
 import { Activity, Airfield } from '../src';
+import { JSONContent } from '@tiptap/core';
 import { firebaseConfig } from '../src/data/firebase'
 import { readFileSync } from "fs";
+import { randomUUID } from "crypto";
 import creds from "../serviceAccountKey.json" with { "type": "json" }
 import chalk from 'chalk';
 import admin from "firebase-admin";
@@ -17,6 +19,49 @@ admin.initializeApp({
 const db = admin.firestore();
 db.settings({ ignoreUndefinedProperties: true })
 const batch = db.batch()
+const bucket = admin.storage().bucket()
+
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+
+const isOwnStorageUrl = (url: string) => url.includes(`firebasestorage.googleapis.com/v0/b/${bucket.name}/`)
+
+const uploadImageFromUrl = async (url: string): Promise<string | null> => {
+    let response: Response
+    try {
+        response = await fetch(url)
+    } catch (e) {
+        console.log(chalk.red(`  Failed to fetch image ${url}: ${e}`))
+        return null
+    }
+    if (!response.ok) {
+        console.log(chalk.red(`  Failed to fetch image ${url}: ${response.status}`))
+        return null
+    }
+    const contentType = response.headers.get('content-type') ?? ''
+    if (!ALLOWED_IMAGE_TYPES.includes(contentType)) {
+        console.log(chalk.red(`  Unsupported image type "${contentType}" for ${url}`))
+        return null
+    }
+    const buffer = Buffer.from(await response.arrayBuffer())
+    const token = randomUUID()
+    const path = `img/import/${randomUUID()}`
+    const file = bucket.file(path)
+    await file.save(buffer, {
+        metadata: { contentType, metadata: { firebaseStorageDownloadTokens: token } }
+    })
+    return `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(path)}?alt=media&token=${token}`
+}
+
+const copyDescriptionImages = async (description?: JSONContent): Promise<void> => {
+    if (!description?.content) return
+    for (const node of description.content) {
+        if (node.type === 'image' && node.attrs?.src && !isOwnStorageUrl(node.attrs.src)) {
+            const newUrl = await uploadImageFromUrl(node.attrs.src)
+            if (newUrl) node.attrs.src = newUrl
+        }
+        await copyDescriptionImages(node)
+    }
+}
 
 const getAirfields = async (db: admin.firestore.Firestore) => {
     const airfields: Map<string,Airfield> = new Map();
@@ -102,6 +147,7 @@ const importAirfields = async (filePath: string) => {
     for (const airfield of airfields) {
         const docPath = `airfields/${airfield.codeIcao}`
         console.log(`Queuing airfield ${chalk.bold.blue(airfield.codeIcao)} - ${airfield.name}`)
+        await copyDescriptionImages(airfield.description)
         const existing = (await db.doc(docPath).get()).data() ?? null
         const data = { ...airfield as unknown as Record<string, unknown>, updated_at: admin.firestore.Timestamp.fromDate(new Date()) }
         showDiff(docPath, existing as Record<string, unknown> | null, data)
@@ -116,6 +162,7 @@ const importActivities = async (filePath: string) => {
     for (const activity of activities) {
         const docPath = `activities/${activity.id}`
         console.log(`Queuing activity ${chalk.bold.blue(activity.id)} - ${activity.name}`)
+        await copyDescriptionImages(activity.description)
         const existing = (await db.doc(docPath).get()).data() ?? null
         const data = { ...activity as unknown as Record<string, unknown>, updated_at: admin.firestore.Timestamp.fromDate(new Date()) }
         showDiff(docPath, existing as Record<string, unknown> | null, data)
