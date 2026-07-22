@@ -38,9 +38,11 @@ Le vrai critère est la **provenance / les droits**, pas le nom de l'hébergeur 
 
 ⚠️ Nuance sur `googleusercontent.com` : acceptable **si** c'est manifestement la photo du sujet sur sa fiche Google Business ; à écarter si c'est une photo de contributeur anonyme dont on ne peut pas établir l'origine.
 
-Vérifier que l'URL est directe (se termine par `.jpg`/`.jpeg`/`.png`/`.webp` ou renvoie bien une image). Les images seront contrôlées en HTTP à l'étape de validation : une URL inventée sera détectée.
+**Vérifier que chaque URL renvoie 200 AVANT de l'émettre** (règle valable pour **toutes** les sources, pas seulement Wikimedia). Si l'URL ne renvoie pas 200, **omettre le nœud `image`** : ne jamais fabriquer, deviner ou reconstruire une URL (pas de chemin `thumb`/hash bricolé). Les images seront de toute façon recontrôlées en HTTP à l'étape de validation — mais l'agent ne doit pas s'en remettre au filet : il émet uniquement des URLs qu'il a lui-même vérifiées.
 
 ⚠️ **User-Agent obligatoire pour toute vérification HTTP** : de nombreux serveurs (Wikimedia, CDN de sites) renvoient **403/blocage** aux requêtes sans en-tête `User-Agent`. Toujours vérifier avec un User-Agent de navigateur (ex. `curl -A "Mozilla/5.0" -I <url>`). Sans cela, une image **parfaitement valide** sera écartée à tort. Ne considérer une URL comme invalide qu'après un test **avec** User-Agent.
+
+Pour une image Wikimedia, obtenir l'URL `upload.wikimedia.org` **réelle** via l'API Commons (`action=query&titles=File:...&prop=imageinfo&iiprop=url`) plutôt que de la reconstruire — c'est le moyen d'éviter les 404 sur chemins fabriqués.
 
 ## Générer les IDs
 

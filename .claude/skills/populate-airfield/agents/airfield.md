@@ -12,8 +12,19 @@ Effectue des recherches web sur les sources suivantes :
 - Recherches : `"aérodrome $ICAO"`, `"aéroclub $VILLE"`, `"$ICAO airfield"`, Wikipedia `$ICAO`
 - Sites spécifiques : ourairports.com, basulm.ffplum.fr, fr.airfield.directory
 
+### Clubs basés — liste de référence (ne pas la deviner)
+
+La liste des clubs basés sur l'aérodrome t'est fournie ci-dessous, extraite de la base `clubs.json` (source de vérité). **Ne pas la découvrir par recherche web** : partir de cette liste.
+
+`$CLUBS`
+
+- Inclure **tous** les clubs de cette liste dans le paragraphe technique, **chacun lié à son `website`** (nœud `link` en `marks`, cf. `schema.md`). Certains aérodromes ont plusieurs clubs.
+- Le `name` est déjà celui de la base : le reprendre **verbatim** (ne pas reformuler).
+- Les `website` de la base sont parfois en `http://` avec redirection : **vérifier chaque lien avec un User-Agent navigateur** (`curl -A "Mozilla/5.0" -IL <url>`) et retenir l'URL `https` **effective** (finale après redirection). Si un club n'a pas de `website` (valeur `None` ou chaîne vide), le citer sans lien.
+- La recherche web ne sert plus qu'à **enrichir** le paragraphe (formations proposées, gestionnaire), **pas** à établir la liste des clubs.
+
 Collecter les **notes de recherche** suivantes (usage interne uniquement, ne pas inclure dans le JSON final) :
-- Infos clubs : nom (**copié verbatim** depuis la source officielle, sans reformuler), site web, formations proposées → serviront à rédiger le paragraphe technique
+- Infos clubs (enrichissement) : formations proposées → serviront à rédiger le paragraphe technique
 - Infos gestionnaire : nom (**copié verbatim**), site web → servira à rédiger le paragraphe technique
 - Notes localisation : altitude, paysage, distances aux villes proches
 - Notes tourisme : patrimoine, points forts de la ville/région
@@ -28,7 +39,9 @@ Collecter les **champs de sortie** (seuls champs autorisés dans le JSON final, 
 - `toilet` : `"public"` | `"private"` | `"no"`
 - `nightVFR` : `true` uniquement si explicitement confirmé
 - `fuels` : liste parmi `"100LL"`, `"JETA1"`, `"SP98"`, `"UL91"` (SP95 = SP98)
-- `image` : URL d'une photo de l'aérodrome — **Wikimedia Commons ou site officiel uniquement**. Vérifier que l'URL commence par `https://upload.wikimedia.org/` ou appartient au domaine officiel. Si aucune URL valide, ne pas inclure d'image. ⚠️ Toute vérification HTTP de l'URL doit se faire **avec un User-Agent de navigateur** (ex. `curl -A "Mozilla/5.0" -I <url>`) : sans lui, Wikimedia et de nombreux CDN renvoient un 403 et une image valide serait écartée à tort.
+- `image` : URL d'une photo de l'aérodrome — **Wikimedia Commons ou site officiel uniquement**. Vérifier que l'URL commence par `https://upload.wikimedia.org/` ou appartient au domaine officiel.
+  - ⚠️ **Vérifier que l'URL renvoie 200 avant de l'émettre**, avec un User-Agent de navigateur (`curl -A "Mozilla/5.0" -I <url>`) — le User-Agent est obligatoire, sans lui Wikimedia et de nombreux CDN renvoient un 403 et une image valide serait écartée à tort. Si l'URL ne renvoie pas 200, **ne pas inclure d'image** : ne jamais fabriquer ni deviner une URL, ne pas construire un chemin `thumb`/hash à la main.
+  - Pour une image Wikimedia, obtenir l'URL `upload.wikimedia.org` **réelle** via l'API Commons (`action=query&titles=File:...&prop=imageinfo&iiprop=url`) plutôt que de la reconstruire.
 
 ## Étape 2 — Rédiger et écrire le fichier
 

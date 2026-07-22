@@ -39,13 +39,18 @@ existing_ids = [a['id'] for a in acts if lat_min <= a['position']['latitude'] <=
 protected = {'codeIcao', 'name', 'status', 'position', 'runways'}
 existing_fields = [k for k in entry if k not in protected]
 
+# Clubs basés sur l'aérodrome — source de vérité (ne pas deviner par recherche web)
+clubs = [ {'name': c['name'], 'website': c.get('website'), 'phone': c.get('phone')}
+          for c in json.load(open('scripts/clubs.json')) if c.get('base_icao') == '$ICAO' ]
+
 print(f"VILLE={entry['name']}, LAT={lat}, LON={lon}")
 print(f"LAT_MIN={lat_min:.5f}, LAT_MAX={lat_max:.5f}, LON_MIN={lon_min:.5f}, LON_MAX={lon_max:.5f}")
 print(f"EXISTING_IDS={existing_ids}")
 print(f"EXISTING_FIELDS={existing_fields}")
+print(f"CLUBS={clubs}")
 ```
 
-Noter : LAT, LON, VILLE, LAT_MIN, LAT_MAX, LON_MIN, LON_MAX, EXISTING_IDS, EXISTING_FIELDS.
+Noter : LAT, LON, VILLE, LAT_MIN, LAT_MAX, LON_MIN, LON_MAX, EXISTING_IDS, EXISTING_FIELDS, CLUBS.
 
 Lire les fichiers agents nécessaires selon les agents sélectionnés :
 - Si RUN_AIRFIELD : `.claude/skills/populate-airfield/agents/airfield.md`
@@ -54,7 +59,7 @@ Lire les fichiers agents nécessaires selon les agents sélectionnés :
 - Si RUN_RESTAURANTS : `.claude/skills/populate-airfield/agents/activities-restaurants.md`
 - Si RUN_OTHER : `.claude/skills/populate-airfield/agents/activities-other.md`
 
-Dans chaque fichier lu, remplacer toutes les variables (`$ICAO`, `$VILLE`, `$LAT`, `$LON`, `$LAT_MIN`, `$LAT_MAX`, `$LON_MIN`, `$LON_MAX`, `$EXISTING_IDS`, `$EXISTING_FIELDS`) par leurs valeurs.
+Dans chaque fichier lu, remplacer toutes les variables (`$ICAO`, `$VILLE`, `$LAT`, `$LON`, `$LAT_MIN`, `$LAT_MAX`, `$LON_MIN`, `$LON_MAX`, `$EXISTING_IDS`, `$EXISTING_FIELDS`, `$CLUBS`) par leurs valeurs. `$CLUBS` n'est utilisé que par l'agent airfield.
 
 ## Étapes 1 & 2 — Recherche en parallèle
 
@@ -133,6 +138,44 @@ if dropped:
 
 Signaler les doublons écartés s'il y en a. Si aucun agent d'activités n'a été lancé, sauter cette étape.
 
+## Étape 2.6 — Backfill des images manquantes (automatique)
+
+Les agents d'activités sous-livrent souvent les images (cas vécu : 9 activités sur 28 sans image). Cette étape relance une passe ciblée pour compléter. Ne s'exécute que si l'Étape 2.5 a produit `tmp/$ICAO-activities.json`.
+
+**1. Détecter les activités sans image** (remplacer `$ICAO`) :
+
+```python
+import json
+ICAO = '$ICAO'
+acts = json.load(open(f'tmp/{ICAO}-activities.json'))
+missing = [a for a in acts if 'image' not in json.dumps(a.get('description', {}))]
+print(f'{len(missing)}/{len(acts)} activité(s) sans image :')
+for a in missing:
+    print(f"  {a['id']}  {a['name']}  ({a['position']['latitude']}, {a['position']['longitude']})  types={a.get('type')}  site={a.get('website')}")
+```
+
+**2. Lancer un mini-agent haiku par activité sans image**, **en parallèle** (un seul message, tous les Agent tool calls ensemble). Pour chacune, passer nom, ville, position, site web éventuel, et ce prompt :
+
+> Cherche une image pour l'activité "<NOM>" (<contexte : type, ville, site officiel, position>).
+> Applique les règles de provenance et de vérification d'image de `.claude/skills/populate-airfield/agents/activity-format.md` (§ Image) : priorité Wikimedia Commons (URL réelle via l'API Commons, jamais reconstruite), sinon image du sujet lui-même (site officiel / CDN de son propre site) ; exclure photos de tiers, agrégateurs, URLs à token. **Vérifier que l'URL renvoie 200 avec un User-Agent navigateur avant de la retenir.**
+> Si image valide trouvée, réponds **uniquement** avec ce JSON : `{ "src": "https://...", "alt": "Description factuelle courte." }`. Sinon réponds exactement : `AUCUNE IMAGE TROUVÉE`.
+
+**3. Réintégrer** chaque image trouvée en **tête** de la description de l'activité concernée (nœud `image`, cf. `agents/schema.md` — `attrs` avec `src`/`alt`/`title:null`, pas de clé `content`). Laisser sans image les activités où l'agent a répondu `AUCUNE IMAGE TROUVÉE`.
+
+Ces images passeront le **même** contrôle HTTP que les autres à l'Étape 3 (filet de sécurité). Coût : un appel agent par activité sans image.
+
+## Étape 2.7 — (optionnel, à la demande) Rejoindre le centre-ville : liens aérodrome → fiches activités
+
+**Ne pas exécuter d'office** — uniquement si l'utilisateur le demande. Nécessite `tmp/$ICAO-airfield.json` (RUN_AIRFIELD) **et** `tmp/$ICAO-activities.json`.
+
+**Pourquoi ici et pas dans l'agent airfield** : l'agent airfield tourne **en parallèle** des agents d'activités ; à ce moment les activités n'ont pas encore d'`id` (ils sont générés indépendamment, avec suffixe aléatoire). Le lien aérodrome → fiche activité n'est donc possible qu'**après la fusion**, quand les `id` sont stables.
+
+**Manip** :
+1. Lire `tmp/$ICAO-activities.json` et repérer les activités de mobilité — types `transit`, `bike`, `car` (navettes, taxis, gare, locations vélo/voiture).
+2. Enrichir le **paragraphe technique** de `tmp/$ICAO-airfield.json` avec un passage « rejoindre le centre-ville » : distance a/d → centre, puis liens vers les fiches concernées. Chaque lien est un nœud `text` avec `marks` de type `link` (cf. `agents/schema.md`), `href` en **chemin racine** `/activities/{id}` (format confirmé par `src/App.tsx` route `/activities/:activityId` et `src/routes/ActivitiesList.tsx`). Vérifier que chaque `{id}` existe bien dans le fichier d'activités.
+3. **N'affirmer un service de liaison** navette/taxi **depuis/vers l'aérodrome** que s'il est **attesté** par la description de l'activité ; sinon se limiter aux moyens disponibles en ville (location vélo/voiture, gare) sans prétendre qu'ils desservent l'aérodrome.
+4. Après édition, **reprendre l'Étape 3** (validation JSON + images) puis **régénérer l'aperçu** (Étape 4).
+
 ## Étape 3 — Validation
 
 Lire et vérifier les fichiers produits :
@@ -149,10 +192,12 @@ Vérifications pour chaque fichier :
 - Le fichier airfield ne contient **que** les clés autorisées : `codeIcao`, `website`, `toilet`, `fuels`, `nightVFR`, `description` — toute autre clé (ex. `clubs`, `gestionnaire`) est une erreur à signaler
 - **Noms verbatim** : aucun `name` d'activité ne doit contenir un ajout accolé (ville/région entre parenthèses ou après un tiret : `"… (Gordes)"`, `"… — Carpentras"`) ni un qualificatif promotionnel (« incontournable », « célèbre », « magnifique »…). Un tel nom est le signe d'une reformulation — signaler et corriger vers le nom d'origine.
 - **Descriptions factuelles, sans langage promotionnel** — pour les activités **ET** pour la description de l'aérodrome. Traquer superlatifs et tournures fleuries (« incomparable », « les joies de… », « détente incomparable »…) ainsi que les impropriétés (ex. « institution *aviaire* » pour « aéronautique »).
+- **Relecture FR — anglicismes et artefacts de traduction** : traquer les mots ou tournures anglais laissés par erreur dans les descriptions activités **et** aérodrome (cas vécus : « Bistro *characteristic* », « *dynamic* »…). Corriger vers le français.
+- **Clubs (fiche aérodrome)** : vérifier que **tous** les clubs de `$CLUBS` figurent dans la description, chacun lié à son site (URL `https` effective après redirection), et qu'aucun club absent de la liste n'a été inventé.
 
 ### Vérifications automatiques (exécuter ce script, remplacer `$ICAO`)
 
-Ce script contrôle deux points qu'une relecture visuelle rate facilement : (1) les URLs d'images **résolvent** réellement (les agents fabriquent parfois des URLs Wikimedia plausibles mais inexistantes) ; (2) la **distance de chaque activité au centre de l'aérodrome**, triée décroissante — une coordonnée peut être fausse **tout en restant dans la bounding box** (cas vécu : un château à 8 km de sa vraie position). Vérifier à la main les points en tête de liste.
+Ce script contrôle deux points qu'une relecture visuelle rate facilement : (1) les URLs d'images **résolvent** réellement — quelle que soit la source (les agents fabriquent parfois des URLs plausibles mais inexistantes : chemins Wikimedia `thumb`/hash bricolés, mais aussi CDN de sites) ; (2) la **distance de chaque activité au centre de l'aérodrome**, triée décroissante — une coordonnée peut être fausse **tout en restant dans la bounding box** (cas vécu : un château à 8 km de sa vraie position). Vérifier à la main les points en tête de liste. Une image ≠ 200 se corrige en retrouvant l'URL réelle (API Commons pour Wikimedia) ou, à défaut, en retirant le nœud `image`.
 
 ```python
 import json, os, math, urllib.request
