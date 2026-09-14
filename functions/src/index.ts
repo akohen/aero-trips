@@ -33,6 +33,10 @@ const rpcError = (res: Response, status: number, code: number, message: string) 
 export const mcp = onRequest(
   {
     region: 'europe-west1',
+    // Dedicated runtime identity with NO project roles. This server reads only
+    // data baked into its own bundle, so it needs no GCP permissions at all —
+    // whereas the default runtime account carries Editor on the whole project.
+    serviceAccount: 'mcp-runtime@aero-trips.iam.gserviceaccount.com',
     memory: '256MiB',
     // cpu: 1 is required for concurrency > 1 — at 256MiB the default is 0.583
     // and Cloud Run rejects the combination.
