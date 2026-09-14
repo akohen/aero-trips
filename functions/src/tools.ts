@@ -13,6 +13,7 @@ import {
   DEFAULT_LIMIT, MAX_DESC_FULL, MAX_DESC_SNIPPET, MAX_RESULTS,
   description, displayName, errorResult, header, itemUrl, km, label, runwaySummary, textResult,
 } from './format.ts'
+import { withLogging } from './logging.ts'
 import type { Activity, ActivityType, Airfield } from '../../src'
 
 const ACTIVITY_TYPES = [
@@ -120,7 +121,7 @@ export function registerTools(server: McpServer) {
       limit: limitSchema,
     },
     annotations: { readOnlyHint: true, openWorldHint: false },
-  }, async (params) => {
+  }, withLogging('search_airfields', async (params) => {
     const near = resolveNear(params)
     if (near.error) return errorResult(near.error)
 
@@ -156,7 +157,7 @@ export function registerTools(server: McpServer) {
         near.label
           ? `Aucun aérodrome ne correspond à ces critères dans un rayon de ${params.radius_km} km autour de ${near.label}.`
           : 'Aucun aérodrome ne correspond à ces critères.',
-      ]))
+      ]), 0)
     }
 
     return textResult(header([
@@ -165,8 +166,8 @@ export function registerTools(server: McpServer) {
       ...shown.map(([airfield, distance]) => airfieldRow(airfield, distance)),
       '',
       'Utiliser get_airfield avec le code OACI pour le détail complet.',
-    ]))
-  })
+    ]), ranked.length)
+  }))
 
   server.registerTool('get_airfield', {
     title: "Détail d'un aérodrome",
@@ -176,7 +177,7 @@ export function registerTools(server: McpServer) {
       include_nearby: z.boolean().default(true).describe('Inclure les activités et terrains proches.'),
     },
     annotations: { readOnlyHint: true, openWorldHint: false },
-  }, async ({ icao, include_nearby }) => {
+  }, withLogging('get_airfield', async ({ icao, include_nearby }) => {
     const airfield = airfields.get(icao.toUpperCase())
     if (!airfield) return errorResult(unknownIcao(icao))
 
@@ -210,7 +211,7 @@ export function registerTools(server: McpServer) {
     }
 
     return textResult(header([...lines, '']))
-  })
+  }))
 
   server.registerTool('search_activities', {
     title: 'Rechercher des activités',
@@ -228,7 +229,7 @@ export function registerTools(server: McpServer) {
       limit: limitSchema,
     },
     annotations: { readOnlyHint: true, openWorldHint: false },
-  }, async (params) => {
+  }, withLogging('search_activities', async (params) => {
     const near = resolveNear(params)
     if (near.error) return errorResult(near.error)
 
@@ -252,15 +253,15 @@ export function registerTools(server: McpServer) {
         near.label
           ? `Aucune activité ne correspond dans un rayon de ${params.radius_km} km autour de ${near.label}.`
           : 'Aucune activité ne correspond à ces critères.',
-      ]))
+      ]), 0)
     }
 
     return textResult(header([
       `${ranked.length} activité(s) trouvée(s)${near.label ? ` autour de ${near.label}` : ''}, ${shown.length} affichée(s).`,
       '',
       ...shown.map(([activity, distance]) => activityRow(activity, distance)),
-    ]))
-  })
+    ]), ranked.length)
+  }))
 
   server.registerTool('get_activity', {
     title: "Détail d'une activité",
@@ -270,7 +271,7 @@ export function registerTools(server: McpServer) {
       include_nearby: z.boolean().default(true).describe('Inclure les terrains les plus proches.'),
     },
     annotations: { readOnlyHint: true, openWorldHint: false },
-  }, async ({ id, include_nearby }) => {
+  }, withLogging('get_activity', async ({ id, include_nearby }) => {
     const activity = activities.get(id)
     if (!activity) {
       return errorResult(`Aucune activité avec l'identifiant ${id}. Utiliser search_activities pour retrouver un identifiant valide.`)
@@ -296,7 +297,7 @@ export function registerTools(server: McpServer) {
     }
 
     return textResult(header([...lines, '']))
-  })
+  }))
 
   server.registerTool('find_nearby', {
     title: 'Explorer les environs',
@@ -314,7 +315,7 @@ export function registerTools(server: McpServer) {
       limit: limitSchema.describe('Nombre maximum de résultats par catégorie.'),
     },
     annotations: { readOnlyHint: true, openWorldHint: false },
-  }, async ({ icao, activity_id, lat, lon, what, types, radius_km, limit }) => {
+  }, withLogging('find_nearby', async ({ icao, activity_id, lat, lon, what, types, radius_km, limit }) => {
     let reference: Reference | undefined
     let referenceLabel = ''
 
@@ -356,7 +357,7 @@ export function registerTools(server: McpServer) {
     }
 
     return textResult(header([...lines, '']))
-  })
+  }))
 }
 
 export const SERVER_INSTRUCTIONS =

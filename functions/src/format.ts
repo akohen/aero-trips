@@ -6,6 +6,7 @@ import { labels } from '../../src/utils/labels.ts'
 import { descriptionToText } from '../../src/utils/descriptionText.ts'
 import { titleCase } from '../../src/utils/utils.ts'
 import { SITE_URL, SNAPSHOT_DATE } from './data.ts'
+import type { ToolOutcome } from './logging.ts'
 import type { Activity, Airfield } from '../../src'
 
 export const MAX_RESULTS = 50
@@ -51,12 +52,13 @@ export const truncateResponse = (text: string) =>
     ? text
     : `${text.slice(0, MAX_RESPONSE_CHARS)}\n\n… (tronqué)`
 
-/** Wraps a string into the MCP content shape, applying the response cap. */
-export const textResult = (text: string) => ({
-  content: [{ type: 'text' as const, text: truncateResponse(text) }],
+/**
+ * Tool outcomes. These are plain objects, not the MCP content shape: the
+ * logging wrapper (see logging.ts) needs the result count before converting.
+ */
+export const textResult = (text: string, count?: number): ToolOutcome => ({
+  text: truncateResponse(text),
+  ...(count !== undefined ? { count } : {}),
 })
 
-export const errorResult = (text: string) => ({
-  content: [{ type: 'text' as const, text }],
-  isError: true,
-})
+export const errorResult = (text: string): ToolOutcome => ({ text, isError: true })
