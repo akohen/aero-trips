@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "main": "lib/index.js",
-  "engines": { "node": "22" },
+  "engines": { "node": "24" },
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node22 --format=esm --outfile=lib/index.js --loader:.json=json --external:firebase-functions --external:@modelcontextprotocol/sdk --external:zod --log-level=warning",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node24 --format=esm --outfile=lib/index.js --loader:.json=json --external:firebase-functions --external:@modelcontextprotocol/sdk --external:zod --log-level=warning",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -14,7 +14,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.0.0",
     "esbuild": "^0.25.0",
     "typescript": "^6.0.2"
   }
