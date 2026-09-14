@@ -1,4 +1,4 @@
-name: Deploy to Firebase Hosting on tag
+name: Deploy to Firebase on tag
 
 on:
   push:
@@ -14,10 +14,16 @@ jobs:
         with:
           node-version: 24
           cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
       - run: npm ci && npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      # The MCP function is built by the firebase.json predeploy hook.
+      # action-hosting-deploy can only deploy Hosting, so the CLI does both:
+      # `firebase deploy` always deploys functions before hosting, which is
+      # what the /mcp rewrite needs.
+      - id: auth
+        uses: google-github-actions/auth@v2
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_AERO_TRIPS }}'
-          channelId: live
-          projectId: aero-trips
+          credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_AERO_TRIPS }}'
+      - run: npx --yes firebase-tools@latest deploy --only functions:mcp,hosting --project aero-trips --non-interactive
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
