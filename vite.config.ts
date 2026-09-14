@@ -14,12 +14,20 @@ export default defineConfig({
         navigateFallbackDenylist: [
           /^\/sitemap\.xml$/,
           /^\/robots\.txt$/,
+          /^\/mcp(\/|$)/,
           /__/,
         ],
         runtimeCaching: [
           {
             urlPattern: /^\/(sitemap\.xml|robots\.txt)$/,
             handler: 'NetworkOnly',
+          },
+          // The MCP endpoint is a POST API served from this origin by a Hosting
+          // rewrite; the service worker must never touch it.
+          {
+            urlPattern: /^\/mcp(\/|$)/,
+            handler: 'NetworkOnly',
+            method: 'POST',
           },
         ],
       },
