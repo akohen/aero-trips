@@ -36,6 +36,7 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
 - `npm run build` — `tsc && vite build`. `npm run preview` — serve the build.
 - `npm version patch|minor` — tag a release (postversion: `git push --follow-tags`) → deploys.
 - `npm run backup` — dated Firestore export to `backups/`. Admin scripts need `serviceAccountKey.json` at the root.
+- `npm --prefix functions run build` — bundle the MCP function. `npx firebase emulators:start --only functions,hosting --project demo-aerotrips` to test it.
 
 ## SEO
 
@@ -58,6 +59,24 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
 - Verify hosting behavior with the **Firebase emulator** (`npx firebase emulators:start --only hosting
   --project demo-aerotrips` — a `demo-` project runs offline, no auth). `vite preview` is **not**
   representative (SPA-fallback-first; only hits nested files with a trailing slash).
+
+## MCP server (public API)
+
+- A **read-only MCP server** exposes the dataset at `https://aerotrips.fr/mcp` for AI assistants:
+  `search_airfields`, `get_airfield`, `search_activities`, `get_activity`, `find_nearby`.
+- Lives in **`functions/`** (its own npm package), deployed as a **Firebase Cloud Function v2**
+  (`europe-west1`); `firebase.json` rewrites `/mcp` and `/mcp/**` to it **before** the SPA catch-all.
+- Transport is **Streamable HTTP, stateless**: a fresh `McpServer` + transport per request,
+  `sessionIdGenerator: undefined`, `enableJsonResponse: true`. firebase-functions already parses the
+  body, so `transport.handleRequest(req, res, req.body)` **must** receive it explicitly.
+- **esbuild** bundles `functions/src/index.ts` → `functions/lib/index.js`, inlining the JSON
+  snapshots and the `src/` utils it reuses. No Firestore at runtime. Data is therefore only as fresh
+  as the last `npm run export` + deploy — the snapshot date is surfaced in every tool response.
+- Filtering **reuses `filterAirfields`/`filterActivities`** so MCP answers match the site. This is
+  why `src/utils/utils.ts` must stay **React-free** (icons live in `src/utils/icons.tsx`, labels in
+  `src/utils/labels.ts`).
+- Test through the **Hosting** emulator on `:5000`, not the functions emulator on `:5001` — only
+  that exercises the rewrite. POSTs require `Accept: application/json, text/event-stream` (406 without).
 
 ## Conventions
 
