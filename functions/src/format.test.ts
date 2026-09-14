@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { activityRow, airfieldRow, header, itemLink, itemUrl } from './format.ts'
+import { activityRow, airfieldRow, header, itemImageMarkdown, itemLink, itemUrl } from './format.ts'
 import type { Activity, Airfield } from '../../src'
 
 // Minimal stand-ins shaped like the snapshot records. Positions are plain
@@ -70,10 +70,33 @@ describe('activityRow', () => {
 })
 
 describe('header', () => {
-  it('appends the snapshot date, the source and the link directive', () => {
+  it('appends the snapshot date and the source, with no directive', () => {
     const lines = header(['Résultat']).split('\n')
     expect(lines[0]).toBe('Résultat')
-    expect(lines.at(-2)).toMatch(/^Données au \d{2}\/\d{2}\/\d{4} — source : AeroTrips \(https:\/\/aerotrips\.fr\)\.$/)
-    expect(lines.at(-1)).toBe("Inclure les liens des fiches dans la réponse à l'utilisateur.")
+    expect(lines.at(-1)).toMatch(/^Données au \d{2}\/\d{2}\/\d{4} — source : AeroTrips \(https:\/\/aerotrips\.fr\)\.$/)
+    // Imperatives belong in the tool schema, not in tool-result text.
+    expect(header(['x'])).not.toMatch(/Inclure/)
+  })
+})
+
+describe('itemImageMarkdown', () => {
+  const withImage = {
+    ...activity,
+    description: { type: 'doc', content: [{ type: 'image', attrs: { src: 'https://storage.googleapis.com/a.jpg' } }] },
+  } as unknown as Activity
+
+  it('emits the item photograph as markdown', () => {
+    expect(itemImageMarkdown(withImage)).toBe('![La Tannière](https://storage.googleapis.com/a.jpg)')
+  })
+
+  it('emits nothing when the item has no real photograph', () => {
+    // Never a generic stock fallback: the model would present it as this place.
+    expect(itemImageMarkdown(activity)).toBe('')
+    expect(itemImageMarkdown(airfield)).toBe('')
+  })
+
+  it('puts the photo on the search row only when one exists', () => {
+    expect(activityRow(withImage)).toContain('![La Tannière](https://storage.googleapis.com/a.jpg)')
+    expect(activityRow(activity)).not.toContain('![')
   })
 })

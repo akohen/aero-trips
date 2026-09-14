@@ -5,6 +5,7 @@
 import { labels } from '../../src/utils/labels.ts'
 import { descriptionToText } from '../../src/utils/descriptionText.ts'
 import { titleCase } from '../../src/utils/utils.ts'
+import { getImgNode } from '../../src/utils/itemImages.ts'
 import { SITE_URL, SNAPSHOT_DATE } from './data.ts'
 import type { ToolOutcome } from './logging.ts'
 import type { Activity, Airfield } from '../../src'
@@ -48,6 +49,25 @@ export const description = (item: Airfield | Activity, maxLength: number) =>
   descriptionToText(item.description, { maxLength, images: false })
 
 /**
+ * The item's own photograph, or nothing.
+ *
+ * Deliberately not getAirfieldImage/getActivityImage: those fall back to generic
+ * stock photos, and a model handed a stock restaurant would present it as a
+ * picture of *this* restaurant. Only a real image is worth sending.
+ *
+ * The raw src, not getResizedUrl: in the SPA the resized variant is only ever an
+ * onerror fallback, so the original is the URL known to resolve.
+ */
+export const itemImage = (item: Airfield | Activity) =>
+  getImgNode(item.description as Parameters<typeof getImgNode>[0])?.attrs.src
+
+/** `![alt](src)` for an item that has a real photograph, else ''. */
+export const itemImageMarkdown = (item: Airfield | Activity) => {
+  const src = itemImage(item)
+  return src ? `![${displayName(item)}](${src})` : ''
+}
+
+/**
  * One search-result line per item. Pure string builders, kept here rather than
  * in tools.ts so they can be unit-tested: this module's runtime graph is only
  * src/utils + data.ts, with no firebase-functions in it.
@@ -60,6 +80,7 @@ export const airfieldRow = (airfield: Airfield, distance?: number) => [
   airfield.nightVFR ? 'VFR nuit' : undefined,
   airfield.toilet && airfield.toilet !== 'no' ? label(airfield.toilet) : undefined,
   distance !== undefined ? km(distance) : undefined,
+  itemImageMarkdown(airfield) || undefined,
 ].filter(Boolean).join(' · ')
 
 export const activityRow = (activity: Activity, distance?: number) => {
@@ -71,6 +92,7 @@ export const activityRow = (activity: Activity, distance?: number) => {
     // this is what get_activity consumes, and making the model parse a URL to
     // recover it is a needless failure mode.
     `id: ${activity.id}`,
+    itemImageMarkdown(activity) || undefined,
   ].filter(Boolean).join(' · ')
   return snippet ? `${head}\n  ${snippet}` : head
 }
@@ -82,17 +104,17 @@ export const runwaySummary = (airfield: Airfield) =>
 
 /**
  * Footer on every successful response: the snapshot date so the model can flag
- * staleness, the source, and one short instruction to pass the links on.
+ * staleness, and the source.
  *
- * The directive sits next to the data the model is reading, which is why it is
- * followed more reliably than the server instructions alone. Keep it to a single
- * line — a longer or more promotional footer, repeated on every call, reads as
- * spam and models start suppressing it.
+ * Purely factual, by design. This once carried "inclure les liens des fiches…",
+ * which did not work: models treat tool-result text as untrusted data, and an
+ * imperative buried in it is precisely the shape of a prompt injection. Rules
+ * for the model belong in the tool descriptions and SERVER_INSTRUCTIONS, which
+ * reach it as part of the trusted system prompt.
  */
 export const header = (lines: string[]) => [
   ...lines,
   `Données au ${SNAPSHOT_DATE} — source : AeroTrips (${SITE_URL}).`,
-  "Inclure les liens des fiches dans la réponse à l'utilisateur.",
 ].join('\n')
 
 export const truncateResponse = (text: string) =>

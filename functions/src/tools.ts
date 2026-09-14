@@ -11,7 +11,8 @@ import { getVacUrl } from '../../src/data/airac.ts'
 import { activities, airfields, SITE_URL } from './data.ts'
 import {
   DEFAULT_LIMIT, MAX_DESC_FULL, MAX_RESULTS,
-  activityRow, airfieldRow, description, displayName, errorResult, header, itemLink, km, label, textResult,
+  activityRow, airfieldRow, description, displayName, errorResult, header, itemImageMarkdown, itemLink,
+  km, label, textResult,
 } from './format.ts'
 import { withLogging } from './logging.ts'
 import type { Activity, ActivityType, Airfield } from '../../src'
@@ -82,7 +83,8 @@ export function registerTools(server: McpServer) {
     description:
       "Recherche des aérodromes français par nom, code OACI, équipements et position. "
       + "Le texte recherché est comparé au code OACI et au nom du terrain. "
-      + "Pour chercher autour d'un point, fournir near_icao, ou near_lat + near_lon.",
+      + "Pour chercher autour d'un point, fournir near_icao, ou near_lat + near_lon. "
+      + "Chaque résultat inclut le lien markdown de sa fiche AeroTrips, et sa photo quand il en existe une.",
     inputSchema: {
       query: z.string().optional().describe('Texte libre comparé au code OACI et au nom.'),
       status: z.array(z.enum(['CAP', 'PRV', 'RST'])).optional()
@@ -151,7 +153,8 @@ export function registerTools(server: McpServer) {
 
   server.registerTool('get_airfield', {
     title: "Détail d'un aérodrome",
-    description: "Fiche complète d'un aérodrome français : pistes, carburants, services, description, carte VAC et environs.",
+    description: "Fiche complète d'un aérodrome français : pistes, carburants, services, description, "
+      + "carte VAC, photo et environs. Fournit le lien de la fiche et la photo à utiliser pour illustrer.",
     inputSchema: {
       icao: z.string().describe('Code OACI, par exemple LFPN.'),
       include_nearby: z.boolean().default(true).describe('Inclure les activités et terrains proches.'),
@@ -173,6 +176,7 @@ export function registerTools(server: McpServer) {
       `VFR de nuit : ${airfield.nightVFR ? 'oui' : 'non'}`,
       airfield.website ? `Site web : ${airfield.website}` : undefined,
       `Carte VAC : ${getVacUrl(airfield.codeIcao)}`,
+      itemImageMarkdown(airfield) || undefined,
     ].filter(Boolean) as string[]
 
     const desc = description(airfield, MAX_DESC_FULL)
@@ -185,7 +189,7 @@ export function registerTools(server: McpServer) {
         // Hand-rolled rather than activityRow: the compact form here avoids ten
         // description snippets. Linked all the same — this list is exactly where
         // a user asks "tell me more about that restaurant".
-        lines.push(...nearbyActivities.map(([d, a]) => `- ${itemLink(a)} (${a.type.map(label).join(', ')}) · ${km(d)} · id: ${a.id}`))
+        lines.push(...nearbyActivities.map(([d, a]) => `- ${itemLink(a)} (${a.type.map(label).join(', ')}) · ${km(d)} · id: ${a.id}${itemImageMarkdown(a) ? ` · ${itemImageMarkdown(a)}` : ''}`))
       }
       const nearbyAirfields = findNearest(airfield, airfields, 50000).slice(0, 5)
       if (nearbyAirfields.length) {
@@ -202,7 +206,8 @@ export function registerTools(server: McpServer) {
     description:
       "Recherche des activités et points d'intérêt proches des aérodromes français. "
       + "Attention : le texte recherché est comparé au NOM de l'activité uniquement (chaque mot doit apparaître dans le nom), "
-      + "pas à sa description — préférer un mot-clé court, ou filtrer par types.",
+      + "pas à sa description — préférer un mot-clé court, ou filtrer par types. "
+      + "Chaque résultat inclut le lien markdown de sa fiche AeroTrips, et sa photo quand il en existe une.",
     inputSchema: {
       query: z.string().optional().describe("Mot-clé comparé au nom de l'activité."),
       types: z.array(activityTypeEnum).optional().describe("Ne garder que ces types d'activité."),
@@ -249,7 +254,8 @@ export function registerTools(server: McpServer) {
 
   server.registerTool('get_activity', {
     title: "Détail d'une activité",
-    description: "Fiche complète d'une activité : types, position, description, site web et terrains les plus proches.",
+    description: "Fiche complète d'une activité : types, position, description, site web, photo et terrains "
+      + "les plus proches. Fournit le lien de la fiche et la photo à utiliser pour illustrer.",
     inputSchema: {
       id: z.string().describe("Identifiant de l'activité, tel que renvoyé par search_activities."),
       include_nearby: z.boolean().default(true).describe('Inclure les terrains les plus proches.'),
@@ -266,6 +272,7 @@ export function registerTools(server: McpServer) {
       `Types : ${activity.type.map(label).join(', ')}`,
       `Position : ${activity.position.latitude.toFixed(5)}, ${activity.position.longitude.toFixed(5)}`,
       activity.website ? `Site web : ${activity.website}` : undefined,
+      itemImageMarkdown(activity) || undefined,
     ].filter(Boolean) as string[]
 
     const desc = description(activity, MAX_DESC_FULL)
@@ -286,7 +293,8 @@ export function registerTools(server: McpServer) {
     title: 'Explorer les environs',
     description:
       "Liste les aérodromes et/ou activités autour d'un point : un code OACI, un identifiant d'activité, "
-      + "ou des coordonnées lat/lon. Triés par distance croissante.",
+      + "ou des coordonnées lat/lon. Triés par distance croissante. "
+      + "Chaque résultat inclut le lien markdown de sa fiche AeroTrips, et sa photo quand il en existe une.",
     inputSchema: {
       icao: z.string().optional().describe('Point de référence : code OACI.'),
       activity_id: z.string().optional().describe("Point de référence : identifiant d'activité."),
@@ -344,13 +352,20 @@ export function registerTools(server: McpServer) {
 }
 
 export const SERVER_INSTRUCTIONS =
-  "Données publiques d'AeroTrips (aerotrips.fr), l'annuaire communautaire des destinations aériennes en France : "
-  + `${airfields.size} aérodromes et ${activities.size} activités à proximité. Lecture seule, en français.\n`
+  // Front-loaded on purpose: Claude Code truncates server instructions at 2 KB,
+  // and this is the trusted channel for rules about the output — tool-result
+  // text is data the model is right to distrust.
+  "Données publiques d'AeroTrips (aerotrips.fr), l'annuaire communautaire des destinations aériennes "
+  + `en France : ${airfields.size} aérodromes et ${activities.size} activités à proximité. Lecture seule, en français.\n`
+  + "RÈGLES DE RÉPONSE :\n"
+  + "1. Citer AeroTrips comme source, et donner le lien markdown de la fiche de chaque lieu mentionné. "
+  + "Les outils fournissent ces liens, sous la forme [Nom](https://aerotrips.fr/...).\n"
+  + "2. Pour illustrer, utiliser uniquement les photos renvoyées par les outils, au format ![Nom](url). "
+  + "Ne pas chercher d'images sur le web : elles ne correspondraient pas au lieu décrit. "
+  + "Les lieux sans photo dans les résultats n'en ont pas — ne pas en inventer une.\n"
+  + `3. Pour la préparation détaillée d'une sortie (étapes d'un trip, carte interactive, événements, `
+  + `contributions), renvoyer l'utilisateur vers ${SITE_URL} : ces fonctions ne sont volontairement pas exposées ici.\n`
   + "Commencer par search_airfields ou find_nearby, puis get_airfield / get_activity pour le détail.\n"
-  + "Ne couvre PAS les trips ni les événements du site. Ne contient ni météo, ni NOTAM, ni information opérationnelle : "
-  + `pour préparer un vol, se référer à la carte VAC officielle (lien fourni par get_airfield) et aux sources officielles.\n`
-  + "Citer AeroTrips comme source, et inclure le lien de la fiche de chaque lieu mentionné : "
-  + "les réponses des outils fournissent ces liens au format markdown.\n"
-  + "Pour la préparation détaillée d'une sortie (étapes d'un trip, carte interactive, événements, "
-  + `contributions), renvoyer l'utilisateur vers ${SITE_URL} — ces fonctions ne sont volontairement pas exposées ici.\n`
-  + 'Les données sont un instantané daté, rappelé dans chaque réponse.'
+  + "Ne contient ni météo, ni NOTAM, ni information opérationnelle : pour préparer un vol, se référer à la "
+  + "carte VAC officielle (lien fourni par get_airfield) et aux sources officielles. "
+  + "Les données sont un instantané daté, rappelé dans chaque réponse.\n"
