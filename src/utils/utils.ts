@@ -1,11 +1,6 @@
 import haversineDistance from "haversine-distance";
 import { Activity, Airfield, ADfilter, ActivityFilter, ActivityType, Event, Profile } from "..";
-import { 
-  IconBan, IconBed, IconBike, IconBuildingAirport, IconBulb, IconBus, IconCar, IconCircleCheck, IconEye, 
-  IconForbid, IconGasStation, IconHistory, IconPaw, IconPlane, IconSailboat, IconShoe, IconSoup, 
-  IconStar, IconToiletPaper, IconTower 
-} from "@tabler/icons-react";
-import { Timestamp } from "firebase/firestore";
+import type { Timestamp } from "firebase/firestore";
 
 // "DIEPPE SAINT AUBIN" -> "Dieppe Saint Aubin", "SAINT-CYR-L'ECOLE" -> "Saint-Cyr-L'Ecole"
 export const titleCase = (str: string) => {
@@ -25,41 +20,6 @@ export const slug = (str: string) => {
     .replace(/\s+/g, '-')
     .concat('-',Math.random().toString(36).substring(7));
 }
-
-
-export const iconStyle = {
-  size:16,
-  style:{verticalAlign:'middle'}
-}
-
-export const iconsList = new Map<string, {label: string,icon: React.FC,style: object}>([
-  ['food', {label:"Restauration", icon:IconSoup, style:iconStyle}],
-  ['lodging', {label:"Hébergement", icon:IconBed, style:iconStyle}],
-  ['transit', {label:"Transport en commun", icon:IconBus, style:iconStyle}],
-  ['car', {label:"Taxi ou location de voiture", icon:IconCar, style:iconStyle}],
-  ['hiking', {label:"Marche à pied", icon:IconShoe, style:iconStyle}],
-  ['culture', {label:"Culture", icon:IconTower, style:iconStyle}],
-  ['poi', {label:"A voir du ciel", icon:IconEye, style:iconStyle}],
-  ['aero', {label:"Aéronautique", icon:IconPlane, style:iconStyle}],
-  ['bike', {label:"Vélo", icon:IconBike, style:iconStyle}],
-  ['nautical', {label:"Activités nautiques", icon:IconSailboat, style:iconStyle}],
-  ['nature', {label:"Nature et animaux", icon:IconPaw, style:iconStyle}],
-  ['other', {label:"Autre activité", icon:IconBulb, style:iconStyle}],
-  ['public', {label:"Toilettes publiques", icon:IconToiletPaper, style:iconStyle}],
-  ['private', {label:"Toilettes privées", icon:IconToiletPaper, style:iconStyle}],
-  ['CAP', {label:"Ouvert à la circulation aérienne publique", icon:IconCircleCheck, style:{...iconStyle, color:"teal"}}],
-  ['RST', {label:"Accès restreint", icon:IconForbid, style:{...iconStyle, color:"orange"}}],
-  ['PRV', {label:"Terrain privé", icon:IconBan, style:{...iconStyle, color:"red"}}],
-  ['MIL', {label:"Usage militaire uniquement", icon:IconBan, style:{...iconStyle, color:"red"}}],
-  ['OFF', {label:"Fermé", icon:IconBan, style:{...iconStyle, color:"red"}}],
-  ['100LL', {label:"Essence 100LL disponible", icon:IconGasStation, style:{...iconStyle, color:"darkblue"}}],
-  ['SP95', {label:"Essence SP95/98 disponible", icon:IconGasStation, style:{...iconStyle, color:"green"}}],
-  ['SP98', {label:"Essence SP95/98 disponible", icon:IconGasStation, style:{...iconStyle, color:"green"}}],
-  ['UL91', {label:"Essence UL91 disponible", icon:IconGasStation, style:{...iconStyle, color:"red"}}],
-  ['visited', {label:"Déjà visité", icon:IconHistory, style:iconStyle}],
-  ['favorite', {label:"Favori", icon:IconStar, style:iconStyle}],
-  ['airfield', {label:"Aérodrome", icon:IconBuildingAirport, style:iconStyle}],
-])
 
 
 export function findNearest<T extends Airfield|Activity>(reference: Airfield|Activity, items:Map<string,T>, maxDistance: number = 10000): [distance: number, item: T, id: string][] {

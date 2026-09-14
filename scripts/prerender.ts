@@ -15,7 +15,8 @@ import { generateHTML } from '@tiptap/html'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Youtube from '@tiptap/extension-youtube'
-import { findNearest, iconsList, titleCase } from '../src/utils/utils.ts'
+import { findNearest, titleCase } from '../src/utils/utils.ts'
+import { labels } from '../src/utils/labels.ts'
 import { buildItemSeo } from '../src/utils/itemSeo.ts'
 import { fillImageAlt } from '../src/utils/descriptionAlt.ts'
 import type { Activity, Airfield } from '../src'
@@ -113,7 +114,7 @@ const buildBody = (
   nearbyAds: [number, Airfield, string][],
 ) => {
   const ville = titleCase(af.name)
-  const status = iconsList.get(af.status)?.label ?? ''
+  const status = labels.get(af.status) ?? ''
   const parts: string[] = []
 
   parts.push(`<h1>Aérodrome de ${esc(ville)} - ${esc(af.codeIcao)}</h1>`)

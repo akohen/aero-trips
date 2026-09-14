@@ -1,0 +1,31 @@
+// French labels for activity types, airfield statuses, fuels and services.
+// Kept React-free so non-browser consumers (prerender script, MCP server) can
+// use them without pulling in @tabler/icons-react. See icons.tsx for the icons.
+export const labels = new Map<string, string>([
+  ['food', "Restauration"],
+  ['lodging', "Hébergement"],
+  ['transit', "Transport en commun"],
+  ['car', "Taxi ou location de voiture"],
+  ['hiking', "Marche à pied"],
+  ['culture', "Culture"],
+  ['poi', "A voir du ciel"],
+  ['aero', "Aéronautique"],
+  ['bike', "Vélo"],
+  ['nautical', "Activités nautiques"],
+  ['nature', "Nature et animaux"],
+  ['other', "Autre activité"],
+  ['public', "Toilettes publiques"],
+  ['private', "Toilettes privées"],
+  ['CAP', "Ouvert à la circulation aérienne publique"],
+  ['RST', "Accès restreint"],
+  ['PRV', "Terrain privé"],
+  ['MIL', "Usage militaire uniquement"],
+  ['OFF', "Fermé"],
+  ['100LL', "Essence 100LL disponible"],
+  ['SP95', "Essence SP95/98 disponible"],
+  ['SP98', "Essence SP95/98 disponible"],
+  ['UL91', "Essence UL91 disponible"],
+  ['visited', "Déjà visité"],
+  ['favorite', "Favori"],
+  ['airfield', "Aérodrome"],
+])
