@@ -10,8 +10,8 @@ import { filterActivities, filterAirfields, findNearest } from '../../src/utils/
 import { getVacUrl } from '../../src/data/airac.ts'
 import { activities, airfields, SITE_URL } from './data.ts'
 import {
-  DEFAULT_LIMIT, MAX_DESC_FULL, MAX_DESC_SNIPPET, MAX_RESULTS,
-  description, displayName, errorResult, header, itemUrl, km, label, runwaySummary, textResult,
+  DEFAULT_LIMIT, MAX_DESC_FULL, MAX_RESULTS,
+  activityRow, airfieldRow, description, displayName, errorResult, header, itemLink, km, label, textResult,
 } from './format.ts'
 import { withLogging } from './logging.ts'
 import type { Activity, ActivityType, Airfield } from '../../src'
@@ -74,26 +74,6 @@ function rank<T extends Airfield | Activity>(items: T[], reference?: Reference):
   return reference
     ? ranked.sort((a, b) => (a[1] ?? 0) - (b[1] ?? 0))
     : ranked.sort((a, b) => displayName(a[0]).localeCompare(displayName(b[0]), 'fr'))
-}
-
-const airfieldRow = (airfield: Airfield, distance?: number) => [
-  `${airfield.codeIcao} — ${displayName(airfield)}`,
-  label(airfield.status),
-  runwaySummary(airfield),
-  airfield.fuels?.length ? airfield.fuels.join(', ') : undefined,
-  airfield.nightVFR ? 'VFR nuit' : undefined,
-  airfield.toilet && airfield.toilet !== 'no' ? label(airfield.toilet) : undefined,
-  distance !== undefined ? km(distance) : undefined,
-].filter(Boolean).join(' · ')
-
-const activityRow = (activity: Activity, distance?: number) => {
-  const snippet = description(activity, MAX_DESC_SNIPPET)
-  const head = [
-    `${activity.name} (${activity.type.map(label).join(', ')})`,
-    distance !== undefined ? km(distance) : undefined,
-    `id: ${activity.id}`,
-  ].filter(Boolean).join(' · ')
-  return snippet ? `${head}\n  ${snippet}` : head
 }
 
 export function registerTools(server: McpServer) {
@@ -182,7 +162,9 @@ export function registerTools(server: McpServer) {
     if (!airfield) return errorResult(unknownIcao(icao))
 
     const lines = [
-      `${displayName(airfield)} (${airfield.codeIcao})`,
+      // The title carries the link: models relaying an answer keep the subject
+      // line far more reliably than a trailing "Fiche AeroTrips" footer.
+      itemLink(airfield, `${displayName(airfield)} (${airfield.codeIcao})`),
       label(airfield.status),
       `Position : ${airfield.position.latitude.toFixed(5)}, ${airfield.position.longitude.toFixed(5)}`,
       `Pistes : ${airfield.runways.map(r => [r.designation, `${r.length} m`, r.composition].filter(Boolean).join(' ')).join(' | ')}`,
@@ -191,7 +173,6 @@ export function registerTools(server: McpServer) {
       `VFR de nuit : ${airfield.nightVFR ? 'oui' : 'non'}`,
       airfield.website ? `Site web : ${airfield.website}` : undefined,
       `Carte VAC : ${getVacUrl(airfield.codeIcao)}`,
-      `Fiche AeroTrips : ${itemUrl(airfield)}`,
     ].filter(Boolean) as string[]
 
     const desc = description(airfield, MAX_DESC_FULL)
@@ -201,12 +182,15 @@ export function registerTools(server: McpServer) {
       const nearbyActivities = findNearest(airfield, activities, 10000).slice(0, 10)
       if (nearbyActivities.length) {
         lines.push('', 'Activités à proximité :')
-        lines.push(...nearbyActivities.map(([d, a]) => `- ${a.name} (${a.type.map(label).join(', ')}) · ${km(d)} · id: ${a.id}`))
+        // Hand-rolled rather than activityRow: the compact form here avoids ten
+        // description snippets. Linked all the same — this list is exactly where
+        // a user asks "tell me more about that restaurant".
+        lines.push(...nearbyActivities.map(([d, a]) => `- ${itemLink(a)} (${a.type.map(label).join(', ')}) · ${km(d)} · id: ${a.id}`))
       }
       const nearbyAirfields = findNearest(airfield, airfields, 50000).slice(0, 5)
       if (nearbyAirfields.length) {
         lines.push('', 'Terrains à proximité :')
-        lines.push(...nearbyAirfields.map(([d, a]) => `- ${a.codeIcao} ${displayName(a)} · ${km(d)}`))
+        lines.push(...nearbyAirfields.map(([d, a]) => `- ${itemLink(a, `${a.codeIcao} ${displayName(a)}`)} · ${km(d)}`))
       }
     }
 
@@ -278,11 +262,10 @@ export function registerTools(server: McpServer) {
     }
 
     const lines = [
-      activity.name,
+      itemLink(activity),
       `Types : ${activity.type.map(label).join(', ')}`,
       `Position : ${activity.position.latitude.toFixed(5)}, ${activity.position.longitude.toFixed(5)}`,
       activity.website ? `Site web : ${activity.website}` : undefined,
-      `Fiche AeroTrips : ${itemUrl(activity)}`,
     ].filter(Boolean) as string[]
 
     const desc = description(activity, MAX_DESC_FULL)
@@ -292,7 +275,7 @@ export function registerTools(server: McpServer) {
       const nearbyAirfields = findNearest(activity, airfields, 50000).slice(0, 3)
       if (nearbyAirfields.length) {
         lines.push('', 'Terrains les plus proches :')
-        lines.push(...nearbyAirfields.map(([d, a]) => `- ${a.codeIcao} ${displayName(a)} · ${km(d)}`))
+        lines.push(...nearbyAirfields.map(([d, a]) => `- ${itemLink(a, `${a.codeIcao} ${displayName(a)}`)} · ${km(d)}`))
       }
     }
 
@@ -365,5 +348,9 @@ export const SERVER_INSTRUCTIONS =
   + `${airfields.size} aérodromes et ${activities.size} activités à proximité. Lecture seule, en français.\n`
   + "Commencer par search_airfields ou find_nearby, puis get_airfield / get_activity pour le détail.\n"
   + "Ne couvre PAS les trips ni les événements du site. Ne contient ni météo, ni NOTAM, ni information opérationnelle : "
-  + `pour préparer un vol, se référer à la carte VAC officielle (lien fourni par get_airfield) et aux sources officielles. `
-  + `Les données sont un instantané daté, rappelé dans chaque réponse. Site : ${SITE_URL}`
+  + `pour préparer un vol, se référer à la carte VAC officielle (lien fourni par get_airfield) et aux sources officielles.\n`
+  + "Citer AeroTrips comme source, et inclure le lien de la fiche de chaque lieu mentionné : "
+  + "les réponses des outils fournissent ces liens au format markdown.\n"
+  + "Pour la préparation détaillée d'une sortie (étapes d'un trip, carte interactive, événements, "
+  + `contributions), renvoyer l'utilisateur vers ${SITE_URL} — ces fonctions ne sont volontairement pas exposées ici.\n`
+  + 'Les données sont un instantané daté, rappelé dans chaque réponse.'
