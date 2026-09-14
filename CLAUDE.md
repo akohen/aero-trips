@@ -78,6 +78,20 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
 - Test through the **Hosting** emulator on `:5000`, not the functions emulator on `:5001` — only
   that exercises the rewrite. POSTs require `Accept: application/json, text/event-stream` (406 without).
 
+### Discovery
+
+- **`server.json`** (repo root) is the single source of truth for MCP metadata, in the official
+  registry format (`ServerDetail` schema). `scripts/prerender.ts` copies it to
+  `dist/.well-known/mcp/server-cards.json` at postbuild — the path from **SEP-2127, still an open
+  PR**; no well-known path is ratified yet, so revisit when one lands.
+- `description` is capped at **100 chars** by the schema; validate before publishing, or the
+  registry rejects it. No static `tools` array on purpose — it would drift from `tools.ts`.
+- `firebase.json` hosting `ignore` must **not** contain `**/.*`, or `.well-known` never deploys.
+- `public/llms.txt` describes the site and the MCP server for AI crawlers (llmstxt.org format).
+- Not yet published to `registry.modelcontextprotocol.io`. To do so, claim the `fr.aerotrips/*`
+  namespace with a DNS TXT record on `aerotrips.fr` (`v=MCPv1; k=ed25519; p=<public key>`), then
+  `mcp-publisher login dns --domain=aerotrips.fr --private-key=<hex>` and `mcp-publisher publish`.
+
 ## Conventions
 
 - User-facing content and UI are in **French**; code, comments and identifiers in **English**.

@@ -10,16 +10,24 @@ export default defineConfig({
       registerType: 'autoUpdate', 
       devOptions: { enabled: false },
       workbox: {
-        globIgnores: ['**/sitemap.xml', '**/robots.txt'],
+        globIgnores: ['**/sitemap.xml', '**/robots.txt', '**/llms.txt', '**/.well-known/**'],
         navigateFallbackDenylist: [
           /^\/sitemap\.xml$/,
           /^\/robots\.txt$/,
+          /^\/llms\.txt$/,
+          /^\/\.well-known\//,
           /^\/mcp(\/|$)/,
           /__/,
         ],
         runtimeCaching: [
           {
-            urlPattern: /^\/(sitemap\.xml|robots\.txt)$/,
+            urlPattern: /^\/(sitemap\.xml|robots\.txt|llms\.txt)$/,
+            handler: 'NetworkOnly',
+          },
+          // Discovery documents for AI clients: always fetched fresh, never
+          // shadowed by the SPA navigation fallback.
+          {
+            urlPattern: /^\/\.well-known\//,
             handler: 'NetworkOnly',
           },
           // The MCP endpoint is a POST API served from this origin by a Hosting

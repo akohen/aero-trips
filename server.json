@@ -1,0 +1,19 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "fr.aerotrips/aerotrips",
+  "title": "AeroTrips",
+  "description": "Aérodromes français et activités à proximité : pistes, carburants, services, restauration.",
+  "version": "1.0.0",
+  "websiteUrl": "https://aerotrips.fr",
+  "repository": {
+    "url": "https://github.com/akohen/aero-trips",
+    "source": "github",
+    "subfolder": "functions"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://aerotrips.fr/mcp"
+    }
+  ]
+}

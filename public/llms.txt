@@ -1,0 +1,37 @@
+# AeroTrips
+
+> Annuaire communautaire des destinations aériennes en France : 432 aérodromes et 494 activités
+> à proximité, renseignés et enrichis par des pilotes. Pistes, carburants, VFR de nuit, services,
+> restaurants, transports et points d'intérêt autour de chaque terrain.
+
+AeroTrips aide les pilotes à choisir où voler : trouver un terrain selon ses équipements, voir ce
+qu'il y a à faire une fois posé, et préparer une sortie à la journée. Le contenu est en français.
+
+Un serveur MCP (Model Context Protocol) public expose ces données en lecture seule aux assistants
+IA : `https://aerotrips.fr/mcp` (transport Streamable HTTP, sans authentification). Outils
+disponibles : `search_airfields`, `get_airfield`, `search_activities`, `get_activity`,
+`find_nearby`. Les données servies par le MCP sont un instantané daté, rappelé dans chaque réponse.
+
+Le MCP ne couvre ni les trips (sorties à étapes), ni les événements, ni les contributions : ces
+fonctions sont disponibles uniquement sur le site. Il ne contient aucune information
+opérationnelle — ni météo, ni NOTAM. La préparation d'un vol doit s'appuyer sur la carte VAC
+officielle et les sources officielles (SIA).
+
+## Serveur MCP
+
+- [Endpoint MCP](https://aerotrips.fr/mcp): Streamable HTTP, lecture seule, public. POST uniquement, en-tête `Accept: application/json, text/event-stream` requis.
+- [Server card](https://aerotrips.fr/.well-known/mcp/server-cards.json): métadonnées de découverte du serveur.
+
+## Pages principales
+
+- [Accueil](https://aerotrips.fr/): présentation et recherche.
+- [Aérodromes](https://aerotrips.fr/airfields): liste et filtres (statut, carburant, longueur de piste, VFR de nuit, services à proximité).
+- [Activités](https://aerotrips.fr/activities): restaurants, culture, transports, nature et points d'intérêt près des terrains.
+- [Trips](https://aerotrips.fr/trips): idées de sorties à étapes proposées par la communauté.
+- [Événements](https://aerotrips.fr/events): rassemblements et manifestations aériennes.
+- [Carte](https://aerotrips.fr/map): vue cartographique des terrains et activités.
+
+## Données
+
+- [Fiche aérodrome](https://aerotrips.fr/airfields/LFPN): exemple de fiche, une page par code OACI.
+- [Plan du site](https://aerotrips.fr/sitemap.xml): toutes les fiches aérodromes indexables.

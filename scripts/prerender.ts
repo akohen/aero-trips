@@ -185,3 +185,15 @@ for (const af of airfields.values()) {
 }
 
 console.log(`Prerendered ${count} airfields`)
+
+// --- MCP discovery ---------------------------------------------------------
+// server.json at the repo root is the single source of truth: it is what
+// mcp-publisher reads when publishing to registry.modelcontextprotocol.io.
+// Copy it into dist under the SEP-2127 well-known path so the same document
+// also serves as the server card, rather than maintaining two copies.
+// Note firebase.json's hosting `ignore` must not exclude dotfiles, or this
+// never reaches production.
+const cardDir = path.join(DIST, '.well-known', 'mcp')
+fs.mkdirSync(cardDir, { recursive: true })
+fs.copyFileSync('server.json', path.join(cardDir, 'server-cards.json'))
+console.log('Wrote .well-known/mcp/server-cards.json')
