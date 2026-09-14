@@ -13,6 +13,8 @@ import type { Response } from 'express'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
 import { registerTools, SERVER_INSTRUCTIONS } from './tools.ts'
+import { ga4Secrets, sendEvent } from './analytics.ts'
+import { info as logInfo } from 'firebase-functions/logger'
 
 const ALLOW_HEADERS = 'content-type, accept, authorization, mcp-session-id, mcp-protocol-version, last-event-id'
 const EXPOSE_HEADERS = 'mcp-session-id, mcp-protocol-version'
@@ -28,6 +30,29 @@ const setCors = (res: Response) => {
 
 const rpcError = (res: Response, status: number, code: number, message: string) => {
   res.status(status).json({ jsonrpc: '2.0', error: { code, message }, id: null })
+}
+
+type InitializeParams = {
+  protocolVersion?: unknown
+  clientInfo?: { name?: unknown; version?: unknown }
+}
+
+const asString = (value: unknown) => (typeof value === 'string' ? value : undefined)
+
+async function observeInitialize(body: unknown): Promise<void> {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return
+  const message = body as { method?: unknown; params?: InitializeParams }
+  if (message.method !== 'initialize') return
+
+  const client_name = asString(message.params?.clientInfo?.name) ?? 'unknown'
+  const client_version = asString(message.params?.clientInfo?.version) ?? 'unknown'
+  const protocol_version = asString(message.params?.protocolVersion) ?? 'unknown'
+
+  logInfo('mcp_initialize', { client_name, client_version, protocol_version })
+  await sendEvent({
+    name: 'mcp_session',
+    params: { client_name, client_version, protocol_version },
+  })
 }
 
 export const mcp = onRequest(
@@ -47,6 +72,7 @@ export const mcp = onRequest(
     maxInstances: 1,
     timeoutSeconds: 30,
     invoker: 'public',
+    secrets: ga4Secrets,
   },
   async (req: Request, res: Response) => {
     setCors(res)
@@ -63,6 +89,12 @@ export const mcp = onRequest(
       rpcError(res, 405, -32000, 'Method not allowed. This MCP server is stateless; use POST.')
       return
     }
+
+    // The transport is stateless, so `initialize` is the only per-connection
+    // signal available: one entry per client that connects, rather than per
+    // call. Only what the client volunteers about itself is recorded — no IP,
+    // no user-agent, nothing tied to a person.
+    await observeInitialize(req.body)
 
     // A fresh server and transport per request. With concurrency > 1 a warm
     // instance handles overlapping requests, so a shared transport would leak

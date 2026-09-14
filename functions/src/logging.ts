@@ -9,6 +9,7 @@
  * Cloud Logging as jsonPayload: queryable, and usable as a log-based metric.
  */
 import { error as logError, info as logInfo } from 'firebase-functions/logger'
+import { sendEvent } from './analytics.ts'
 
 /** What a tool handler returns; the wrapper turns it into the MCP shape. */
 export type ToolOutcome = {
@@ -54,12 +55,24 @@ export function withLogging<A extends Record<string, unknown>>(tool: string, han
     const started = Date.now()
     try {
       const outcome = await handler(args)
+      const duration_ms = Date.now() - started
       logInfo('mcp_tool_call', {
         tool,
         ok: !outcome.isError,
-        duration_ms: Date.now() - started,
+        duration_ms,
         ...(outcome.count !== undefined ? { results: outcome.count } : {}),
         ...summarize(args),
+      })
+      // Awaited deliberately: Cloud Run throttles CPU after the response, so a
+      // detached send would often be killed. sendEvent never throws.
+      await sendEvent({
+        name: 'mcp_tool_call',
+        params: {
+          tool,
+          ok: !outcome.isError,
+          duration_ms,
+          ...(outcome.count !== undefined ? { results: outcome.count } : {}),
+        },
       })
       return {
         content: [{ type: 'text' as const, text: outcome.text }],
@@ -73,6 +86,7 @@ export function withLogging<A extends Record<string, unknown>>(tool: string, han
         error: err instanceof Error ? err.message : String(err),
         ...summarize(args),
       })
+      await sendEvent({ name: 'mcp_tool_error', params: { tool } })
       throw err
     }
   }
