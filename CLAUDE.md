@@ -36,7 +36,7 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
 - `npm run build` — `tsc && vite build`. `npm run preview` — serve the build.
 - `npm version patch|minor` — tag a release (postversion: `git push --follow-tags`) → deploys.
 - `npm run backup` — dated Firestore export to `backups/`. Admin scripts need `serviceAccountKey.json` at the root.
-- `npm --prefix functions run build` — bundle the MCP function. `npx firebase emulators:start --only functions,hosting --project demo-aerotrips` to test it.
+- `npm --prefix functions/mcp run build` — bundle the MCP function. `npx firebase emulators:start --only functions,hosting --project demo-aerotrips` to test it.
 
 ## SEO
 
@@ -64,7 +64,7 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
 
 - User uploads go to Storage under `img/{uid}/{random}` (`src/utils/image.ts`); the tiptap description
   stores the resulting download URL as the image node's `src`.
-- **`functions-images/`** (codebase `images`, Cloud Function v2, `europe-west1`) downscales uploads
+- **`functions/images/`** (codebase `images`, Cloud Function v2, `europe-west1`) downscales uploads
   **in place**: `onObjectFinalized` → `resizeInPlace()` rewrites the **same object** to max 1000px on the
   longest edge, re-encoding anything over 200KB even when already in bounds. The stored `src` is
   therefore correct immediately and forever — no client needs a fallback.
@@ -87,12 +87,12 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
 
 - A **read-only MCP server** exposes the dataset at `https://aerotrips.fr/mcp` for AI assistants:
   `search_airfields`, `get_airfield`, `search_activities`, `get_activity`, `find_nearby`.
-- Lives in **`functions/`** (its own npm package), deployed as a **Firebase Cloud Function v2**
+- Lives in **`functions/mcp/`** (its own npm package), deployed as a **Firebase Cloud Function v2**
   (`europe-west1`); `firebase.json` rewrites `/mcp` and `/mcp/**` to it **before** the SPA catch-all.
 - Transport is **Streamable HTTP, stateless**: a fresh `McpServer` + transport per request,
   `sessionIdGenerator: undefined`, `enableJsonResponse: true`. firebase-functions already parses the
   body, so `transport.handleRequest(req, res, req.body)` **must** receive it explicitly.
-- **esbuild** bundles `functions/src/index.ts` → `functions/lib/index.js`, inlining the JSON
+- **esbuild** bundles `functions/mcp/src/index.ts` → `functions/mcp/lib/index.js`, inlining the JSON
   snapshots and the `src/` utils it reuses. No Firestore at runtime. Data is therefore only as fresh
   as the last `npm run export` + deploy — the snapshot date is surfaced in every tool response.
 - Filtering **reuses `filterAirfields`/`filterActivities`** so MCP answers match the site. This is

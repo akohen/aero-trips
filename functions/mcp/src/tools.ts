@@ -6,8 +6,8 @@
 import { z } from 'zod'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import haversineDistance from 'haversine-distance'
-import { filterActivities, filterAirfields, findNearest } from '../../src/utils/utils.ts'
-import { getVacUrl } from '../../src/data/airac.ts'
+import { filterActivities, filterAirfields, findNearest } from '../../../src/utils/utils.ts'
+import { getVacUrl } from '../../../src/data/airac.ts'
 import { activities, airfields, SITE_URL } from './data.ts'
 import {
   DEFAULT_LIMIT, MAX_DESC_FULL, MAX_RESULTS,
@@ -15,7 +15,7 @@ import {
   km, label, textResult,
 } from './format.ts'
 import { withLogging } from './logging.ts'
-import type { Activity, ActivityType, Airfield } from '../../src'
+import type { Activity, ActivityType, Airfield } from '../../../src'
 
 const ACTIVITY_TYPES = [
   'food', 'lodging', 'bike', 'transit', 'car', 'hiking',

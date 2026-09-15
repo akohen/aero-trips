@@ -1,7 +1,7 @@
 /**
  * Integration check for the in-place resizer.
  *
- * Drives `functions-images/src/resize.ts` against the real STAGING bucket,
+ * Drives `functions/images/src/resize.ts` against the real STAGING bucket,
  * which covers everything except the Eventarc trigger wiring: the round trip
  * through Cloud Storage is what the interesting behaviour depends on (download
  * token survival, generation preconditions, metadata-only writes), and none of
@@ -14,7 +14,7 @@
 import admin from 'firebase-admin'
 import { randomUUID } from 'node:crypto'
 import sharp from 'sharp'
-import { resizeInPlace, isManaged } from '../functions-images/src/resize.ts'
+import { resizeInPlace, isManaged } from '../functions/images/src/resize.ts'
 
 const BUCKET = 'aero-trips-staging.appspot.com'
 admin.initializeApp({ credential: admin.credential.applicationDefault(), projectId: 'aero-trips-staging', storageBucket: BUCKET })

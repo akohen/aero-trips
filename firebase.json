@@ -29,7 +29,7 @@
   },
   "functions": [
     {
-      "source": "functions",
+      "source": "functions/mcp",
       "codebase": "mcp",
       "ignore": [
         "node_modules",
@@ -44,7 +44,7 @@
       ]
     },
     {
-      "source": "functions-images",
+      "source": "functions/images",
       "codebase": "images",
       "ignore": [
         "node_modules",

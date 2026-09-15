@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { activityRow, airfieldRow, header, itemImageMarkdown, itemLink, itemUrl } from './format.ts'
-import type { Activity, Airfield } from '../../src'
+import type { Activity, Airfield } from '../../../src'
 
 // Minimal stand-ins shaped like the snapshot records. Positions are plain
 // lat/lon objects there, not live Firestore GeoPoints.

@@ -15,7 +15,7 @@ import { warn as logWarn } from 'firebase-functions/logger'
 // Read from the environment rather than defineString(): a declared string
 // param is PROMPTED FOR interactively at emulator start and at deploy, which
 // hangs a non-interactive CI deploy. The measurement ID is not a secret — it
-// is already public in index.html — so it lives in functions/.env.
+// is already public in index.html — so it lives in functions/mcp/.env.
 // The API secret is a real credential and stays in Secret Manager.
 const GA4_API_SECRET = defineSecret('GA4_API_SECRET')
 

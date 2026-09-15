@@ -6,9 +6,9 @@
  * flip side is that the data is only as fresh as the last `npm run export` +
  * deploy, which is why SNAPSHOT_DATE is surfaced in every tool response.
  */
-import airfieldsJson from '../../src/data/airfields.json'
-import activitiesJson from '../../src/data/activities.json'
-import type { Activity, Airfield } from '../../src'
+import airfieldsJson from '../../../src/data/airfields.json'
+import activitiesJson from '../../../src/data/activities.json'
+import type { Activity, Airfield } from '../../../src'
 
 // The JSON holds serialized Firestore GeoPoints/Timestamps rather than live SDK
 // instances. Structurally compatible with everything we use (haversine-distance

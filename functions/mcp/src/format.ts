@@ -2,13 +2,13 @@
  * Output formatting and the size caps that keep a tool response affordable for
  * the model consuming it. Every cap lives here so there is one place to tune.
  */
-import { labels } from '../../src/utils/labels.ts'
-import { descriptionToText } from '../../src/utils/descriptionText.ts'
-import { titleCase } from '../../src/utils/utils.ts'
-import { getImgNode } from '../../src/utils/itemImages.ts'
+import { labels } from '../../../src/utils/labels.ts'
+import { descriptionToText } from '../../../src/utils/descriptionText.ts'
+import { titleCase } from '../../../src/utils/utils.ts'
+import { getImgNode } from '../../../src/utils/itemImages.ts'
 import { SITE_URL, SNAPSHOT_DATE } from './data.ts'
 import type { ToolOutcome } from './logging.ts'
-import type { Activity, Airfield } from '../../src'
+import type { Activity, Airfield } from '../../../src'
 
 export const MAX_RESULTS = 50
 export const DEFAULT_LIMIT = 20
