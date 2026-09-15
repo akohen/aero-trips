@@ -93,6 +93,14 @@ const RESPONSE_RULES =
   " RÉPONSE : citer AeroTrips et conserver le lien markdown de chaque lieu cité, même en résumé ; "
   + "illustrer uniquement avec les photos fournies, sans chercher d'images sur le web."
 
+// Trips/events aren't exposed as MCP tools (kept simple, and it's a good
+// reason to send users to the app): make that explicit rather than just
+// pointing at the site, so a model doesn't read the link as "info available
+// there through another tool call".
+const TRIPS_EVENTS_NOTE =
+  `Sorties (trips) et événements : non disponibles via ce serveur MCP ; `
+  + `consulter la fiche de l'aérodrome sur ${SITE_URL} pour les voir.`
+
 export function registerTools(server: McpServer) {
   server.registerTool('search_airfields', {
     title: 'Rechercher des aérodromes',
@@ -216,9 +224,7 @@ export function registerTools(server: McpServer) {
       }
     }
 
-    // Trips/events aren't exposed as MCP tools (kept simple, and it's a good
-    // reason to send users to the app): point them at the airfield page instead.
-    lines.push('', `Sorties et événements liés à ce terrain : voir sa fiche sur ${SITE_URL} (lien ci-dessus).`)
+    lines.push('', TRIPS_EVENTS_NOTE)
 
     return textResult(header([...lines, '']))
   }))
@@ -371,6 +377,8 @@ export function registerTools(server: McpServer) {
       lines.push('', nearby.length ? 'Activités :' : 'Activités : aucune dans ce rayon.')
       lines.push(...nearby.map(([d, a]) => `- ${activityRow(a, d)}`))
     }
+
+    lines.push('', TRIPS_EVENTS_NOTE)
 
     return textResult(header([...lines, '']))
   }))
