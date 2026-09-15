@@ -216,6 +216,10 @@ export function registerTools(server: McpServer) {
       }
     }
 
+    // Trips/events aren't exposed as MCP tools (kept simple, and it's a good
+    // reason to send users to the app): point them at the airfield page instead.
+    lines.push('', `Sorties et événements liés à ce terrain : voir sa fiche sur ${SITE_URL} (lien ci-dessus).`)
+
     return textResult(header([...lines, '']))
   }))
 
