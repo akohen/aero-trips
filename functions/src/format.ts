@@ -55,8 +55,8 @@ export const description = (item: Airfield | Activity, maxLength: number) =>
  * stock photos, and a model handed a stock restaurant would present it as a
  * picture of *this* restaurant. Only a real image is worth sending.
  *
- * The raw src, not getResizedUrl: in the SPA the resized variant is only ever an
- * onerror fallback, so the original is the URL known to resolve.
+ * The stored src is the URL that resolves: uploads are downscaled in place, so
+ * there is no variant to choose between and nothing for a client to fall back to.
  */
 export const itemImage = (item: Airfield | Activity) =>
   getImgNode(item.description as Parameters<typeof getImgNode>[0])?.attrs.src

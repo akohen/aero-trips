@@ -61,14 +61,3 @@ export const uploadImage = (view: EditorView, pos: number, file: File, profile?:
     }
   }
 }
-
-
-export const getResizedUrl = (src: string): string => {
-  try {
-    const url = new URL(src);
-    url.pathname += '_1000x1000';
-    return url.toString();
-  } catch {
-    return src + '_1000x1000';
-  }
-};

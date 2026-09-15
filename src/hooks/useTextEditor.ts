@@ -5,11 +5,11 @@ import { fetchAndUploadImageUrl, uploadImage } from "../utils/image";
 import { Slice } from "@tiptap/pm/model";
 import { EditorView } from "@tiptap/pm/view";
 import { Profile } from "..";
-import { ImageWithFallback } from "../utils/ImageWithFallback";
+import Image from "@tiptap/extension-image";
 
 const extensions = [
   StarterKit,
-  ImageWithFallback.configure({ allowBase64: false }),
+  Image.configure({ allowBase64: false }),
   Youtube.configure({ controls: true }),
 ];
 

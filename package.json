@@ -14,6 +14,9 @@
     "export": "NODE_ENV=production tsx scripts/export-data.ts",
     "import": "NODE_ENV=production tsx scripts/import-data.ts",
     "manage": "NODE_ENV=production node scripts/manage-edits.js",
+    "heal": "tsx scripts/heal-image-urls.ts",
+    "heal:prod": "NODE_ENV=production tsx scripts/heal-image-urls.ts --production",
+    "verify:resize": "tsx scripts/verify-resize.ts",
     "postversion": "git push --follow-tags"
   },
   "dependencies": {
@@ -64,6 +67,7 @@
     "postcss": "^8.5.8",
     "postcss-preset-mantine": "^1.18.0",
     "postcss-simple-vars": "^7.0.1",
+    "sharp": "^0.35.4",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
     "typescript-eslint": "^8.58.0",

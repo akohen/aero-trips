@@ -1,7 +1,5 @@
 import { Paper, Button, Group } from "@mantine/core";
-import { useState } from "react";
 import { Link } from "react-router";
-import { getResizedUrl } from "../utils/image";
 import { shortener } from "../utils/utils";
 import { CardConfig } from "./CardList";
 
@@ -14,8 +12,7 @@ function CardListItem<T>({
   cardConfig: CardConfig<T>,
   itemKey: string,
 }) {
-  const [currentImgUrl, setCurrentImgUrl] = useState(imgUrl);
-  const hasImage = Boolean(currentImgUrl);
+  const hasImage = Boolean(imgUrl);
 
   return (
     <Paper
@@ -27,7 +24,7 @@ function CardListItem<T>({
       to={link}
       style={{
         ...(hasImage ? {
-          backgroundImage: `url(${currentImgUrl}), linear-gradient(rgba(0,0,0,0.6) 0%, transparent 70%)`,
+          backgroundImage: `url(${imgUrl}), linear-gradient(rgba(0,0,0,0.6) 0%, transparent 70%)`,
           backgroundBlendMode: 'multiply',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
@@ -38,20 +35,6 @@ function CardListItem<T>({
         cursor: link ? 'pointer' : undefined,
       }}
     >
-      {imgUrl && (
-        <img
-          src={currentImgUrl}
-          style={{ display: 'none' }}
-          onError={(e) => {
-            const img = e.currentTarget;
-            if (!img.dataset.fallbackAttempted) {
-              img.dataset.fallbackAttempted = 'true';
-              setCurrentImgUrl(getResizedUrl(imgUrl));
-            }
-          }}
-        />
-      )}
-
       <div>
         <Button variant={hasImage ? 'white' : 'default'} size="xs" radius="md" style={{ pointerEvents: 'none' }}>
           {shortener(cardConfig.title(item, itemKey), 40)}

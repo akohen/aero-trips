@@ -60,6 +60,29 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
   --project demo-aerotrips` — a `demo-` project runs offline, no auth). `vite preview` is **not**
   representative (SPA-fallback-first; only hits nested files with a trailing slash).
 
+## Images
+
+- User uploads go to Storage under `img/{uid}/{random}` (`src/utils/image.ts`); the tiptap description
+  stores the resulting download URL as the image node's `src`.
+- **`functions-images/`** (codebase `images`, Cloud Function v2, `europe-west1`) downscales uploads
+  **in place**: `onObjectFinalized` → `resizeInPlace()` rewrites the **same object** to max 1000px on the
+  longest edge, re-encoding anything over 200KB even when already in bounds. The stored `src` is
+  therefore correct immediately and forever — no client needs a fallback.
+- This **replaces** `firebase/storage-resize-images`, which wrote `<path>_1000x1000` and deleted the
+  original, leaving the stored `src` pointing at a file that no longer existed (24% of production
+  images) and forcing every consumer to guess between two names. Static consumers (MCP, prerender)
+  can't guess. **Don't reintroduce a variant-naming scheme.**
+- Invariants the resizer must keep: carry `firebaseStorageDownloadTokens` through every write (it is
+  the secret in every URL already handed out); set the `resizedAt` custom-metadata marker, which is the
+  **loop guard** against the write-back re-firing `finalize`; never touch `images/` (served via
+  `publicUrl()` + per-object ACL, which an overwrite would drop) or legacy `_WxH` objects.
+- **`npm run verify:resize`** drives the resizer against the real staging bucket (token survival,
+  generation preconditions, loop guard). Needs staging credentials; cleans up after itself.
+- **`npm run heal`** (`scripts/heal-image-urls.ts`) repairs data left behind by the old extension:
+  copies each orphaned `<path>_WxH` back to `<path>` and rewrites the few Firestore refs that name a
+  variant directly. Dry run by default; `--apply` to write, `--production` to target prod,
+  `--delete-variants` to clean up afterwards. Idempotent.
+
 ## MCP server (public API)
 
 - A **read-only MCP server** exposes the dataset at `https://aerotrips.fr/mcp` for AI assistants:
