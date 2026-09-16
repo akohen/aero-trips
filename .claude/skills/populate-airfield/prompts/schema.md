@@ -57,13 +57,10 @@ Les liens s'écrivent comme texte avec `marks`, jamais comme nœud séparé :
 | Liens dans `marks` | ✓ | Nœud `link` standalone |
 | Texte brut dans `content` | `[{ "type": "text", "text": "..." }]` | `"content": "texte"` (string) |
 
-## Règle stricte sur les URLs d'images
+Ces quatre règles sont vérifiées automatiquement par `scripts/validate.py`.
 
-Seules deux sources sont acceptées :
+## URLs d'images
 
-1. **Wikimedia Commons** : URL commençant par `https://upload.wikimedia.org/`
-2. **Site officiel vérifié** : domaine du site officiel de l'aérodrome ou de l'activité (ex. `https://www.aeroclub-xyz.fr/images/photo.jpg`)
-
-**Rejeter** toute URL provenant de blogs, CDN tiers, réseaux sociaux, ou contenant des paramètres de type token (`?token=`, `?key=`, etc.).
-
-Si aucune image valide n'est trouvée, omettre entièrement le nœud `image` — ne pas inventer d'URL.
+**La règle de provenance des images vit dans [`activity-format.md`](activity-format.md) § Image, et
+nulle part ailleurs.** Elle vaut pour les activités **comme** pour l'aérodrome. Ne pas la
+paraphraser ici : deux formulations divergentes conduiraient à rejeter des images valides.
