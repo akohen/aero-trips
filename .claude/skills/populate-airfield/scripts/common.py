@@ -3,6 +3,7 @@
 Tous les scripts s'exécutent depuis la racine du repo et prennent le code ICAO
 en premier argument.
 """
+import glob
 import json
 import math
 import os
@@ -213,3 +214,65 @@ def http_status(url, retries=3):
             continue
         return last
     return last
+
+
+def agent_files(icao):
+    """Fichiers produits par les agents d'activités, du plus ancien au plus récent."""
+    return sorted(glob.glob(tmp_path(icao, 'activities-*.json')))
+
+
+def review_state(icao):
+    """Compare le fichier fusionné aux fichiers d'agents dont il est issu.
+
+    Un écart signifie qu'une **relecture a eu lieu** : activités supprimées,
+    ajoutées ou retouchées à la main après la fusion. Ces modifications ne
+    figurent que dans le fichier fusionné — refaire une fusion les écraserait.
+
+    Renvoie un dict ; `diverged` est le drapeau à tester avant toute opération
+    destructive.
+    """
+    per = {}
+    for path in agent_files(icao):
+        try:
+            for a in json.load(open(path)):
+                if a.get('id'):
+                    per[a['id']] = a
+        except (json.JSONDecodeError, OSError):
+            continue
+
+    merged_path = tmp_path(icao, 'activities.json')
+    merged = None
+    if os.path.exists(merged_path):
+        try:
+            merged = {a['id']: a for a in json.load(open(merged_path)) if a.get('id')}
+        except (json.JSONDecodeError, OSError):
+            merged = None
+
+    state = {
+        'has_agent_files': bool(per),
+        'has_merged': merged is not None,
+        'n_agent': len(per),
+        'n_merged': len(merged) if merged is not None else 0,
+        'deleted': [], 'added': [], 'modified': [], 'diverged': False,
+    }
+    if merged is None or not per:
+        return state
+
+    state['deleted'] = sorted(set(per) - set(merged))
+    state['added'] = sorted(set(merged) - set(per))
+    state['modified'] = sorted(i for i in set(per) & set(merged) if per[i] != merged[i])
+    state['diverged'] = bool(state['deleted'] or state['added'] or state['modified'])
+    return state
+
+
+def describe_review(state, merged_name='le fichier fusionné'):
+    """Résumé lisible d'un review_state divergent."""
+    bits = []
+    if state['deleted']:
+        bits.append(f"{len(state['deleted'])} supprimée(s) en relecture "
+                    f"({', '.join(state['deleted'][:3])}{'…' if len(state['deleted']) > 3 else ''})")
+    if state['added']:
+        bits.append(f"{len(state['added'])} ajoutée(s) à la main")
+    if state['modified']:
+        bits.append(f"{len(state['modified'])} retouchée(s)")
+    return f"{merged_name} diverge des fichiers d'agents : " + ', '.join(bits)

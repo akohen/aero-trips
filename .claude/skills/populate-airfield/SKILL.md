@@ -67,6 +67,32 @@ Produit `tmp/$ICAO-context.json` et affiche tout ce dont les agents ont besoin :
   incomplète (mesuré : sur 20 aérodromes, 18 identiques à la base, 1 ajout réel, 1 où la VAC
   omettait un carburant pourtant présent). Écrire `union`, ne **jamais** retirer un carburant.
 
+## Étape 0 bis — Reprendre une session laissée en plan
+
+Si des fichiers `tmp/$ICAO-*` existent déjà (session interrompue, relecture en cours, import pas
+encore fait), **ne pas relancer les Étapes 0 à 2** : reprendre avec
+
+```bash
+python3 .claude/skills/populate-airfield/scripts/resume.py $ICAO
+```
+
+Le script est non destructif par construction : inventaire daté de ce qui existe, régénération du
+contexte et de l'aperçu, validation, et rappel des étapes restantes. C'est le **seul point d'entrée
+sûr** sur une session déjà entamée.
+
+**Pourquoi un point d'entrée dédié** — deux commandes détruiraient le travail de relecture :
+
+- `context.py` supprime les sorties des agents qu'il s'apprête à relancer, y compris une fiche
+  aérodrome retouchée à la main ;
+- `merge.py` reconstruit le fichier fusionné depuis les fichiers d'agents, **faisant réapparaître
+  les activités écartées en relecture** (cas vécu sur LFMA : 19 → 20, une piscine supprimée revenue).
+
+Les deux refusent désormais d'agir quand le fichier fusionné **diverge** des fichiers d'agents —
+signe qu'une relecture a eu lieu. `--force` passe outre, à n'utiliser que pour repartir de zéro.
+
+Une fois la relecture terminée, **le fichier fusionné `tmp/$ICAO-activities.json` fait foi** et les
+fichiers d'agents sont périmés.
+
 ## Étapes 1 & 2 — Recherche en parallèle
 
 Lancer **en parallèle** (un seul message, tous les Agent tool calls ensemble) les agents
@@ -130,7 +156,8 @@ Attendre la fin de tous les agents avant de continuer.
 python3 .claude/skills/populate-airfield/scripts/merge.py $ICAO
 ```
 
-Fusionne `tmp/$ICAO-activities-*.json` → `tmp/$ICAO-activities.json`.
+Fusionne `tmp/$ICAO-activities-*.json` → `tmp/$ICAO-activities.json`. Refuse de s'exécuter si le
+fichier fusionné porte déjà des décisions de relecture (cf. Étape 0 bis).
 
 - Les doublons **entre agents** sont écartés (rapprochement nom + position : les `id` portent un
   suffixe aléatoire, et à un même point coexistent des services distincts — une navette n'est pas

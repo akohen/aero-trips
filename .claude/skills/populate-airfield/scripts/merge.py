@@ -38,9 +38,19 @@ def pos_of(a):
 
 def main():
     icao = c.icao_arg()
-    files = sorted(glob.glob(c.tmp_path(icao, 'activities-*.json')))
+    files = c.agent_files(icao)
     if not files:
         c.die(f'aucun fichier tmp/{icao}-activities-*.json — les agents ont-ils tourné ?')
+
+    state = c.review_state(icao)
+    if state['diverged'] and '--force' not in sys.argv:
+        out = c.tmp_path(icao, 'activities.json')
+        c.die(f"{c.describe_review(state)}.\n"
+              f"  Refusé : refaire la fusion écraserait {out} et ferait réapparaître les\n"
+              '  activités écartées en relecture. Les fichiers d\'agents sont périmés ;\n'
+              '  le fichier fusionné fait foi.\n'
+              f'  → pour reprendre la session : resume.py {icao}\n'
+              '  → pour refusionner malgré tout : --force')
 
     seen, merged, dropped = [], [], []
     for path in files:

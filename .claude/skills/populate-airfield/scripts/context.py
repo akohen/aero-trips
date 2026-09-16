@@ -12,6 +12,11 @@ silencieusement réintégré par merge.py alors qu'aucun agent ne l'a produit ce
 fois-ci. Les fichiers des autres catégories sont conservés — c'est ce qui permet de
 relancer une seule catégorie sans perdre les autres. `--no-clean` désactive ce
 nettoyage.
+
+Le nettoyage s'annule tout seul si une **relecture a déjà eu lieu** (le fichier
+fusionné diverge des fichiers d'agents) : c'est le cas d'une reprise de session, où
+détruire les sorties ferait perdre le travail de relecture. `--force` passe outre.
+Pour reprendre une session, préférer `resume.py`.
 """
 import json
 import os
@@ -189,8 +194,15 @@ if __name__ == '__main__':
     print(report(ctx))
 
     print(f"\nAgents à lancer : {', '.join(agents)}")
+    state = c.review_state(icao)
     if '--no-clean' in sys.argv:
         print('  nettoyage désactivé (--no-clean)')
+    elif state['diverged'] and '--force' not in sys.argv:
+        print('  ⚠ NETTOYAGE ANNULÉ — ' + c.describe_review(state))
+        print('    Ces modifications n\'existent que dans le fichier fusionné : les supprimer')
+        print('    reviendrait à perdre la relecture déjà faite.')
+        print('    → pour reprendre la session : resume.py ' + icao)
+        print('    → pour repartir de zéro malgré tout : --force')
     else:
         removed = clean_outputs(icao, agents)
         for r in removed:
