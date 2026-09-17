@@ -25,10 +25,34 @@ const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
 const isOwnStorageUrl = (url: string) => url.includes(`firebasestorage.googleapis.com/v0/b/${bucket.name}/`)
 
+// Wikimedia rate-limits browser-like and default UAs (429) and wants a descriptive one;
+// other hosts (CDNs) tend to block non-browser UAs. Same policy as the populate-airfield skill.
+const UA_BROWSER = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+const UA_WIKIMEDIA = 'aerotrips-import/1.0 (+https://aerotrips.fr)'
+const MIN_GAP_MS = 1000
+const MAX_ATTEMPTS = 4
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+const lastHit = new Map<string, number>()
+
+const fetchImage = async (url: string): Promise<Response> => {
+    const host = new URL(url).host
+    const headers = { 'User-Agent': host.endsWith('wikimedia.org') ? UA_WIKIMEDIA : UA_BROWSER }
+    for (let attempt = 1; ; attempt++) {
+        const wait = MIN_GAP_MS - (Date.now() - (lastHit.get(host) ?? 0))
+        if (wait > 0) await sleep(wait)
+        lastHit.set(host, Date.now())
+        const response = await fetch(url, { headers })
+        if (response.status !== 429 || attempt >= MAX_ATTEMPTS) return response
+        const retryAfter = Number(response.headers.get('retry-after'))
+        await sleep(retryAfter > 0 ? retryAfter * 1000 : 2000 * 2 ** attempt)
+    }
+}
+
 const uploadImageFromUrl = async (url: string): Promise<string | null> => {
     let response: Response
     try {
-        response = await fetch(url)
+        response = await fetchImage(url)
     } catch (e) {
         console.log(chalk.red(`  Failed to fetch image ${url}: ${e}`))
         return null
