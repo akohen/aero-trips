@@ -125,7 +125,8 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
 
 ## Conventions
 
-- User-facing content and UI are in **French**; code, comments and identifiers in **English**.
+- User-facing content and UI are in **French**; code, comments, identifiers and **commit messages** in
+  **English** (even though some past commits are in French).
 - Layout: `routes/` (pages), `components/`, `hooks/`, `utils/`, `data/`. `tsconfig` uses `moduleResolution: "bundler"`.
 - **Bundle perf**: map routes (`MapPage`, `TripDetails`) are **lazy-loaded** to keep Leaflet out of the
   initial bundle; Leaflet components (e.g. `AirfieldMarker`) are **kept separate** from utilities used off
