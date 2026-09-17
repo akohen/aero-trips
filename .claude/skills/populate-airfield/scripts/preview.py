@@ -202,17 +202,29 @@ document.addEventListener('DOMContentLoaded',build);
 MAP_JS = r'''
 (function(){
   if (typeof L === 'undefined') return;
-  var map = L.map('map', { scrollWheelZoom: false });
-  // Fond de carte CARTO et non les serveurs de tuiles publics d'OpenStreetMap :
-  // ceux-ci sont une ressource communautaire dont la politique d'usage exclut les
-  // applications non identifiables. Un aperçu ouvert en file:// n'envoie aucun
-  // Referer et finit bloqué (tuile « 403 App is not following the tile usage policy »).
-  L.tileLayer('https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19,
-    detectRetina: true,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-      + ' contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>'
-  }).addTo(map);
+  // Fonds de carte Esri (ArcGIS Online), sans clé et sans filigrane.
+  // Pas les serveurs de tuiles publics d'OpenStreetMap : leur politique d'usage
+  // exclut les applications non identifiables, et un aperçu ouvert en file://
+  // n'envoie aucun Referer (tuile « 403 App is not following the tile usage policy »).
+  // Pas CARTO non plus : depuis peu, ses tuiles sans clé portent un filigrane
+  // « API KEY REQUIRED » en travers de la carte.
+  var ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
+  function esri(service) {
+    return L.tileLayer(ESRI + service + '/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19,
+      attribution: '<a href="https://www.esri.com">Esri</a> et ses fournisseurs'
+    });
+  }
+  var plan = esri('World_Street_Map');
+  var satellite = esri('World_Imagery');
+  var relief = esri('World_Topo_Map');
+
+  var map = L.map('map', { scrollWheelZoom: false, layers: [plan] });
+  // Le satellite montre le parking avions et les accès : c'est lui qui permet de
+  // juger si un lieu est réellement à portée de marche depuis l'aéro-club.
+  L.control.layers({ 'Plan': plan, 'Satellite': satellite, 'Relief': relief },
+                   null, { position: 'topright' }).addTo(map);
+
   var bounds = [];
   if (MAP_CENTER) {
     L.marker([MAP_CENTER.lat, MAP_CENTER.lon], {
