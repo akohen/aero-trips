@@ -1,6 +1,6 @@
 ---
 name: populate-airfield
-description: Enrichir la base de données aero-trips pour un aérodrome donné : recherche web, description, clubs, et activités à proximité. Usage: /populate-airfield LFXX [airfield] [transport] [poi] [restaurants] [other]
+description: Enrichir la base de données aero-trips pour un aérodrome donné : recherche web, description, clubs, et activités à proximité. Sert aussi à reprendre une session laissée en plan dans tmp/ (relecture en cours, import pas encore fait). Usage: /populate-airfield LFXX [airfield] [transport] [poi] [restaurants] [other]
 argument-hint: Code ICAO de l'aérodrome (ex. LFBJ), suivi optionnellement des agents à lancer parmi : airfield, transport, poi, restaurants, other
 ---
 
@@ -12,6 +12,9 @@ que les champs absents. Tout le texte en français.
 Les étapes mécaniques sont des scripts, dans `.claude/skills/populate-airfield/scripts/`. Ils
 s'exécutent **depuis la racine du repo** et prennent le code ICAO en argument. Ne pas réécrire leur
 logique dans le chat : les lancer, lire leur sortie.
+
+⚠️ **Commencer par le § « Avant tout » ci-dessous** : si l'aérodrome a déjà des fichiers dans
+`tmp/`, le parcours n'est pas celui d'un démarrage à neuf.
 
 ## Périmètre de recherche
 
@@ -26,6 +29,39 @@ logique dans le chat : les lancer, lire leur sortie.
 parking avions et de l'entrée pilotes : un restaurant collé au parking peut ressortir à plusieurs
 centaines de mètres du point AIP. Le rayon est donc un **filtre de pertinence, pas un couperet** —
 `validate.py` applique 1 km de tolérance avant de signaler, et la relecture tranche.
+
+## Avant tout — reprise d'une session existante ?
+
+**Première chose à faire, avant l'Étape 0** : regarder si des fichiers `tmp/$ICAO-*` existent déjà.
+
+```bash
+ls tmp/$ICAO-* 2>/dev/null
+```
+
+S'il y en a (session interrompue, relecture en cours, import pas encore fait), **ne pas exécuter les
+Étapes 0 à 2** — elles relanceraient les agents et pourraient écraser un travail de relecture.
+Reprendre avec :
+
+```bash
+python3 .claude/skills/populate-airfield/scripts/resume.py $ICAO
+```
+
+Le script est non destructif par construction : inventaire daté de ce qui existe, régénération du
+contexte et de l'aperçu, validation, et rappel des étapes restantes. C'est le **seul point d'entrée
+sûr** sur une session déjà entamée.
+
+**Pourquoi un point d'entrée dédié** — deux commandes détruiraient le travail de relecture :
+
+- `context.py` supprime les sorties des agents qu'il s'apprête à relancer, y compris une fiche
+  aérodrome retouchée à la main ;
+- `merge.py` reconstruit le fichier fusionné depuis les fichiers d'agents, **faisant réapparaître
+  les activités écartées en relecture** (cas vécu sur LFMA : 19 → 20, une piscine supprimée revenue).
+
+Les deux refusent désormais d'agir quand le fichier fusionné **diverge** des fichiers d'agents —
+signe qu'une relecture a eu lieu. `--force` passe outre, à n'utiliser que pour repartir de zéro.
+
+Une fois la relecture terminée, **le fichier fusionné `tmp/$ICAO-activities.json` fait foi** et les
+fichiers d'agents sont périmés.
 
 ## Étape 0 — Contexte
 
@@ -66,32 +102,6 @@ Produit `tmp/$ICAO-context.json` et affiche tout ce dont les agents ont besoin :
 - **`fuels`** — point 10 de la VAC (AVT). **Purement additif** : la section AVT est parfois
   incomplète (mesuré : sur 20 aérodromes, 18 identiques à la base, 1 ajout réel, 1 où la VAC
   omettait un carburant pourtant présent). Écrire `union`, ne **jamais** retirer un carburant.
-
-## Étape 0 bis — Reprendre une session laissée en plan
-
-Si des fichiers `tmp/$ICAO-*` existent déjà (session interrompue, relecture en cours, import pas
-encore fait), **ne pas relancer les Étapes 0 à 2** : reprendre avec
-
-```bash
-python3 .claude/skills/populate-airfield/scripts/resume.py $ICAO
-```
-
-Le script est non destructif par construction : inventaire daté de ce qui existe, régénération du
-contexte et de l'aperçu, validation, et rappel des étapes restantes. C'est le **seul point d'entrée
-sûr** sur une session déjà entamée.
-
-**Pourquoi un point d'entrée dédié** — deux commandes détruiraient le travail de relecture :
-
-- `context.py` supprime les sorties des agents qu'il s'apprête à relancer, y compris une fiche
-  aérodrome retouchée à la main ;
-- `merge.py` reconstruit le fichier fusionné depuis les fichiers d'agents, **faisant réapparaître
-  les activités écartées en relecture** (cas vécu sur LFMA : 19 → 20, une piscine supprimée revenue).
-
-Les deux refusent désormais d'agir quand le fichier fusionné **diverge** des fichiers d'agents —
-signe qu'une relecture a eu lieu. `--force` passe outre, à n'utiliser que pour repartir de zéro.
-
-Une fois la relecture terminée, **le fichier fusionné `tmp/$ICAO-activities.json` fait foi** et les
-fichiers d'agents sont périmés.
 
 ## Étapes 1 & 2 — Recherche en parallèle
 
@@ -157,7 +167,7 @@ python3 .claude/skills/populate-airfield/scripts/merge.py $ICAO
 ```
 
 Fusionne `tmp/$ICAO-activities-*.json` → `tmp/$ICAO-activities.json`. Refuse de s'exécuter si le
-fichier fusionné porte déjà des décisions de relecture (cf. Étape 0 bis).
+fichier fusionné porte déjà des décisions de relecture (cf. § « Avant tout »).
 
 - Les doublons **entre agents** sont écartés (rapprochement nom + position : les `id` portent un
   suffixe aléatoire, et à un même point coexistent des services distincts — une navette n'est pas

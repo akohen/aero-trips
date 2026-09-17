@@ -1,4 +1,4 @@
-"""Étape 0 bis — reprendre une session laissée en plan dans tmp/.
+"""Reprendre une session laissée en plan dans tmp/ (cf. SKILL.md § « Avant tout »).
 
     python3 .claude/skills/populate-airfield/scripts/resume.py LFMA
 
