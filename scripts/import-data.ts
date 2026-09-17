@@ -61,7 +61,9 @@ const uploadImageFromUrl = async (url: string): Promise<string | null> => {
         console.log(chalk.red(`  Failed to fetch image ${url}: ${response.status}`))
         return null
     }
-    const contentType = response.headers.get('content-type') ?? ''
+    // Some CDNs send non-standard "image/jpg" or append parameters ("; charset=...")
+    const rawType = (response.headers.get('content-type') ?? '').split(';')[0].trim().toLowerCase()
+    const contentType = rawType === 'image/jpg' ? 'image/jpeg' : rawType
     if (!ALLOWED_IMAGE_TYPES.includes(contentType)) {
         console.log(chalk.red(`  Unsupported image type "${contentType}" for ${url}`))
         return null
