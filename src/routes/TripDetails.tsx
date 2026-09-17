@@ -88,7 +88,7 @@ const TripDetails = ({trips, airfields, activities, profile} : Data) => {
         <MapContainer style={{ height: "500px" }} bounds={bounds.pad(0.1)} scrollWheelZoom={true} >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
           {markers}
           <Polyline positions={linePositions} />

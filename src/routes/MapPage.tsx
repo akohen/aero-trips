@@ -72,7 +72,7 @@ function MapPage({airfields, activities, events, ADfilter, ActFilter, setADfilte
     <MapContainer className="main-map" center={view.center} zoom={view.zoom} scrollWheelZoom={true}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <MapMenu />
       <MapViewTracker setView={setMapView} />

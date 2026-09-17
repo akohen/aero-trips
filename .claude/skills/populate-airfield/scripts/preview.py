@@ -203,8 +203,16 @@ MAP_JS = r'''
 (function(){
   if (typeof L === 'undefined') return;
   var map = L.map('map', { scrollWheelZoom: false });
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+  // Fond de carte CARTO et non les serveurs de tuiles publics d'OpenStreetMap :
+  // ceux-ci sont une ressource communautaire dont la politique d'usage exclut les
+  // applications non identifiables. Un aperçu ouvert en file:// n'envoie aucun
+  // Referer et finit bloqué (tuile « 403 App is not following the tile usage policy »).
+  L.tileLayer('https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+    detectRetina: true,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      + ' contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>'
+  }).addTo(map);
   var bounds = [];
   if (MAP_CENTER) {
     L.marker([MAP_CENTER.lat, MAP_CENTER.lon], {
