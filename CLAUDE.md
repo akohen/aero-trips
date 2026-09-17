@@ -83,6 +83,14 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
   variant directly. Dry run by default; `--apply` to write, `--production` to target prod,
   `--delete-variants` to clean up afterwards. Idempotent.
 
+## Change notifications
+
+- **`functions/notifications/`** (codebase `notifications`, `europe-west1`): `onDocumentCreated('changes/{id}')`
+  emails the new document as JSON to the maintainer via the Mailgun REST API (`fetch`, no SDK).
+  Creates only — `npm run manage` applying/deleting a change sends nothing. `retry: false` to avoid duplicate mail.
+- Config: secret `MAILGUN_API_KEY` (`firebase functions:secrets:set`), params `MAILGUN_DOMAIN` and
+  `MAILGUN_API_URL` (use `https://api.eu.mailgun.net` for an EU domain), prompted at deploy or set in `functions/notifications/.env`.
+
 ## MCP server (public API)
 
 - A **read-only MCP server** exposes the dataset at `https://aerotrips.fr/mcp` for AI assistants:
