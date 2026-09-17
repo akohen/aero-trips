@@ -88,8 +88,8 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
 - **`functions/notifications/`** (codebase `notifications`, `europe-west1`): `onDocumentCreated('changes/{id}')`
   emails the new document as JSON to the maintainer via the Mailgun REST API (`fetch`, no SDK).
   Creates only — `npm run manage` applying/deleting a change sends nothing. `retry: false` to avoid duplicate mail.
-- Config: secret `MAILGUN_API_KEY` (`firebase functions:secrets:set`), params `MAILGUN_DOMAIN` and
-  `MAILGUN_API_URL` (use `https://api.eu.mailgun.net` for an EU domain), prompted at deploy or set in `functions/notifications/.env`.
+- Config: secret `MAILGUN_API_KEY` (`firebase functions:secrets:set`). Sends through the EU endpoint from the
+  `mg.aerotrips.fr` domain, hardcoded in `src/index.ts`.
 
 ## MCP server (public API)
 

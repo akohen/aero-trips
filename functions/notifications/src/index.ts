@@ -8,15 +8,15 @@
  * deliberately do not trigger it.
  */
 import { onDocumentCreated } from 'firebase-functions/v2/firestore'
-import { defineSecret, defineString } from 'firebase-functions/params'
+import { defineSecret } from 'firebase-functions/params'
 import { info } from 'firebase-functions/logger'
 import { DocumentReference, GeoPoint, Timestamp } from 'firebase-admin/firestore'
 
 const MAILGUN_API_KEY = defineSecret('MAILGUN_API_KEY')
-// The sending domain configured in Mailgun (e.g. `mg.example.com`).
-const MAILGUN_DOMAIN = defineString('MAILGUN_DOMAIN')
-// `https://api.eu.mailgun.net` for EU-hosted Mailgun domains.
-const MAILGUN_API_URL = defineString('MAILGUN_API_URL', { default: 'https://api.mailgun.net' })
+// The sending domain is hosted in Mailgun's EU region.
+const MAILGUN_API_URL = 'https://api.eu.mailgun.net'
+const MAILGUN_DOMAIN = 'mg.aerotrips.fr'
+const SENDER = `AeroTrips <notifications@${MAILGUN_DOMAIN}>`
 
 const RECIPIENT = 'alexandre@kohen.fr'
 
@@ -50,13 +50,13 @@ export const notifyNewChange = onDocumentCreated(
     const target = typeof data.targetDocument === 'string' ? data.targetDocument : snapshot.id
 
     const form = new FormData()
-    form.append('from', `AeroTrips <notifications@${MAILGUN_DOMAIN.value()}>`)
+    form.append('from', SENDER)
     form.append('to', RECIPIENT)
     form.append('subject', `[AeroTrips] Nouveau changement : ${target}`)
     form.append('text', `Document changes/${snapshot.id}\n\n${json}`)
     form.append('html', `<p>Document <code>changes/${escapeHtml(snapshot.id)}</code></p><pre>${escapeHtml(json)}</pre>`)
 
-    const response = await fetch(`${MAILGUN_API_URL.value()}/v3/${MAILGUN_DOMAIN.value()}/messages`, {
+    const response = await fetch(`${MAILGUN_API_URL}/v3/${MAILGUN_DOMAIN}/messages`, {
       method: 'POST',
       headers: { Authorization: `Basic ${Buffer.from(`api:${MAILGUN_API_KEY.value()}`).toString('base64')}` },
       body: form,
