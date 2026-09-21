@@ -10,11 +10,16 @@ C'est la bonne source pour le nom de ville à utiliser dans les recherches web :
 `name` en base est le nom de l'aérodrome en majuscules ("DIEPPE SAINT AUBIN"),
 pas un nom de ville exploitable.
 
-Le même bloc donne le point 3 « VFR de nuit / Night VFR » et le point 10 « AVT »
-(avitaillement), d'où `night_vfr` et `fuels`.
+Le même bloc donne le point 3 « VFR de nuit / Night VFR », le point 10 « AVT »
+(avitaillement) et le point « ACB » (clubs basés), d'où `night_vfr`, `fuels` et
+`clubs`.
 
 L'extraction de texte du PDF place la **valeur avant son libellé** (mise en page en
 deux colonnes), d'où des regex qui remontent en arrière depuis le marqueur numéroté.
+
+Le **numéro** d'un point varie d'un terrain à l'autre (ACB est 15 ici, 12 là ;
+LFPZ numérote 16 « Transports » quand LFMA y met « Restaurants ») : seul le
+**libellé** est stable, c'est donc lui qui sert de point d'ancrage.
 
 Utilisable en CLI (`python3 vac.py LFPZ`) ou importé (`read(icao)`).
 """
@@ -60,27 +65,63 @@ FUEL_PATTERNS = [
 ]
 
 
-def _block_before(text, label_rx, num):
-    """Texte précédant le marqueur numéroté `<Libellé> :<num> -`.
+MARKER_RX = re.compile(r'(\d{1,2})\s*-')
 
-    Remonte jusqu'au marqueur précédent (num-1), sinon prend une fenêtre courte.
+# Pied de page / en-tête répétés à chaque page du PDF : quand un point est à
+# cheval sur deux pages, ils atterrissent au milieu de la valeur.
+FOOTER_RX = re.compile(
+    r'AMDT\s*\d{2}/\d{2}'
+    r'|©\s*Service de l[\'’]Information A[ée]ronautique,?\s*France'
+    r'|AD\s*2\s*[A-Z]{4}\s*TXT\s*\d*'
+    r'|AIP\s+FRANCE'
+    r'|\b\d{2}\s+[A-Z]{3}\s+\d{4}\b'
+)
+
+
+def _chain(text):
+    """Marqueurs « 1 - », « 2 - »… du bloc, dans l'ordre.
+
+    Un « 14 - » tombé au milieu d'un numéro de téléphone casserait la
+    numérotation : ne retenir que la suite croissante l'élimine. Sans ce filtre,
+    la valeur lue démarre au mauvais endroit et sort tronquée en plein mot
+    (constaté sur LFKG, LFNH, LFNU, LFCT).
     """
-    m = re.search(label_rx + r'\s*:?\s*' + str(num) + r'\s*-', text)
-    if not m:
-        return None
-    head = text[:m.start()]
-    prev = None
-    for x in re.finditer(r'[\s.:]' + str(num - 1) + r'\s*-', head):
-        prev = x
-    return (head[prev.end():] if prev else head[-500:]).strip()
+    out, expect = [], 1
+    for m in MARKER_RX.finditer(text):
+        if int(m.group(1)) == expect:
+            out.append(m)
+            expect += 1
+    return out
+
+
+def _item(text, label_rx):
+    """Valeur du point portant ce libellé → (numéro, valeur, tronquée ?).
+
+    `tronquée` signale qu'un pied de page s'est glissé dans la valeur : le point
+    était à cheval sur deux pages et ce qui reste n'est pas fiable.
+    """
+    chain = _chain(text)
+    for i, m in enumerate(chain):
+        head = text[chain[i - 1].end() if i else max(0, m.start() - 500):m.start()]
+        label = re.search(label_rx + r'\s*:?\s*$', head)
+        if not label:
+            continue
+        value = head[:label.start()]
+        cut = FOOTER_RX.sub(' ', value)
+        truncated = cut != value
+        # Les retours à la ligne sont conservés : `parse_night_vfr` ne lit que la
+        # dernière ligne du bloc, la valeur y étant sur sa propre ligne.
+        lines = [re.sub(r'\s*←\s*|[ \t]+', ' ', ln).strip() for ln in cut.splitlines()]
+        return int(m.group(1)), '\n'.join(ln for ln in lines if ln), truncated
+    return None, None, False
 
 
 def parse_night_vfr(text):
     """Point 3 — True / False / None (non renseigné)."""
-    block = _block_before(text, r'VFR de nuit\s*/\s*Night\s*VFR', 3)
+    _, block, _ = _item(text, r'VFR de nuit\s*/\s*Night\s*VFR')
     if not block:
         return None, None
-    value = block.splitlines()[-1].strip() if block.splitlines() else ''
+    value = block.splitlines()[-1]
     low = value.lower()
     if re.search(r'\bnon\s+agr[ée]{2}|not\s+approved', low):
         return False, value
@@ -92,7 +133,7 @@ def parse_night_vfr(text):
 
 def parse_fuels(text):
     """Point 10 (AVT) — liste de carburants, [] si NIL, None si illisible."""
-    block = _block_before(text, r'AVT', 10)
+    _, block, _ = _item(text, r'AVT')
     if block is None:
         return None, None
     found, seen = [], set()
@@ -103,6 +144,107 @@ def parse_fuels(text):
     if not found and re.search(r'\bNIL\b', block, re.I):
         return [], block
     return (found or None), block
+
+
+# Coordonnées d'un club telles que la VAC les écrit, tous séparateurs confondus
+# (« TEL : », « TEL/FAX : », « E-mail : », « Site : », parfois rien du tout).
+CONTACT_RX = re.compile(
+    r'(?:T[EÉée][LlIi]|FAX|Portable|Mobile)\s*(?:/\s*FAX\s*)?[:/]?\s*[\d\s().+/–-]{8,}'
+    r'|(?:E-?mail\s*[:/]?\s*)?[\w.+-]+@[\w.-]+'
+    # « site inter net / website : acdcv.com » — l'extraction PDF coupe « internet »
+    # en deux, et le domaine arrive sans schéma.
+    r'|site\s*inter\s*net\s*/?\s*(?:website)?\s*[:/]\s*\S+'
+    r'|(?:Site\s*[:/]?\s*)?(?:https?://|www\.)\S+'
+    # Numéro français posé sans « TEL : » devant.
+    r'|\b0\d(?:[\s.–-]?\d\d){4}\b',
+    re.I)
+PHONE_RX = re.compile(r'[\d][\d\s().+/–-]{7,}')
+EMAIL_RX = re.compile(r'[\w.+-]+@[\w.-]+')
+# L'adresse postale suit le nom du club sans ponctuation fiable : on coupe au
+# code postal, ou au mot qui ouvre une adresse.
+ADDRESS_RX = re.compile(
+    r'[,–-]?\s*(?:\b\d{5}\b'
+    r'|(?:\d{1,4}\s+)?(?:rue|chemin|route|avenue|av\.|bd|boulevard|impasse|all[ée]e|place|BP|'
+    r'A[ée]rodrome|A[ée]roport)\b'
+    r'|\bAD\s+(?=[A-Z])).*$',
+    re.I)
+# Queues qui ne font pas partie du nom : un renvoi en guise de téléphone
+# (« TEL : voir exploitant »), des horaires (« - HJ », « HJ SAM et DIM
+# uniquement », « 0800-1500 tous les jours »).
+TAIL_RX = re.compile(
+    r'\s*(?:(?:TEL|FAX|E-?mail)\s*[:/]?\s*(?:voir|see)\b.*'
+    r'|[-–]?\s*\bHJ\b.*'
+    r'|\b\d{4}\s*-\s*\d{4}\b.*'
+    r'|[-–]\s*(?:HN|H24|O/R\b.*))\s*$',
+    re.I)
+# Valeurs qui ne nomment aucun club (« NIL. », « Divers de la région parisienne »).
+EMPTY_RX = re.compile(r'\s*(?:NIL|Divers.*|N[ée]ant)?\s*\.?\s*$', re.I)
+
+
+def _club_name(raw):
+    """Fragment de la VAC → (nom cherchable, fragment nettoyé), ou None.
+
+    « ACB » est le **libellé du point** : le nom qui suit s'y rattache et arrive
+    donc amputé (« de Pérouges », « du Quercy »). La VAC abrège aussi le mot en
+    tête de nom. On rétablit « Aéroclub », que le web connaît — l'abréviation
+    AIP « ACB », non. Le fragment d'origine est conservé pour que la relecture
+    puisse recouper.
+    """
+    vac = TAIL_RX.sub('', ADDRESS_RX.sub('', raw))
+    vac = re.sub(r'\s*\((?:voir|see)[^)]*\)', '', vac, flags=re.I).strip(' .,;:/-–').strip()
+    if not vac:
+        return None
+    # Seuls « de / du / des / d' » signalent un nom amputé de son « ACB » : un nom
+    # qui s'ouvre sur « Les Ailes… » est déjà complet.
+    if re.match(r'^(?:de|du|des|d[\'’])\b', vac, re.I):
+        return f'Aéroclub {vac}', vac
+    # « ACB Cauchois », « AC de Valenciennes » → la même abréviation, en tête de nom.
+    return re.sub(r'^ACB\b\s*|^AC\s+(?=de|du|des|d[\'’])', 'Aéroclub ', vac).strip(), vac
+
+
+def parse_clubs(text):
+    """Point « ACB » — clubs basés → (liste, valeur brute, note).
+
+    Renvoie `(None, ...)` si le point est absent ou illisible, `[]` s'il ne
+    nomme personne. Le découpage s'appuie sur les coordonnées : ce qui précède
+    un bloc « TEL/E-mail » est un nom, ce qui le suit en est un autre.
+    """
+    num, block, truncated = _item(text, r'ACB')
+    value = ' '.join(block.split()) if block else block
+    if value is None:
+        return None, None, 'point ACB absent de la carte VAC'
+    if truncated:
+        return None, value, ('point ACB à cheval sur deux pages — extraction non '
+                             'fiable, lire la carte VAC à la main')
+    if EMPTY_RX.fullmatch(value):
+        return [], value, None
+
+    clubs, cur, pos = [], None, 0
+
+    def start(found):
+        name, vac = found
+        clubs.append({'name': name, 'name_vac': vac, 'phone': None, 'email': None})
+        return clubs[-1]
+
+    for m in CONTACT_RX.finditer(value):
+        found = _club_name(value[pos:m.start()])
+        pos = m.end()
+        if found:
+            cur = start(found)
+        if cur is None:
+            continue
+        contact = m.group(0)
+        email = EMAIL_RX.search(contact)
+        if email:
+            cur['email'] = cur['email'] or email.group(0)
+        else:
+            phone = PHONE_RX.search(contact)
+            if phone:
+                cur['phone'] = cur['phone'] or re.sub(r'\s+', ' ', phone.group(0)).strip(' .,;:/-–')
+    tail = _club_name(value[pos:])
+    if tail:
+        start(tail)
+    return clubs, value, None
 
 
 def read(icao, timeout=30):
@@ -161,6 +303,10 @@ def read(icao, timeout=30):
 
     nvfr, nvfr_raw = parse_night_vfr(text)
     fuels, fuels_raw = parse_fuels(text)
+    clubs, clubs_raw, clubs_note = parse_clubs(text)
+    out['clubs'] = clubs
+    out['clubs_raw'] = clubs_raw
+    out['clubs_note'] = clubs_note
     out['night_vfr'] = nvfr
     out['night_vfr_raw'] = nvfr_raw
     out['fuels'] = fuels
