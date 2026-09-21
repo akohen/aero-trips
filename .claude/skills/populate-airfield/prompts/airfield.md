@@ -37,8 +37,9 @@ Effectue des recherches web sur les sources suivantes :
 ### Clubs basés — liste de référence (ne pas la deviner)
 
 La liste des clubs basés sur l'aérodrome t'est fournie dans le champ `clubs` du contexte. Elle
-vient du point **ACB** de la carte VAC, ou de `clubs.json` quand ce fichier connaît le terrain
-(`clubs_info.source` dit lequel). **Ne pas la découvrir par recherche web** : partir de cette liste.
+fusionne **deux sources** — le point **ACB** de la carte VAC et le fichier `clubs.json` quand il
+existe — dont chaque club porte la trace dans son champ `source` (`clubs_info.sources` récapitule).
+**Ne pas la découvrir par recherche web** : partir de cette liste.
 
 - Inclure **tous** les clubs de cette liste dans le paragraphe technique, **chacun lié à son
   `website`** (nœud `link` en `marks`, cf. `schema.md`). Certains aérodromes ont plusieurs clubs, et
@@ -47,11 +48,14 @@ vient du point **ACB** de la carte VAC, ou de `clubs.json` quand ce fichier conn
   VAC, le nom y arrive amputé et le script le recompose (`de Pérouges` → `Aéroclub de Pérouges`) ;
   `name_vac` montre le fragment d'origine. Chercher le club avec ce nom, puis retenir **le nom que
   le club se donne sur son propre site**. C'est la seule exception à la règle verbatim : elle ne
-  vaut que pour les clubs issus de la VAC (`clubs_info.source == "VAC"`), jamais pour les activités.
-- **`website` vaut `None` sur les clubs issus de la VAC** : l'AIP ne publie pas de site. C'est à la
-  recherche web de le trouver. Pour ceux de `clubs.json`, le site est parfois en `http://` avec
+  vaut que pour les clubs dont le `source` mentionne la VAC, jamais pour les activités. Un club
+  venu de `clubs.json` porte en revanche un nom déjà relu : le reprendre **verbatim**.
+- **`website` est rempli quand une des deux sources le connaît**, sinon il vaut `None` et c'est à
+  la recherche web de le trouver. La VAC en publie rarement, mais cela arrive (LFOO, LFIR, LFNH) :
+  cette URL est reprise **telle quelle et non vérifiée** — un domaine nu y est simplement préfixé
+  en `https://`, ce qui peut être faux. Les sites de `clubs.json` sont parfois en `http://` avec
   redirection.
-- Dans les deux cas, **vérifier chaque lien** avec
+- Dans tous les cas, **vérifier chaque lien** avec
   `python3 .claude/skills/populate-airfield/scripts/check_url.py <url>`, qui suit les redirections et
   affiche l'URL finale — retenir cette URL `https` **effective**. Sans site trouvé, citer le club
   sans lien. `phone` et `email` du contexte aident à confirmer qu'un site trouvé est bien le bon.

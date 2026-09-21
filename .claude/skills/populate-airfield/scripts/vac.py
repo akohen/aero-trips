@@ -150,21 +150,33 @@ def parse_fuels(text):
 # (« TEL : », « TEL/FAX : », « E-mail : », « Site : », parfois rien du tout).
 CONTACT_RX = re.compile(
     r'(?:T[EÉée][LlIi]|FAX|Portable|Mobile)\s*(?:/\s*FAX\s*)?[:/]?\s*[\d\s().+/–-]{8,}'
-    r'|(?:E-?mail\s*[:/]?\s*)?[\w.+-]+@[\w.-]+'
-    # « site inter net / website : acdcv.com » — l'extraction PDF coupe « internet »
-    # en deux, et le domaine arrive sans schéma.
-    r'|site\s*inter\s*net\s*/?\s*(?:website)?\s*[:/]\s*\S+'
-    r'|(?:Site\s*[:/]?\s*)?(?:https?://|www\.)\S+'
+    # « E- mail » : l'extraction PDF glisse parfois une espace dans le libellé.
+    r'|(?:E\s*-?\s*mail\s*[:/]?\s*)?[\w.+-]+@[\w.-]+'
+    # Le site, avec ou sans libellé — « Site : », « site web : », « site inter net
+    # / website : » (l'extraction coupe « internet » en deux). Le libellé est
+    # absorbé avec l'URL, sinon il resterait tout seul et passerait pour un nom.
+    r'|(?:site\s*(?:web|inter\s*net)?\s*/?\s*(?:website)?\s*[:/]\s*)?(?:https?://|www\.)\S+'
+    # Même chose quand le domaine arrive nu (LFNH « … website : acdcv.com »).
+    r'|site\s*(?:web|inter\s*net)?\s*/?\s*(?:website)?\s*[:/]\s*\S+'
     # Numéro français posé sans « TEL : » devant.
     r'|\b0\d(?:[\s.–-]?\d\d){4}\b',
     re.I)
 PHONE_RX = re.compile(r'[\d][\d\s().+/–-]{7,}')
 EMAIL_RX = re.compile(r'[\w.+-]+@[\w.-]+')
+# Le site, quand la VAC en donne un : URL complète (LFOO), URL précédée de son
+# libellé (LFIR « Site internet : http://acrevel.fr »), ou simple domaine
+# (LFNH « acdcv.com », LFET « www.reveailetoi.fr »).
+WEBSITE_RX = re.compile(
+    r'(?:https?://|www\.)\S+'
+    r'|\b[\w-]+(?:\.[\w-]+)*\.(?:fr|com|net|org|eu|info|asso\.fr)\b(?:/\S*)?',
+    re.I)
 # L'adresse postale suit le nom du club sans ponctuation fiable : on coupe au
 # code postal, ou au mot qui ouvre une adresse.
 ADDRESS_RX = re.compile(
     r'[,–-]?\s*(?:\b\d{5}\b'
-    r'|(?:\d{1,4}\s+)?(?:rue|chemin|route|avenue|av\.|bd|boulevard|impasse|all[ée]e|place|BP|'
+    # Le numéro de voie est parfois séparé du nom de la voie par une virgule
+    # (« - 300, rue Maurice Delpouys ») : il part avec l'adresse, pas avec le nom.
+    r'|(?:\d{1,4}\s*[,–-]?\s*)?(?:rue|chemin|route|avenue|av\.|bd|boulevard|impasse|all[ée]e|place|BP|'
     r'A[ée]rodrome|A[ée]roport)\b'
     r'|\bAD\s+(?=[A-Z])).*$',
     re.I)
@@ -181,6 +193,19 @@ TAIL_RX = re.compile(
 EMPTY_RX = re.compile(r'\s*(?:NIL|Divers.*|N[ée]ant)?\s*\.?\s*$', re.I)
 
 
+def _website(raw):
+    """URL du club telle qu'on peut la soumettre à `check_url.py`.
+
+    La VAC écrit parfois le domaine nu (« acdcv.com ») : on préfixe alors en
+    `https`. Un `http://` explicite est conservé tel quel — c'est `check_url.py`
+    qui suivra la redirection et donnera l'URL effective.
+    """
+    url = raw.strip().rstrip('.,;:)')
+    if not re.match(r'^https?://', url, re.I):
+        url = 'https://' + url
+    return url
+
+
 def _club_name(raw):
     """Fragment de la VAC → (nom cherchable, fragment nettoyé), ou None.
 
@@ -192,7 +217,12 @@ def _club_name(raw):
     """
     vac = TAIL_RX.sub('', ADDRESS_RX.sub('', raw))
     vac = re.sub(r'\s*\((?:voir|see)[^)]*\)', '', vac, flags=re.I).strip(' .,;:/-–').strip()
-    if not vac:
+    # « E-mail : www.reveailetoi.fr » (LFET) : la VAC étiquette parfois un site
+    # comme un courriel. Le libellé resté seul n'est pas un nom de club — le
+    # rendre à None rattache la coordonnée au club précédent.
+    if not vac or re.fullmatch(
+            r'(?:E\s*-?\s*mail|T[EÉée][LlIi]|FAX|Site(?:\s*(?:web|inter\s*net))?|website)',
+            vac, re.I):
         return None
     # Seuls « de / du / des / d' » signalent un nom amputé de son « ACB » : un nom
     # qui s'ouvre sur « Les Ailes… » est déjà complet.
@@ -223,7 +253,8 @@ def parse_clubs(text):
 
     def start(found):
         name, vac = found
-        clubs.append({'name': name, 'name_vac': vac, 'phone': None, 'email': None})
+        clubs.append({'name': name, 'name_vac': vac, 'phone': None, 'email': None,
+                      'website': None})
         return clubs[-1]
 
     for m in CONTACT_RX.finditer(value):
@@ -235,8 +266,11 @@ def parse_clubs(text):
             continue
         contact = m.group(0)
         email = EMAIL_RX.search(contact)
+        site = None if email else WEBSITE_RX.search(contact)
         if email:
             cur['email'] = cur['email'] or email.group(0)
+        elif site:
+            cur['website'] = cur['website'] or _website(site.group(0))
         else:
             phone = PHONE_RX.search(contact)
             if phone:

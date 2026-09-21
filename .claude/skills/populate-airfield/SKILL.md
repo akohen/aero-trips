@@ -92,15 +92,21 @@ Produit `tmp/$ICAO-context.json` et affiche tout ce dont les agents ont besoin :
   requête sur un nom d'aérodrome en majuscules ne donne rien de bon.
 - Centre AIP, bounding box, rayons par catégorie
 - `EXISTING_FIELDS` — champs déjà présents sur la fiche, à omettre du fichier de sortie
-- **`CLUBS`** — clubs basés, depuis le point **ACB** de la VAC (**liste de référence**, ne pas la
-  deviner par recherche web). L'AIP liste **toutes** les disciplines présentes sur le terrain —
-  avion, planeur, ULM, parachutisme, modélisme, associations locales — là où un annuaire fédéral
-  n'en couvre qu'une. `scripts/clubs.json`, tenu à la main, **prime** quand il connaît le terrain.
-  Trois choses à savoir :
-  - le nom est **recomposé** pour la recherche web : « ACB » est le libellé du point, donc le nom
-    arrive amputé (`de Pérouges` → **`Aéroclub de Pérouges`**). Le fragment d'origine est affiché
-    à côté. Ce nom sert à **chercher**, pas à être recopié : retenir celui du site du club ;
-  - la VAC ne donne **jamais** de `website` — c'est ce que la recherche web doit trouver ;
+- **`CLUBS`** — clubs basés (**liste de référence**, ne pas la deviner par recherche web), issus de
+  **deux sources fusionnées**, chacune sachant ce que l'autre ignore :
+  - le point **ACB** de la VAC, qui liste **toutes** les disciplines présentes sur le terrain —
+    avion, planeur, ULM, parachutisme, modélisme, associations locales — là où un annuaire fédéral
+    n'en couvre qu'une, et qui donne téléphone et courriel ;
+  - `scripts/clubs.json`, tenu à la main, qui porte des noms déjà relus et des sites. Sur un club
+    commun, sa valeur l'emporte champ par champ ; le reste complète.
+
+  Chaque club affiche `[source]`. Trois choses à savoir :
+  - le nom VAC est **recomposé** pour la recherche web : « ACB » est le libellé du point, donc le
+    nom arrive amputé (`de Pérouges` → **`Aéroclub de Pérouges`**). Le fragment d'origine est
+    affiché à côté. Ce nom sert à **chercher**, pas à être recopié : retenir celui du site du club ;
+  - le `website` est le plus souvent absent de la VAC, mais **elle en donne parfois un** (LFOO,
+    LFIR, LFNH) : il est alors repris tel quel, **non vérifié** — le passer à `check_url.py` comme
+    n'importe quel autre lien. `(à chercher)` veut dire qu'aucune source n'en a ;
   - `(aucun club nommé)` signifie que la VAC dit `NIL` ou « Divers de la région parisienne » : là,
     et seulement là, établir la liste par recherche web. Un `⚠` signale une extraction non fiable
     (point à cheval sur deux pages) → lire la carte VAC à la main.
