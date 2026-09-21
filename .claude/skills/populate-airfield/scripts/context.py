@@ -20,11 +20,57 @@ Pour reprendre une session, préférer `resume.py`.
 """
 import json
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common as c  # noqa: E402
 import vac as vacmod  # noqa: E402
+
+
+def _club_key(name):
+    """Nom réduit pour le rapprochement.
+
+    « Aéro-club », « Aéroclub » et « ACB » désignent la même chose : seule
+    l'orthographe change d'une source à l'autre, et `similar_names` ne voit
+    sinon que deux tokens distincts (« aero » + « club » contre « aeroclub »),
+    ce qui suffit à faire échouer le rapprochement.
+    """
+    return re.sub(r'\b(?:aero[ -]?club|acb)\b', 'aeroclub', c.norm(name))
+
+
+def merge_clubs(manual, vac_clubs):
+    """Rapproche `clubs.json` et le point ACB de la VAC — les deux servent.
+
+    Chacun sait ce que l'autre ignore : le fichier manuel porte les `website`
+    (que l'AIP ne publie qu'exceptionnellement) et des noms déjà relus, la VAC
+    porte les contacts et les clubs de toutes les disciplines. Sur un club
+    commun, la valeur du fichier manuel l'emporte champ par champ ; un club
+    connu d'une seule source est conservé tel quel.
+
+    Le rapprochement par nom reste heuristique (`similar_names`, comme
+    `merge.py`) : le nom VAC est recomposé, le nom manuel relu, et rien ne
+    garantit qu'ils s'écrivent pareil. En cas de doute le club apparaît deux
+    fois — la relecture tranche, ce qui coûte moins cher qu'une fusion à tort.
+    """
+    merged, matched = [], set()
+    for m in manual:
+        hit = next((i for i, v in enumerate(vac_clubs)
+                    if i not in matched
+                    and c.similar_names(_club_key(m['name']), _club_key(v['name']))), None)
+        v = vac_clubs[hit] if hit is not None else {}
+        if hit is not None:
+            matched.add(hit)
+        merged.append({
+            'name': m['name'],
+            'website': m['website'] or v.get('website'),
+            'phone': m['phone'] or v.get('phone'),
+            'email': v.get('email'),
+            'name_vac': v.get('name_vac'),
+            'source': 'clubs.json + VAC' if v else 'clubs.json',
+        })
+    merged += [dict(v, source='VAC') for i, v in enumerate(vac_clubs) if i not in matched]
+    return merged
 
 
 def build(icao, use_vac=True):
@@ -61,21 +107,19 @@ def build(icao, use_vac=True):
     # Clubs basés : le point ACB de la VAC fait référence (mesuré sur 60 terrains
     # tirés au sort dont la VAC a pu être lue : ~45 listes exploitables, ~80 clubs,
     # toutes disciplines — avion, planeur, ULM, parachutisme, modélisme, et les
-    # associations locales qu'aucun annuaire fédéral ne regroupe).
-    # `scripts/clubs.json`, tenu à la main, reste
-    # prioritaire quand il connaît le terrain : il porte les `website`, que la VAC
-    # ne donne jamais.
+    # associations locales qu'aucun annuaire fédéral ne regroupe). Les deux
+    # sources servent : `scripts/clubs.json`, tenu à la main, porte des noms déjà
+    # relus et des sites, la VAC porte les contacts — et, de loin en loin, un
+    # site elle aussi (LFOO, LFIR, LFNH). Cf. `merge_clubs`.
     manual = []
     if os.path.exists(c.CLUBS_JSON):
         manual = [{'name': x['name'], 'website': x.get('website') or None,
-                   'phone': x.get('phone') or None, 'email': None, 'source': 'clubs.json'}
+                   'phone': x.get('phone') or None}
                   for x in json.load(open(c.CLUBS_JSON)) if x.get('base_icao') == icao]
-    vac_clubs = [{'name': x['name'], 'website': None, 'phone': x['phone'],
-                  'email': x['email'], 'name_vac': x['name_vac'], 'source': 'VAC'}
-                 for x in (situation.get('clubs') or [])]
-    clubs = manual or vac_clubs
+    vac_clubs = situation.get('clubs') or []
+    clubs = merge_clubs(manual, vac_clubs)
     clubs_info = {
-        'source': 'clubs.json' if manual else ('VAC' if vac_clubs else None),
+        'sources': [s for s, n in (('clubs.json', len(manual)), ('VAC', len(vac_clubs))) if n],
         'raw': situation.get('clubs_raw'),
         'note': situation.get('clubs_note'),
         'vac_count': len(vac_clubs),
@@ -174,16 +218,20 @@ def report(ctx):
         A(f"  AVT : {f['raw'][:150]}")
     A('')
     ci = ctx['clubs_info']
-    A(f"CLUBS ({len(ctx['clubs'])}) — source : {ci['source'] or 'aucune'} "
+    A(f"CLUBS ({len(ctx['clubs'])}) — source : {' + '.join(ci['sources']) or 'aucune'} "
       "— liste de référence, ne pas la deviner :")
     for club in ctx['clubs'] or []:
-        A(f"  - {club['name']}  | site : {club['website'] or '(à chercher)'}  "
+        A(f"  - {club['name']}  [{club['source']}]")
+        A(f"      site : {club['website'] or '(à chercher)'}  "
           f"| tél : {club['phone'] or '-'}  | mail : {club.get('email') or '-'}")
         if club.get('name_vac') and club['name_vac'] != club['name']:
-            A(f"      (VAC : « {club['name_vac']} » — nom recomposé pour la recherche web)")
-    if ci['source'] == 'clubs.json' and ci['vac_count']:
-        A(f"  clubs.json prime ; la VAC en listait {ci['vac_count']} — "
-          'les recouper si les comptes diffèrent.')
+            A(f"      VAC : « {club['name_vac']} » — nom recomposé pour la recherche web")
+    # Deux sources qui ne se recoupent pas entièrement : soit les clubs diffèrent
+    # vraiment, soit un rapprochement de noms a échoué. Ne le dire que dans ce cas.
+    if len(ctx['clubs']) > max(ci['manual_count'], ci['vac_count']):
+        A(f"  {ci['manual_count']} club(s) dans clubs.json, {ci['vac_count']} dans la VAC, "
+          f"{len(ctx['clubs'])} après rapprochement — vérifier qu'aucun club n'est listé "
+          'deux fois sous deux orthographes.')
     if ci['note']:
         A(f"  ⚠ {ci['note']}")
     if not ctx['clubs']:
