@@ -13,7 +13,8 @@ fait foi pour tout ce qui suit.
 | `airfield_name_display` | nom de l'aérodrome en casse normale |
 | `latitude` / `longitude` | position AIP |
 | `existing_fields` | champs déjà présents sur la fiche — **à omettre** du fichier de sortie |
-| `clubs` | clubs basés — **source de vérité** |
+| `clubs` | clubs basés — **liste de référence** (point ACB de la VAC, ou `clubs.json`) ; voir plus bas |
+| `clubs_info` | d'où vient la liste (`source`), la ligne ACB brute (`raw`) et les réserves éventuelles (`note`) |
 | `night_vfr` | ce qu'il faut faire du champ `nightVFR` (voir plus bas) |
 | `fuels` | ce qu'il faut faire du champ `fuels` (voir plus bas) |
 
@@ -35,14 +36,30 @@ Effectue des recherches web sur les sources suivantes :
 
 ### Clubs basés — liste de référence (ne pas la deviner)
 
-La liste des clubs basés sur l'aérodrome t'est fournie ci-dessous, extraite de la base `clubs.json` (source de vérité). **Ne pas la découvrir par recherche web** : partir de cette liste.
+La liste des clubs basés sur l'aérodrome t'est fournie dans le champ `clubs` du contexte. Elle
+vient du point **ACB** de la carte VAC, ou de `clubs.json` quand ce fichier connaît le terrain
+(`clubs_info.source` dit lequel). **Ne pas la découvrir par recherche web** : partir de cette liste.
 
-le champ `clubs` du contexte
-
-- Inclure **tous** les clubs de cette liste dans le paragraphe technique, **chacun lié à son `website`** (nœud `link` en `marks`, cf. `schema.md`). Certains aérodromes ont plusieurs clubs.
-- Le `name` est déjà celui de la base : le reprendre **verbatim** (ne pas reformuler).
-- Les `website` de la base sont parfois en `http://` avec redirection : **vérifier chaque lien** avec `python3 .claude/skills/populate-airfield/scripts/check_url.py <url>`, qui suit les redirections et affiche l'URL finale — retenir cette URL `https` **effective**. Si un club n'a pas de `website` (valeur `None` ou chaîne vide), le citer sans lien.
-- La recherche web ne sert plus qu'à **enrichir** le paragraphe (formations proposées, gestionnaire), **pas** à établir la liste des clubs.
+- Inclure **tous** les clubs de cette liste dans le paragraphe technique, **chacun lié à son
+  `website`** (nœud `link` en `marks`, cf. `schema.md`). Certains aérodromes ont plusieurs clubs, et
+  l'AIP recense toutes les disciplines (avion, planeur, ULM, parachutisme…).
+- **Le `name` est un nom de recherche, pas un verbatim.** « ACB » étant le libellé du point de la
+  VAC, le nom y arrive amputé et le script le recompose (`de Pérouges` → `Aéroclub de Pérouges`) ;
+  `name_vac` montre le fragment d'origine. Chercher le club avec ce nom, puis retenir **le nom que
+  le club se donne sur son propre site**. C'est la seule exception à la règle verbatim : elle ne
+  vaut que pour les clubs issus de la VAC (`clubs_info.source == "VAC"`), jamais pour les activités.
+- **`website` vaut `None` sur les clubs issus de la VAC** : l'AIP ne publie pas de site. C'est à la
+  recherche web de le trouver. Pour ceux de `clubs.json`, le site est parfois en `http://` avec
+  redirection.
+- Dans les deux cas, **vérifier chaque lien** avec
+  `python3 .claude/skills/populate-airfield/scripts/check_url.py <url>`, qui suit les redirections et
+  affiche l'URL finale — retenir cette URL `https` **effective**. Sans site trouvé, citer le club
+  sans lien. `phone` et `email` du contexte aident à confirmer qu'un site trouvé est bien le bon.
+- Si la liste est **vide** (la VAC dit `NIL` ou « Divers de la région parisienne »), ou si le
+  contexte affiche un `⚠` d'extraction non fiable : là, et seulement là, établir la liste par
+  recherche web, et **signaler en fin de réponse** qu'elle ne vient pas de la VAC.
+- La recherche web ne sert sinon qu'à **enrichir** le paragraphe (formations proposées, gestionnaire)
+  et à trouver les sites, **pas** à établir la liste des clubs.
 
 Collecter les **notes de recherche** suivantes (usage interne uniquement, ne pas inclure dans le JSON final) :
 - Infos clubs (enrichissement) : formations proposées → serviront à rédiger le paragraphe technique

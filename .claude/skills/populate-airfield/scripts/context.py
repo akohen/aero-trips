@@ -58,10 +58,29 @@ def build(icao, use_vac=True):
         })
     nearby.sort(key=lambda x: x['distance_km'])
 
-    clubs = []
+    # Clubs basés : le point ACB de la VAC fait référence (mesuré sur 60 terrains
+    # tirés au sort dont la VAC a pu être lue : ~45 listes exploitables, ~80 clubs,
+    # toutes disciplines — avion, planeur, ULM, parachutisme, modélisme, et les
+    # associations locales qu'aucun annuaire fédéral ne regroupe).
+    # `scripts/clubs.json`, tenu à la main, reste
+    # prioritaire quand il connaît le terrain : il porte les `website`, que la VAC
+    # ne donne jamais.
+    manual = []
     if os.path.exists(c.CLUBS_JSON):
-        clubs = [{'name': x['name'], 'website': x.get('website') or None, 'phone': x.get('phone') or None}
-                 for x in json.load(open(c.CLUBS_JSON)) if x.get('base_icao') == icao]
+        manual = [{'name': x['name'], 'website': x.get('website') or None,
+                   'phone': x.get('phone') or None, 'email': None, 'source': 'clubs.json'}
+                  for x in json.load(open(c.CLUBS_JSON)) if x.get('base_icao') == icao]
+    vac_clubs = [{'name': x['name'], 'website': None, 'phone': x['phone'],
+                  'email': x['email'], 'name_vac': x['name_vac'], 'source': 'VAC'}
+                 for x in (situation.get('clubs') or [])]
+    clubs = manual or vac_clubs
+    clubs_info = {
+        'source': 'clubs.json' if manual else ('VAC' if vac_clubs else None),
+        'raw': situation.get('clubs_raw'),
+        'note': situation.get('clubs_note'),
+        'vac_count': len(vac_clubs),
+        'manual_count': len(manual),
+    }
 
     # --- VAC : nightVFR et carburants ---------------------------------------
     # nightVFR : la VAC fait autorité, mais on ne réécrit jamais en silence une
@@ -112,6 +131,7 @@ def build(icao, use_vac=True):
         'existing_fields': [k for k in entry if k not in c.PROTECTED_FIELDS],
         'existing_activities': nearby,
         'clubs': clubs,
+        'clubs_info': clubs_info,
         'night_vfr': nvfr,
         'fuels': fuels,
     }
@@ -153,11 +173,23 @@ def report(ctx):
     if f['raw']:
         A(f"  AVT : {f['raw'][:150]}")
     A('')
-    A(f"CLUBS ({len(ctx['clubs'])}) — source de vérité, ne pas deviner :")
+    ci = ctx['clubs_info']
+    A(f"CLUBS ({len(ctx['clubs'])}) — source : {ci['source'] or 'aucune'} "
+      "— liste de référence, ne pas la deviner :")
     for club in ctx['clubs'] or []:
-        A(f"  - {club['name']}  | site : {club['website'] or '(aucun)'}  | tél : {club['phone'] or '-'}")
+        A(f"  - {club['name']}  | site : {club['website'] or '(à chercher)'}  "
+          f"| tél : {club['phone'] or '-'}  | mail : {club.get('email') or '-'}")
+        if club.get('name_vac') and club['name_vac'] != club['name']:
+            A(f"      (VAC : « {club['name_vac']} » — nom recomposé pour la recherche web)")
+    if ci['source'] == 'clubs.json' and ci['vac_count']:
+        A(f"  clubs.json prime ; la VAC en listait {ci['vac_count']} — "
+          'les recouper si les comptes diffèrent.')
+    if ci['note']:
+        A(f"  ⚠ {ci['note']}")
     if not ctx['clubs']:
-        A('  (aucun club basé référencé)')
+        A('  (aucun club nommé — chercher sur le web et recouper)')
+        if ci['raw']:
+            A(f"  point ACB de la VAC : « {ci['raw'][:120]} »")
     A('')
     A(f"ACTIVITÉS DÉJÀ EN BASE dans la bbox ({len(ctx['existing_activities'])}) — "
       "ne pas les recréer :")

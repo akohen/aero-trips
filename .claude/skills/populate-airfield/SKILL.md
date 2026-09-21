@@ -92,8 +92,18 @@ Produit `tmp/$ICAO-context.json` et affiche tout ce dont les agents ont besoin :
   requête sur un nom d'aérodrome en majuscules ne donne rien de bon.
 - Centre AIP, bounding box, rayons par catégorie
 - `EXISTING_FIELDS` — champs déjà présents sur la fiche, à omettre du fichier de sortie
-- `CLUBS` — clubs basés, depuis `scripts/clubs.json` (**source de vérité**, ne pas deviner par
-  recherche web)
+- **`CLUBS`** — clubs basés, depuis le point **ACB** de la VAC (**liste de référence**, ne pas la
+  deviner par recherche web). L'AIP liste **toutes** les disciplines présentes sur le terrain —
+  avion, planeur, ULM, parachutisme, modélisme, associations locales — là où un annuaire fédéral
+  n'en couvre qu'une. `scripts/clubs.json`, tenu à la main, **prime** quand il connaît le terrain.
+  Trois choses à savoir :
+  - le nom est **recomposé** pour la recherche web : « ACB » est le libellé du point, donc le nom
+    arrive amputé (`de Pérouges` → **`Aéroclub de Pérouges`**). Le fragment d'origine est affiché
+    à côté. Ce nom sert à **chercher**, pas à être recopié : retenir celui du site du club ;
+  - la VAC ne donne **jamais** de `website` — c'est ce que la recherche web doit trouver ;
+  - `(aucun club nommé)` signifie que la VAC dit `NIL` ou « Divers de la région parisienne » : là,
+    et seulement là, établir la liste par recherche web. Un `⚠` signale une extraction non fiable
+    (point à cheval sur deux pages) → lire la carte VAC à la main.
 - `EXISTING_ACTIVITIES` — activités déjà en base dans la zone, à ne pas recréer
 - **`night_vfr`** — point 3 de la VAC (« VFR de nuit / Night VFR »), qui **fait autorité**. Le
   script dit quoi faire : `proposer` (le champ est absent en base → l'écrire), `conflit` (la base
