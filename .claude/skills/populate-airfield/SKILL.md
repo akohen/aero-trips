@@ -107,6 +107,8 @@ Produit `tmp/$ICAO-context.json` et affiche tout ce dont les agents ont besoin :
   - le `website` est le plus souvent absent de la VAC, mais **elle en donne parfois un** (LFOO,
     LFIR, LFNH) : il est alors repris tel quel, **non vérifié** — le passer à `check_url.py` comme
     n'importe quel autre lien. `(à chercher)` veut dire qu'aucune source n'en a ;
+  - le découpage du point ACB est **heuristique** (horaires ou libellés pris pour des noms, ~5 %
+    des cas) : le bloc brut est toujours affiché et **fait foi**, l'agent aérodrome corrige d'après lui ;
   - `(aucun club nommé)` signifie que la VAC dit `NIL` ou « Divers de la région parisienne » : là,
     et seulement là, établir la liste par recherche web. Un `⚠` signale une extraction non fiable
     (point à cheval sur deux pages) → lire la carte VAC à la main.

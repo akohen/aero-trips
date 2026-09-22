@@ -34,12 +34,46 @@ from datetime import datetime, timedelta, timezone
 UA = 'Mozilla/5.0'
 MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 
-# "4 km WNW Versailles (78 - Yvelines)." — séparateur département variable
-# ("24-Dordogne", "87 Haute-Vienne", "50 – Manche"), décimale . ou ,
+# "4 km WNW Versailles (78 - Yvelines)." — mesuré sur les 418 cartes publiées,
+# presque chaque morceau varie : unité (« Km », « NM »), cap absent ou écrit
+# « S-E », « E/SE », « N-N/W », « ESE-Valence », ville précédée de « de » ou
+# de « - », département avant ou après son nom (« (Somme - 80) », « (2B - Haute
+# Corse) », « (2A Corse du Sud) »), et une queue après la parenthèse (LFRD
+# « … Vilaine). HN »). La parenthèse, elle, est toujours là.
 SITUATION_RX = re.compile(
-    r'^\s*([\d.,]+)\s*km\s+([NSEWO]{1,3})\s+(.+?)\s*'
-    r'\(\s*(\d{2,3})\s*[-–—]?\s*([^)]*?)\s*\)\s*\.?\s*$'
+    r'^[\s:]*([\d.,]+)\s*((?i:km|nm))\s+'
+    r'(?:([NSEWO](?:[\s/-]?[NSEWO]){0,2})\b\s*[-–]?\s*)?'
+    r'(?:de\s+|d[\'’])?'
+    r'(.+?)\s*\(([^)]*)\)'
 )
+DEPT_CODE = r'(2\s?[AB]|\d{2,3})'
+
+
+def parse_situation(raw):
+    """Ligne « Situation / Location » → dict, ou None si elle ne se lit pas."""
+    m = SITUATION_RX.match(raw)
+    if not m:
+        return None
+    dist, unit, bearing, city, dept = m.groups()
+    km = float(dist.replace(',', '.')) * (1.852 if unit.lower() == 'nm' else 1)
+    # LFLB « 8,3 km NNW Chambéry - 6,5 km SW Aix Les Bains » : la première
+    # ville est la ville de référence.
+    city = re.split(r'\s*[-–,]\s+[\d.,]+\s*(?i:km|nm)\b', city)[0].strip(' -–')
+    dept = dept.strip()
+    code, name = None, dept
+    if d := re.match(DEPT_CODE + r'\b\s*[-–—]?\s*(.*)$', dept):
+        code, name = d.groups()
+    elif d := re.match(r'(.*?)\s*[-–—]?\s*' + DEPT_CODE + r'$', dept):
+        name, code = d.groups()
+    if code:
+        code = re.sub(r'\s', '', code).upper()
+    return {
+        'city': city,
+        'distance_km': round(km, 1),
+        'bearing': re.sub(r'[^NSEWO]', '', bearing).replace('O', 'W') if bearing else None,
+        'department_code': code,
+        'department': name.strip(' -–—') or None,
+    }
 
 
 def airac(reference=None):
@@ -219,9 +253,12 @@ def _club_name(raw):
     vac = re.sub(r'\s*\((?:voir|see)[^)]*\)', '', vac, flags=re.I).strip(' .,;:/-–').strip()
     # « E-mail : www.reveailetoi.fr » (LFET) : la VAC étiquette parfois un site
     # comme un courriel. Le libellé resté seul n'est pas un nom de club — le
-    # rendre à None rattache la coordonnée au club précédent.
+    # rendre à None rattache la coordonnée au club précédent. Même chose pour un
+    # second numéro (« TEL : … ou / or 06… », LFRD, LFQD, LFLA) ou un contact
+    # nominatif (« président : 06… », LFGF).
     if not vac or re.fullmatch(
-            r'(?:E\s*-?\s*mail|T[EÉée][LlIi]|FAX|Site(?:\s*(?:web|inter\s*net))?|website)',
+            r'(?:E\s*-?\s*mail|Mail|T[EÉée][LlIi]|FAX|Web|Site(?:\s*(?:web|inter\s*net))?|website'
+            r'|ou(?:\s*/\s*or)?|et(?:\s*/\s*and)?|pr[ée]sident)',
             vac, re.I):
         return None
     # Seuls « de / du / des / d' » signalent un nom amputé de son « ACB » : un nom
@@ -318,20 +355,15 @@ def read(icao, timeout=30):
 
     out = {'found': False, 'url': url}
 
-    m = re.search(r'([^\n]*?)\s*Situation\s*/\s*Location\s*:', text)
-    if m and m.group(1).strip():
-        raw_line = m.group(1).strip()
+    # Valeur avant le libellé (cartes civiles), ou après (cartes militaires :
+    # « 1 - Situation / Location : 2,8 km S Cognac (16 - Charente) »).
+    m = re.search(r'([^\n]*?)\s*Situation\s*/?\s*Location\s*:[ \t]*([^\n]*)', text)
+    candidates = [v.strip() for v in m.groups() if v.strip()] if m else []
+    raw_line = next((v for v in candidates if parse_situation(v)),
+                    next((v for v in candidates if not re.fullmatch(r'\d+\s*-', v)), None))
+    if raw_line:
         out.update({'found': True, 'raw': raw_line})
-        parsed = SITUATION_RX.match(raw_line)
-        if parsed:
-            km, bearing, city, dept_code, dept_name = parsed.groups()
-            out.update({
-                'city': city.strip(),
-                'distance_km': float(km.replace(',', '.')),
-                'bearing': bearing,
-                'department_code': dept_code,
-                'department': dept_name.strip() or None,
-            })
+        out.update(parse_situation(raw_line) or {})
     else:
         out['reason'] = 'section Situation/Location introuvable'
 

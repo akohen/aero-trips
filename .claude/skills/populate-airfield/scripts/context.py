@@ -53,11 +53,18 @@ def merge_clubs(manual, vac_clubs):
     garantit qu'ils s'écrivent pareil. En cas de doute le club apparaît deux
     fois — la relecture tranche, ce qui coûte moins cher qu'une fusion à tort.
     """
+    # Le téléphone rattrape les noms trop éloignés pour `similar_names` (LFRD :
+    # « Aéroclub de la Côte d'Emeraude » contre « La Côte d’Emeraude », même numéro).
+    def phone(club):
+        digits = re.sub(r'\D', '', club.get('phone') or '')
+        return digits[-9:] if len(digits) >= 9 else None
+
     merged, matched = [], set()
     for m in manual:
         hit = next((i for i, v in enumerate(vac_clubs)
                     if i not in matched
-                    and c.similar_names(_club_key(m['name']), _club_key(v['name']))), None)
+                    and (c.similar_names(_club_key(m['name']), _club_key(v['name']))
+                         or (phone(m) and phone(m) == phone(v)))), None)
         v = vac_clubs[hit] if hit is not None else {}
         if hit is not None:
             matched.add(hit)
@@ -236,8 +243,11 @@ def report(ctx):
         A(f"  ⚠ {ci['note']}")
     if not ctx['clubs']:
         A('  (aucun club nommé — chercher sur le web et recouper)')
-        if ci['raw']:
-            A(f"  point ACB de la VAC : « {ci['raw'][:120]} »")
+    # La mise en forme du point ACB varie trop pour un découpage fiable (mesuré :
+    # ~40 noms faux sur 730 — horaires, libellés, notes accolées au nom suivant).
+    # Le bloc brut est donc toujours montré, et c'est lui qui fait foi.
+    if ci['raw']:
+        A(f"  point ACB brut (fait foi sur le découpage ci-dessus) : « {ci['raw']} »")
     A('')
     A(f"ACTIVITÉS DÉJÀ EN BASE dans la bbox ({len(ctx['existing_activities'])}) — "
       "ne pas les recréer :")

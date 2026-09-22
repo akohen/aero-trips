@@ -41,6 +41,12 @@ fusionne **deux sources** — le point **ACB** de la carte VAC et le fichier `cl
 existe — dont chaque club porte la trace dans son champ `source` (`clubs_info.sources` récapitule).
 **Ne pas la découvrir par recherche web** : partir de cette liste.
 
+⚠️ Pour les clubs venus de la VAC, la liste est un **découpage automatique** du point ACB, dont la
+mise en forme varie d'une carte à l'autre : un horaire, un libellé ou une note peut s'y retrouver
+pris pour un nom de club (« sauf MAR / except TUE », « Piste / RWY »), ou un club absorbé par le
+précédent. **Le texte brut `clubs_info.raw` fait foi** : le relire, et corriger le découpage d'après
+lui — écarter un faux club, ajouter un club manqué, rattacher un numéro au bon club.
+
 - Inclure **tous** les clubs de cette liste dans le paragraphe technique, **chacun lié à son
   `website`** (nœud `link` en `marks`, cf. `schema.md`). Certains aérodromes ont plusieurs clubs, et
   l'AIP recense toutes les disciplines (avion, planeur, ULM, parachutisme…).
