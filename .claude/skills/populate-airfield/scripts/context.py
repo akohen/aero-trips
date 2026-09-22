@@ -1,6 +1,6 @@
 """Étape 0 — rassemble tout le contexte nécessaire pour un aérodrome.
 
-    python3 .claude/skills/populate-airfield/scripts/context.py LFBJ [agents...] [--no-vac] [--no-clean] [--no-sources]
+    python3 .claude/skills/populate-airfield/scripts/context.py LFBJ [agents...] [--no-vac] [--no-clean]
 
 Écrit tmp/{ICAO}-context.json (relu par merge.py / validate.py / preview.py) et
 affiche un résumé lisible, lu ensuite par chaque agent.
@@ -18,8 +18,8 @@ fusionné diverge des fichiers d'agents) : c'est le cas d'une reprise de session
 détruire les sorties ferait perdre le travail de relecture. `--force` passe outre.
 Pour reprendre une session, préférer `resume.py`.
 
-Appelle ensuite `sources.py`, qui écrit tmp/{ICAO}-sources.json (pistes OSM,
-JpRNavMaster, My Maps) ; `--no-sources` s'en dispense.
+Les pistes (sources.py) ne sont pas produites ici : le skill les lance en même
+temps que l'éclaireur des clubs, qui n'en a pas besoin (SKILL.md § Étape 1).
 """
 import json
 import os
@@ -29,7 +29,6 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common as c  # noqa: E402
 import city as citymod  # noqa: E402
-import sources as sourcesmod  # noqa: E402
 import vac as vacmod  # noqa: E402
 
 
@@ -330,15 +329,6 @@ if __name__ == '__main__':
     path = c.tmp_path(icao, 'context.json')
     json.dump(ctx, open(path, 'w'), ensure_ascii=False, indent=2)
     print(report(ctx))
-
-    # Pistes pour les agents d'activités (OSM, JpRNavMaster, My Maps) : ~1 à 2 min,
-    # Overpass étant lent. Inutile pour une reprise ou le seul agent aérodrome.
-    if '--no-sources' in sys.argv or set(agents) <= {'airfield', 'clubs'}:
-        print('\nPistes : non régénérées' + (f" (fichier existant : {c.tmp_path(icao, 'sources.json')})"
-                                           if os.path.exists(c.tmp_path(icao, 'sources.json')) else ''))
-    else:
-        src, _ = sourcesmod.run(icao)
-        print('\n' + sourcesmod.report(src))
 
     print(f"\nAgents à lancer : {', '.join(agents)}")
     state = c.review_state(icao)

@@ -2,8 +2,10 @@
 
     python3 .claude/skills/populate-airfield/scripts/sources.py LFBJ
 
-Lit tmp/{ICAO}-context.json (produit par context.py, qui appelle ce script) et
-écrit tmp/{ICAO}-sources.json : des **pistes à vérifier**, pas des activités.
+Lit tmp/{ICAO}-context.json (produit par context.py) et écrit
+tmp/{ICAO}-sources.json. Lancé par le skill en tâche de fond, en même temps que
+l'éclaireur des clubs (SKILL.md § Étape 1) : Overpass peut prendre 2 minutes, et
+l'éclaireur n'a pas besoin des pistes. Écrit : des **pistes à vérifier**, pas des activités.
 L'agent part de lieux réels au lieu de chercher au hasard, puis vérifie chacun
 (existe encore ? nom officiel ?) et complète par la recherche web.
 

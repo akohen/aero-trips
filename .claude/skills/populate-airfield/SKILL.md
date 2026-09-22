@@ -120,9 +120,10 @@ Produit `tmp/$ICAO-context.json` et affiche tout ce dont les agents ont besoin :
     et seulement là, établir la liste par recherche web. Un `⚠` signale une extraction non fiable
     (point à cheval sur deux pages) → lire la carte VAC à la main.
 - `EXISTING_ACTIVITIES` — activités déjà en base dans la zone (et `poi` jusqu'à 50 km), à ne pas recréer
-- **`PISTES`** — `sources.py`, appelé par `context.py`, écrit `tmp/$ICAO-sources.json` : des lieux
-  réels **à vérifier**, pour que les agents ne partent pas de zéro (2 min au plus : au-delà, on continue sans pistes OSM ; réponses mises en cache une semaine ;
-  `--no-sources` s'en dispense, `resume.py` ne les régénère pas). Sources :
+- **`PISTES`** — produites juste après, à l'Étape 1, par `sources.py` : `tmp/$ICAO-sources.json`,
+  des lieux réels **à vérifier**, pour que les agents ne partent pas de zéro (2 min au plus :
+  au-delà, on continue sans pistes OSM ; réponses mises en cache une semaine ; `resume.py` ne les
+  régénère pas). Sources :
   - **OpenStreetMap** — la plus riche : restaurants, hébergements, arrêts avec leurs lignes,
     locations, sites, aux abords du terrain. **Pistes seulement**, rien n'est recopié ;
   - **PoiFrance** — repères de tourisme aérien saisis par des pilotes, jusqu'à 50 km ;
@@ -140,16 +141,26 @@ Produit `tmp/$ICAO-context.json` et affiche tout ce dont les agents ont besoin :
   incomplète (mesuré : sur 20 aérodromes, 18 identiques à la base, 1 ajout réel, 1 où la VAC
   omettait un carburant pourtant présent). Écrire `union`, ne **jamais** retirer un carburant.
 
-## Étape 1 — Éclaireur des clubs (seul, avant les autres)
+## Étape 1 — Pistes et éclaireur des clubs, en parallèle
 
-Si l'agent `clubs` est sélectionné **et** que le contexte liste au moins un club, le lancer **seul**
-et attendre sa fin avant l'Étape 2 : les autres agents partent de ses notes.
+Deux tâches indépendantes, que **toutes** les autres attendent. Les lancer **dans un même message** :
+
+- **Pistes** — si un agent d'activités est sélectionné (`transport`, `poi`, `restaurants`, `other`,
+  `city`) : Bash avec `run_in_background: true` (jusqu'à 2 min, Overpass est lent) :
+
+  ```bash
+  python3 .claude/skills/populate-airfield/scripts/sources.py $ICAO
+  ```
+
+- **Éclaireur des clubs** — si l'agent `clubs` est sélectionné **et** que le contexte liste au moins
+  un club : l'agent ci-dessous (mêmes paramètres qu'à l'Étape 2).
 
 | Agent | Fiche de tâche | Fichier de sortie |
 |---|---|---|
 | Clubs | `prompts/clubs.md` | `tmp/$ICAO-club-notes.json` |
 
-Il lit les sites des clubs basés — pages visiteurs, infos pratiques, vols découverte — et en tire :
+L'éclaireur lit les sites des clubs basés — pages visiteurs, infos pratiques, vols découverte — et
+en tire :
 
 - `clubs` : le site **vérifié** de chaque club et le nom qu'il se donne — l'agent aérodrome les
   reprend au lieu de les rechercher ;
@@ -160,16 +171,20 @@ Il lit les sites des clubs basés — pages visiteurs, infos pratiques, vols dé
 Chaque note porte sa page source et la date qu'elle affiche : les pages de club vieillissent, les
 agents vérifient avant de reprendre.
 
-Une fois l'agent terminé, contrôler et résumer ses notes, puis relayer le résumé à l'utilisateur :
+**Attendre la fin des deux** (chacune signale sa fin), puis :
 
-```bash
-python3 .claude/skills/populate-airfield/scripts/club_notes.py $ICAO
-```
+- relayer à l'utilisateur le résumé des pistes affiché par `sources.py` (dont un éventuel `⚠`
+  Overpass : les agents travailleront alors sans pistes OSM) ;
+- contrôler et résumer les notes des clubs, et relayer le résumé :
 
-Code 1 = fichier mal formé (champ manquant, `for_agent` inconnu, note sans source) : le corriger
-avant l'Étape 2, sans quoi les autres agents perdraient les notes sans bruit.
+  ```bash
+  python3 .claude/skills/populate-airfield/scripts/club_notes.py $ICAO
+  ```
 
-Aucun club dans le contexte → sauter cette étape. Relancer un sous-ensemble d'agents sans `clubs`
+  Code 1 = fichier mal formé (champ manquant, `for_agent` inconnu, note sans source) : le corriger
+  avant l'Étape 2, sans quoi les autres agents perdraient les notes sans bruit.
+
+Aucun club dans le contexte → pas d'éclaireur. Relancer un sous-ensemble d'agents sans `clubs`
 réutilise les notes existantes.
 
 ## Étape 2 — Recherche en parallèle
