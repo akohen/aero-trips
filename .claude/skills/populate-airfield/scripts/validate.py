@@ -31,14 +31,7 @@ TOKEN_RX = re.compile(r'[?&](x-amz-|token=|signature=|sig=|expires=|key-pair-id=
 AGGREGATORS = ('tripadvisor.', 'booking.com', 'expedia.', 'yelp.', 'airbnb.',
                'hotels.com', 'agoda.', 'trivago.', 'lastminute.', 'thefork.')
 
-# Le type global détermine le rayon attendu (cf. common.CATEGORY_RADIUS_KM).
-TYPE_CATEGORY = {
-    'bike': 'transport', 'car': 'transport', 'transit': 'transport',
-    'food': 'restaurants', 'lodging': 'restaurants',
-    'poi': 'poi', 'culture': 'poi', 'nature': 'poi',
-    'hiking': 'other', 'nautical': 'other', 'other': 'other', 'aero': 'other',
-}
-VALID_TYPES = set(TYPE_CATEGORY)
+VALID_TYPES = set(c.TYPE_CATEGORY)
 
 # Indices de reformulation d'un `name` (cf. prompts/activity-format.md § Nom).
 PROMO_WORDS = ('incontournable', 'celebre', 'magnifique', 'superbe', 'authentique', 'charmant',
@@ -191,8 +184,7 @@ def main():
             if p.get('latitude') is None:
                 continue
             d = c.dist_km(clat, clon, p['latitude'], p['longitude'])
-            cats = {TYPE_CATEGORY[t] for t in (a.get('type') or []) if t in TYPE_CATEGORY}
-            limit = max((c.CATEGORY_RADIUS_KM[x] for x in cats), default=c.CATEGORY_RADIUS_KM['poi'])
+            limit = c.radius_for(a.get('type'))
             rows.append((d, a.get('name'), '/'.join(a.get('type') or []), limit))
         for d, name, types, limit in sorted(rows, reverse=True):
             over = d > limit + c.RADIUS_TOLERANCE_KM

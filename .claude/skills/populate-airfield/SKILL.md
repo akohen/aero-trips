@@ -22,7 +22,8 @@ logique dans le chat : les lancer, lire leur sortie.
 |---|---|---|
 | `transport` | `bike` `car` `transit` | **2,5 km** — doit être atteignable depuis le terrain |
 | `restaurants` | `food` `lodging` | **2,5 km** |
-| `poi` | `poi` `culture` `nature` | **5 km** — un point de repère se voit du ciel de loin |
+| `poi` | `poi` | **50 km** — un repère vu du ciel est le plus souvent hors de portée à pied |
+| `poi` | `culture` `nature` | **5 km** — lieux qui se visitent depuis le terrain |
 | `other` | `hiking` `nautical` `other` `aero` | **5 km** |
 
 ⚠️ Le point de référence est la position **AIP** de l'aérodrome. Elle peut se trouver à ~1 km du
@@ -112,7 +113,19 @@ Produit `tmp/$ICAO-context.json` et affiche tout ce dont les agents ont besoin :
   - `(aucun club nommé)` signifie que la VAC dit `NIL` ou « Divers de la région parisienne » : là,
     et seulement là, établir la liste par recherche web. Un `⚠` signale une extraction non fiable
     (point à cheval sur deux pages) → lire la carte VAC à la main.
-- `EXISTING_ACTIVITIES` — activités déjà en base dans la zone, à ne pas recréer
+- `EXISTING_ACTIVITIES` — activités déjà en base dans la zone (et `poi` jusqu'à 50 km), à ne pas recréer
+- **`PISTES`** — `sources.py`, appelé par `context.py`, écrit `tmp/$ICAO-sources.json` : des lieux
+  réels **à vérifier**, pour que les agents ne partent pas de zéro (2 min au plus : au-delà, on continue sans pistes OSM ; réponses mises en cache une semaine ;
+  `--no-sources` s'en dispense, `resume.py` ne les régénère pas). Sources :
+  - **OpenStreetMap** — la plus riche : restaurants, hébergements, arrêts avec leurs lignes,
+    locations, sites, aux abords du terrain. **Pistes seulement**, rien n'est recopié ;
+  - **PoiFrance** — repères de tourisme aérien saisis par des pilotes, jusqu'à 50 km ;
+  - **JpRNavMaster** et **Google My Maps « Escales sur aérodrome »** — restaurants d'aérodrome, 0 à
+    2 par terrain, parfois périmés (date de mise à jour affichée).
+
+  Le point « Restaurants » de la VAC n'est pas repris : il dit au mieux « sur AD », sans nom, et
+  n'est pas tenu à jour. La règle de tri et de vérification des pistes est dans
+  `prompts/activity-format.md` § Pistes.
 - **`night_vfr`** — point 3 de la VAC (« VFR de nuit / Night VFR »), qui **fait autorité**. Le
   script dit quoi faire : `proposer` (le champ est absent en base → l'écrire), `conflit` (la base
   contredit la VAC → **ne rien écrire**, signaler à l'utilisateur, il tranche), `aucune` (déjà

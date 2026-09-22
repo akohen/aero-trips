@@ -1,6 +1,6 @@
 """Étape 0 — rassemble tout le contexte nécessaire pour un aérodrome.
 
-    python3 .claude/skills/populate-airfield/scripts/context.py LFBJ [agents...] [--no-vac] [--no-clean]
+    python3 .claude/skills/populate-airfield/scripts/context.py LFBJ [agents...] [--no-vac] [--no-clean] [--no-sources]
 
 Écrit tmp/{ICAO}-context.json (relu par merge.py / validate.py / preview.py) et
 affiche un résumé lisible, lu ensuite par chaque agent.
@@ -17,6 +17,9 @@ Le nettoyage s'annule tout seul si une **relecture a déjà eu lieu** (le fichie
 fusionné diverge des fichiers d'agents) : c'est le cas d'une reprise de session, où
 détruire les sorties ferait perdre le travail de relecture. `--force` passe outre.
 Pour reprendre une session, préférer `resume.py`.
+
+Appelle ensuite `sources.py`, qui écrit tmp/{ICAO}-sources.json (pistes OSM,
+JpRNavMaster, My Maps) ; `--no-sources` s'en dispense.
 """
 import json
 import os
@@ -25,6 +28,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common as c  # noqa: E402
+import sources as sourcesmod  # noqa: E402
 import vac as vacmod  # noqa: E402
 
 
@@ -99,7 +103,12 @@ def build(icao, use_vac=True):
     for a in activities:
         pos = a.get('position') or {}
         alat, alon = pos.get('latitude'), pos.get('longitude')
-        if alat is None or alon is None or not c.in_bbox(alat, alon, box):
+        if alat is None or alon is None:
+            continue
+        # Un repère vu du ciel (`poi`) compte jusqu'à 50 km : ne pas le recréer.
+        far_poi = ('poi' in (a.get('type') or [])
+                   and c.dist_km(lat, lon, alat, alon) <= c.POI_AERIAL_RADIUS_KM)
+        if not (c.in_bbox(alat, alon, box) or far_poi):
             continue
         nearby.append({
             'id': a.get('id'),
@@ -249,7 +258,8 @@ def report(ctx):
     if ci['raw']:
         A(f"  point ACB brut (fait foi sur le découpage ci-dessus) : « {ci['raw']} »")
     A('')
-    A(f"ACTIVITÉS DÉJÀ EN BASE dans la bbox ({len(ctx['existing_activities'])}) — "
+    A(f"ACTIVITÉS DÉJÀ EN BASE dans la bbox, et `poi` à {c.POI_AERIAL_RADIUS_KM:g} km "
+      f"({len(ctx['existing_activities'])}) — "
       "ne pas les recréer :")
     for a in ctx['existing_activities']:
         A(f"  - {a['name']}  [{'/'.join(a['type'])}]  {a['distance_km']} km  ({a['id']})")
@@ -282,6 +292,15 @@ if __name__ == '__main__':
     path = c.tmp_path(icao, 'context.json')
     json.dump(ctx, open(path, 'w'), ensure_ascii=False, indent=2)
     print(report(ctx))
+
+    # Pistes pour les agents d'activités (OSM, JpRNavMaster, My Maps) : ~1 à 2 min,
+    # Overpass étant lent. Inutile pour une reprise ou le seul agent aérodrome.
+    if '--no-sources' in sys.argv or agents == ['airfield']:
+        print('\nPistes : non régénérées' + (f" (fichier existant : {c.tmp_path(icao, 'sources.json')})"
+                                           if os.path.exists(c.tmp_path(icao, 'sources.json')) else ''))
+    else:
+        src, _ = sourcesmod.run(icao)
+        print('\n' + sourcesmod.report(src))
 
     print(f"\nAgents à lancer : {', '.join(agents)}")
     state = c.review_state(icao)

@@ -65,7 +65,7 @@ def main():
         print('  Aucune activité — seule la fiche aérodrome existe.')
 
     # Contexte : jamais de nettoyage depuis une reprise.
-    if run('context.py', icao, '--no-clean') != 0:
+    if run('context.py', icao, '--no-clean', '--no-sources') != 0:
         c.die('context.py a échoué')
 
     print('\n=== Validation ===')

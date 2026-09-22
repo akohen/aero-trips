@@ -29,6 +29,7 @@ manifeste, et le signaler dans la description.
 ## Étape 1 — Recherche
 
 Sources :
+- **Pistes** : `osm.transport` de `tmp/<ICAO>-sources.json` — gares, arrêts avec leurs lignes (`lines`), locations ; commencer par elles (cf. `activity-format.md` § Pistes)
 - Recherches web : `"location vélo {city}"`, `"location voiture {city}"`, `"gare {city}"`, `"navette {city}"`, `"taxi {city}"`
 - Site de la mairie ou office de tourisme local
 
@@ -37,6 +38,10 @@ Services de mobilité à retenir :
 - Locations de voiture
 - Gares SNCF ou routières
 - Navettes, taxis, services de transport local
+- **Un seul arrêt de bus** : le plus proche du terrain qui mène au **centre-ville** (vérifier la
+  destination de la ligne ; les pistes en proposent jusqu'à trois). Sa description dit où descendre
+  et, s'il y en a une, l'alternative — un autre arrêt desservi l'été seulement, par exemple (cas
+  LFOO) — au lieu d'en faire une seconde activité.
 
 Types disponibles pour cette catégorie : `bike` `car` `transit`
 

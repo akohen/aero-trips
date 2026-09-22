@@ -26,6 +26,27 @@ CATEGORY_RADIUS_KM = {
     'poi': 5.0,
     'other': 5.0,
 }
+# Catégorie (agent) de chaque type d'activité, qui en donne le rayon attendu.
+TYPE_CATEGORY = {
+    'bike': 'transport', 'car': 'transport', 'transit': 'transport',
+    'food': 'restaurants', 'lodging': 'restaurants',
+    'poi': 'poi', 'culture': 'poi', 'nature': 'poi',
+    'hiking': 'other', 'nautical': 'other', 'other': 'other', 'aero': 'other',
+}
+# Exceptions au rayon de la catégorie : `poi` est ce qui se voit du ciel, et un
+# repère intéressant en vol est le plus souvent bien au-delà de la portée à pied
+# (culture et nature, qui se visitent, restent à 5 km).
+TYPE_RADIUS_KM = {'poi': 50.0}
+POI_AERIAL_RADIUS_KM = TYPE_RADIUS_KM['poi']
+
+
+def radius_for(types):
+    """Rayon attendu pour une activité : le plus large de ses types."""
+    limits = [TYPE_RADIUS_KM.get(t, CATEGORY_RADIUS_KM[TYPE_CATEGORY[t]])
+              for t in types or [] if t in TYPE_CATEGORY]
+    return max(limits, default=CATEGORY_RADIUS_KM['poi'])
+
+
 # Marge de tolérance : la position AIP de l'aérodrome est son point de référence,
 # qui peut se trouver à ~1 km du parking avions / de l'entrée pilotes.
 RADIUS_TOLERANCE_KM = 1.0

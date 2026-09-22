@@ -33,6 +33,36 @@ comme une erreur à corriger.
 - Reprendre les coordonnées d'une source **cartographiable** (OpenStreetMap, coordonnées Wikipédia du lieu), **jamais** une estimation « au jugé ».
 - Vérifier que le point tombe bien sur le lieu nommé : une commune, un port ou un terminal peut être à plusieurs km de ce que le nom évoque. Une coordonnée fausse peut rester **dans la bounding box** — la cohérence lieu↔coordonnée prime sur la seule appartenance à la zone.
 
+## Pistes — `tmp/<ICAO>-sources.json`
+
+Ce fichier liste des lieux réels repérés avant ton lancement. Ce sont des **pistes à vérifier, pas
+des activités** : commencer par elles plutôt que de chercher au hasard, puis compléter par la
+recherche web — aucune source n'est exhaustive.
+
+| Clé | Contenu |
+|---|---|
+| `osm.<ta catégorie>` | lieux OpenStreetMap, les plus proches d'abord : nom, position, `distance_km`, `ref` (fiche OSM), `tags` (site, téléphone, horaires, cuisine, `wikidata`, `wikimedia_commons`…) ; pour un arrêt de bus, `lines` = lignes qui le desservent |
+| `poifrance` | agent POI seulement : repères de tourisme aérien saisis par des pilotes sur [PoiFrance](https://poifrance.cloud/public.php), jusqu'à 50 km — la meilleure piste pour le type `poi`. Noms en capitales : reprendre le nom officiel. Leurs photos ne sont **pas** une source d'image (provenance inconnue) |
+| `airfield_restaurants` | agent restaurants seulement : restaurants d'aérodrome recensés par JpRNavMaster et la carte Google My Maps « Escales sur aérodrome », avec leur date de mise à jour |
+
+Pour chaque piste :
+
+- **`existing`** renseigné → déjà en base : ne pas la recréer.
+- **La trier** : une piste n'oblige à rien. Ne retenir que ce que tu aurais retenu en le trouvant
+  toi-même — écarter le fast-food de zone commerciale, le manoir privé qui ne se visite pas, le club
+  de sport, l'arrêt de bus sans ligne utile.
+- **Vérifier qu'elle existe encore** (site officiel, fiche récente). Les listes de restaurants
+  d'aérodrome sont souvent périmées : une date de mise à jour ancienne ou `closed: true` signale un
+  établissement peut-être fermé ou repris sous un autre nom — ne le retenir que confirmé.
+- **Nom** : OSM reprend généralement l'enseigne, mais la règle verbatim (§ Nom) s'applique — le site
+  officiel prime.
+- **Coordonnées** : celles d'une piste OSM sont fiables ; les reprendre, en vérifiant qu'elles
+  tombent sur le lieu (§ Coordonnées).
+- **Image** : un tag `wikimedia_commons`, `wikidata` ou `image` est une piste d'illustration, à
+  résoudre et vérifier selon § Image.
+- **Description** : la rédiger depuis les sources vérifiées, pas depuis les tags. OSM sert à
+  **trouver** les lieux, pas à être recopié.
+
 ## Description — une phrase factuelle (+ lien éventuel avec l'aérodrome)
 
 - **Une seule** phrase factuelle et vérifiable par défaut.

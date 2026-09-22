@@ -29,6 +29,7 @@ manifeste, et le signaler dans la description.
 ## Étape 1 — Recherche
 
 Sources :
+- **Pistes** : `osm.other` de `tmp/<ICAO>-sources.json` — commencer par elles (cf. `activity-format.md` § Pistes)
 - Recherches web : `"randonnée {city}"`, `"activités nautiques {city}"`, `"loisirs {city}"`, `"sports {city}"`, `"activités {city}"`
 - Site de la mairie ou office de tourisme local
 

@@ -12,7 +12,6 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common as c  # noqa: E402
-from validate import TYPE_CATEGORY  # noqa: E402
 
 
 def render(node):
@@ -125,9 +124,7 @@ def build(icao):
             dist = ''
             if p.get('latitude') is not None:
                 d = c.dist_km(clat, clon, p['latitude'], p['longitude'])
-                cats = {TYPE_CATEGORY[t] for t in (a.get('type') or []) if t in TYPE_CATEGORY}
-                limit = max((c.CATEGORY_RADIUS_KM[x] for x in cats),
-                            default=c.CATEGORY_RADIUS_KM['poi'])
+                limit = c.radius_for(a.get('type'))
                 over = d > limit + c.RADIUS_TOLERANCE_KM
                 cls = 'dist over' if over else 'dist'
                 dist = f'<span class="{cls}">✈ {d:.1f} km (max {limit} km)</span>'

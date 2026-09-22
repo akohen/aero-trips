@@ -29,6 +29,7 @@ manifeste, et le signaler dans la description.
 ## Étape 1 — Recherche
 
 Sources :
+- **Pistes** : `airfield_restaurants` puis `osm.restaurants` de `tmp/<ICAO>-sources.json` — commencer par elles (cf. `activity-format.md` § Pistes). Un restaurant d'aérodrome confirmé ouvert est la piste la plus précieuse pour un pilote.
 - Recherches web : `"restaurants {city}"`, `"hôtels {city}"`, `"hébergement {city}"`, `"camping {city}"`, `"chambre d'hôtes {city}"`
 - Site de la mairie ou office de tourisme local
 

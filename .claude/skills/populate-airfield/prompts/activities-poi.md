@@ -18,8 +18,12 @@ Ci-dessous, `{city}` désigne la valeur du champ `city`, `<ICAO>` le code ICAO.
 
 Zone de recherche :
 - **Bounding box** (cadrage large) — le champ `bbox` du contexte
-- **Rayon de pertinence** : 5 km autour du point de référence (`latitude`/`longitude` du contexte). Un candidat hors
-  de ce rayon n'est **pas** retenu, même s'il tombe dans la bounding box.
+- **Rayon de pertinence**, autour du point de référence (`latitude`/`longitude` du contexte) :
+  - type `poi` (repère **vu du ciel**) : **50 km**. Ce qui intéresse en vol est le plus souvent bien
+    au-delà de la portée à pied : un littoral, un château, un viaduc, une île. Ne retenir à cette
+    distance que ce qui se **repère effectivement en vol** — un menhir ou une chapelle, non ;
+  - types `culture` et `nature` (lieux **qui se visitent** depuis le terrain) : **5 km**.
+  Un site à la fois visitable et remarquable du ciel dans les 5 km prend les deux types.
 
 ⚠️ Le point de référence est la position **AIP** de l'aérodrome, qui peut se trouver jusqu'à ~1 km
 du parking avions et de l'entrée pilotes. Un lieu mesuré à un peu plus de 5 km peut donc être
@@ -29,6 +33,7 @@ manifeste, et le signaler dans la description.
 ## Étape 1 — Recherche
 
 Sources :
+- **Pistes** : `poifrance` (repères vus du ciel, jusqu'à 50 km) et `osm.poi` (à pied) de `tmp/<ICAO>-sources.json` — commencer par elles (cf. `activity-format.md` § Pistes)
 - Recherches web : `"visiter {city}"`, `"monuments {city}"`, `"patrimoine {city}"`, `"paysages {city}"`, Wikipedia `{city}`
 - Site de la mairie ou office de tourisme local
 
@@ -39,8 +44,8 @@ Sources :
 
 Types disponibles pour cette catégorie : `poi` `culture` `nature`
 
-**Pour chaque candidat**, vérifier que ses coordonnées tombent dans la bounding box **et** à moins
-de 5 km du point de référence. Exclure tout point hors de cette zone.
+**Pour chaque candidat**, vérifier que ses coordonnées tombent dans le rayon de son type (50 km pour
+`poi`, 5 km pour `culture`/`nature`). Au-delà de la bounding box, seul le type `poi` est possible.
 
 Pour chaque activité retenue, collecter :
 - Nom (**copié verbatim**, cf. format partagé), coordonnées précises, type(s)
