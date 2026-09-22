@@ -43,6 +43,7 @@ recherche web — aucune source n'est exhaustive.
 |---|---|
 | `osm.<ta catégorie>` | lieux OpenStreetMap, les plus proches d'abord : nom, position, `distance_km`, `ref` (fiche OSM), `tags` (site, téléphone, horaires, cuisine, `wikidata`, `wikimedia_commons`…) ; pour un arrêt de bus, `lines` = lignes qui le desservent |
 | `poifrance` | agent POI seulement : repères de tourisme aérien saisis par des pilotes sur [PoiFrance](https://poifrance.cloud/public.php), jusqu'à 50 km — la meilleure piste pour le type `poi`. Noms en capitales : reprendre le nom officiel. Leurs photos ne sont **pas** une source d'image (provenance inconnue) |
+| `leads` de `tmp/<ICAO>-club-notes.json` | lieux que les clubs basés recommandent (restaurant, taxi, loueur, lieu survolé en vol découverte…), ceux dont `for_agent` est ta catégorie ; `source` = page du club, `date` = date qu'elle affiche. Le fichier peut ne pas exister |
 | `airfield_restaurants` | agent restaurants seulement : restaurants d'aérodrome recensés par JpRNavMaster et la carte Google My Maps « Escales sur aérodrome », avec leur date de mise à jour |
 
 Pour chaque piste :
@@ -51,7 +52,8 @@ Pour chaque piste :
 - **La trier** : une piste n'oblige à rien. Ne retenir que ce que tu aurais retenu en le trouvant
   toi-même — écarter le fast-food de zone commerciale, le manoir privé qui ne se visite pas, le club
   de sport, l'arrêt de bus sans ligne utile.
-- **Vérifier qu'elle existe encore** (site officiel, fiche récente). Les listes de restaurants
+- **Vérifier qu'elle existe encore** (site officiel, fiche récente). Une note de club datée de
+  plusieurs années, ou sans date, se confirme sur une source indépendante avant d'être reprise. Les listes de restaurants
   d'aérodrome sont souvent périmées : une date de mise à jour ancienne ou `closed: true` signale un
   établissement peut-être fermé ou repris sous un autre nom — ne le retenir que confirmé.
 - **Nom** : OSM reprend généralement l'enseigne, mais la règle verbatim (§ Nom) s'applique — le site

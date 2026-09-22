@@ -36,6 +36,8 @@ def main():
 
     files = [(c.tmp_path(icao, s), label) for s, label in [
         ('context.json', 'contexte'),
+        ('sources.json', 'pistes (OSM, PoiFrance…)'),
+        ('club-notes.json', 'notes des clubs'),
         ('airfield.json', 'fiche aérodrome'),
         ('activities.json', 'activités fusionnées (fait foi)'),
         ('preview.html', 'aperçu'),

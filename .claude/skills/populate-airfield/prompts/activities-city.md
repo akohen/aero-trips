@@ -22,6 +22,7 @@ Lis **`tmp/<ICAO>-context.json`** et **`tmp/<ICAO>-sources.json`**.
 | `situation.raw` | la ligne VAC, ex. « 5 km SSW Dinard (35 - Ille et Vilaine) » |
 | `latitude` / `longitude` | position AIP du terrain |
 | `osm.transport` (sources) | arrêts proches du terrain avec les lignes qui les desservent (`lines`), gares, locations |
+| `airfield_facts` de `tmp/<ICAO>-club-notes.json` | ce que disent les clubs, notamment `topic` `ville` et `taxi` : comment ils conseillent de rejoindre la ville (s'il existe) |
 
 ## Étape 1 — Faut-il une fiche ?
 

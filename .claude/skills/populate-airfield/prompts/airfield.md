@@ -41,6 +41,12 @@ fusionne **deux sources** — le point **ACB** de la carte VAC et le fichier `cl
 existe — dont chaque club porte la trace dans son champ `source` (`clubs_info.sources` récapitule).
 **Ne pas la découvrir par recherche web** : partir de cette liste.
 
+**Notes de l'éclaireur** — si `tmp/<ICAO>-club-notes.json` existe (agent `clubs`, lancé avant toi), il a déjà cherché et
+vérifié le site de chaque club : reprendre ses `clubs[].website` et `clubs[].name` (le nom que le
+club se donne) sans refaire la recherche. Ses `airfield_facts` (vélos ou voiture du club, taxi,
+restaurant, carburant, accueil des visiteurs) vont dans le paragraphe technique, **reformulés et
+datés s'ils sont anciens** (« le club indiquait en 2019… ») — ou écartés s'ils semblent périmés.
+
 ⚠️ Pour les clubs venus de la VAC, la liste est un **découpage automatique** du point ACB, dont la
 mise en forme varie d'une carte à l'autre : un horaire, un libellé ou une note peut s'y retrouver
 pris pour un nom de club (« sauf MAR / except TUE », « Piste / RWY »), ou un club absorbé par le

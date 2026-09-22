@@ -73,6 +73,8 @@ RADIUS_TOLERANCE_KM = 1.0
 
 # Agent → fichier qu'il produit (suffixe après "{ICAO}-").
 AGENT_OUTPUTS = {
+    # Éclaireur des clubs : tourne seul, avant les autres (SKILL.md § Étape 1).
+    'clubs': 'club-notes.json',
     'airfield': 'airfield.json',
     'transport': 'activities-transport.json',
     'poi': 'activities-poi.json',

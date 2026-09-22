@@ -1,7 +1,7 @@
 ---
 name: populate-airfield
-description: Enrichir la base de données aero-trips pour un aérodrome donné : recherche web, description, clubs, et activités à proximité. Sert aussi à reprendre une session laissée en plan dans tmp/ (relecture en cours, import pas encore fait). Usage: /populate-airfield LFXX [airfield] [transport] [poi] [restaurants] [other] [city]
-argument-hint: Code ICAO de l'aérodrome (ex. LFBJ), suivi optionnellement des agents à lancer parmi : airfield, transport, poi, restaurants, other, city
+description: Enrichir la base de données aero-trips pour un aérodrome donné : recherche web, description, clubs, et activités à proximité. Sert aussi à reprendre une session laissée en plan dans tmp/ (relecture en cours, import pas encore fait). Usage: /populate-airfield LFXX [clubs] [airfield] [transport] [poi] [restaurants] [other] [city]
+argument-hint: Code ICAO de l'aérodrome (ex. LFBJ), suivi optionnellement des agents à lancer parmi : clubs, airfield, transport, poi, restaurants, other, city
 ---
 
 Tu vas enrichir la base de données aero-trips pour l'aérodrome **$ARGUMENTS**.
@@ -67,7 +67,7 @@ fichiers d'agents sont périmés.
 ## Étape 0 — Contexte
 
 Parser d'abord `$ARGUMENTS` : le **premier mot** est le code ICAO, les **suivants** (s'il y en a)
-sont les agents à lancer parmi `airfield`, `transport`, `poi`, `restaurants`, `other`, `city`. Si aucun
+sont les agents à lancer parmi `clubs`, `airfield`, `transport`, `poi`, `restaurants`, `other`, `city`. Si aucun
 n'est spécifié, lancer **tous** les agents. Passer cette liste au script :
 
 ```bash
@@ -140,9 +140,41 @@ Produit `tmp/$ICAO-context.json` et affiche tout ce dont les agents ont besoin :
   incomplète (mesuré : sur 20 aérodromes, 18 identiques à la base, 1 ajout réel, 1 où la VAC
   omettait un carburant pourtant présent). Écrire `union`, ne **jamais** retirer un carburant.
 
-## Étapes 1 & 2 — Recherche en parallèle
+## Étape 1 — Éclaireur des clubs (seul, avant les autres)
 
-Lancer **en parallèle** (un seul message, tous les Agent tool calls ensemble) les agents
+Si l'agent `clubs` est sélectionné **et** que le contexte liste au moins un club, le lancer **seul**
+et attendre sa fin avant l'Étape 2 : les autres agents partent de ses notes.
+
+| Agent | Fiche de tâche | Fichier de sortie |
+|---|---|---|
+| Clubs | `prompts/clubs.md` | `tmp/$ICAO-club-notes.json` |
+
+Il lit les sites des clubs basés — pages visiteurs, infos pratiques, vols découverte — et en tire :
+
+- `clubs` : le site **vérifié** de chaque club et le nom qu'il se donne — l'agent aérodrome les
+  reprend au lieu de les rechercher ;
+- `airfield_facts` : ce qui concerne le terrain (vélos ou voiture du club, taxi, restaurant,
+  carburant, accueil), pour la fiche aérodrome ;
+- `leads` : les lieux que les clubs recommandent, chacun adressé à un agent d'activités.
+
+Chaque note porte sa page source et la date qu'elle affiche : les pages de club vieillissent, les
+agents vérifient avant de reprendre.
+
+Une fois l'agent terminé, contrôler et résumer ses notes, puis relayer le résumé à l'utilisateur :
+
+```bash
+python3 .claude/skills/populate-airfield/scripts/club_notes.py $ICAO
+```
+
+Code 1 = fichier mal formé (champ manquant, `for_agent` inconnu, note sans source) : le corriger
+avant l'Étape 2, sans quoi les autres agents perdraient les notes sans bruit.
+
+Aucun club dans le contexte → sauter cette étape. Relancer un sous-ensemble d'agents sans `clubs`
+réutilise les notes existantes.
+
+## Étape 2 — Recherche en parallèle
+
+Lancer **en parallèle** (un seul message, tous les Agent tool calls ensemble) les autres agents
 sélectionnés :
 
 | Agent | Fiche de tâche | Fichier de sortie |

@@ -333,7 +333,7 @@ if __name__ == '__main__':
 
     # Pistes pour les agents d'activités (OSM, JpRNavMaster, My Maps) : ~1 à 2 min,
     # Overpass étant lent. Inutile pour une reprise ou le seul agent aérodrome.
-    if '--no-sources' in sys.argv or agents == ['airfield']:
+    if '--no-sources' in sys.argv or set(agents) <= {'airfield', 'clubs'}:
         print('\nPistes : non régénérées' + (f" (fichier existant : {c.tmp_path(icao, 'sources.json')})"
                                            if os.path.exists(c.tmp_path(icao, 'sources.json')) else ''))
     else:
