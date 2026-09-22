@@ -28,6 +28,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common as c  # noqa: E402
+import city as citymod  # noqa: E402
 import sources as sourcesmod  # noqa: E402
 import vac as vacmod  # noqa: E402
 
@@ -98,7 +99,34 @@ def build(icao, use_vac=True):
     else:
         city, city_source = c.title_case(entry['name']), 'repli sur name (à vérifier)'
 
+    # Centre-ville (mairie) de la ville VAC, pour la fiche « centre-ville ».
+    if situation.get('city'):
+        city_center = citymod.locate(situation['city'], situation.get('department_code'),
+                                     situation.get('distance_km'), lat, lon)
+    else:
+        city_center = {'reason': 'pas de ville VAC — fiche centre-ville à décider à la main'}
+
     activities = c.load_activities()
+    if 'latitude' in city_center:
+        # Une fiche de la ville existe peut-être déjà, hors de la bbox du terrain :
+        # tout ce qui est à moins de 1 km de la mairie, et ce qui en porte le nom
+        # avec « centre » ou « ville » (« Bergerac - Vieille Ville » n'est pas
+        # forcément à la mairie).
+        town = c.norm(city_center['name'])
+
+        def is_candidate(a):
+            p = a.get('position') or {}
+            if p.get('latitude') is None:
+                return False
+            d = c.dist_km(city_center['latitude'], city_center['longitude'],
+                          p['latitude'], p['longitude'])
+            n = c.norm(a.get('name'))
+            return d <= c.CITY_CARD_MATCH_KM or (
+                d <= 5 and town in n and re.search(r'\b(?:centre|ville)\b', n))
+
+        city_center['existing'] = [{'id': a.get('id'), 'name': a.get('name'),
+                                    'type': a.get('type', [])}
+                                   for a in activities if is_candidate(a)]
     nearby = []
     for a in activities:
         pos = a.get('position') or {}
@@ -181,6 +209,7 @@ def build(icao, use_vac=True):
         'airfield_name_display': c.title_case(entry['name']),
         'city': city,
         'city_source': city_source,
+        'city_center': city_center,
         'situation': situation,
         'status': entry.get('status'),
         'latitude': lat,
@@ -208,6 +237,15 @@ def report(ctx):
         A(f"  VAC §1        : {s['raw']}")
     else:
         A(f"  VAC           : indisponible — {s.get('reason')}")
+    cc = ctx['city_center']
+    if 'latitude' in cc:
+        A(f"CENTRE-VILLE    : {cc['name']} — {cc['point']} {cc['latitude']}, {cc['longitude']}, "
+          f"{cc['distance_km']} km du terrain, {cc['population']} hab. [confiance : {cc['confidence']}]")
+        for a in cc['existing']:
+            A(f"  déjà en base à moins de {c.CITY_CARD_MATCH_KM:g} km : {a['name']}  "
+              f"[{'/'.join(a['type'])}]  ({a['id']})")
+    else:
+        A(f"CENTRE-VILLE    : ⚠ {cc['reason']}")
     A(f"Centre (AIP)    : {ctx['latitude']}, {ctx['longitude']}")
     b = ctx['bbox']
     A(f"Bounding box    : lat {b['lat_min']:.5f} → {b['lat_max']:.5f} | "

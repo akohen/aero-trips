@@ -33,6 +33,11 @@ Sources :
 - Recherches web : `"restaurants {city}"`, `"hôtels {city}"`, `"hébergement {city}"`, `"camping {city}"`, `"chambre d'hôtes {city}"`
 - Site de la mairie ou office de tourisme local
 
+⚠️ **Ville qui a sa fiche centre-ville** (`city_center` du contexte, écrite par un autre agent) :
+ses restaurants et hébergements **ordinaires** y sont résumés par genre, pas décrits un à un. Au-delà
+de **1,5 km** du terrain, ne retenir un établissement situé dans cette ville que s'il sert
+particulièrement les pilotes (navette ou accueil depuis le terrain, par exemple).
+
 À retenir :
 - Restaurants, brasseries, auberges (préférer les établissements bien notés ou typiques de la région)
 - Hôtels, gîtes, chambres d'hôtes, auberges de jeunesse

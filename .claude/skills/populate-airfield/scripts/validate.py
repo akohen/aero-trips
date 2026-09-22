@@ -178,15 +178,29 @@ def main():
         print('\n=== Distance au point de référence AIP (décroissante) ===')
         print('  NB : le point AIP peut être à ~1 km du parking avions ; le rayon est')
         print('  indicatif, pas un couperet. Vérifier surtout la cohérence lieu ↔ coordonnées.')
+        ctx_path = c.tmp_path(icao, 'context.json')
+        cc = (json.load(open(ctx_path)).get('city_center') if os.path.exists(ctx_path) else None) or {}
         rows = []
         for a in activities:
             p = a.get('position') or {}
             if p.get('latitude') is None:
                 continue
             d = c.dist_km(clat, clon, p['latitude'], p['longitude'])
-            limit = c.radius_for(a.get('type'))
+            card = c.is_city_card(a, cc)
+            limit = None if card else c.radius_for(a.get('type'))
             rows.append((d, a.get('name'), '/'.join(a.get('type') or []), limit))
-        for d, name, types, limit in sorted(rows, reverse=True):
+            # Dans la ville qui a sa fiche, un restaurant ou un hôtel ordinaire y est
+            # résumé, pas décrit à part (sauf à portée de marche du terrain).
+            if (not card and 'latitude' in cc and d > c.CITY_SUMMARY_KM
+                    and {'food', 'lodging'} & set(a.get('type') or [])
+                    and c.dist_km(cc['latitude'], cc['longitude'], p['latitude'],
+                                  p['longitude']) <= c.CITY_SUMMARY_KM):
+                problem(f"{a.get('name')!r} : restaurant/hébergement au centre de {cc['name']} — "
+                        'à résumer dans la fiche centre-ville, sauf service propre aux pilotes.')
+        for d, name, types, limit in sorted(rows, key=lambda r: r[0], reverse=True):
+            if limit is None:
+                print(f'  {d:5.1f} km  (fiche centre-ville)  [{types}]  {name}')
+                continue
             over = d > limit + c.RADIUS_TOLERANCE_KM
             print(f'  {d:5.1f} km  (max {limit} km)  [{types}]  {name}'
                   + ('   <-- HORS RAYON' if over else ''))

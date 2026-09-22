@@ -1,7 +1,7 @@
 ---
 name: populate-airfield
-description: Enrichir la base de données aero-trips pour un aérodrome donné : recherche web, description, clubs, et activités à proximité. Sert aussi à reprendre une session laissée en plan dans tmp/ (relecture en cours, import pas encore fait). Usage: /populate-airfield LFXX [airfield] [transport] [poi] [restaurants] [other]
-argument-hint: Code ICAO de l'aérodrome (ex. LFBJ), suivi optionnellement des agents à lancer parmi : airfield, transport, poi, restaurants, other
+description: Enrichir la base de données aero-trips pour un aérodrome donné : recherche web, description, clubs, et activités à proximité. Sert aussi à reprendre une session laissée en plan dans tmp/ (relecture en cours, import pas encore fait). Usage: /populate-airfield LFXX [airfield] [transport] [poi] [restaurants] [other] [city]
+argument-hint: Code ICAO de l'aérodrome (ex. LFBJ), suivi optionnellement des agents à lancer parmi : airfield, transport, poi, restaurants, other, city
 ---
 
 Tu vas enrichir la base de données aero-trips pour l'aérodrome **$ARGUMENTS**.
@@ -67,7 +67,7 @@ fichiers d'agents sont périmés.
 ## Étape 0 — Contexte
 
 Parser d'abord `$ARGUMENTS` : le **premier mot** est le code ICAO, les **suivants** (s'il y en a)
-sont les agents à lancer parmi `airfield`, `transport`, `poi`, `restaurants`, `other`. Si aucun
+sont les agents à lancer parmi `airfield`, `transport`, `poi`, `restaurants`, `other`, `city`. Si aucun
 n'est spécifié, lancer **tous** les agents. Passer cette liste au script :
 
 ```bash
@@ -91,6 +91,12 @@ Produit `tmp/$ICAO-context.json` et affiche tout ce dont les agents ont besoin :
   employer dans les recherches web. Sans carte VAC publiée (militaire, privé, fermé → 404), le
   script retombe sur `titleCase(name)` et le signale : **vérifier alors la ville à la main**, une
   requête sur un nom d'aérodrome en majuscules ne donne rien de bon.
+- **CENTRE-VILLE** — la commune de la VILLE, située par `city.py` (geo.api.gouv.fr) : nom officiel,
+  position de la **mairie**, population, distance au terrain. Le rapprochement est contrôlé par la
+  distance que donne la VAC (mesuré : 405 villes situées sur 416). `à vérifier` signale un nom
+  seulement approchant ; `⚠` une commune introuvable (fusion, station, faute de frappe dans la
+  VAC) — l'agent `city` la cherche alors à la main. Les activités déjà en base à moins de 1 km de
+  la mairie sont listées : une fiche de la ville existe peut-être déjà.
 - Centre AIP, bounding box, rayons par catégorie
 - `EXISTING_FIELDS` — champs déjà présents sur la fiche, à omettre du fichier de sortie
 - **`CLUBS`** — clubs basés (**liste de référence**, ne pas la deviner par recherche web), issus de
@@ -146,6 +152,7 @@ sélectionnés :
 | POI | `prompts/activities-poi.md` | `tmp/$ICAO-activities-poi.json` |
 | Restaurants | `prompts/activities-restaurants.md` | `tmp/$ICAO-activities-restaurants.json` |
 | Autres | `prompts/activities-other.md` | `tmp/$ICAO-activities-other.json` |
+| Centre-ville | `prompts/activities-city.md` | `tmp/$ICAO-activities-city.json` |
 
 ### Comment appeler chaque agent
 
@@ -229,6 +236,23 @@ Réintégrer chaque image en **tête** de la description (nœud `image`, cf. `pr
 `attrs` avec `src`/`alt`/`title:null`, pas de clé `content`). Les images passeront le même contrôle
 HTTP que les autres à l'Étape 3.
 
+## Fiche centre-ville (agent `city`)
+
+La ville de la VAC est souvent hors de portée des autres agents (2,5 à 5 km). L'agent `city` en fait
+**une seule** fiche, qui la présente dans son ensemble : ce qu'on y visite, les **genres** de
+restaurants et d'hébergements **sans les nommer**, et comment y aller depuis le terrain. Pas de type
+dédié : la fiche porte les types de ce que la ville offre (`food`, `lodging`, `culture`…).
+
+- **Quand** : la ville offre quelque chose à un pilote, et elle est à moins de 5 km **ou** reliée au
+  terrain par un transport en commun (un taxi seul ne suffit pas). Sinon, pas de fiche.
+- **Nom** : « Centre-ville de {commune} », la convention des fiches déjà en base (Clermont-Ferrand,
+  Compiègne, Saumur, Ornans). Position = la mairie (`city_center`). C'est à ces deux traits que
+  `validate.py` et `preview.py` la reconnaissent et l'exemptent du contrôle de rayon.
+- **Effet sur les autres fiches** : dans cette ville, restaurants et hébergements ordinaires sont
+  résumés dans la fiche ; au-delà de 1,5 km du terrain, `validate.py` signale ceux qui ont une fiche
+  à part. Restent des fiches propres ce qui est à portée de marche, et les services aux pilotes
+  (vélos livrés au terrain, location de voiture, gare).
+
 ## Étape 2.7 — (à la demande) Rejoindre le centre-ville
 
 **Ne pas exécuter d'office.** Nécessite `tmp/$ICAO-airfield.json` et `tmp/$ICAO-activities.json`.
@@ -236,9 +260,11 @@ HTTP que les autres à l'Étape 3.
 **Pourquoi ici** : l'agent airfield tourne en parallèle des agents d'activités ; à ce moment les
 `id` d'activités n'existent pas encore. Le lien aérodrome → fiche n'est possible qu'après la fusion.
 
-1. Repérer dans `tmp/$ICAO-activities.json` les activités de mobilité (`transit`, `bike`, `car`).
+1. Repérer dans `tmp/$ICAO-activities.json` la fiche centre-ville, s'il y en a une, et les
+   activités de mobilité (`transit`, `bike`, `car`).
 2. Enrichir le paragraphe technique de `tmp/$ICAO-airfield.json` d'un passage « rejoindre le
-   centre-ville » : distance a/d → centre, puis liens vers les fiches. Chaque lien est un nœud
+   centre-ville » : distance a/d → centre, lien vers la fiche centre-ville, puis vers les fiches
+   de mobilité. Chaque lien est un nœud
    `text` avec un `mark` `link` (cf. `prompts/schema.md`), `href` en chemin racine
    `/activities/{id}` (route `/activities/:activityId`, cf. `src/App.tsx`). Vérifier que chaque
    `{id}` existe dans le fichier d'activités.

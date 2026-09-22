@@ -47,6 +47,26 @@ def radius_for(types):
     return max(limits, default=CATEGORY_RADIUS_KM['poi'])
 
 
+# Fiche « centre-ville » (prompts/activities-city.md) : « Centre-ville de X », comme
+# celles déjà en base (Clermont-Ferrand, Compiègne, Saumur, Ornans ; « Dinard -
+# Centre »). Pas de type dédié : reconnue à sa position, la mairie donnée par
+# city.py, et à son nom, qui contient celui de la commune.
+CITY_CARD_MATCH_KM = 1.0
+# Dans une ville qui a sa fiche, restaurants et hébergements ordinaires y sont
+# résumés : seuls restent des fiches propres ceux à portée de marche du terrain.
+CITY_SUMMARY_KM = 1.5
+
+
+def is_city_card(activity, city_center):
+    """L'activité est-elle la fiche centre-ville de `city_center` (contexte) ?"""
+    p = activity.get('position') or {}
+    if not city_center or 'latitude' not in city_center or p.get('latitude') is None:
+        return False
+    return (norm(city_center.get('name')) in norm(activity.get('name'))
+            and dist_km(p['latitude'], p['longitude'], city_center['latitude'],
+                        city_center['longitude']) <= CITY_CARD_MATCH_KM)
+
+
 # Marge de tolérance : la position AIP de l'aérodrome est son point de référence,
 # qui peut se trouver à ~1 km du parking avions / de l'entrée pilotes.
 RADIUS_TOLERANCE_KM = 1.0
@@ -58,6 +78,7 @@ AGENT_OUTPUTS = {
     'poi': 'activities-poi.json',
     'restaurants': 'activities-restaurants.json',
     'other': 'activities-other.json',
+    'city': 'activities-city.json',
 }
 
 # Champs de l'aérodrome que le skill ne doit jamais toucher.

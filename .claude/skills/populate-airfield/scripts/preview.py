@@ -124,10 +124,15 @@ def build(icao):
             dist = ''
             if p.get('latitude') is not None:
                 d = c.dist_km(clat, clon, p['latitude'], p['longitude'])
-                limit = c.radius_for(a.get('type'))
-                over = d > limit + c.RADIUS_TOLERANCE_KM
-                cls = 'dist over' if over else 'dist'
-                dist = f'<span class="{cls}">✈ {d:.1f} km (max {limit} km)</span>'
+                if c.is_city_card(a, ctx.get('city_center')):
+                    dist = f'<span class="dist">✈ {d:.1f} km (fiche centre-ville)</span>'
+                    flags += badge('centre-ville')
+                    over = False
+                else:
+                    limit = c.radius_for(a.get('type'))
+                    over = d > limit + c.RADIUS_TOLERANCE_KM
+                    cls = 'dist over' if over else 'dist'
+                    dist = f'<span class="{cls}">✈ {d:.1f} km (max {limit} km)</span>'
                 if over:
                     flags += badge(f'hors rayon — {d:.1f} km', 'warn')
             if a.get('id') in dups:
