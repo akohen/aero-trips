@@ -452,6 +452,7 @@ https://aerotrips.fr/activities/aeroport-hotel-9m2k7p1
 https://aerotrips.fr/activities/aeroscopia-rgwjuo
 https://aerotrips.fr/activities/aerotel-8uak5j
 https://aerotrips.fr/activities/ailes-anciennes-toulouse-mz0oul
+https://aerotrips.fr/activities/air-cook-bzfqy2q
 https://aerotrips.fr/activities/air-libre-parachutisme-g4ksli
 https://aerotrips.fr/activities/aix-golf-dpbhsah
 https://aerotrips.fr/activities/aix-hotel-yt40fcn
@@ -508,6 +509,7 @@ https://aerotrips.fr/activities/beaux-de-provence-5fqlj9
 https://aerotrips.fr/activities/bergerac-vieille-ville-p1d6q7c
 https://aerotrips.fr/activities/best-western-plus-hotel-de-l-arbois-jdoydqw
 https://aerotrips.fr/activities/best-western-premier-collection-ilot-du-golf-ikcidkw
+https://aerotrips.fr/activities/best-western-the-hotel-versailles-y41iblj
 https://aerotrips.fr/activities/bistrot-du-terroir-98k4qm
 https://aerotrips.fr/activities/bistrotquai-canoe-company-l809hb
 https://aerotrips.fr/activities/bon-voyage-ly6mu5d
@@ -526,9 +528,11 @@ https://aerotrips.fr/activities/brit-hotel-du-dauphin-3kxgv5
 https://aerotrips.fr/activities/bungalows-du-golfe-nnhj7xv
 https://aerotrips.fr/activities/butte-de-vauquois-el1hbs
 https://aerotrips.fr/activities/cabana-velos-qudft
+https://aerotrips.fr/activities/cafe-de-l-aerodrome-xthv3a3
 https://aerotrips.fr/activities/calaise-bicycle-ggthl
 https://aerotrips.fr/activities/calanque-de-port-miou-nnhj7xv
 https://aerotrips.fr/activities/campanile-chartres-9pl9m
+https://aerotrips.fr/activities/campanile-versailles-buc-4v30t9n
 https://aerotrips.fr/activities/camping-capfun-mille-pepites-3j5d1f6
 https://aerotrips.fr/activities/camping-capfun-route-blanche-1j4mo
 https://aerotrips.fr/activities/camping-la-pelouse-bergerac-o7s2v1e
@@ -768,6 +772,7 @@ https://aerotrips.fr/activities/karting-de-cosne-e3isra
 https://aerotrips.fr/activities/kayakomat-blere-70n02n
 https://aerotrips.fr/activities/kyriad-annemasse-geneve-5yh3f
 https://aerotrips.fr/activities/kyriad-montpellier-aeroport-4t6r2n8
+https://aerotrips.fr/activities/la-belle-epoque-h75lxo6
 https://aerotrips.fr/activities/la-bertonnerie-en-champagne-hwp8a
 https://aerotrips.fr/activities/la-bicyclette-bh4o4
 https://aerotrips.fr/activities/la-bodega-des-pistes-z6dxy
@@ -782,6 +787,7 @@ https://aerotrips.fr/activities/la-decouverte-b18lb
 https://aerotrips.fr/activities/la-ferme-de-bourdigal-axk3r0h
 https://aerotrips.fr/activities/la-ferme-de-villeneuve-aek5dk6
 https://aerotrips.fr/activities/la-folie-6ilvljf
+https://aerotrips.fr/activities/la-fringale-ikcidkw
 https://aerotrips.fr/activities/la-gourmandise-de-sylvie-dyk93p
 https://aerotrips.fr/activities/la-haute-vallee-de-la-bievre-par-les-etangs-89vot
 https://aerotrips.fr/activities/la-maison-du-velo-de-rennes-bew1ht
@@ -811,6 +817,7 @@ https://aerotrips.fr/activities/le-bistrot-de-labbaye-lxcpx
 https://aerotrips.fr/activities/le-blackwood-bhz1y
 https://aerotrips.fr/activities/le-boeuf-au-galop-s5hnho
 https://aerotrips.fr/activities/le-boss-o2tyhc
+https://aerotrips.fr/activities/le-bouchon-xaji0y6
 https://aerotrips.fr/activities/le-briefing-hyahuz
 https://aerotrips.fr/activities/le-california-2t8j4n7
 https://aerotrips.fr/activities/le-cap--tpkre4
@@ -866,6 +873,7 @@ https://aerotrips.fr/activities/les-ailes-volantes-bqdv7j
 https://aerotrips.fr/activities/les-argonautes-1omju
 https://aerotrips.fr/activities/les-bergeronnettes-chambres-hotes-d9k5l3j
 https://aerotrips.fr/activities/les-chardons-vclydn9
+https://aerotrips.fr/activities/les-clefs-du-roy-t3w5uzb
 https://aerotrips.fr/activities/les-fosses-rouges-s0i5tsd
 https://aerotrips.fr/activities/les-papilles-dstiv
 https://aerotrips.fr/activities/les-pirons-5b4ku5x
