@@ -51,7 +51,10 @@ Pour chaque activité retenue, collecter :
 - Nom (**copié verbatim**, cf. format partagé), coordonnées précises, type(s)
 - Site web officiel (si trouvé)
 - Image : chercher activement une illustration en suivant `activity-format.md` § Image (règle unique de provenance). Omettre le nœud `image` plutôt que d'émettre une URL non vérifiée.
-- Une phrase de description factuelle (mentionner si visible depuis les airs quand pertinent)
+- Une phrase de description factuelle. Ne **pas** ajouter de formule du type « bien visible depuis
+  les airs » : le type `poi` le dit déjà, et la formule répétée sur chaque fiche sonne creux. Ne
+  décrire l'aspect vu du ciel que s'il apporte une information concrète (forme, couleur, repère
+  pour s'orienter).
 
 ## Étape 2 — Format et écriture
 
