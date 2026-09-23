@@ -23,6 +23,14 @@ const bucket = admin.storage().bucket()
 
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
+// Identify an image from its leading bytes, for servers that send a generic type
+const sniffImageType = (buffer: Buffer): string | null => {
+    if (buffer.subarray(0, 3).equals(Buffer.from([0xff, 0xd8, 0xff]))) return 'image/jpeg'
+    if (buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return 'image/png'
+    if (buffer.toString('ascii', 0, 4) === 'RIFF' && buffer.toString('ascii', 8, 12) === 'WEBP') return 'image/webp'
+    return null
+}
+
 const isOwnStorageUrl = (url: string) => url.includes(`firebasestorage.googleapis.com/v0/b/${bucket.name}/`)
 
 // Wikimedia rate-limits browser-like and default UAs (429) and wants a descriptive one;
@@ -63,12 +71,16 @@ const uploadImageFromUrl = async (url: string): Promise<string | null> => {
     }
     // Some CDNs send non-standard "image/jpg" or append parameters ("; charset=...")
     const rawType = (response.headers.get('content-type') ?? '').split(';')[0].trim().toLowerCase()
-    const contentType = rawType === 'image/jpg' ? 'image/jpeg' : rawType
+    const buffer = Buffer.from(await response.arrayBuffer())
+    // Some servers send images as "application/octet-stream" (or no type): trust the bytes then
+    const declaredType = rawType === 'image/jpg' ? 'image/jpeg' : rawType
+    const contentType = ['', 'application/octet-stream', 'binary/octet-stream'].includes(declaredType)
+        ? sniffImageType(buffer) ?? declaredType
+        : declaredType
     if (!ALLOWED_IMAGE_TYPES.includes(contentType)) {
         console.log(chalk.red(`  Unsupported image type "${contentType}" for ${url}`))
         return null
     }
-    const buffer = Buffer.from(await response.arrayBuffer())
     const token = randomUUID()
     const path = `img/import/${randomUUID()}`
     const file = bucket.file(path)
