@@ -89,6 +89,9 @@ for(const {targetDocument, newDoc, id} of results) {
         }
       })
     }
+    // Stamp the apply time, not the submission time: a change applied after an export would
+    // otherwise predate the snapshot and be missed by DataProvider's "updated since" query.
+    newDoc.updated_at = admin.firestore.Timestamp.fromDate(new Date())
     await db.doc(targetDocument).set(newDoc, {merge: true})
   }
   if(['delete', 'apply'].includes(answer)) {
