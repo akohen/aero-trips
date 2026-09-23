@@ -52,7 +52,13 @@ def main():
         else:
             ok = False
             ua = 'wikimedia' if 'wikimedia.org' in url else 'navigateur'
-            print(f'{status} ÉCHEC  {url}   [UA {ua}] — ne pas retenir cette URL')
+            if status == 429 or str(status).startswith('ERREUR'):
+                # Hôte saturé ou injoignable : l'URL peut être bonne. Insister ne fait
+                # qu'aggraver le rate-limit (cf. activity-format.md § Image).
+                print(f'{status} ÉCHEC  {url}   [UA {ua}] — hôte saturé/injoignable : ne pas '
+                      'réessayer en boucle, consigner dans "image_candidates"')
+            else:
+                print(f'{status} ÉCHEC  {url}   [UA {ua}] — ne pas retenir cette URL')
     sys.exit(0 if ok else 1)
 
 

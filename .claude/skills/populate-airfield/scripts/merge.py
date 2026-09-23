@@ -10,6 +10,14 @@ Deux niveaux de doublons :
                           rapprochement par nom reste heuristique et écarter à tort
                           une activité coûte plus cher que la signaler.
 
+Les `id` sont (re)générés ici, pas par les agents : un agent recopie volontiers le
+suffixe « aléatoire » d'une activité à l'autre (cas vécu sur LFMA : 5 suffixes
+partagés entre fichiers). Avant la fusion, toute activité dont l'`id` ne suit pas
+`slug(nom)-xxxxxxx` ou dont le suffixe est déjà pris reçoit un nouvel `id`, **écrit
+aussi dans son fichier d'agent** — le fichier fusionné et les fichiers d'agents
+doivent garder les mêmes `id` (review_state, prune.py). Un `id` valide est conservé,
+ce qui rend l'opération idempotente.
+
 Les `id` portent un suffixe aléatoire : dédupliquer par `id` ne suffit pas. Et la
 proximité seule ne suffit pas non plus — au même point (terminal, gare, port)
 coexistent des services distincts. D'où le croisement nom + position.
@@ -36,6 +44,32 @@ def pos_of(a):
     return p.get('latitude'), p.get('longitude')
 
 
+def fix_ids(files):
+    """Réattribue les `id` mal formés ou au suffixe déjà pris, dans les fichiers d'agents."""
+    taken, fixed = set(), []
+    for path in files:
+        try:
+            batch = json.load(open(path))
+        except json.JSONDecodeError as e:
+            c.die(f'{path} : JSON invalide — {e}')
+        if not isinstance(batch, list):
+            c.die(f'{path} : un tableau JSON est attendu.')
+        changed = False
+        for a in batch:
+            old = a.get('id')
+            suffix = c.id_suffix(old)
+            well_formed = (old == f"{c.slugify(a.get('name'))}-{suffix}"
+                           and len(suffix) == c.ID_SUFFIX_LEN)
+            if not well_formed or suffix in taken:
+                a['id'] = c.make_id(a.get('name'), taken)
+                fixed.append((old, a['id']))
+                changed = True
+            taken.add(c.id_suffix(a['id']))
+        if changed:
+            json.dump(batch, open(path, 'w'), ensure_ascii=False, indent=2)
+    return fixed
+
+
 def main():
     icao = c.icao_arg()
     files = c.agent_files(icao)
@@ -51,6 +85,9 @@ def main():
               '  le fichier fusionné fait foi.\n'
               f'  → pour reprendre la session : resume.py {icao}\n'
               '  → pour refusionner malgré tout : --force')
+
+    for old, new in fix_ids(files):
+        print(f'  id réattribué : {old!r} → {new!r}')
 
     seen, merged, dropped = [], [], []
     for path in files:

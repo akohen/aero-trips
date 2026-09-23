@@ -50,8 +50,13 @@ def _search(name, dept=None):
         req = urllib.request.Request(f'{GEO_API}?{urllib.parse.urlencode(q)}',
                                      headers={'User-Agent': c.UA_WIKIMEDIA})
         return json.load(urllib.request.urlopen(req, timeout=20))
-    except Exception:
-        return []
+    except Exception as e:
+        # None ≠ [] : « API injoignable » ne doit pas passer pour « commune inconnue ».
+        _errors.append(f'{type(e).__name__}: {e}')
+        return None
+
+
+_errors = []
 
 
 def locate(name, dept, vac_km, ad_lat, ad_lon):
@@ -59,8 +64,15 @@ def locate(name, dept, vac_km, ad_lat, ad_lon):
     ou dict avec `reason` si aucune commune ne colle à la distance de la VAC."""
     wanted = _clean(name)
     key = c.norm(wanted)
-    candidates = _search(wanted, dept) or []
-    candidates += [x for x in _search(wanted) if x['code'] not in {y['code'] for y in candidates}]
+    _errors.clear()
+    by_dept, anywhere = _search(wanted, dept), _search(wanted)
+    if by_dept is None and anywhere is None:
+        return {'name_vac': name,
+                'reason': (f'geo.api.gouv.fr injoignable ({_errors[-1]}) — ce n\'est PAS la '
+                           'commune qui manque. Relancer context.py avec '
+                           '--city-center=LAT,LON,Nom (position de la mairie)')}
+    candidates = by_dept or []
+    candidates += [x for x in anywhere or [] if x['code'] not in {y['code'] for y in candidates}]
 
     scored = []
     for x in candidates:

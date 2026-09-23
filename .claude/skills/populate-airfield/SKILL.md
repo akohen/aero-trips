@@ -7,7 +7,8 @@ argument-hint: Code ICAO de l'aérodrome (ex. LFBJ), suivi optionnellement des a
 Tu vas enrichir la base de données aero-trips pour l'aérodrome **$ARGUMENTS**.
 
 **Contraintes** : ne jamais modifier `codeIcao`, `name`, `status`, `position`, `runways`. N'ajouter
-que les champs absents. Tout le texte en français.
+que les champs absents. Tout le texte en français. Seule exception : l'utilisateur peut fournir en
+relecture une `position` d'aérodrome plus proche du parking avions (cf. Étape 5) — jamais un agent.
 
 Les étapes mécaniques sont des scripts, dans `.claude/skills/populate-airfield/scripts/`. Ils
 s'exécutent **depuis la racine du repo** et prennent le code ICAO en argument. Ne pas réécrire leur
@@ -23,7 +24,7 @@ logique dans le chat : les lancer, lire leur sortie.
 | `transport` | `bike` `car` `transit` | **2,5 km** — doit être atteignable depuis le terrain |
 | `restaurants` | `food` `lodging` | **2,5 km** |
 | `poi` | `poi` | **50 km** — un repère vu du ciel est le plus souvent hors de portée à pied |
-| `poi` | `culture` `nature` | **5 km** — lieux qui se visitent depuis le terrain |
+| `poi` | `culture` `nature` | **5 km** — lieux qui se visitent depuis le terrain. Un repère `poi` qui se visite prend aussi `culture`, sans limite de distance |
 | `other` | `hiking` `nautical` `other` `aero` | **5 km** |
 
 ⚠️ Le point de référence est la position **AIP** de l'aérodrome. Elle peut se trouver à ~1 km du
@@ -77,6 +78,10 @@ python3 .claude/skills/populate-airfield/scripts/context.py $ICAO
 python3 .claude/skills/populate-airfield/scripts/context.py $ICAO poi transport
 ```
 
+Prérequis : `pip install -r .claude/skills/populate-airfield/requirements.txt` (lecture de la VAC).
+Sans `pypdf` utilisable, le script **s'arrête** plutôt que de continuer sans la VAC ; `--no-vac`
+passe outre, sciemment.
+
 ⚠️ Le script **supprime les fichiers de sortie des agents qu'il s'apprête à relancer** (et affiche
 ce qu'il supprime). C'est volontaire : un fichier resté d'un run précédent serait sinon
 silencieusement réintégré par `merge.py` alors qu'aucun agent ne l'a produit cette fois-ci. Les
@@ -95,7 +100,9 @@ Produit `tmp/$ICAO-context.json` et affiche tout ce dont les agents ont besoin :
   position de la **mairie**, population, distance au terrain. Le rapprochement est contrôlé par la
   distance que donne la VAC (mesuré : 405 villes situées sur 416). `à vérifier` signale un nom
   seulement approchant ; `⚠` une commune introuvable (fusion, station, faute de frappe dans la
-  VAC) — l'agent `city` la cherche alors à la main. Les activités déjà en base à moins de 1 km de
+  VAC) — l'agent `city` la cherche alors à la main. Si le motif est « geo.api.gouv.fr
+  injoignable », la commune n'est pas en cause : relancer avec `--city-center=LAT,LON,Nom`
+  (position de la mairie). Les activités déjà en base à moins de 1 km de
   la mairie sont listées : une fiche de la ville existe peut-être déjà.
 - Centre AIP, bounding box, rayons par catégorie
 - `EXISTING_FIELDS` — champs déjà présents sur la fiche, à omettre du fichier de sortie
@@ -264,8 +271,22 @@ Relayer les doublons signalés à l'utilisateur.
 
 ## Étape 2.6 — Backfill des images manquantes
 
-Les agents sous-livrent les images (cas mesurés : 9 sur 28, 23 sur 28). `validate.py` affiche le
-compte `N/M activité(s) sans image`. Si ce compte est notable, relancer une passe ciblée.
+**D'abord, les candidates.** Un agent qui trouve une image sans pouvoir la contrôler (Wikimedia
+en 429 quand plusieurs agents l'interrogent à la fois, coupure réseau) la consigne dans
+`image_candidates` au lieu de la perdre (cf. `prompts/activity-format.md` § Image). Les contrôler
+en séquence, un seul client, et promouvoir celles qui répondent 200 :
+
+```bash
+python3 .claude/skills/populate-airfield/scripts/images.py $ICAO
+```
+
+Code 1 = candidates encore en 429 : relancer le script quelques minutes plus tard, **pas** de
+mini-agent pour elles — l'URL est déjà trouvée, seul le contrôle manque. Cas vécu sur LFMA : 13
+images Wikimedia perdues en session cloud, toutes valides (200) dès le premier contrôle en local.
+
+**Ensuite, les manques.** Les agents sous-livrent les images (cas mesurés : 9 sur 28, 23 sur 28).
+`validate.py` affiche le compte `N/M activité(s) sans image`. Si ce compte est notable, relancer
+une passe ciblée sur les activités **sans image ni candidate**.
 
 Lancer **en parallèle** un mini-agent par activité sans image — mêmes `subagent_type` et `model`
 qu'à l'Étape 1 (`general-purpose` / `sonnet` : trouver une image est exactement ce que haiku rate)
@@ -277,7 +298,11 @@ qu'à l'Étape 1 (`general-purpose` / `sonnet` : trouver une image est exactemen
 > navigateur ailleurs — le tableau est dans la fiche).
 > Si image valide trouvée, réponds **uniquement** avec ce JSON :
 > `{ "src": "https://...", "alt": "Description factuelle courte." }`
+> Si l'URL est trouvée mais que l'hôte reste en 429 : `CANDIDATE { "src": …, "alt": … }` —
+> ne pas réessayer en boucle.
 > Sinon réponds exactement : `AUCUNE IMAGE TROUVÉE`.
+
+Une réponse `CANDIDATE` va dans `image_candidates` de l'activité, puis `images.py`.
 
 Réintégrer chaque image en **tête** de la description (nœud `image`, cf. `prompts/schema.md` :
 `attrs` avec `src`/`alt`/`title:null`, pas de clé `content`). Les images passeront le même contrôle
@@ -393,7 +418,10 @@ quoi une nouvelle fusion les ferait réapparaître.
 - **correctif nécessitant une recherche** (trouver une image, confirmer un fait, vérifier un lien
   avec l'aérodrome) : relancer un mini-agent sur cette seule activité, avec la note comme consigne
   et les règles d'`prompts/activity-format.md`, puis réintégrer le résultat.
-- Ne jamais modifier `codeIcao`, `name`, `status`, `position` d'un aérodrome.
+- Ne jamais modifier `codeIcao`, `name`, `status` d'un aérodrome. Sa `position` ne change que si
+  l'utilisateur **fournit** des coordonnées (point AIP trop loin du parking avions ou de la sortie) :
+  l'écrire alors dans `tmp/$ICAO-airfield.json` sous la forme
+  `"position": {"latitude": …, "longitude": …}`. Aucun agent ne la cherche ni ne la propose.
 
 Puis **réexécuter `validate.py` et `preview.py`** et réafficher le chemin de l'aperçu pour un
 nouveau tour. Répéter tant que l'utilisateur renvoie des retours.

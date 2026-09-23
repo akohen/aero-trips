@@ -125,7 +125,21 @@ def main():
     # --- 1. Structure ---
     print('=== Structure ===')
     if airfield is not None:
-        extra = set(airfield) - AIRFIELD_ALLOWED_KEYS
+        extra = set(airfield) - AIRFIELD_ALLOWED_KEYS - {'position', 'image_candidates'}
+        if airfield.get('image_candidates'):
+            problem('aérodrome : `image_candidates` non résolues — lancer images.py '
+                    '(Étape 2.6) ; la clé ne doit pas partir à l\'import.')
+        if 'position' in airfield:
+            # Admise seulement si l'utilisateur l'a fournie en relecture (SKILL.md, Étape 5).
+            pos = airfield['position']
+            if not (isinstance(pos, dict) and set(pos) == {'latitude', 'longitude'}
+                    and all(isinstance(pos[k], (int, float)) for k in pos)):
+                problem(f'aérodrome : position mal formée {pos!r} '
+                        '(attendu {"latitude": <nombre>, "longitude": <nombre>}).')
+            else:
+                print(f'  ℹ aérodrome : position fournie en relecture '
+                      f'({pos["latitude"]}, {pos["longitude"]}) — à confirmer qu\'elle vient '
+                      "de l'utilisateur, jamais d'un agent.")
         if extra:
             problem(f'aérodrome : clés interdites {sorted(extra)} '
                     '(les infos clubs/gestionnaire vont dans le texte, pas en clés JSON).')
@@ -140,6 +154,8 @@ def main():
         for key in ('id', 'name', 'position', 'type'):
             if not a.get(key):
                 problem(f'{where} : champ `{key}` manquant.')
+        if a.get('image_candidates'):
+            problem(f'{where} : `image_candidates` non résolues — lancer images.py (Étape 2.6).')
         bad = set(a.get('type') or []) - VALID_TYPES
         if bad:
             problem(f'{where} : type(s) inconnu(s) {sorted(bad)}.')

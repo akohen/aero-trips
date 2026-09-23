@@ -152,6 +152,30 @@ def norm(s):
     return ' '.join(s.split())
 
 
+def slugify(s):
+    """Slug d'id d'activité (activity-format.md § Générer les IDs) : sans accents,
+    minuscules, tout ce qui n'est ni lettre ni chiffre → un seul tiret."""
+    s = unicodedata.normalize('NFD', s or '').encode('ascii', 'ignore').decode().lower()
+    return re.sub(r'[^a-z0-9]+', '-', s).strip('-')
+
+
+ID_SUFFIX_LEN = 7
+
+
+def make_id(name, taken=()):
+    """`slug(nom)-xxxxxxx`, suffixe tiré au hasard (secrets) et absent de `taken`."""
+    import secrets
+    alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
+    while True:
+        suffix = ''.join(secrets.choice(alphabet) for _ in range(ID_SUFFIX_LEN))
+        if suffix not in taken:
+            return f'{slugify(name)}-{suffix}'
+
+
+def id_suffix(activity_id):
+    return (activity_id or '').rsplit('-', 1)[-1]
+
+
 def similar_names(a, b, threshold=0.6):
     """Deux noms désignent-ils vraisemblablement le même lieu ?
 

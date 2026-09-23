@@ -1,0 +1,3 @@
+# Dépendances Python des scripts du skill (pip install -r requirements.txt).
+pypdf     # lecture de la carte VAC (vac.py)
+fonttools # décodage des polices de la VAC ; sans lui, pypdf noie la sortie d'avertissements

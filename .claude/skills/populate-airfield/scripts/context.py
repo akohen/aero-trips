@@ -84,7 +84,20 @@ def merge_clubs(manual, vac_clubs):
     return merged
 
 
-def build(icao, use_vac=True):
+def parse_city_center(argv):
+    """`--city-center=LAT,LON[,Nom]` : mairie saisie à la main (API injoignable, fusion de communes…)."""
+    arg = next((a for a in argv if a.startswith('--city-center=')), None)
+    if not arg:
+        return None
+    parts = [p.strip() for p in arg.split('=', 1)[1].split(',', 2)]
+    try:
+        lat, lon = float(parts[0]), float(parts[1])
+    except (ValueError, IndexError):
+        c.die(f'{arg} : attendu --city-center=LAT,LON[,Nom]')
+    return {'latitude': lat, 'longitude': lon, 'name': parts[2] if len(parts) > 2 else None}
+
+
+def build(icao, use_vac=True, manual_center=None):
     entry = c.load_airfield(icao)
     lat, lon = c.center(entry)
     box = c.bbox(lat, lon)
@@ -99,7 +112,15 @@ def build(icao, use_vac=True):
         city, city_source = c.title_case(entry['name']), 'repli sur name (à vérifier)'
 
     # Centre-ville (mairie) de la ville VAC, pour la fiche « centre-ville ».
-    if situation.get('city'):
+    if manual_center:
+        city_center = {
+            'name': manual_center['name'] or city, 'name_vac': situation.get('city'),
+            'latitude': manual_center['latitude'], 'longitude': manual_center['longitude'],
+            'point': 'saisie manuelle', 'population': None, 'confidence': 'à vérifier',
+            'distance_km': round(c.dist_km(lat, lon, manual_center['latitude'],
+                                           manual_center['longitude']), 1),
+        }
+    elif situation.get('city'):
         city_center = citymod.locate(situation['city'], situation.get('department_code'),
                                      situation.get('distance_km'), lat, lon)
     else:
@@ -324,7 +345,19 @@ if __name__ == '__main__':
         c.die(f'agent(s) inconnu(s) : {unknown} — attendu parmi {list(c.AGENT_OUTPUTS)}')
     agents = args or list(c.AGENT_OUTPUTS)
 
-    ctx = build(icao, use_vac='--no-vac' not in sys.argv)
+    use_vac = '--no-vac' not in sys.argv
+    if use_vac:
+        # Sans pypdf, build() continuerait sans la VAC : ni ville, ni VFR de nuit, ni
+        # clubs — et un seul « à vérifier » pour le signaler. Mieux vaut s'arrêter.
+        try:
+            import pypdf  # noqa: F401
+        except BaseException as e:  # pyo3 lève PanicException, qui n'hérite pas d'Exception
+            c.die(f'pypdf inutilisable ({type(e).__name__}: {e}) — la carte VAC ne peut pas être lue.\n'
+                  '  → pip install -r .claude/skills/populate-airfield/requirements.txt\n'
+                  '    (si l\'erreur mentionne _cffi_backend : pip install cffi)\n'
+                  '  → ou --no-vac pour continuer sciemment sans la VAC')
+
+    ctx = build(icao, use_vac=use_vac, manual_center=parse_city_center(sys.argv))
     os.makedirs('tmp', exist_ok=True)
     path = c.tmp_path(icao, 'context.json')
     json.dump(ctx, open(path, 'w'), ensure_ascii=False, indent=2)

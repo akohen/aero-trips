@@ -23,7 +23,10 @@ Zone de recherche :
     au-delà de la portée à pied : un littoral, un château, un viaduc, une île. Ne retenir à cette
     distance que ce qui se **repère effectivement en vol** — un menhir ou une chapelle, non ;
   - types `culture` et `nature` (lieux **qui se visitent** depuis le terrain) : **5 km**.
-  Un site à la fois visitable et remarquable du ciel dans les 5 km prend les deux types.
+  Un repère `poi` qui **se visite** (château, abbaye, musée, fort… ouvert au public, avec des
+  horaires) prend **aussi** le type `culture`, **quelle que soit sa distance** : un pilote peut
+  s'y rendre depuis un autre terrain plus proche. Le rayon de 5 km ne s'applique qu'aux fiches
+  sans `poi`.
 
 ⚠️ Le point de référence est la position **AIP** de l'aérodrome, qui peut se trouver jusqu'à ~1 km
 du parking avions et de l'entrée pilotes. Un lieu mesuré à un peu plus de 5 km peut donc être
@@ -45,7 +48,8 @@ Sources :
 Types disponibles pour cette catégorie : `poi` `culture` `nature`
 
 **Pour chaque candidat**, vérifier que ses coordonnées tombent dans le rayon de son type (50 km pour
-`poi`, 5 km pour `culture`/`nature`). Au-delà de la bounding box, seul le type `poi` est possible.
+`poi`, 5 km pour `culture`/`nature` seuls). Au-delà de la bounding box, une fiche porte toujours
+`poi`, éventuellement accompagné de `culture` si le site se visite.
 
 Pour chaque activité retenue, collecter :
 - Nom (**copié verbatim**, cf. format partagé), coordonnées précises, type(s)

@@ -125,7 +125,25 @@ python3 .claude/skills/populate-airfield/scripts/check_url.py <url> [<url>...]
 ```
 
 Il répond `200 OK <url>` ou `<code> ÉCHEC <url>`, et sort en code 1 si une URL échoue. Ne retenir
-que les URLs qu'il déclare `200 OK`.
+dans la description que les URLs qu'il déclare `200 OK`.
+
+**Hôte saturé ou injoignable — ne pas insister.** Le script réessaie déjà sur 429. S'il répond
+malgré tout `429` ou `ERREUR (…)` (rate-limit, coupure réseau — plusieurs agents interrogent
+Wikimedia en même temps), **ne pas relancer le contrôle en boucle** : au plus **une** nouvelle
+tentative, puis consigner l'URL comme candidate et passer à la suite :
+
+```json
+"image_candidates": [
+  { "src": "https://upload.wikimedia.org/...", "alt": "Description de la photo.", "source": "API Commons, File:Xxx.jpg" }
+]
+```
+
+`image_candidates` est une clé de l'activité (à côté de `description`), et, pour la fiche aérodrome,
+une clé de premier niveau de `tmp/<ICAO>-airfield.json`. Elle ne reçoit **que** des URLs obtenues
+d'une source (API Commons, page du sujet) et conformes à la règle de provenance ci-dessus —
+jamais une URL devinée, et jamais une URL qui a répondu `404` ou `403` (celle-là est fausse, pas
+ralentie). L'Étape 2.6 (`images.py`) les contrôle ensuite une à une et les promeut en nœud `image`.
+Une candidate perdue dans un rapport texte est une image perdue : la mettre **dans le JSON**.
 
 Pourquoi ce script plutôt que `curl` : **l'User-Agent à utiliser dépend de l'hôte**, et se tromper
 fait passer une image valide pour cassée. Wikimedia rate-limite (**429**) les UA de navigateur
@@ -144,6 +162,9 @@ Pour chaque activité : `slug(nom)` + `-` + 7 caractères aléatoires a-z0-9
 Slug = nom en minuscules, sans accents (é→e, à→a, ç→c, etc.), espaces et apostrophes → tirets, caractères spéciaux supprimés.
 
 Exemple : `"Abbaye de Sénanque"` → `"abbaye-de-senanque-x4k2p9q"`
+
+Tirer un suffixe **différent pour chaque activité** — ne jamais recopier celui d'une autre fiche.
+`merge.py` réattribue de toute façon un `id` mal formé ou au suffixe déjà pris.
 
 ## Format JSON de chaque activité
 
@@ -174,7 +195,8 @@ Exemple : `"Abbaye de Sénanque"` → `"abbaye-de-senanque-x4k2p9q"`
 
 - Utiliser les valeurs de `type` **autorisées pour ta catégorie** (voir ta tâche).
 - Omettre `website` si non trouvé.
-- Omettre le nœud `image` si aucune URL valide au sens du § Image ci-dessus.
+- Omettre le nœud `image` si aucune URL valide au sens du § Image ci-dessus ; une URL valide mais
+  non contrôlable (429, réseau) va dans `image_candidates`.
 - Le nœud `image` n'a **pas** de clé `content`.
 - Chaque `paragraph` a une clé `content`.
 - Le JSON doit être parseable.

@@ -105,7 +105,9 @@ Collecter les **champs de sortie** (seuls champs autorisés dans le JSON final, 
     carburant déjà présent en base, même absent de la VAC.
 - `image` : URL d'une photo de l'aérodrome. La règle de provenance, la vérification HTTP et le choix
   du User-Agent sont décrits dans `.claude/skills/populate-airfield/prompts/activity-format.md`
-  § Image — **règle unique**, elle vaut aussi pour l'aérodrome. À défaut d'URL vérifiée : pas d'image.
+  § Image — **règle unique**, elle vaut aussi pour l'aérodrome. À défaut d'URL vérifiée : pas d'image ;
+  une URL trouvée mais non contrôlable (429, réseau) va dans une clé de premier niveau
+  `image_candidates` (même format que pour les activités), reprise à l'Étape 2.6.
 
 ## Étape 2 — Rédiger et écrire le fichier
 

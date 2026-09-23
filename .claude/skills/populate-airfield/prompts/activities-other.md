@@ -38,9 +38,15 @@ Sources :
 - Activités nautiques (canoë, kayak, voile, plongée, pêche, baignade)
 - Parcs de loisirs, accrobranche, golf, sports motorisés
 - Plages et plans d'eau
-- Activités et lieux **aéronautiques** (type `aero`) : musée de l'air, collection d'avions,
-  baptêmes de l'air, école de parachutisme, planeur, ULM, montgolfière — hors aéro-clubs basés,
-  qui sont décrits dans la fiche de l'aérodrome et non comme activités
+- Activités et lieux **aéronautiques** (type `aero`) **qu'un pilote viendrait faire ou voir en
+  posant sur le terrain** : musée de l'air, collection d'avions, saut en parachute (tandem ou
+  initiation), vol en montgolfière, baptême en planeur proposé aux visiteurs.
+  Critère : l'activité est une **destination** en soi. Les **écoles et clubs de pilotage** basés
+  (aéro-club, ULM, hélicoptère, planeur en formation, modélisme, construction amateur) n'en sont
+  pas : un pilote ne vient pas en avion pour s'inscrire dans une école. Ils sont nommés dans la
+  fiche de l'aérodrome (agent `airfield`) et n'ont **pas** de fiche activité. Dans le doute (un
+  club de vol à voile qui offre des baptêmes aux visiteurs), retenir la fiche et le signaler dans
+  ton rapport.
 - Toute activité de loisir ne relevant pas des restaurants/hébergements, vélo/voiture ni des POI
 
 Types disponibles pour cette catégorie : `hiking` `nautical` `other` `aero`
