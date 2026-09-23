@@ -543,6 +543,7 @@ https://aerotrips.fr/activities/cap-canaille-g0fn9xu
 https://aerotrips.fr/activities/cap-gris-nez-m3j5gv
 https://aerotrips.fr/activities/carrefour-location-h7d2wxa
 https://aerotrips.fr/activities/cathedrale-de-chartres
+https://aerotrips.fr/activities/cathedrale-notre-dame-de-laon-ucppgu
 https://aerotrips.fr/activities/cathedrale-notredame-de-sees-2ran4aq
 https://aerotrips.fr/activities/cathedrale-saintetienne-m5x3j7k
 https://aerotrips.fr/activities/center-parcs-les-bois-francs-tcp6r
@@ -912,6 +913,7 @@ https://aerotrips.fr/activities/mondovelo-saint-langis-les-mortagne-xboe29
 https://aerotrips.fr/activities/mont-saintmichel-d00ro
 https://aerotrips.fr/activities/mont-ventoux-7p5wef
 https://aerotrips.fr/activities/montagne-sainte-victoire-zmf8mdd
+https://aerotrips.fr/activities/monument-de-vimy-6b80xm
 https://aerotrips.fr/activities/moulin-saint-jean-svwci9p
 https://aerotrips.fr/activities/musee-de-la-resistance-groupe-bayard-52bfd
 https://aerotrips.fr/activities/musee-de-laviation-de-warluis-c024v8

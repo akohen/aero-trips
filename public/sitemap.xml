@@ -947,7 +947,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFGS</loc>
-    <lastmod>2026-09-17</lastmod>
+    <lastmod>2026-09-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -965,7 +965,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFGW</loc>
-    <lastmod>2024-03-13</lastmod>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2045,7 +2045,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFPN</loc>
-    <lastmod>2024-04-10</lastmod>
+    <lastmod>2026-09-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -3282,6 +3282,12 @@
   <url>
     <loc>https://aerotrips.fr/activities/cathedrale-de-chartres</loc>
     <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://aerotrips.fr/activities/cathedrale-notre-dame-de-laon-ucppgu</loc>
+    <lastmod>2026-09-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -5500,6 +5506,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://aerotrips.fr/activities/monument-de-vimy-6b80xm</loc>
+    <lastmod>2026-09-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://aerotrips.fr/activities/moulin-saint-jean-svwci9p</loc>
     <lastmod>2026-09-21</lastmod>
     <changefreq>monthly</changefreq>
@@ -6305,7 +6317,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/trips/phoques-de-la-baie-dauthie-wq83</loc>
-    <lastmod>2024-02-15</lastmod>
+    <lastmod>2026-09-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -6323,7 +6335,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/trips/saintcyr-etretat-en-longeant-la-seine-junvx</loc>
-    <lastmod>2026-07-22</lastmod>
+    <lastmod>2026-09-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -6341,7 +6353,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/trips/versailles-maintenon-thoiry-s3w0si</loc>
-    <lastmod>2026-04-04</lastmod>
+    <lastmod>2026-09-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
