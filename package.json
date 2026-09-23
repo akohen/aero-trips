@@ -16,6 +16,8 @@
     "manage": "NODE_ENV=production node scripts/manage-edits.js",
     "heal": "tsx scripts/heal-image-urls.ts",
     "heal:prod": "NODE_ENV=production tsx scripts/heal-image-urls.ts --production",
+    "import-images": "tsx scripts/import-external-images.ts",
+    "import-images:prod": "NODE_ENV=production tsx scripts/import-external-images.ts --production",
     "verify:resize": "tsx scripts/verify-resize.ts",
     "postversion": "git push --follow-tags"
   },
