@@ -112,9 +112,11 @@ const download = async (src: string): Promise<Fetched> => {
     try {
       res = await fetch(src, { headers: { 'User-Agent': ua, Accept: 'image/*' }, signal: AbortSignal.timeout(30_000) })
     } catch (e) {
+      // Some hosts (camptocamp) intermittently time out on connect.
+      if (attempt < 3) { await sleep(2000 * (attempt + 1)); continue }
       return { ok: false, reason: String((e as { cause?: { code?: string } }).cause?.code ?? e) }
     }
-    if (res.status === 429 && attempt < 4) { await res.body?.cancel(); await sleep(5000 * (attempt + 1)); continue }
+    if ((res.status === 429 || res.status >= 500) && attempt < 4) { await res.body?.cancel(); await sleep(5000 * (attempt + 1)); continue }
     const contentType = (res.headers.get('content-type') ?? '').split(';')[0].trim().toLowerCase()
     if (!res.ok) { await res.body?.cancel(); return { ok: false, reason: `HTTP ${res.status}` } }
     if (!ALLOWED_TYPES.has(contentType)) { await res.body?.cancel(); return { ok: false, reason: `unsupported type ${contentType || '(none)'}` } }
