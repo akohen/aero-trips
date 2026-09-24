@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Activity, Airfield } from '..'
-import { buildEmbedHtml, buildEmbedSnippet, runwayPlanSvg } from './embedWidget'
+import { buildEmbedHtml, buildEmbedSnippet, embedUrl, runwayPlanSvg } from './embedWidget'
 
 // Shapes taken from src/data/airfields.json (LFBE) and activities.json
 const lfbe = {
@@ -103,6 +103,13 @@ describe('runwayPlanSvg', () => {
   it('skips runways without a usable designation', () => {
     expect(runwayPlanSvg([{ length: 800 }])).toBe('')
     expect(runwayPlanSvg([{ designation: 32 as unknown as string, length: 800 }])).toContain('<rect')
+  })
+})
+
+describe('embedUrl', () => {
+  it('builds absolute or same-origin widget URLs', () => {
+    expect(embedUrl('LFBE')).toBe('https://aerotrips.fr/embed/LFBE')
+    expect(embedUrl('LFBE', { theme: 'dark' }, '')).toBe('/embed/LFBE?theme=dark')
   })
 })
 

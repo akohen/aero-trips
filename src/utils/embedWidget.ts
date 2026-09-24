@@ -189,18 +189,23 @@ if(a&&/^[0-9a-f]{6}$/i.test(a))r.style.setProperty('--a','#'+a);})();
 `
 }
 
-/** The code a site owner pastes: the iframe plus a plain link, which is the actual backlink. */
-export const buildEmbedSnippet = (
-  af: Airfield,
-  { wide = false, theme, accent }: { wide?: boolean, theme?: 'dark', accent?: string } = {},
-) => {
-  const icao = af.codeIcao
-  const name = titleCase(af.name)
+type EmbedOptions = { wide?: boolean, theme?: 'dark', accent?: string }
+
+/** Widget URL with its query-string options. `base` '' gives a same-origin path. */
+export const embedUrl = (icao: string, { theme, accent }: EmbedOptions = {}, base = ROOT_URL) => {
   const params = new URLSearchParams()
   if (theme) params.set('theme', theme)
   if (accent && /^#?[0-9a-f]{6}$/i.test(accent)) params.set('accent', accent.replace('#', ''))
   const q = params.toString()
-  return `<iframe src="${ROOT_URL}/embed/${esc(icao)}${q ? `?${q}` : ''}" width="100%" height="${wide ? EMBED_HEIGHT.wide : EMBED_HEIGHT.narrow}" ` +
+  return `${base}/embed/${encodeURIComponent(icao)}${q ? `?${q}` : ''}`
+}
+
+/** The code a site owner pastes: the iframe plus a plain link, which is the actual backlink. */
+export const buildEmbedSnippet = (af: Airfield, options: EmbedOptions = {}) => {
+  const icao = af.codeIcao
+  const name = titleCase(af.name)
+  const wide = options.wide ?? false
+  return `<iframe src="${embedUrl(icao, options)}" width="100%" height="${wide ? EMBED_HEIGHT.wide : EMBED_HEIGHT.narrow}" ` +
     `style="border:0;max-width:${wide ? 720 : 360}px" loading="lazy" title="À faire autour de l'aérodrome de ${esc(name)} (${icao})"></iframe>\n` +
     `<p><a href="${ROOT_URL}/airfields/${icao}">Activités autour de l'aérodrome de ${esc(name)} (${icao}) sur AeroTrips</a></p>`
 }

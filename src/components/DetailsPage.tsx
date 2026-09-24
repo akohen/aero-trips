@@ -1,4 +1,4 @@
-import { Title, Text, Button, Paper, Grid, Stack } from "@mantine/core"
+import { Title, Text, Button, Paper, Grid, Stack, Anchor } from "@mantine/core"
 import BackButton from "./BackButton"
 import EditButton from "./EditButton"
 import { Activity, Airfield, Data } from ".."
@@ -6,16 +6,21 @@ import { findNearest, shortener, titleCase } from "../utils/utils"
 import { iconsList } from "../utils/icons"
 import { buildItemSeo, DEFAULT_DESCRIPTION, DEFAULT_IMAGE, DEFAULT_TITLE } from "../utils/itemSeo"
 import { ButtonVACMap, ButtonViewOnMap } from "./CommonButtons"
-import { IconBrandGoogleMaps, IconRoute } from "@tabler/icons-react"
-import { Link } from "react-router"
+import { IconBrandGoogleMaps, IconCode, IconRoute } from "@tabler/icons-react"
+import { Link, useLocation, useNavigate } from "react-router"
 import Description from "./Description"
 import FavoriteButton from "./FavoriteButton"
 import VisitedButton from "./VisitedButton"
-import { useEffect } from "react"
+import { lazy, Suspense, useEffect } from "react"
 import { useDraftTrip } from "../hooks/useDraftTrip"
 import { Nearby } from "./Nearby"
 import { NearbyTrips } from "./ActivityUtils"
 import { ToiletText } from "./AirfieldUtils"
+// Lazy: only webmasters open it, keep it out of the airfield page bundle.
+const EmbedModal = lazy(() => import("./EmbedModal"))
+
+// Opens the "Intégrer sur votre site" modal; linkable (e.g. /airfields/LFBE#integrer) for outreach emails.
+const EMBED_HASH = '#integrer'
 
 const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView, profile} : Data & {id: string, item: Airfield|Activity}) => {
   const nearbyAirfields = findNearest(item, airfields, 50000).slice(0,10)
@@ -26,6 +31,11 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
     : []
   const type = 'codeIcao' in item ? 'airfields' : 'activities'
   const nearbyFoodCount = nearbyActivities.filter(([, a]) => a.type.includes('food')).length
+  const location = useLocation()
+  const navigate = useNavigate()
+  const embedOpened = location.hash === EMBED_HASH
+  const setEmbedHash = (hash: string) =>
+    navigate({ pathname: location.pathname, search: location.search, hash }, { replace: true, preventScrollReset: true })
   const { draft, setDraft } = useDraftTrip()
   const isInDraft = draft.steps.some(s => s.type === type && s.id === id)
   const addToDraft = () => {
@@ -138,6 +148,11 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
         </Button>
       )}
       {item.website && <Text><b>Site internet</b> <Link to={item.website}>{shortener(item.website, 35)}</Link></Text>}
+      {('codeIcao' in item) && (
+        <Anchor component="button" type="button" size="sm" ta="left" onClick={() => setEmbedHash(EMBED_HASH)}>
+          <IconCode size={16} style={{ verticalAlign: 'middle' }} /> Intégrer sur votre site
+        </Anchor>
+      )}
       {item.updated_at && (
         <Text size="xs" ta={"right"}>
           Mis à jour le {new Date(item.updated_at.seconds * 1000).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
@@ -151,12 +166,22 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
   <Grid.Col span={12}>
     <Title order={4}>Activités à proximité</Title>
     <Nearby items={nearbyActivities} profile={profile} />
+    {('codeIcao' in item) && nearbyActivities.length > 0 && (
+      <Anchor component="button" type="button" size="sm" mt="xs" onClick={() => setEmbedHash(EMBED_HASH)}>
+        Intégrer ces adresses sur votre site →
+      </Anchor>
+    )}
   </Grid.Col>
   <Grid.Col span={12}>
     <Title order={4}>Terrains à proximité</Title>
     <Nearby items={nearbyAirfields} profile={profile} />
   </Grid.Col>
   </Grid>
+  {('codeIcao' in item) && embedOpened && (
+    <Suspense fallback={null}>
+      <EmbedModal airfield={item} opened onClose={() => setEmbedHash('')} />
+    </Suspense>
+  )}
 </>)
 }
 
