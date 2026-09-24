@@ -1,4 +1,5 @@
 import { Activity, Airfield } from ".."
+import { getImgNode } from "./itemImages"
 import { titleCase } from "./utils"
 
 const ROOT_URL = 'https://aerotrips.fr'
@@ -6,12 +7,15 @@ const ROOT_URL = 'https://aerotrips.fr'
 // Default site-wide meta strings (must match index.html and DetailsPage's cleanup)
 export const DEFAULT_TITLE = 'AeroTrips'
 export const DEFAULT_DESCRIPTION = "Découvrez des idées de sorties aériennes en France : terrains d'aviation, activités à proximité, événements et itinéraires partagés par la communauté."
+export const DEFAULT_IMAGE = `${ROOT_URL}/hero-image.jpg`
 
 export type ItemSeo = {
   title: string
   description: string
   url: string
   ogType: string
+  // Link-preview image: the item's own photo, else the site-wide hero image
+  image: string
   jsonLdItem: Record<string, unknown>
   jsonLdBreadcrumb: Record<string, unknown>
 }
@@ -36,6 +40,8 @@ export const buildItemSeo = (
   const description = isAirfield
     ? `Que faire près de l'aérodrome de ${displayName} (${item.codeIcao}) ? Activités et bonnes adresses${foodMention} à proximité, pistes, services et sorties partagées par la communauté des pilotes.`
     : `${displayName} — activité à découvrir en avion à proximité d'un aérodrome, avec les terrains et sorties AeroTrips les plus proches.`
+
+  const image = getImgNode(item.description)?.attrs.src ?? DEFAULT_IMAGE
 
   const jsonLdItem: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -65,6 +71,7 @@ export const buildItemSeo = (
       }))
     }
   }
+  if (image !== DEFAULT_IMAGE) jsonLdItem.image = image
   if (item.website) jsonLdItem.sameAs = item.website
 
   const jsonLdBreadcrumb: Record<string, unknown> = {
@@ -81,5 +88,5 @@ export const buildItemSeo = (
     ],
   }
 
-  return { title, description, url, ogType: 'place', jsonLdItem, jsonLdBreadcrumb }
+  return { title, description, url, ogType: 'place', image, jsonLdItem, jsonLdBreadcrumb }
 }

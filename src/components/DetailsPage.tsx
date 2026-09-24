@@ -4,7 +4,7 @@ import EditButton from "./EditButton"
 import { Activity, Airfield, Data } from ".."
 import { findNearest, shortener, titleCase } from "../utils/utils"
 import { iconsList } from "../utils/icons"
-import { buildItemSeo, DEFAULT_DESCRIPTION, DEFAULT_TITLE } from "../utils/itemSeo"
+import { buildItemSeo, DEFAULT_DESCRIPTION, DEFAULT_IMAGE, DEFAULT_TITLE } from "../utils/itemSeo"
 import { ButtonVACMap, ButtonViewOnMap } from "./CommonButtons"
 import { IconBrandGoogleMaps, IconRoute } from "@tabler/icons-react"
 import { Link } from "react-router"
@@ -32,7 +32,7 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
     if (!isInDraft) setDraft({ ...draft, steps: [...draft.steps, { type, id }] })
   }
   useEffect(() => {
-    const { title, description, url, ogType, jsonLdItem, jsonLdBreadcrumb } = buildItemSeo(item, { nearbyFoodCount })
+    const { title, description, url, ogType, image, jsonLdItem, jsonLdBreadcrumb } = buildItemSeo(item, { nearbyFoodCount })
 
     document.title = title
 
@@ -53,6 +53,8 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
     setMeta('meta[property="og:type"]', 'og:type', ogType)
     setMeta('meta[name="twitter:title"]', 'twitter:title', title)
     setMeta('meta[name="twitter:description"]', 'twitter:description', description)
+    setMeta('meta[property="og:image"]', 'og:image', image)
+    setMeta('meta[name="twitter:image"]', 'twitter:image', image)
 
     const setSchema = (key: string, value: object) => {
       let el = document.querySelector(`script[data-schema="${key}"]`) as HTMLScriptElement | null
@@ -76,6 +78,8 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
       setMeta('meta[property="og:type"]', 'og:type', 'website')
       setMeta('meta[name="twitter:title"]', 'twitter:title', DEFAULT_TITLE)
       setMeta('meta[name="twitter:description"]', 'twitter:description', DEFAULT_DESCRIPTION)
+      setMeta('meta[property="og:image"]', 'og:image', DEFAULT_IMAGE)
+      setMeta('meta[name="twitter:image"]', 'twitter:image', DEFAULT_IMAGE)
       document.querySelector('script[data-schema="item"]')?.remove()
       document.querySelector('script[data-schema="breadcrumb"]')?.remove()
     }
