@@ -7,7 +7,7 @@ const ROOT_URL = 'https://aerotrips.fr'
 // Default site-wide meta strings (must match index.html and DetailsPage's cleanup)
 export const DEFAULT_TITLE = 'AeroTrips'
 export const DEFAULT_DESCRIPTION = "Découvrez des idées de sorties aériennes en France : terrains d'aviation, activités à proximité, événements et itinéraires partagés par la communauté."
-export const DEFAULT_IMAGE = `${ROOT_URL}/hero-image.jpg`
+export const DEFAULT_IMAGE = `${ROOT_URL}/og-image.jpg`
 
 export type ItemSeo = {
   title: string
