@@ -60,6 +60,20 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
   --project demo-aerotrips` — a `demo-` project runs offline, no auth). `vite preview` is **not**
   representative (SPA-fallback-first; only hits nested files with a trailing slash).
 
+## Embeddable widget
+
+- `/embed/{ICAO}` is a **standalone HTML page** (not the SPA shell) that clubs, airfields and tourism sites
+  load in an `<iframe>`: airfield photo (or a runway diagram drawn from `runways` when there is none), counts
+  of nearby addresses by need, and a CTA to the airfield page. Empty airfields get an "Ajouter une adresse" CTA.
+- Built by **`src/utils/embedWidget.ts`** (`buildEmbedHtml`, `buildEmbedSnippet`), written by
+  `scripts/prerender.ts` to `dist/embed/{ICAO}/index.html`. Same `findNearest` radius as the airfield page.
+- Options via query string: `?theme=dark`, `?accent=<hex6>` (validated in the page).
+- **No gtag** in the widget (it would set cookies on a third-party site); links carry `utm_source=widget`.
+  `<base target="_blank">` so links never navigate inside the iframe.
+- Hosting sends `X-Robots-Tag: noindex` + `frame-ancestors *` on `/embed/**`; the PWA `navigateFallbackDenylist`
+  must keep `/^\/embed\//`, or a visitor's service worker would serve the SPA inside the iframe.
+- The snippet includes a plain `<a>` after the iframe: that link, not the iframe, is the SEO backlink.
+
 ## Images
 
 - User uploads go to Storage under `img/{uid}/{random}` (`src/utils/image.ts`); the tiptap description

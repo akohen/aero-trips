@@ -19,6 +19,7 @@ import { findNearest, titleCase } from '../src/utils/utils.ts'
 import { labels } from '../src/utils/labels.ts'
 import { buildItemSeo } from '../src/utils/itemSeo.ts'
 import { fillImageAlt } from '../src/utils/descriptionAlt.ts'
+import { buildEmbedHtml } from '../src/utils/embedWidget.ts'
 import type { Activity, Airfield } from '../src'
 
 const DIST = 'dist'
@@ -169,7 +170,8 @@ const buildBody = (
 // --- Generate -------------------------------------------------------------
 let count = 0
 for (const af of airfields.values()) {
-  const nearbyActs = findNearest(af, activities).slice(0, 8) as [number, Activity, string][]
+  const allNearbyActs = findNearest(af, activities) as [number, Activity, string][]
+  const nearbyActs = allNearbyActs.slice(0, 8)
   const nearbyAds = findNearest(af, airfields, 50000).slice(0, 8) as [number, Airfield, string][]
   const nearbyFoodCount = nearbyActs.filter(([, a]) => a.type.includes('food')).length
 
@@ -183,10 +185,16 @@ for (const af of airfields.values()) {
   const dir = path.join(DIST, 'airfields', af.codeIcao)
   fs.mkdirSync(dir, { recursive: true })
   fs.writeFileSync(path.join(dir, 'index.html'), html)
+
+  // Embeddable widget for club / tourism sites (standalone page, not the SPA
+  // shell). Same radius as the airfield page above, so the counts match.
+  const embedDir = path.join(DIST, 'embed', af.codeIcao)
+  fs.mkdirSync(embedDir, { recursive: true })
+  fs.writeFileSync(path.join(embedDir, 'index.html'), buildEmbedHtml(af, allNearbyActs))
   count++
 }
 
-console.log(`Prerendered ${count} airfields`)
+console.log(`Prerendered ${count} airfields (+ embed widgets)`)
 
 // --- MCP discovery ---------------------------------------------------------
 // server.json at the repo root is the single source of truth: it is what

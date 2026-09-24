@@ -17,6 +17,9 @@ export default defineConfig({
           /^\/llms\.txt$/,
           /^\/\.well-known\//,
           /^\/mcp(\/|$)/,
+          // Widget pages loaded in iframes on third-party sites: standalone
+          // HTML, never the SPA shell.
+          /^\/embed\//,
           /__/,
         ],
         runtimeCaching: [
