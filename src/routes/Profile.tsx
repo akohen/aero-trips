@@ -1,4 +1,4 @@
-import { Button, Fieldset, Paper, Select, TextInput, Title, Text, Grid, Group, Popover } from "@mantine/core"
+import { Button, Fieldset, Paper, Select, TextInput, Title, Text, Grid, Group, Popover, Switch } from "@mantine/core"
 import { IconBrandGoogleFilled, IconShare } from "@tabler/icons-react"
 import { Data } from ".."
 import { googleLogin } from "../data/firebase"
@@ -11,12 +11,12 @@ import { useDisclosure } from "@mantine/hooks"
 import ListPanel from "../components/ListPanel"
 import { TripTitle } from "../components/TripsUtils"
 import { ActivityTitle } from "../components/ActivityUtils"
+import PassportBadge from "../components/PassportBadge"
 
 const Profile = ({profile, airfields, activities, trips} : Data) => {
-  const [openedShare, { toggle: toggleShare}] = useDisclosure(false)
+  const [openedShare, { toggle: toggleShare, open: openShare }] = useDisclosure(false)
   const share = () => {
-    navigator.clipboard.writeText(location.href + `/${profile?.uid}`);
-    toggleShare();
+    navigator.clipboard.writeText(`${location.origin}/profile/${profile?.uid}`).then(openShare)
   }
 
   const data = [...airfields].map(([id, ad]) => (
@@ -90,6 +90,12 @@ const Profile = ({profile, airfields, activities, trips} : Data) => {
   
   <Paper shadow="md" radius="md" p='sm' mt="md" withBorder>
     <Fieldset legend='Profil public'>
+      <Switch
+        mb="md"
+        checked={!!profile.passportPublic}
+        onChange={e => profile.update({ passportPublic: e.currentTarget.checked })}
+        label="Rendre mon profil public"
+      />
       <Group justify="left">
         <Link to={`/profile/${profile.uid}`}>Voir mon profil public</Link>
         <Popover width={200} position="bottom" withArrow shadow="md" opened={openedShare} onChange={toggleShare}>
@@ -103,7 +109,7 @@ const Profile = ({profile, airfields, activities, trips} : Data) => {
           </Popover.Dropdown>
         </Popover>
       </Group>
-      
+      <PassportBadge profile={profile} />
     </Fieldset>
       <form onSubmit={form.onSubmit(saveProfile)}>
         <Fieldset legend='Modifier vos informations' mt={"md"}>
@@ -114,7 +120,7 @@ const Profile = ({profile, airfields, activities, trips} : Data) => {
         <Select
           mt="md"
           {...form.getInputProps('homebase')}
-          label="Votre terrain"
+          label={"Où êtes-vous basé\u00a0?"}
           placeholder="Entrez le nom ou le code OACI"
           data={data}
           searchable

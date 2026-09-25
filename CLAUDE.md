@@ -74,15 +74,24 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
   must keep `/^\/embed\//`, or a visitor's service worker would serve the SPA inside the iframe.
 - The snippet includes a plain `<a>` after the iframe: that link, not the iframe, is the SEO backlink.
 
-## Pilot passport (public data)
+## Pilot passport
 
+- Built on `profile.visited` (airfields + activities the user marked as visited). Only distinct **airfields**
+  count towards the passport (`countVisitedAirfields`).
+- **Small badge** (pill: home base + visited count + aerotrips.fr): **`src/utils/passportBadge.ts`** →
+  `buildPassportBadgeSvg()`, a React-free standalone SVG string (so it can later be served as-is by a function).
+  Shown and shared from the profile page's "Profil public" section via `src/components/PassportBadge.tsx`: PNG
+  download, copy-to-clipboard, Web Share (files) — rasterized client-side through `<img>` + canvas at 3x.
+- The SVG is drawn through `<img>`/canvas, where web fonts don't load: keep **system font stacks** and the
+  per-character width estimates in sync if you change sizes. Georgia has no lining figures — don't use it for numbers.
 - **Public passport (opt-in)**: `profiles/{uid}` holds the email and is owner-only, so it is never made public.
   When `profile.passportPublic` is true, the **`functions/passports/`** Cloud Function (codebase `passports`,
   `europe-west1`, `onDocumentWritten('profiles/{uid}')`) mirrors `toPublicPassport()` (**`src/utils/passport.ts`**:
   display name, home base, sorted distinct visited airfield codes — no email, activities or favorites) to
   **`passports/{uid}`**; turning it off or deleting the profile deletes the passport. Unchanged projections are
-  not rewritten. Clients never write `passports`.
+  not rewritten. Clients never write `passports`; `/profile/{uid}` (`UserDetails`) reads it.
 - Server-side consumers (future hosted badge URL, OG images, map image) must read **`passports`**, never `profiles`.
+- Not yet: hosted badge URL, backfill of past visits, the larger shareable map image.
 
 ## Firestore rules
 

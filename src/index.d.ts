@@ -89,6 +89,8 @@ interface Profile {
   homebase?: string,
   favorites?: {type: 'activities'|'airfields', id:string}[],
   visited?: {type: 'activities'|'airfields', id:string}[],
+  /** Opt-in: mirrors name, home base and visited airfields to the public `passports` collection */
+  passportPublic?: boolean,
   update: (changes: Partial<Profile>) => void,
 }
 
