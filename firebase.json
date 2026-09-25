@@ -1,4 +1,7 @@
 {
+  "firestore": {
+    "rules": "firestore.rules"
+  },
   "hosting": {
     "public": "dist",
     "trailingSlash": false,
@@ -94,6 +97,21 @@
     {
       "source": "functions/images",
       "codebase": "images",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "src",
+        "tsconfig.json",
+        "*.log"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" ci",
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ]
+    },
+    {
+      "source": "functions/passports",
+      "codebase": "passports",
       "ignore": [
         "node_modules",
         ".git",

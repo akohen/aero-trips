@@ -74,6 +74,22 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
   must keep `/^\/embed\//`, or a visitor's service worker would serve the SPA inside the iframe.
 - The snippet includes a plain `<a>` after the iframe: that link, not the iframe, is the SEO backlink.
 
+## Pilot passport (public data)
+
+- **Public passport (opt-in)**: `profiles/{uid}` holds the email and is owner-only, so it is never made public.
+  When `profile.passportPublic` is true, the **`functions/passports/`** Cloud Function (codebase `passports`,
+  `europe-west1`, `onDocumentWritten('profiles/{uid}')`) mirrors `toPublicPassport()` (**`src/utils/passport.ts`**:
+  display name, home base, sorted distinct visited airfield codes — no email, activities or favorites) to
+  **`passports/{uid}`**; turning it off or deleting the profile deletes the passport. Unchanged projections are
+  not rewritten. Clients never write `passports`.
+- Server-side consumers (future hosted badge URL, OG images, map image) must read **`passports`**, never `profiles`.
+
+## Firestore rules
+
+- **`firestore.rules`** is the source of truth (wired in `firebase.json`), imported from the production console
+  on 2026-09-25. Deploy with `npx firebase deploy --only firestore:rules`. Staging's console rules could not be
+  read at import time — deploying there overwrites whatever is in its console.
+
 ## Images
 
 - User uploads go to Storage under `img/{uid}/{random}` (`src/utils/image.ts`); the tiptap description
