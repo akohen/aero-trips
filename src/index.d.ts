@@ -93,7 +93,8 @@ interface Profile {
   visited?: {type: 'activities'|'airfields', id:string}[],
   /** Opt-in: mirrors name, home base and visited airfields to the public `passports` collection */
   passportPublic?: boolean,
-  update: (changes: Partial<Profile>) => void,
+  /** Applies the changes locally at once; resolves when Firestore has saved them */
+  update: (changes: Partial<Profile>) => Promise<void>,
 }
 
 type MapView = {

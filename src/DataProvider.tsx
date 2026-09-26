@@ -45,14 +45,16 @@ class UserProfile implements Profile {
   uid!: string;
   email!: string;
   visited?: { type: 'activities' | 'airfields'; id: string; }[] = [];
-  update: (changes: Partial<Profile>) => void;
+  update: (changes: Partial<Profile>) => Promise<void>;
   constructor(params: Omit<Profile, "update">, setProfile: (p: Profile) => void) {
     Object.assign(this, params);
     this.update = (changes: Partial<Profile>) => {
-      setDoc(doc(db, "profiles", this.uid), changes, {merge:true})
+      const saved = setDoc(doc(db, "profiles", this.uid), changes, {merge:true})
       const updatedProfile = { ...this, ...changes };
       Object.assign(this, updatedProfile);
       setProfile(updatedProfile)
+      // Applied locally right away; callers that care await the write to report failures
+      return saved
     }
   }
 }
