@@ -50,6 +50,10 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
 - **`src/utils/itemSeo.ts` → `buildItemSeo()`** is the **single source of truth** for title/description/
   JSON-LD (Airport + BreadcrumbList), shared by the prerender script AND `DetailsPage`'s runtime `useEffect`.
   Change SEO metadata **only here** to keep both in sync.
+  It also owns `NEARBY_ACTIVITIES_LIMIT`, `countFood` and `nearbyActivitiesHeading`: the airfield title and the
+  nearby-activities H2 say "restaurants" only when a food activity is among the listed ones (matches the
+  "restaurant aérodrome <ville>" searches). Prerender and SPA must list the same activities, or the title lies.
+- `firebase.json` sends `X-Robots-Tag: noindex` on `**/edit`, `/profile` and `/changes` (forms and private pages).
 - Approach is **template injection, not React SSR**: `createRoot` wipes `#root` on mount (brief cold-load
   flash, harmless). PWA precache excludes prerendered pages (written after `vite build`) — keep it that way.
 - **URLs**: canonical + `sitemap.xml` use the no-slash form (`/airfields/{ICAO}`); `firebase.json`

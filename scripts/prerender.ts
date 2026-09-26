@@ -17,7 +17,7 @@ import Image from '@tiptap/extension-image'
 import Youtube from '@tiptap/extension-youtube'
 import { findNearest, titleCase } from '../src/utils/utils.ts'
 import { labels } from '../src/utils/labels.ts'
-import { buildItemSeo } from '../src/utils/itemSeo.ts'
+import { buildItemSeo, countFood, NEARBY_ACTIVITIES_LIMIT, nearbyActivitiesHeading } from '../src/utils/itemSeo.ts'
 import { fillImageAlt } from '../src/utils/descriptionAlt.ts'
 import { buildEmbedHtml } from '../src/utils/embedWidget.ts'
 import type { Activity, Airfield } from '../src'
@@ -115,6 +115,7 @@ const buildBody = (
   af: Airfield,
   nearbyActs: [number, Activity, string][],
   nearbyAds: [number, Airfield, string][],
+  nearbyFoodCount: number,
 ) => {
   const ville = titleCase(af.name)
   const status = labels.get(af.status) ?? ''
@@ -150,7 +151,7 @@ const buildBody = (
   }
 
   if (nearbyActs.length > 0) {
-    parts.push('<h2>Activités à proximité</h2>')
+    parts.push(`<h2>${esc(nearbyActivitiesHeading(af, nearbyFoodCount))}</h2>`)
     parts.push(nearbyList(nearbyActs, (_i, id) => `/activities/${esc(id)}`, (i) => i.name))
   }
   if (nearbyAds.length > 0) {
@@ -171,12 +172,12 @@ const buildBody = (
 let count = 0
 for (const af of airfields.values()) {
   const allNearbyActs = findNearest(af, activities) as [number, Activity, string][]
-  const nearbyActs = allNearbyActs.slice(0, 8)
+  const nearbyActs = allNearbyActs.slice(0, NEARBY_ACTIVITIES_LIMIT)
   const nearbyAds = findNearest(af, airfields, 50000).slice(0, 8) as [number, Airfield, string][]
-  const nearbyFoodCount = nearbyActs.filter(([, a]) => a.type.includes('food')).length
+  const nearbyFoodCount = countFood(nearbyActs)
 
   const seo = buildItemSeo(af, { nearbyFoodCount })
-  const body = buildBody(af, nearbyActs, nearbyAds)
+  const body = buildBody(af, nearbyActs, nearbyAds, nearbyFoodCount)
 
   const html = template
     .replace(headRegion, buildHead(seo))

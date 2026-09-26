@@ -53,6 +53,15 @@
         ]
       },
       {
+        "source": "{**/edit,**/edit/**,/profile,/changes}",
+        "headers": [
+          {
+            "key": "X-Robots-Tag",
+            "value": "noindex"
+          }
+        ]
+      },
+      {
         "source": "/assets/**",
         "headers": [
           {

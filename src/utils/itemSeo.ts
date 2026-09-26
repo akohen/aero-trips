@@ -9,6 +9,23 @@ export const DEFAULT_TITLE = 'AeroTrips'
 export const DEFAULT_DESCRIPTION = "Découvrez des idées de sorties aériennes en France : terrains d'aviation, activités à proximité, événements et itinéraires partagés par la communauté."
 export const DEFAULT_IMAGE = `${ROOT_URL}/og-image.jpg`
 
+// How many nearby activities a details page lists. Shared so the prerendered page, the SPA
+// and the "restaurants" wording in the title are all derived from the same list.
+export const NEARBY_ACTIVITIES_LIMIT = 15
+
+export const countFood = (nearby: [number, Activity, string][]) =>
+  nearby.filter(([, a]) => a.type.includes('food')).length
+
+// Heading of the nearby-activities section. Mirrors the title so the page matches
+// searches like "restaurant aérodrome <ville>".
+export const nearbyActivitiesHeading = (item: Airfield | Activity, nearbyFoodCount: number) => {
+  if (!('codeIcao' in item)) return 'Activités à proximité'
+  const name = titleCase(item.name)
+  return nearbyFoodCount > 0
+    ? `Restaurants et activités près de l'aérodrome de ${name}`
+    : `Activités près de l'aérodrome de ${name}`
+}
+
 export type ItemSeo = {
   title: string
   description: string
@@ -33,7 +50,7 @@ export const buildItemSeo = (
   const url = `${ROOT_URL}/${type}/${id}`
 
   const title = isAirfield
-    ? `Aérodrome de ${displayName} (${item.codeIcao}) — activités à proximité | AeroTrips`
+    ? `Aérodrome de ${displayName} (${item.codeIcao}) : ${nearbyFoodCount > 0 ? 'restaurants et activités à proximité' : 'que faire à proximité'} | AeroTrips`
     : `${displayName} — activité à proximité d'un aérodrome | AeroTrips`
 
   const foodMention = nearbyFoodCount > 0 ? ', dont des restaurants,' : ''

@@ -4,7 +4,7 @@ import EditButton from "./EditButton"
 import { Activity, Airfield, Data } from ".."
 import { findNearest, shortener, titleCase } from "../utils/utils"
 import { iconsList } from "../utils/icons"
-import { buildItemSeo, DEFAULT_DESCRIPTION, DEFAULT_IMAGE, DEFAULT_TITLE } from "../utils/itemSeo"
+import { buildItemSeo, countFood, DEFAULT_DESCRIPTION, DEFAULT_IMAGE, DEFAULT_TITLE, NEARBY_ACTIVITIES_LIMIT, nearbyActivitiesHeading } from "../utils/itemSeo"
 import { ButtonVACMap, ButtonViewOnMap } from "./CommonButtons"
 import { IconBrandGoogleMaps, IconCode, IconRoute } from "@tabler/icons-react"
 import { Link, useLocation, useNavigate } from "react-router"
@@ -24,13 +24,13 @@ const EMBED_HASH = '#integrer'
 
 const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView, profile} : Data & {id: string, item: Airfield|Activity}) => {
   const nearbyAirfields = findNearest(item, airfields, 50000).slice(0,10)
-  const nearbyActivities = findNearest(item, activities).slice(0,15)
+  const nearbyActivities = findNearest(item, activities).slice(0, NEARBY_ACTIVITIES_LIMIT) as [number, Activity, string][]
   const nearbyTrips = [...trips].filter(([,trip]) => trip.steps.some(step => step.type == (('codeIcao' in item) ? 'airfields' : 'activities') && step.id == id)).slice(0,8)
   const airfieldEvents = 'codeIcao' in item
     ? [...events.values()].filter(e => e.airfieldId === id).sort((a, b) => b.startDate.seconds - a.startDate.seconds).slice(0,5)
     : []
   const type = 'codeIcao' in item ? 'airfields' : 'activities'
-  const nearbyFoodCount = nearbyActivities.filter(([, a]) => a.type.includes('food')).length
+  const nearbyFoodCount = countFood(nearbyActivities)
   const location = useLocation()
   const navigate = useNavigate()
   const embedOpened = location.hash === EMBED_HASH
@@ -164,7 +164,7 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
   {item.description && <Grid.Col span={6}><Description content={item.description} label={'codeIcao' in item ? titleCase(item.name) : item.name} /></Grid.Col>}
   <NearbyTrips items={nearbyTrips} events={airfieldEvents} />
   <Grid.Col span={12}>
-    <Title order={4}>Activités à proximité</Title>
+    <Title order={2} size="h4">{nearbyActivitiesHeading(item, nearbyFoodCount)}</Title>
     <Nearby items={nearbyActivities} profile={profile} />
     {('codeIcao' in item) && nearbyActivities.length > 0 && (
       <Anchor component="button" type="button" size="sm" mt="xs" onClick={() => setEmbedHash(EMBED_HASH)}>
