@@ -3,12 +3,12 @@ import { Link, useParams } from "react-router";
 import { doc, getDoc } from "firebase/firestore";
 import { Data } from "..";
 import BackButton from "../components/BackButton";
-import { Paper, Text, Title } from "@mantine/core";
+import { Grid, Paper, Text, Title } from "@mantine/core";
 import { TripTitle } from "../components/TripsUtils";
 import { AirfieldTitle } from "../components/AirfieldUtils";
 import { db } from "../data/firebase";
 import { PASSPORT_IMAGES, PASSPORTS, PublicPassport, passportImageUrl } from "../utils/passport";
-import { buildPassportBadgeSvg, svgDataUrl } from "../utils/passportBadge";
+import { svgDataUrl, visitedLabel } from "../utils/passportBadge";
 import { storageBucket } from "../data/firebase";
 import { usePassportMapSvg } from "../hooks/usePassportMapSvg";
 
@@ -47,30 +47,26 @@ const UserDetails = (data : Data) => {
     { passport && (
       <Paper shadow="md" radius="md" p='sm' mt="md" withBorder>
         <Title order={4}>Passeport pilote</Title>
-        <img
-          // The published PNG (same rendering everywhere); the local SVG until it exists
-          src={passportImageUrl(storageBucket, userId!, PASSPORT_IMAGES.png)}
-          srcSet={`${passportImageUrl(storageBucket, userId!, PASSPORT_IMAGES.png2x)} 2x`}
-          onError={e => {
-            if (e.currentTarget.src.startsWith('data:')) return
-            e.currentTarget.srcset = ''
-            e.currentTarget.src = svgDataUrl(buildPassportBadgeSvg({ homebase: passport.homebase ?? undefined, visitedCount: passport.visited.length }))
-          }}
-          alt={`${passport.visited.length} terrain${passport.visited.length > 1 ? 's' : ''} visité${passport.visited.length > 1 ? 's' : ''}`}
-          style={{ display: 'block', margin: '12px 0', maxWidth: '100%' }}
-        />
-        <img
-          src={mapMissing ? (localMap ? svgDataUrl(localMap) : undefined) : passportImageUrl(storageBucket, userId!, PASSPORT_IMAGES.map)}
-          onError={() => setMapMissing(true)}
-          alt={`Carte des terrains visités${name ? ` par ${name}` : ''}`}
-          style={{ display: 'block', width: '100%', maxWidth: 360, margin: '12px 0', borderRadius: 8, aspectRatio: '4 / 5', background: '#16233F' }}
-        />
-        { passport.visited.map(id => {
-          const ad = data.airfields.get(id)
-          return <Text key={id} size="sm" className="ad-list">
-            <Link to={`/airfields/${id}`}>{id} {ad ? <AirfieldTitle ad={ad} /> : null}</Link>
-          </Text>
-        })}
+        <Grid mt="sm">
+          <Grid.Col span={{ base: 12, sm: 5 }}>
+            <img
+              // The published map; drawn locally if it doesn't exist yet
+              src={mapMissing ? (localMap ? svgDataUrl(localMap) : undefined) : passportImageUrl(storageBucket, userId!, PASSPORT_IMAGES.map)}
+              onError={() => setMapMissing(true)}
+              alt={`Carte : ${passport.visited.length} ${visitedLabel(passport.visited.length)}${name ? ` par ${name}` : ''}`}
+              style={{ display: 'block', width: '100%', maxWidth: 400, borderRadius: 8, aspectRatio: '4 / 5', background: '#16233F' }}
+            />
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, sm: 7 }}>
+            <Title order={5} mb="xs">Terrains visités ({passport.visited.length})</Title>
+            { passport.visited.map(id => {
+              const ad = data.airfields.get(id)
+              return <Text key={id} size="sm" className="ad-list">
+                <Link to={`/airfields/${id}`}>{id} {ad ? <AirfieldTitle ad={ad} /> : null}</Link>
+              </Text>
+            })}
+          </Grid.Col>
+        </Grid>
       </Paper>
     )}
     { trips.length > 0 && (
