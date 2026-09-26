@@ -53,6 +53,14 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
   It also owns `NEARBY_ACTIVITIES_LIMIT`, `countFood` and `nearbyActivitiesHeading`: the airfield title and the
   nearby-activities H2 say "restaurants" only when a food activity is among the listed ones (matches the
   "restaurant aérodrome <ville>" searches). Prerender and SPA must list the same activities, or the title lies.
+- **Landing pages** (`/decouvrir/{slug}`): **`src/utils/landingPages.ts`** (`LANDING_PAGES`) is a React-free config of
+  **rules** over the data (`highlights(nearby)` → the activities that qualify an airfield), not hand-picked lists.
+  First page: `restaurants-aerodromes`. Prerendered to `dist/decouvrir/{slug}/index.html`, rendered in the SPA by
+  `routes/LandingPage.tsx`, listed in the sitemap by `npm run export` (also added by hand to `public/sitemap.xml`).
+  Uses the airfield page's nearby list (`nearbyActivities`), so an airfield titled "restaurants" is on the hub, and
+  leaves out `MIL`/`OFF` airfields.
+  `usePageSeo` (`src/hooks/`) applies any `ItemSeo` to `<head>`; `App.tsx` must not reset the title on those paths.
+- French elision: write "aérodrome" + `deName(name)` (`src/utils/utils.ts`) → "d'Abbeville" / "de Laval".
 - `firebase.json` sends `X-Robots-Tag: noindex` on `**/edit`, `/profile` and `/changes` (forms and private pages).
 - Approach is **template injection, not React SSR**: `createRoot` wipes `#root` on mount (brief cold-load
   flash, harmless). PWA precache excludes prerendered pages (written after `vite build`) — keep it that way.

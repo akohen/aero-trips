@@ -6,7 +6,8 @@
  * a copy of the built SPA shell with per-page <title>/meta/JSON-LD (from the
  * shared buildItemSeo) AND a crawlable body (H1, targeted intro, runways,
  * description, "activités/restaurants à proximité" and "terrains à proximité"
- * as internal links). Googlebot reads this on first pass; the SPA boots and
+ * as internal links). Also writes the thematic landing pages (src/utils/landingPages.ts)
+ * to dist/decouvrir/{slug}/index.html. Googlebot reads this on first pass; the SPA boots and
  * replaces #root on mount. No Firebase, no headless browser.
  */
 import fs from 'fs'
@@ -15,11 +16,12 @@ import { generateHTML } from '@tiptap/html'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Youtube from '@tiptap/extension-youtube'
-import { findNearest, titleCase } from '../src/utils/utils.ts'
+import { deName, findNearest, formatDistance, titleCase } from '../src/utils/utils.ts'
 import { labels } from '../src/utils/labels.ts'
 import { buildItemSeo, countFood, NEARBY_ACTIVITIES_LIMIT, nearbyActivitiesHeading } from '../src/utils/itemSeo.ts'
 import { fillImageAlt } from '../src/utils/descriptionAlt.ts'
 import { buildEmbedHtml } from '../src/utils/embedWidget.ts'
+import { buildLandingEntries, buildLandingSeo, LANDING_PAGES, landingPageUrl, type LandingEntry, type LandingPage } from '../src/utils/landingPages.ts'
 import type { Activity, Airfield } from '../src'
 
 const DIST = 'dist'
@@ -39,9 +41,6 @@ const template = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8')
 // --- Helpers --------------------------------------------------------------
 const esc = (s: unknown) =>
   String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-
-const fmtDist = (m: number) =>
-  m > 2500 ? `${Math.round(m / 1000)} km` : `${Math.round(m / 100) * 100} m`
 
 // Embed JSON-LD without letting content break out of the <script> element.
 const jsonLd = (obj: unknown) => JSON.stringify(obj).replace(/</g, '\\u003c')
@@ -107,7 +106,7 @@ const nearbyList = (
   '<ul>' +
   items
     .map(([dist, item, id]) =>
-      `<li><a href="${href(item, id)}">${esc(label(item, id))} — à ${fmtDist(dist)}</a></li>`)
+      `<li><a href="${href(item, id)}">${esc(label(item, id))} — à ${formatDistance(dist)}</a></li>`)
     .join('') +
   '</ul>'
 
@@ -121,10 +120,10 @@ const buildBody = (
   const status = labels.get(af.status) ?? ''
   const parts: string[] = []
 
-  parts.push(`<h1>Aérodrome de ${esc(ville)} - ${esc(af.codeIcao)}</h1>`)
+  parts.push(`<h1>Aérodrome ${esc(deName(ville))} - ${esc(af.codeIcao)}</h1>`)
   if (status) parts.push(`<p>${esc(status)}</p>`)
   parts.push(
-    `<p>Que faire à proximité de l'aérodrome de ${esc(ville)} (${esc(af.codeIcao)}) ? ` +
+    `<p>Que faire à proximité de l'aérodrome ${esc(deName(ville))} (${esc(af.codeIcao)}) ? ` +
       `Découvrez les activités et restaurants à proximité, les informations sur les pistes ` +
       `et services, et des idées de sorties en avion partagées par la communauté des pilotes.</p>`,
   )
@@ -196,6 +195,28 @@ for (const af of airfields.values()) {
 }
 
 console.log(`Prerendered ${count} airfields (+ embed widgets)`)
+
+// --- Landing pages (/decouvrir/{slug}) ---------------------------------------
+const buildLandingBody = (page: LandingPage, entries: LandingEntry[]) => {
+  const parts: string[] = [`<h1>${esc(page.h1)}</h1>`, ...page.intro.map((p) => `<p>${esc(p)}</p>`)]
+  for (const { airfield: af, highlights } of entries) {
+    parts.push(`<h2><a href="/airfields/${esc(af.codeIcao)}">Aérodrome ${esc(deName(titleCase(af.name)))} (${esc(af.codeIcao)})</a></h2>`)
+    if (af.status !== 'CAP') parts.push(`<p>${esc(labels.get(af.status) ?? '')}</p>`)
+    parts.push(nearbyList(highlights, (_i, id) => `/activities/${esc(id)}`, (i) => i.name))
+  }
+  return parts.join('\n      ')
+}
+
+for (const page of LANDING_PAGES) {
+  const entries = buildLandingEntries(page, airfields, activities)
+  const html = template
+    .replace(headRegion, buildHead(buildLandingSeo(page, entries)))
+    .replace('<div id="root"></div>', `<div id="root">\n      ${buildLandingBody(page, entries)}\n    </div>`)
+  const dir = path.join(DIST, landingPageUrl(page))
+  fs.mkdirSync(dir, { recursive: true })
+  fs.writeFileSync(path.join(dir, 'index.html'), html)
+  console.log(`Prerendered ${landingPageUrl(page)} (${entries.length} airfields)`)
+}
 
 // --- MCP discovery ---------------------------------------------------------
 // server.json at the repo root is the single source of truth: it is what

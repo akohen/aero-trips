@@ -30,6 +30,13 @@ export function findNearest<T extends Airfield|Activity>(reference: Airfield|Act
 }
 
 
+// French elision: "de" + name, e.g. "de Laval" but "d'Abbeville"
+export const deName = (name: string) =>
+  /^[aeiouyàâäéèêëîïôöùûü]/i.test(name) ? `d'${name}` : `de ${name}`
+
+export const formatDistance = (m: number) =>
+  m > 2500 ? `${Math.round(m / 1000)} km` : `${Math.round(m / 100) * 100} m`
+
 export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map<string,Activity>, filters: ADfilter, profile?: Profile, events?: Map<string,Event>) => {
   const query = filters.search.toLowerCase().trim().normalize("NFD").replace(/\p{Diacritic}/gu, "");
   const status = ['CAP', 'PRV', 'RST'].filter( e => filters.ad.includes(e))

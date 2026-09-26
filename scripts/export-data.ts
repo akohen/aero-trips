@@ -2,6 +2,7 @@ import { db } from '../src/data/firebase.ts';
 import { collection, getDocs, Firestore, Timestamp } from "firebase/firestore";
 import { Activity, Airfield } from '../src';
 import fs from 'fs';
+import { LANDING_PAGES, landingPageUrl } from '../src/utils/landingPages.ts';
 
 const ROOT_URL = 'https://aerotrips.fr'
 
@@ -58,6 +59,7 @@ const generateSitemap = (
         `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`
 
     const entries = [
+        ...LANDING_PAGES.map(p => entry(`${ROOT_URL}${landingPageUrl(p)}`, toDateString(), 'weekly', '0.9')),
         entry(`${ROOT_URL}/airfields`, toDateString()),
         ...airfields.map(a => entry(`${ROOT_URL}/airfields/${a.codeIcao}`, toDateString(a.updated_at), 'monthly', '0.8')),
         entry(`${ROOT_URL}/activities`, toDateString()),

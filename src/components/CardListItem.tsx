@@ -4,15 +4,20 @@ import { shortener } from "../utils/utils";
 import { CardConfig } from "./CardList";
 
 function CardListItem<T>({
-  item, imgUrl, link, cardConfig, itemKey,
+  item, imgUrl, link, cardConfig, itemKey, shadeBottom = false,
 }: {
   item: T,
   imgUrl: string | undefined,
   link: string,
   cardConfig: CardConfig<T>,
   itemKey: string,
+  // Also darken the bottom of the photo, for cards whose `content` holds several lines of text
+  shadeBottom?: boolean,
 }) {
   const hasImage = Boolean(imgUrl);
+  const shade = shadeBottom
+    ? 'linear-gradient(rgba(0,0,0,0.6) 0%, transparent 35%, transparent 40%, rgba(0,0,0,0.85) 100%)'
+    : 'linear-gradient(rgba(0,0,0,0.6) 0%, transparent 70%)';
 
   return (
     <Paper
@@ -24,7 +29,7 @@ function CardListItem<T>({
       to={link}
       style={{
         ...(hasImage ? {
-          backgroundImage: `url(${imgUrl}), linear-gradient(rgba(0,0,0,0.6) 0%, transparent 70%)`,
+          backgroundImage: `url(${imgUrl}), ${shade}`,
           backgroundBlendMode: 'multiply',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
@@ -47,7 +52,7 @@ function CardListItem<T>({
       </div>
 
       <Group justify="space-between" align="flex-end">
-        <div style={hasImage ? { color: 'white' } : undefined} onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+        <div style={{ minWidth: 0, flex: 1, ...(hasImage ? { color: 'white' } : {}) }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
           {cardConfig.content?.(item, itemKey)}
         </div>
         <Group onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>

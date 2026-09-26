@@ -27,6 +27,7 @@ import LastChanges from "./routes/LastChanges";
 import EventsList from "./routes/EventsList";
 import EventDetails from "./routes/EventDetails";
 import NotFound from "./routes/NotFound";
+import LandingPage from "./routes/LandingPage";
 
 
 export default function App(data : Data) {
@@ -81,7 +82,8 @@ export default function App(data : Data) {
 
   const location = useLocation();
   useEffect(() => {
-    if(!location.pathname.startsWith('/activities/') && !location.pathname.startsWith('/airfields/')) {
+    // Pages that set their own title through usePageSeo
+    if(!['/activities/', '/airfields/', '/decouvrir/'].some(p => location.pathname.startsWith(p))) {
       document.title = "AeroTrips"
     }
   }, [location]);
@@ -107,6 +109,7 @@ export default function App(data : Data) {
         <Route path="/trips/:tripId"          element={<Suspense fallback={<Center h="80vh"><Loader /></Center>}><TripDetails {...data} /></Suspense>} />
         <Route path="/events"                 element={<EventsList {...data} setADfilter={setAirfieldFilters} />} />
         <Route path="/events/:eventId"        element={<EventDetails {...data} />} />
+        <Route path="/decouvrir/:slug"        element={<LandingPage {...data} />} />
         <Route path="/contact"                element={<Contact {...data} />} />
         <Route path="/changes"                element={<LastChanges {...data} />} />
         <Route path="*"                       element={<NotFound />} />

@@ -2,16 +2,17 @@ import { Title, Text, Button, Paper, Grid, Stack, Anchor } from "@mantine/core"
 import BackButton from "./BackButton"
 import EditButton from "./EditButton"
 import { Activity, Airfield, Data } from ".."
-import { findNearest, shortener, titleCase } from "../utils/utils"
+import { deName, findNearest, shortener, titleCase } from "../utils/utils"
 import { iconsList } from "../utils/icons"
-import { buildItemSeo, countFood, DEFAULT_DESCRIPTION, DEFAULT_IMAGE, DEFAULT_TITLE, NEARBY_ACTIVITIES_LIMIT, nearbyActivitiesHeading } from "../utils/itemSeo"
+import { buildItemSeo, countFood, NEARBY_ACTIVITIES_LIMIT, nearbyActivitiesHeading } from "../utils/itemSeo"
+import { usePageSeo } from "../hooks/usePageSeo"
 import { ButtonVACMap, ButtonViewOnMap } from "./CommonButtons"
 import { IconBrandGoogleMaps, IconCode, IconRoute } from "@tabler/icons-react"
 import { Link, useLocation, useNavigate } from "react-router"
 import Description from "./Description"
 import FavoriteButton from "./FavoriteButton"
 import VisitedButton from "./VisitedButton"
-import { lazy, Suspense, useEffect } from "react"
+import { lazy, Suspense } from "react"
 import { useDraftTrip } from "../hooks/useDraftTrip"
 import { Nearby } from "./Nearby"
 import { NearbyTrips } from "./ActivityUtils"
@@ -41,63 +42,12 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
   const addToDraft = () => {
     if (!isInDraft) setDraft({ ...draft, steps: [...draft.steps, { type, id }] })
   }
-  useEffect(() => {
-    const { title, description, url, ogType, image, jsonLdItem, jsonLdBreadcrumb } = buildItemSeo(item, { nearbyFoodCount })
-
-    document.title = title
-
-    const setMeta = (sel: string, attr: string, val: string) => {
-      let el = document.querySelector(sel)
-      if (!el) {
-        el = document.createElement('meta')
-        if (sel.includes('property')) { el.setAttribute('property', attr) } else { el.setAttribute('name', attr) }
-        document.head.appendChild(el)
-      }
-      el.setAttribute('content', val)
-    }
-
-    setMeta('meta[name="description"]', 'description', description)
-    setMeta('meta[property="og:title"]', 'og:title', title)
-    setMeta('meta[property="og:description"]', 'og:description', description)
-    setMeta('meta[property="og:url"]', 'og:url', url)
-    setMeta('meta[property="og:type"]', 'og:type', ogType)
-    setMeta('meta[name="twitter:title"]', 'twitter:title', title)
-    setMeta('meta[name="twitter:description"]', 'twitter:description', description)
-    setMeta('meta[property="og:image"]', 'og:image', image)
-    setMeta('meta[name="twitter:image"]', 'twitter:image', image)
-
-    const setSchema = (key: string, value: object) => {
-      let el = document.querySelector(`script[data-schema="${key}"]`) as HTMLScriptElement | null
-      if (!el) {
-        el = document.createElement('script')
-        el.setAttribute('type', 'application/ld+json')
-        el.setAttribute('data-schema', key)
-        document.head.appendChild(el)
-      }
-      el.textContent = JSON.stringify(value)
-    }
-    setSchema('item', jsonLdItem)
-    setSchema('breadcrumb', jsonLdBreadcrumb)
-
-    return () => {
-      document.title = DEFAULT_TITLE
-      setMeta('meta[name="description"]', 'description', DEFAULT_DESCRIPTION)
-      setMeta('meta[property="og:title"]', 'og:title', DEFAULT_TITLE)
-      setMeta('meta[property="og:description"]', 'og:description', DEFAULT_DESCRIPTION)
-      setMeta('meta[property="og:url"]', 'og:url', 'https://aerotrips.fr/')
-      setMeta('meta[property="og:type"]', 'og:type', 'website')
-      setMeta('meta[name="twitter:title"]', 'twitter:title', DEFAULT_TITLE)
-      setMeta('meta[name="twitter:description"]', 'twitter:description', DEFAULT_DESCRIPTION)
-      setMeta('meta[property="og:image"]', 'og:image', DEFAULT_IMAGE)
-      setMeta('meta[name="twitter:image"]', 'twitter:image', DEFAULT_IMAGE)
-      document.querySelector('script[data-schema="item"]')?.remove()
-      document.querySelector('script[data-schema="breadcrumb"]')?.remove()
-    }
-  }, [item, nearbyFoodCount]);
+  const seo = buildItemSeo(item, { nearbyFoodCount })
+  usePageSeo(seo)
 
   return (<>
   <Title order={1}>
-    <BackButton />{('codeIcao' in item) ? (<>Aérodrome de {titleCase(item.name)} - {item.codeIcao}</>) : titleCase(item.name)}
+    <BackButton />{('codeIcao' in item) ? (<>Aérodrome {deName(titleCase(item.name))} - {item.codeIcao}</>) : titleCase(item.name)}
     {profile && <VisitedButton item={{ type, id }} profile={profile} icon />}
     {profile && <FavoriteButton item={{ type, id }} profile={profile} icon />}
     <EditButton />

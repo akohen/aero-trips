@@ -43,3 +43,11 @@ describe('airfield title and heading', () => {
     expect(nearbyActivitiesHeading(activity('x', ['food']), 3)).toBe('Activités à proximité')
   })
 })
+
+describe('elision', () => {
+  it('writes "d\'" before a vowel', () => {
+    const lfoi = { ...lfov, codeIcao: 'LFOI', name: 'ABBEVILLE' } as Airfield
+    expect(buildItemSeo(lfoi, { nearbyFoodCount: 1 }).title).toMatch(/^Aérodrome d'Abbeville \(LFOI\)/)
+    expect(nearbyActivitiesHeading(lfoi, 0)).toBe("Activités près de l'aérodrome d'Abbeville")
+  })
+})

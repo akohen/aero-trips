@@ -32,7 +32,7 @@ const Home = ({ events, airfields }: Data) => {
     </Text>
     <ul>
       <li>Consulter les informations des terrains accessibles aux vols VFR, accéder aux dernières cartes VAC</li>
-      <li>Trouver facilement les aérodromes avec un restaurant, un hôtel ou une autre activité à proximité</li>
+      <li>Trouver facilement les <Link to="/decouvrir/restaurants-aerodromes">aérodromes avec un restaurant</Link>, un hôtel ou une autre activité à proximité</li>
       <li>Partager les sorties que vous avez réalisées</li>
       <li>Préparer un itinéraire de voyage à proposer à vos passagers</li>
       <li>Trouver vélos à louer pour organiser des voyages en avion sans avoir besoin de voiture</li>

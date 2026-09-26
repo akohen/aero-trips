@@ -14,7 +14,7 @@
  */
 import type { Activity, ActivityType, Airfield, Runway } from '..'
 import { getImgNode } from './itemImages'
-import { titleCase } from './utils'
+import { deName, titleCase } from './utils'
 
 const ROOT_URL = 'https://aerotrips.fr'
 
@@ -116,7 +116,7 @@ export const buildEmbedHtml = (af: Airfield, nearby: [number, Activity, string][
     .filter(({ n }) => n > 0)
 
   const visual = safePhoto
-    ? `<img src="${esc(safePhoto)}" alt="Aérodrome de ${esc(name)}" decoding="async">`
+    ? `<img src="${esc(safePhoto)}" alt="Aérodrome ${esc(deName(name))}" decoding="async">`
     : runwayPlanSvg(af.runways)
 
   const body = nearby.length > 0
@@ -173,7 +173,7 @@ a:focus-visible{outline:2px solid var(--a);outline-offset:2px;border-radius:6px}
 </head>
 <body>
 <div class="w">
-  <a class="v${safePhoto ? '' : ' np'}" href="${afUrl}" aria-label="Aérodrome de ${esc(name)} (${esc(icao)}) sur AeroTrips">${visual}<span class="tag">${esc(icao)}</span></a>
+  <a class="v${safePhoto ? '' : ' np'}" href="${afUrl}" aria-label="Aérodrome ${esc(deName(name))} (${esc(icao)}) sur AeroTrips">${visual}<span class="tag">${esc(icao)}</span></a>
   <div class="bd">
       ${body}
     <div class="f">Sur <b>AeroTrips</b>, l'annuaire des sorties en avion</div>
@@ -206,6 +206,6 @@ export const buildEmbedSnippet = (af: Airfield, options: EmbedOptions = {}) => {
   const name = titleCase(af.name)
   const wide = options.wide ?? false
   return `<iframe src="${embedUrl(icao, options)}" width="100%" height="${wide ? EMBED_HEIGHT.wide : EMBED_HEIGHT.narrow}" ` +
-    `style="border:0;max-width:${wide ? 720 : 360}px" loading="lazy" title="À faire autour de l'aérodrome de ${esc(name)} (${icao})"></iframe>\n` +
-    `<p><a href="${ROOT_URL}/airfields/${icao}">Activités autour de l'aérodrome de ${esc(name)} (${icao}) sur AeroTrips</a></p>`
+    `style="border:0;max-width:${wide ? 720 : 360}px" loading="lazy" title="À faire autour de l'aérodrome ${esc(deName(name))} (${icao})"></iframe>\n` +
+    `<p><a href="${ROOT_URL}/airfields/${icao}">Activités autour de l'aérodrome ${esc(deName(name))} (${icao}) sur AeroTrips</a></p>`
 }
