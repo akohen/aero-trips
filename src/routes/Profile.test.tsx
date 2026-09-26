@@ -75,7 +75,7 @@ describe('Profile', () => {
   it('reports a failed save', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
     renderProfile(profile({ update: vi.fn().mockRejectedValue(new Error('offline')) }))
-    await userEvent.click(screen.getByRole('switch', { name: 'Rendre mon profil public' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Enregistrer' }))
     expect(await screen.findByText('Une erreur est survenue, veuillez réessayer.')).toBeInTheDocument()
   })
 })

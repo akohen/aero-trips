@@ -14,13 +14,10 @@ import { ActivityTitle } from "../components/ActivityUtils"
 import PassportBadge from "../components/PassportBadge"
 import { titleCase } from "../utils/utils"
 
-const SAVE_ERROR = "Une erreur est survenue, veuillez réessayer."
-
 const byId = (a: {id: string}, b: {id: string}) => a.id.localeCompare(b.id)
 
 const Profile = ({profile, authLoading, airfields, activities, trips} : Data) => {
   const [openedShare, { toggle: toggleShare, open: openShare }] = useDisclosure(false)
-  const [publicStatus, setPublicStatus] = useState<string>()
   const [saveStatus, setSaveStatus] = useState<string>()
   const share = () => {
     navigator.clipboard.writeText(`${location.origin}/profile/${profile?.uid}`).then(openShare)
@@ -53,15 +50,7 @@ const Profile = ({profile, authLoading, airfields, activities, trips} : Data) =>
     setSaveStatus(undefined)
     profile.update({displayName:values.displayName, homebase:values.homebase})
       .then(() => setSaveStatus('Vos informations ont été enregistrées.'))
-      .catch((e: unknown) => { console.error('[Profile] save', e); setSaveStatus(SAVE_ERROR) })
-  }
-
-  const setPublic = (passportPublic: boolean) => {
-    if(!profile) return
-    setPublicStatus(undefined)
-    profile.update({ passportPublic })
-      .then(() => setPublicStatus(passportPublic ? 'Votre profil est maintenant public.' : "Votre profil n'est plus public."))
-      .catch((e: unknown) => { console.error('[Profile] passportPublic', e); setPublicStatus(SAVE_ERROR) })
+      .catch((e: unknown) => { console.error('[Profile] save', e); setSaveStatus("Une erreur est survenue, veuillez réessayer.") })
   }
 
   const AirfieldLink = ({id}: {id: string}) => {
@@ -116,10 +105,9 @@ const Profile = ({profile, authLoading, airfields, activities, trips} : Data) =>
       <Switch
         mb="md"
         checked={!!profile.passportPublic}
-        onChange={e => setPublic(e.currentTarget.checked)}
+        onChange={e => profile.update({ passportPublic: e.currentTarget.checked })}
         label="Rendre mon profil public"
       />
-      {publicStatus && <Text size="xs" mb="md" role="status">{publicStatus}</Text>}
       <Group justify="left">
         <Link to={`/profile/${profile.uid}`}>Voir mon profil public</Link>
         <Popover width={200} position="bottom" withArrow shadow="md" opened={openedShare} onChange={toggleShare}>
