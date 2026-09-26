@@ -26,6 +26,7 @@ const isProd = () => (typeof import.meta !== 'undefined' && import.meta.env?.PRO
   || (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV === 'production'
 
 const app = initializeApp(firebaseConfig[isProd() ? 'production' : 'staging']);
+export const storageBucket = app.options.storageBucket!;
 export const db = initializeFirestore(app, {
   //localCache: persistentLocalCache({tabManager: persistentMultipleTabManager(), cacheSizeBytes: CACHE_SIZE_UNLIMITED}),
   ignoreUndefinedProperties: true,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildPassportBadgeSvg, countVisitedAirfields, svgDataUrl } from './passportBadge'
+import { badgeEmbedCodes, buildPassportBadge, buildPassportBadgeSvg, countVisitedAirfields, svgDataUrl } from './passportBadge'
 
 const width = (svg: string) => Number(/width="(\d+)"/.exec(svg)?.[1])
 
@@ -59,3 +59,35 @@ describe('buildPassportBadgeSvg', () => {
     expect(url.startsWith('data:image/svg+xml;charset=utf-8,%3Csvg')).toBe(true)
   })
 })
+
+describe('buildPassportBadge', () => {
+  it('reports the size declared in the SVG', () => {
+    const { svg, width, height } = buildPassportBadge({ homebase: 'LFPN', visitedCount: 26 })
+    expect(svg).toContain(`width="${width}" height="${height}"`)
+    expect(height).toBe(48)
+  })
+})
+
+describe('badgeEmbedCodes', () => {
+  const codes = badgeEmbedCodes({
+    src: 'https://storage.googleapis.com/b/passports/u1/badge.png',
+    src2x: 'https://storage.googleapis.com/b/passports/u1/badge@2x.png',
+    href: 'https://aerotrips.fr/profile/u1',
+    width: 330,
+    height: 48,
+    alt: 'Base LFPN · 26 terrains visités · aerotrips.fr',
+  })
+
+  it('links the image to the public profile', () => {
+    expect(codes.url).toBe('https://storage.googleapis.com/b/passports/u1/badge.png')
+    expect(codes.html).toBe('<a href="https://aerotrips.fr/profile/u1"><img src="https://storage.googleapis.com/b/passports/u1/badge.png" srcset="https://storage.googleapis.com/b/passports/u1/badge@2x.png 2x" width="330" height="48" alt="Base LFPN · 26 terrains visités · aerotrips.fr"></a>')
+    expect(codes.bbcode).toBe('[url=https://aerotrips.fr/profile/u1][img]https://storage.googleapis.com/b/passports/u1/badge.png[/img][/url]')
+  })
+
+  it('escapes attributes', () => {
+    const { html } = badgeEmbedCodes({ src: 'a"b', src2x: 'c', href: 'd', width: 1, height: 1, alt: '<x>' })
+    expect(html).toContain('src="a&quot;b"')
+    expect(html).toContain('alt="&lt;x&gt;"')
+  })
+})
+

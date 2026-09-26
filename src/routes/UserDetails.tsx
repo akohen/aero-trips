@@ -7,8 +7,9 @@ import { Paper, Text, Title } from "@mantine/core";
 import { TripTitle } from "../components/TripsUtils";
 import { AirfieldTitle } from "../components/AirfieldUtils";
 import { db } from "../data/firebase";
-import { PASSPORTS, PublicPassport } from "../utils/passport";
+import { PASSPORT_IMAGES, PASSPORTS, PublicPassport, passportImageUrl } from "../utils/passport";
 import { buildPassportBadgeSvg, svgDataUrl } from "../utils/passportBadge";
+import { storageBucket } from "../data/firebase";
 
 const UserDetails = (data : Data) => {
   const params = useParams();
@@ -37,7 +38,14 @@ const UserDetails = (data : Data) => {
       <Paper shadow="md" radius="md" p='sm' mt="md" withBorder>
         <Title order={4}>Passeport pilote</Title>
         <img
-          src={svgDataUrl(buildPassportBadgeSvg({ homebase: passport.homebase ?? undefined, visitedCount: passport.visited.length }))}
+          // The published PNG (same rendering everywhere); the local SVG until it exists
+          src={passportImageUrl(storageBucket, userId!, PASSPORT_IMAGES.png)}
+          srcSet={`${passportImageUrl(storageBucket, userId!, PASSPORT_IMAGES.png2x)} 2x`}
+          onError={e => {
+            if (e.currentTarget.src.startsWith('data:')) return
+            e.currentTarget.srcset = ''
+            e.currentTarget.src = svgDataUrl(buildPassportBadgeSvg({ homebase: passport.homebase ?? undefined, visitedCount: passport.visited.length }))
+          }}
           alt={`${passport.visited.length} terrain${passport.visited.length > 1 ? 's' : ''} visité${passport.visited.length > 1 ? 's' : ''}`}
           style={{ display: 'block', margin: '12px 0', maxWidth: '100%' }}
         />

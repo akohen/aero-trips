@@ -91,7 +91,16 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
   **`passports/{uid}`**; turning it off or deleting the profile deletes the passport. Unchanged projections are
   not rewritten. Clients never write `passports`; `/profile/{uid}` (`UserDetails`) reads it.
 - Server-side consumers (future hosted badge URL, OG images, map image) must read **`passports`**, never `profiles`.
-- Not yet: hosted badge URL, backfill of past visits, the larger shareable map image.
+- **Hosted images** are rendered at **write time**, never per view: `syncPassport` also renders the badge
+  (`functions/passports/src/images.ts`, `@resvg/resvg-js` with the **IBM Plex** TTFs bundled in
+  `functions/passports/fonts/`, OFL) and uploads `badge.svg`, `badge.png`, `badge@2x.png` to the **default bucket**
+  under `passports/{uid}/`, world-readable (per-object ACL), `Cache-Control: public, max-age=3600`, overwritten in
+  place. Hotlinks cost egress only. Opt-out deletes the prefix. URL: `passportImageUrl()` →
+  `https://storage.googleapis.com/{bucket}/passports/{uid}/…`. Bump `IMAGES_VERSION` in the function when the
+  rendering changes (passports re-render on their next profile write). The resizer ignores this prefix (`img/` only).
+- The profile page offers the image link, HTML (`srcset` 2x, linked to `/profile/{uid}`) and BBCode snippets
+  (`badgeEmbedCodes`) once the profile is public; `/profile/{uid}` shows the hosted PNG, local SVG as fallback.
+- Not yet: backfill of past visits, the larger shareable map image, OG image for `/profile/{uid}`.
 
 ## Firestore rules
 

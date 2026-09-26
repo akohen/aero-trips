@@ -61,3 +61,13 @@ export const samePassport = (stored: unknown, next: PublicPassport) =>
   && Array.isArray(stored.visited)
   && stored.visited.length === next.visited.length
   && stored.visited.every((code, i) => code === next.visited[i])
+
+/** Images the `passports` function publishes to Storage for each public passport. */
+export const PASSPORT_IMAGES = { svg: 'badge.svg', png: 'badge.png', png2x: 'badge@2x.png' } as const
+
+export const passportImagePrefix = (uid: string) => `${PASSPORTS}/${uid}/`
+export const passportImagePath = (uid: string, file: string) => `${passportImagePrefix(uid)}${file}`
+
+/** Public, cacheable URL of a passport image (the objects are world-readable through their ACL). */
+export const passportImageUrl = (bucket: string, uid: string, file: string) =>
+  `https://storage.googleapis.com/${bucket}/${passportImagePath(uid, file)}`

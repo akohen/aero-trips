@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { samePassport, toPublicPassport } from './passport'
+import { PASSPORT_IMAGES, passportImagePath, passportImageUrl, samePassport, toPublicPassport } from './passport'
 
 const profile = {
   passportPublic: true,
@@ -61,3 +61,15 @@ describe('samePassport', () => {
     expect(samePassport(undefined, next)).toBe(false)
   })
 })
+
+describe('passport images', () => {
+  it('keeps every image of a pilot under one prefix', () => {
+    expect(passportImagePath('u1', PASSPORT_IMAGES.png2x)).toBe('passports/u1/badge@2x.png')
+  })
+
+  it('builds the public Storage URL', () => {
+    expect(passportImageUrl('aero-trips.appspot.com', 'u1', PASSPORT_IMAGES.png))
+      .toBe('https://storage.googleapis.com/aero-trips.appspot.com/passports/u1/badge.png')
+  })
+})
+
