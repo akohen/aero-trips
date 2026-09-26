@@ -63,7 +63,7 @@ export const samePassport = (stored: unknown, next: PublicPassport) =>
   && stored.visited.every((code, i) => code === next.visited[i])
 
 /** Images the `passports` function publishes to Storage for each public passport. */
-export const PASSPORT_IMAGES = { svg: 'badge.svg', png: 'badge.png', png2x: 'badge@2x.png' } as const
+export const PASSPORT_IMAGES = { svg: 'badge.svg', png: 'badge.png', png2x: 'badge@2x.png', map: 'map.png' } as const
 
 export const passportImagePrefix = (uid: string) => `${PASSPORTS}/${uid}/`
 export const passportImagePath = (uid: string, file: string) => `${passportImagePrefix(uid)}${file}`

@@ -100,7 +100,18 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
   rendering changes (passports re-render on their next profile write). The resizer ignores this prefix (`img/` only).
 - The profile page offers the image link, HTML (`srcset` 2x, linked to `/profile/{uid}`) and BBCode snippets
   (`badgeEmbedCodes`) once the profile is public; `/profile/{uid}` shows the hosted PNG, local SVG as fallback.
-- Not yet: backfill of past visits, the larger shareable map image, OG image for `/profile/{uid}`.
+- **Map image** (`map.png`, 1080×1350, rendered with the badge): `src/utils/passportMap.ts` → `buildPassportMap()`.
+  Metropolitan France + Corsica with **only** the home base and the visited airfields, and the visited count (no
+  other counters, by design). Projection is **Lambert-93** (`src/utils/franceMap.ts`); the outline is generated
+  data, `src/data/franceOutline.ts`, from **`scripts/build-france-outline.ts`** (Natural Earth 1:10m, public domain,
+  simplified; keeps the Atlantic islands). Don't hand-edit it; rerun the script. The function reads airfield
+  positions from Firestore (`airfields/{ICAO}`, `position` only) at render time; unknown codes still count but get
+  no dot.
+- UI: the "Profil public" section shows the badge and **"Ma carte"**, each with a `ShareImageMenu` (download / copy /
+  share the client-rendered PNG, then hosted-copy embeds, disabled until public). The map is built client-side by
+  `usePassportMapSvg`, which **dynamic-imports** `passportMap` so the outline (≈21 KB chunk) stays out of the eager
+  bundle — keep it that way. `/profile/{uid}` shows the hosted `map.png`, drawing it locally only if it 404s.
+- Not yet: backfill of past visits, OG image for `/profile/{uid}`.
 
 ## Firestore rules
 

@@ -10,6 +10,7 @@ import { db } from "../data/firebase";
 import { PASSPORT_IMAGES, PASSPORTS, PublicPassport, passportImageUrl } from "../utils/passport";
 import { buildPassportBadgeSvg, svgDataUrl } from "../utils/passportBadge";
 import { storageBucket } from "../data/firebase";
+import { usePassportMapSvg } from "../hooks/usePassportMapSvg";
 
 const UserDetails = (data : Data) => {
   const params = useParams();
@@ -24,6 +25,15 @@ const UserDetails = (data : Data) => {
       .then(snap => setPassport(snap.exists() ? snap.data() as PublicPassport : null))
       .catch(e => { console.error('[UserDetails] passport', e); setPassport(null) })
   }, [userId])
+
+  // The published map; drawn locally only if it isn't there yet (e.g. rendered before the map existed)
+  const [mapMissing, setMapMissing] = useState(false)
+  const localMap = usePassportMapSvg({
+    displayName: passport?.displayName || undefined,
+    homebase: passport?.homebase ?? undefined,
+    visited: passport?.visited ?? [],
+    airfields: data.airfields,
+  }, mapMissing && !!passport)
 
   const name = passport?.displayName || trips[0]?.[1].author
   const loading = passport === undefined || data.trips.size === 0
@@ -48,6 +58,12 @@ const UserDetails = (data : Data) => {
           }}
           alt={`${passport.visited.length} terrain${passport.visited.length > 1 ? 's' : ''} visité${passport.visited.length > 1 ? 's' : ''}`}
           style={{ display: 'block', margin: '12px 0', maxWidth: '100%' }}
+        />
+        <img
+          src={mapMissing ? (localMap ? svgDataUrl(localMap) : undefined) : passportImageUrl(storageBucket, userId!, PASSPORT_IMAGES.map)}
+          onError={() => setMapMissing(true)}
+          alt={`Carte des terrains visités${name ? ` par ${name}` : ''}`}
+          style={{ display: 'block', width: '100%', maxWidth: 360, margin: '12px 0', borderRadius: 8, aspectRatio: '4 / 5', background: '#16233F' }}
         />
         { passport.visited.map(id => {
           const ad = data.airfields.get(id)

@@ -39,7 +39,7 @@ describe('PassportBadge', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Partager' }))
     expect(await screen.findByRole('menuitem', { name: "Lien de l'image" })).toBeDisabled()
     expect(screen.getByRole('menuitem', { name: 'Code forum' })).toBeDisabled()
-    expect(screen.getByText('Rendez votre profil public pour intégrer votre badge.')).toBeInTheDocument()
+    expect(screen.getByText('Rendez votre profil public pour intégrer cette image.')).toBeInTheDocument()
   })
 
   it('copies the forum code', async () => {

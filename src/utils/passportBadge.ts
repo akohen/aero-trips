@@ -13,8 +13,8 @@ const INK = '#1E2B45'
 const MUTED = '#5A6273'
 const RULE = '#D5D9E0'
 
-const MONO = "'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace"
-const SANS = "'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
+export const FONT_MONO = "'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace"
+export const FONT_SANS = "'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
 
 // Tabler "plane" icon (MIT), drawn in a 24x24 box
 const PLANE = 'M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2-7h-4l-2 2h-3l2-4-2-4h3l2 2h4l-2-7h3z'
@@ -26,7 +26,7 @@ export interface PassportBadgeData {
   visitedCount: number
 }
 
-const esc = (s: string) =>
+export const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
 /** Distinct visited airfields; activities don't count towards the badge. */
@@ -62,11 +62,11 @@ export const buildPassportBadge = ({ homebase, visitedCount }: PassportBadgeData
 <rect x="1" y="1" width="${width - 2}" height="${height - 2}" rx="${mid - 1}" fill="#FFFFFF"/>
 <rect x="0" y="0" width="${left}" height="${height}" fill="${NAVY}" clip-path="url(#pill)"/>
 <path d="${PLANE}" transform="translate(${iconX} ${mid - 10}) scale(${20 / 24})" fill="none" stroke="${GOLD}" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
-${base ? `<text x="${baseX}" y="${mid}" dominant-baseline="central" font-family="${MONO}" font-size="17" font-weight="600" letter-spacing="1" fill="#FFFFFF">${esc(base)}</text>` : ''}
-<text x="${countX}" y="${mid}" dominant-baseline="central" font-family="${SANS}" font-size="22" font-weight="700" fill="${INK}">${count}</text>
-<text x="${labelX}" y="${mid}" dominant-baseline="central" font-family="${SANS}" font-size="14" font-weight="500" fill="${INK}">${label}</text>
+${base ? `<text x="${baseX}" y="${mid}" dominant-baseline="central" font-family="${FONT_MONO}" font-size="17" font-weight="600" letter-spacing="1" fill="#FFFFFF">${esc(base)}</text>` : ''}
+<text x="${countX}" y="${mid}" dominant-baseline="central" font-family="${FONT_SANS}" font-size="22" font-weight="700" fill="${INK}">${count}</text>
+<text x="${labelX}" y="${mid}" dominant-baseline="central" font-family="${FONT_SANS}" font-size="14" font-weight="500" fill="${INK}">${label}</text>
 <rect x="${ruleX}" y="${mid - 10}" width="1" height="20" fill="${RULE}"/>
-<text x="${siteX}" y="${mid}" dominant-baseline="central" font-family="${MONO}" font-size="12" font-weight="600" fill="${MUTED}">aerotrips.fr</text>
+<text x="${siteX}" y="${mid}" dominant-baseline="central" font-family="${FONT_MONO}" font-size="12" font-weight="600" fill="${MUTED}">aerotrips.fr</text>
 <rect x="1" y="1" width="${width - 2}" height="${height - 2}" rx="${mid - 1}" fill="none" stroke="${NAVY}" stroke-width="2"/>
 </svg>`
 

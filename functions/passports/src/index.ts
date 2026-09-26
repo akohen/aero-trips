@@ -5,7 +5,7 @@
  * `profiles/{uid}` holds the email and is readable by its owner only. When a
  * pilot turns on `passportPublic`, this keeps `passports/{uid}` in sync with
  * the safe subset computed by `toPublicPassport` (name, home base, visited
- * airfields) and publishes the badge images to Storage under `passports/{uid}/`
+ * airfields) and publishes the badge and map images to Storage under `passports/{uid}/`
  * (world-readable, cacheable). When they turn it off or delete their profile,
  * both are deleted. Clients never write `passports` (see firestore.rules), so
  * the two can't drift apart.
@@ -13,7 +13,7 @@
 import { onDocumentWritten } from 'firebase-functions/v2/firestore'
 import { info } from 'firebase-functions/logger'
 import { initializeApp } from 'firebase-admin/app'
-import { FieldValue, getFirestore } from 'firebase-admin/firestore'
+import { FieldValue, GeoPoint, getFirestore } from 'firebase-admin/firestore'
 import { getStorage } from 'firebase-admin/storage'
 import {
   PASSPORTS,
@@ -23,13 +23,26 @@ import {
   toPublicPassport,
 } from '../../../src/utils/passport.ts'
 import { renderPassportImages } from './images.ts'
+import type { LatLon } from '../../../src/utils/passportMap.ts'
 
 initializeApp()
 
 /** Bump when the images change, so each passport is re-rendered on its next profile write. */
-const IMAGES_VERSION = 1
+const IMAGES_VERSION = 2
 // Objects are overwritten in place: a short max-age bounds how stale a hotlinked badge gets.
 const CACHE_CONTROL = 'public, max-age=3600'
+
+/** Current positions of the given airfields (document id = ICAO code), reading only that field. */
+const airfieldPositions = async (codes: string[]) => {
+  const db = getFirestore()
+  const unique = [...new Set(codes)]
+  if (unique.length === 0) return new Map<string, LatLon>()
+  const snaps = await db.getAll(...unique.map((code) => db.collection('airfields').doc(code)), { fieldMask: ['position'] })
+  return new Map(snaps.flatMap((snap) => {
+    const position = snap.get('position') as GeoPoint | undefined
+    return position ? [[snap.id, { lat: position.latitude, lon: position.longitude }] as const] : []
+  }))
+}
 
 export const syncPassport = onDocumentWritten(
   {
@@ -60,7 +73,8 @@ export const syncPassport = onDocumentWritten(
     if (current.exists && samePassport(stored, next) && stored?.imagesVersion === IMAGES_VERSION) return
 
     // Images first: once the document exists, its images do too.
-    await Promise.all(renderPassportImages(next).map((image) =>
+    const positions = await airfieldPositions([...next.visited, ...(next.homebase ? [next.homebase] : [])])
+    await Promise.all(renderPassportImages(next, positions).map((image) =>
       bucket.file(passportImagePath(uid, image.name)).save(image.data, {
         resumable: false,
         public: true,

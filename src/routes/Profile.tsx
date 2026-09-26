@@ -12,6 +12,7 @@ import ListPanel from "../components/ListPanel"
 import { TripTitle } from "../components/TripsUtils"
 import { ActivityTitle } from "../components/ActivityUtils"
 import PassportBadge from "../components/PassportBadge"
+import PassportMap from "../components/PassportMap"
 import { titleCase } from "../utils/utils"
 
 const byId = (a: {id: string}, b: {id: string}) => a.id.localeCompare(b.id)
@@ -122,6 +123,7 @@ const Profile = ({profile, authLoading, airfields, activities, trips} : Data) =>
         </Popover>
       </Group>
       <PassportBadge profile={profile} />
+      <PassportMap profile={profile} airfields={airfields} />
     </Fieldset>
       <form onSubmit={form.onSubmit(saveProfile)}>
         <Fieldset legend='Modifier vos informations' mt={"md"}>
