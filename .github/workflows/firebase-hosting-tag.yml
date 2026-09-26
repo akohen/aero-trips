@@ -16,14 +16,17 @@ jobs:
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
       - run: npm ci && npm run build
-      # The MCP function is built by the firebase.json predeploy hook.
-      # action-hosting-deploy can only deploy Hosting, so the CLI does both:
+      # Functions are built by the firebase.json predeploy hooks.
+      # action-hosting-deploy can only deploy Hosting, so the CLI does it all:
       # `firebase deploy` always deploys functions before hosting, which is
-      # what the /mcp rewrite needs.
+      # what the /mcp rewrite needs. Firestore rules (firestore.rules) and the
+      # passports function ship with every release too. --force acknowledges
+      # the passports function's retry policy, which the CLI otherwise asks
+      # to confirm (fatal in --non-interactive).
       - id: auth
         uses: google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_AERO_TRIPS }}'
-      - run: npx --yes firebase-tools@latest deploy --only functions:mcp,hosting --project aero-trips --non-interactive
+      - run: npx --yes firebase-tools@latest deploy --only firestore:rules,functions:mcp,functions:passports,hosting --project aero-trips --non-interactive --force
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}

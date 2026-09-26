@@ -120,7 +120,8 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
 ## Firestore rules
 
 - **`firestore.rules`** is the source of truth (wired in `firebase.json`), imported from the production console
-  on 2026-09-25. Deploy with `npx firebase deploy --only firestore:rules`. Staging's console rules could not be
+  on 2026-09-25. **Deployed by the release CI** (tag workflow, together with `functions:mcp`,
+  `functions:passports` and hosting); manual deploy: `npx firebase deploy --only firestore:rules`. Staging's console rules could not be
   read at import time — deploying there overwrites whatever is in its console.
 
 ## Images
