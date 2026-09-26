@@ -1,4 +1,4 @@
-import { Button, Fieldset, Paper, Select, TextInput, Title, Text, Grid, Group, Popover, Switch } from "@mantine/core"
+import { Button, Center, Fieldset, Loader, Paper, Select, TextInput, Title, Text, Grid, Group, Popover, Switch } from "@mantine/core"
 import { IconBrandGoogleFilled, IconShare } from "@tabler/icons-react"
 import { Data } from ".."
 import { googleLogin } from "../data/firebase"
@@ -13,7 +13,7 @@ import { TripTitle } from "../components/TripsUtils"
 import { ActivityTitle } from "../components/ActivityUtils"
 import PassportBadge from "../components/PassportBadge"
 
-const Profile = ({profile, airfields, activities, trips} : Data) => {
+const Profile = ({profile, authLoading, airfields, activities, trips} : Data) => {
   const [openedShare, { toggle: toggleShare, open: openShare }] = useDisclosure(false)
   const share = () => {
     navigator.clipboard.writeText(`${location.origin}/profile/${profile?.uid}`).then(openShare)
@@ -62,6 +62,8 @@ const Profile = ({profile, airfields, activities, trips} : Data) => {
   const sharedTrips = [...trips].filter(([, trip]) => trip.uid === profile?.uid);
   const favoriteAirfields = profile?.favorites?.filter(f => f.type === 'airfields');
   const favoriteActivities = profile?.favorites?.filter(f => f.type === 'activities');
+
+  if (authLoading) return <Center h="50vh"><Loader /></Center>
 
   return (profile ? <>
   <Title order={1}><BackButton />Votre profil utilisateur</Title>

@@ -6,6 +6,8 @@ type Data = {
   trips: Map<string,Trip>,
   events: Map<string,Event>,
   profile?: Profile,
+  /** True until Firebase Auth has resolved the session (and its profile) on load */
+  authLoading: boolean,
   mapView: MapView,
   setMapView: React.Dispatch<React.SetStateAction<MapView>>,
 }

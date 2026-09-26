@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import App from './App.tsx'
 import { collection, doc, getDoc, getDocs, setDoc, query, where, type DocumentData } from "firebase/firestore";
 import { Activity, Airfield, Event, MapView, Profile, Trip } from '.';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth, db } from './data/firebase.ts';
 import airfieldsData from './data/airfields.json'
 import activitiesData from './data/activities.json'
@@ -63,6 +63,7 @@ export const DataProvider = () => {
   const [trips, setTrips] = useState<Map<string,Trip>>(new Map())
   const [events, setEvents] = useState<Map<string,Event>>(new Map())
   const [profile, setProfile] = useState<Profile|undefined>(undefined)
+  const [authLoading, setAuthLoading] = useState(true)
   const [mapView, setMapView] = useState<MapView>({center:[49, 2.5], zoom:8})
 
   const getAirfields = async () => {
@@ -115,7 +116,7 @@ export const DataProvider = () => {
   },[])
 
   useEffect(() => {
-    return onAuthStateChanged(auth, async (user) => {
+    const loadProfile = async (user: User | null) => {
       if (user) {
         const uid = user.uid;
         const query = await getDoc(doc(db, "profiles", uid))
@@ -126,6 +127,12 @@ export const DataProvider = () => {
           setProfile(new UserProfile({email:user.email!, displayName:user.displayName!, uid}, setProfile))
         }
       } else { setProfile(undefined) }
+    }
+    return onAuthStateChanged(auth, user => {
+      loadProfile(user)
+        .catch(e => console.error('[DataProvider] profile', e))
+        // Also on a failed profile read, so the page falls back to the login button instead of spinning
+        .finally(() => setAuthLoading(false))
     })
   },[])
 
@@ -135,6 +142,7 @@ export const DataProvider = () => {
     trips={trips}
     events={events}
     profile={profile}
+    authLoading={authLoading}
     mapView={mapView}
     setMapView={setMapView}
   />)

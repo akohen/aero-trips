@@ -14,6 +14,7 @@ const testData: Data = {
   trips: new Map(),
   events: new Map(),
   profile: undefined,
+  authLoading: false,
   mapView: {center:[], zoom:0},
   setMapView: vi.fn()
 }
@@ -38,3 +39,20 @@ test('goes to field list through the navbar', async () => {
   await userEvent.click(within(screen.getByRole('navigation')).getByRole('link', {name: /Terrains/i}));
   expect(await screen.getAllByText(/LFNW/i)).toBeDefined();
 });
+test('does not offer to log in while auth is still loading', () => {
+  render(
+    <MemoryRouter initialEntries={['/profile']}>
+      <App {...testData} authLoading/>
+    </MemoryRouter>,
+  )
+  expect(screen.queryByText(/Se connecter avec Google/i)).toBeNull()
+})
+
+test('offers to log in once auth resolved without a user', () => {
+  render(
+    <MemoryRouter initialEntries={['/profile']}>
+      <App {...testData}/>
+    </MemoryRouter>,
+  )
+  expect(screen.getByText(/Se connecter avec Google/i)).toBeDefined()
+})
