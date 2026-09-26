@@ -1,8 +1,9 @@
 import { expect, test, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
-import { MemoryRouter } from 'react-router';
+// Not react-router/dom's RouterProvider (the app's): under vitest it resolves to another instance of the router context.
+import { MemoryRouter, RouterProvider, createMemoryRouter } from 'react-router';
 import { GeoPoint } from 'firebase/firestore';
 import { Data } from '.';
 import App from './App';
@@ -55,4 +56,37 @@ test('offers to log in once auth resolved without a user', () => {
     </MemoryRouter>,
   )
   expect(screen.getByText(/Se connecter avec Google/i)).toBeDefined()
+})
+
+// Enough airfields for two pages, so a filter changes the page count and CardList/TableList rewrite `page`.
+const manyAirfields: Data = {
+  ...testData,
+  airfields: new Map(Array.from({ length: 20 }, (_, i) => {
+    const code = `LF${String.fromCharCode(65 + i)}A`
+    return [code, { codeIcao: code, name: i === 0 ? 'LAVAL' : `TERRAIN ${i}`, position: new GeoPoint(0, i), runways: [], status: 'CAP' }]
+  })),
+}
+const renderInRouter = (url: string) => {
+  const router = createMemoryRouter([{ path: '*', element: <App {...manyAirfields} /> }], { initialEntries: [url] })
+  render(<RouterProvider router={router} />)
+  return router
+}
+
+test('keeps the filters in the URL when they change the page count', async () => {
+  const router = renderInRouter('/airfields?page=2')
+  // One change, like a chip click (typing would write the search back on the next keystroke)
+  await userEvent.click(screen.getByPlaceholderText('Chercher un terrain'))
+  await userEvent.paste('laval')
+  const params = new URLSearchParams(router.state.location.search)
+  expect(params.get('adSearch')).toBe('laval')
+  expect(params.get('page')).toBe('1')
+  expect(screen.getByPlaceholderText('Chercher un terrain')).toHaveValue('laval')
+})
+
+test('restores the last filters when coming back to the list from the navbar', async () => {
+  const router = renderInRouter('/airfields?adSearch=laval')
+  await act(() => router.navigate('/trips'))
+  await act(() => router.navigate('/airfields'))
+  expect(new URLSearchParams(router.state.location.search).get('adSearch')).toBe('laval')
+  expect(screen.getByPlaceholderText('Chercher un terrain')).toHaveValue('laval')
 })

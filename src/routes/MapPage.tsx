@@ -2,12 +2,12 @@ import 'leaflet/dist/leaflet.css'
 import { MapContainer, TileLayer } from 'react-leaflet'
 import { ADfilter, ActivityFilter, Data } from '..';
 import { filterActivities, filterAirfields } from '../utils/utils';
+import { EMPTY_ACTIVITY_FILTERS, EMPTY_AIRFIELD_FILTERS } from '../utils/filterParams';
 import { ActiveBadges } from '../components/AirfieldUtils';
 import { AirfieldMarker } from '../components/AirfieldMarker';
 import ActivityMarker from '../components/ActivityMarker';
 import { Button, Stack } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useEffect } from 'react';
 import { IconPlaneArrival, IconEye, IconEyeOff, IconFilterX, IconBulb } from '@tabler/icons-react';
 import MapMenu from '../components/MapMenu';
 import MapViewTracker from '../components/MapViewTracker';
@@ -18,16 +18,15 @@ import ButtonFilter from '../components/ButtonFilter';
 import ActivitiesFilterModal from '../components/ActivitiesFilterModal';
 import { ActivityBadges } from '../components/ActivityUtils';
 
-function MapPage({airfields, activities, events, ADfilter, ActFilter, setADfilter, setActFilter, mapView, setMapView, profile} :
+function MapPage({airfields, activities, events, ADfilter, ActFilter, setADfilter, setActFilter, setFilters, mapView, setMapView, profile} :
   Data & {
     ADfilter: ADfilter,
     ActFilter:ActivityFilter,
     setADfilter: (f: ADfilter) => void,
     setActFilter: (f: ActivityFilter) => void,
+    setFilters: (f: { ad?: ADfilter, act?: ActivityFilter }) => void,
 }) {
   const params = useParams();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { setADfilter(ADfilter); setActFilter(ActFilter) }, [])
   
   const [showAirfields, { toggle: toggleAirfields }] = useDisclosure(true)
   const [showActivities, { toggle: toggleActivities }] = useDisclosure(true)
@@ -43,30 +42,14 @@ function MapPage({airfields, activities, events, ADfilter, ActFilter, setADfilte
   const airfieldsMarkers = [...filteredAirfields].map( ([key,e]) => <AirfieldMarker key={key} airfield={e} />);
   const activeAdFilters = ActiveBadges({ airfields, activities, filters:ADfilter, setFilters:setADfilter })
     .length + Number( ADfilter.search !== '') 
-  const resetAdFilters = () => setADfilter({
-      search:'',
-      services: [],
-      ad: [],
-      runway: '',
-      distance: '',
-      target: null,
-    })
+  const resetAdFilters = () => setADfilter(EMPTY_AIRFIELD_FILTERS)
 
   const filteredActivities = filterActivities(airfields, activities, ActFilter)
   const activitiesMarkers = [...filteredActivities].map( ([key,e]) => <ActivityMarker key={key} activity={e} />);
   const activeActFilters = ActivityBadges({ airfields, activities, filters:ActFilter, setFilters: setActFilter})
     .length + Number( ActFilter.search !== '')
-  const resetActFilters = () => setActFilter({
-      search:'',
-      distance: '',
-      target: null,
-      type: [],
-    })
-  
-  const resetFilters = () => {
-    resetAdFilters()
-    resetActFilters()
-  }
+  const resetActFilters = () => setActFilter(EMPTY_ACTIVITY_FILTERS)
+  const resetFilters = () => setFilters({ ad: EMPTY_AIRFIELD_FILTERS, act: EMPTY_ACTIVITY_FILTERS })
   
   return (
     <MapContainer className="main-map" center={view.center} zoom={view.zoom} scrollWheelZoom={true}>

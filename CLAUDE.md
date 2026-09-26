@@ -30,6 +30,11 @@ Firestore collections: `airfields`, `activities`, `trips`, `events`, `changes`, 
 Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao`; `Activity` +
 `ActivityType`; `Trip` = list of `steps`; `Event`; `Profile`).
 
+**List/map filters live in the URL** (shareable queries): `App.tsx` derives them from the query string on every render
+through `src/utils/filterParams.ts`. Never copy them into React state: react-router v7 applies location changes in a
+transition, so a copy renders ahead of the URL and the list's `page` write (`CardList`/`TableList`) erases them.
+Update both groups in one `setFilters` call, not two back-to-back `setSearchParams`.
+
 ## Commands
 
 - `npm start` — dev (Vite). `npm test` — vitest (happy-dom env). `npm run lint` — ESLint, **0 warnings allowed**.

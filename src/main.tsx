@@ -1,5 +1,7 @@
 import ReactDOM from 'react-dom/client'
-import { RouterProvider, createBrowserRouter } from 'react-router';
+import { createBrowserRouter } from 'react-router';
+// From react-router/dom: the only RouterProvider that honors navigate's flushSync option.
+import { RouterProvider } from 'react-router/dom';
 import { DataProvider } from './DataProvider.tsx';
 import RootError from './components/RootError.tsx';
 import { reloadOnce } from './utils/staleChunk.ts';

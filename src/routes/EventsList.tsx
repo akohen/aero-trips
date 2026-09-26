@@ -2,7 +2,7 @@ import { ActionIcon, Button, em, Group, rem, SegmentedControl, Stack, Text, Text
 import { useMediaQuery } from "@mantine/hooks"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router"
-import { ADfilter, Data, Event } from ".."
+import { Data, Event } from ".."
 import TableList from "../components/TableList"
 import CardList from "../components/CardList"
 import type { CardConfig } from "../components/CardList"
@@ -10,7 +10,7 @@ import { getImgNode } from "../utils/itemImages"
 import { formatDate, isUpcomingEvent } from "../utils/utils"
 import { IconCirclePlus, IconExternalLink, IconMap, IconSearch, IconX } from "@tabler/icons-react"
 
-const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f: ADfilter) => void }) => {
+const EventsList = ({ events, airfields }: Data) => {
   const navigate = useNavigate()
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`)
   const [view, setView] = useState<'upcoming' | 'past'>('upcoming')
@@ -112,10 +112,7 @@ const EventsList = ({ events, airfields, setADfilter }: Data & { setADfilter: (f
         <Button
           variant="light"
           leftSection={<IconMap size={16} />}
-          onClick={() => {
-            setADfilter({ search: '', services: [], ad: ['upcomingEvents'], runway: '', distance: '', target: '' })
-            navigate('/map')
-          }}
+          onClick={() => navigate('/map?adMisc=upcomingEvents')}
         >
           Voir sur la carte
         </Button>

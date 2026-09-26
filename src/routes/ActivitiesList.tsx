@@ -31,11 +31,6 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
     setData( filterActivities( airfields, activities, filters) )
   },[activities, airfields, filters])
 
-  useEffect(() => {
-    setFilters(filters)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   const columns: CardColumn<Activity>[] = [
     {
       title: "Nom du lieu ou de l'activité",

@@ -25,11 +25,6 @@ function AirfieldsPage({airfields, activities, events, filters, setFilters, setM
     setData( filterAirfields(airfields, activities, filters, profile, events) )
   },[airfields, activities, filters, profile, events])
   
-  useEffect(() => {
-    setFilters(filters)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   const columns: CardColumn<Airfield>[] = [
         {
           title: 'Nom du terrain',
