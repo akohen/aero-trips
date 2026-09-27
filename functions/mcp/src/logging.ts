@@ -28,7 +28,7 @@ export type ToolOutcome = {
  */
 const LOGGED_KEYS = [
   'icao', 'near_icao', 'activity_id', 'id', 'types', 'services', 'status',
-  'fuel', 'radius_km', 'limit', 'what', 'night_vfr', 'hard_runway', 'toilets',
+  'fuel', 'radius_km', 'limit', 'what', 'night_vfr', 'night_vfr_unrestricted', 'hard_runway', 'toilets',
   'min_runway_length', 'include_nearby',
 ] as const
 

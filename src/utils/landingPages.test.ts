@@ -3,18 +3,19 @@ import type { Activity, Airfield } from '..'
 import { buildLandingEntries, buildLandingSeo, LANDING_PAGES } from './landingPages'
 
 const restaurants = LANDING_PAGES.find((p) => p.slug === 'restaurants-aerodromes')!
+const nightVFR = LANDING_PAGES.find((p) => p.slug === 'aerodromes-vfr-de-nuit')!
 
-const airfield = (codeIcao: string, name: string, latitude: number, status = 'CAP') =>
-  ({ codeIcao, name, status, runways: [], position: { latitude, longitude: 0 } }) as unknown as Airfield
+const airfield = (codeIcao: string, name: string, latitude: number, status = 'CAP', nightVFR?: Airfield['nightVFR']) =>
+  ({ codeIcao, name, status, nightVFR, runways: [], position: { latitude, longitude: 0 } }) as unknown as Airfield
 
 // ~1 km north of the given latitude
 const activity = (id: string, type: string[], latitude: number) =>
   ({ id, name: id, type, position: { latitude: latitude + 0.009, longitude: 0 } }) as unknown as Activity
 
 const airfields = new Map([
-  ['LFBB', airfield('LFBB', 'BRAVO', 45)],
-  ['LFAA', airfield('LFAA', 'ALPHA', 47)],
-  ['LFCC', airfield('LFCC', 'CHARLIE', 49)],
+  ['LFBB', airfield('LFBB', 'BRAVO', 45, 'CAP', 'limited')],
+  ['LFAA', airfield('LFAA', 'ALPHA', 47, 'CAP', 'limited')],
+  ['LFCC', airfield('LFCC', 'CHARLIE', 49, 'CAP', 'full')],
   ['LFMM', airfield('LFMM', 'MIKE', 43, 'MIL')],
 ])
 const activities = new Map([
@@ -49,5 +50,18 @@ describe('restaurants landing page', () => {
         { position: 2, url: 'https://aerotrips.fr/airfields/LFBB' },
       ],
     })
+  })
+})
+
+describe('night VFR landing page', () => {
+  const entries = buildLandingEntries(nightVFR, airfields, activities)
+
+  it('lists licensed airfields, even with nothing nearby, unrestricted ones first', () => {
+    expect(entries.map((e) => [e.airfield.codeIcao, e.section])).toEqual([['LFCC', 0], ['LFAA', 1], ['LFBB', 1]])
+  })
+
+  it('highlights nearby food and lodging only', () => {
+    expect(entries.find((e) => e.airfield.codeIcao === 'LFBB')!.highlights.map(([, , id]) => id)).toEqual(['gite-b'])
+    expect(entries.find((e) => e.airfield.codeIcao === 'LFCC')!.highlights).toEqual([])
   })
 })

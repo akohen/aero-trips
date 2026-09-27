@@ -10,8 +10,16 @@ export type Nearby = [distance: number, activity: Activity, id: string]
 
 export type LandingEntry = {
   airfield: Airfield
-  // Activities that earn the airfield its place on the page (e.g. the restaurants)
+  // Activities shown on the airfield's card (e.g. the restaurants)
   highlights: Nearby[]
+  // Index in the page's `sections`, 0 when it has none
+  section: number
+}
+
+export type LandingSection = {
+  h2: string
+  intro: string
+  test: (airfield: Airfield) => boolean
 }
 
 export type LandingPage = {
@@ -21,11 +29,16 @@ export type LandingPage = {
   description: (count: number) => string
   // Hand-written paragraphs, so pages are not interchangeable lists
   intro: string[]
-  // Activities qualifying the airfield; it is listed when there is at least one
+  // Activities shown on the airfield's card, among its nearby list
   highlights: (nearby: Nearby[]) => Nearby[]
+  // Whether the airfield is on the page; defaults to having at least one highlight
+  listed?: (airfield: Airfield, highlights: Nearby[]) => boolean
+  // Splits the list, in this order; an airfield goes to the first section it passes
+  sections?: LandingSection[]
 }
 
 const isFood = ([, a]: Nearby) => a.type.includes('food')
+const isFoodOrLodging = ([, a]: Nearby) => a.type.includes('food') || a.type.includes('lodging')
 
 export const LANDING_PAGES: LandingPage[] = [
   {
@@ -39,6 +52,31 @@ export const LANDING_PAGES: LandingPage[] = [
       "Les horaires changent souvent, surtout hors saison : pensez à appeler avant de partir, et consultez la carte VAC et les NOTAM pour préparer votre vol. Vous connaissez une adresse qui manque ? Ajoutez-la depuis la fiche de l'aérodrome.",
     ],
     highlights: (nearby) => nearby.filter(isFood),
+  },
+  {
+    slug: 'aerodromes-vfr-de-nuit',
+    h1: 'Aérodromes agréés VFR de nuit',
+    title: (n) => `VFR de nuit : ${n} aérodromes agréés en France | AeroTrips`,
+    description: (n) =>
+      `Les ${n} aérodromes agréés VFR de nuit en France, avec ou sans limitations, et les restaurants et hébergements à proximité pour une arrivée de nuit.`,
+    intro: [
+      "En France, le VFR de nuit n'est possible qu'au départ et à destination d'un aérodrome agréé. Voici les terrains agréés VFR de nuit d'après la liste publiée par le SIA dans le complément aux cartes aéronautiques VFR, avec les restaurants et hébergements repérés à proximité par la communauté AeroTrips.",
+      "Le balisage, les horaires et les conditions d'utilisation de nuit sont propres à chaque terrain : consultez la carte VAC et les NOTAM avant de partir.",
+    ],
+    highlights: (nearby) => nearby.filter(isFoodOrLodging),
+    listed: (airfield) => Boolean(airfield.nightVFR),
+    sections: [
+      {
+        h2: 'Agréés sans limitations',
+        intro: "Pas d'agrément préalable : ces terrains sont ouverts au VFR de nuit à tout pilote qualifié, dans les conditions publiées sur la carte VAC (horaires, balisage, PPR éventuel).",
+        test: (airfield) => airfield.nightVFR === 'full',
+      },
+      {
+        h2: 'Agréés avec limitations',
+        intro: "Pour ces terrains, un agrément préalable est nécessaire, avec la connaissance des procédures locales : il s'obtient auprès de l'exploitant, parfois par téléphone, parfois après un vol avec un instructeur. Renseignez-vous avant de prévoir une arrivée de nuit.",
+        test: () => true,
+      },
+    ],
   },
 ]
 
@@ -59,8 +97,9 @@ export const buildLandingEntries = (
   [...airfields.values()]
     .filter((af) => LISTED_STATUSES.includes(af.status))
     .map((airfield) => ({ airfield, highlights: page.highlights(nearbyActivities(airfield, activities)) }))
-    .filter((e) => e.highlights.length > 0)
-    .sort((a, b) => titleCase(a.airfield.name).localeCompare(titleCase(b.airfield.name), 'fr'))
+    .filter(({ airfield, highlights }) => page.listed ? page.listed(airfield, highlights) : highlights.length > 0)
+    .map((e) => ({ ...e, section: Math.max(0, page.sections?.findIndex((s) => s.test(e.airfield)) ?? 0) }))
+    .sort((a, b) => a.section - b.section || titleCase(a.airfield.name).localeCompare(titleCase(b.airfield.name), 'fr'))
 
 export const buildLandingSeo = (page: LandingPage, entries: LandingEntry[]): ItemSeo => {
   const url = `${ROOT_URL}${landingPageUrl(page)}`

@@ -199,11 +199,15 @@ console.log(`Prerendered ${count} airfields (+ embed widgets)`)
 // --- Landing pages (/decouvrir/{slug}) ---------------------------------------
 const buildLandingBody = (page: LandingPage, entries: LandingEntry[]) => {
   const parts: string[] = [`<h1>${esc(page.h1)}</h1>`, ...page.intro.map((p) => `<p>${esc(p)}</p>`)]
-  for (const { airfield: af, highlights } of entries) {
-    parts.push(`<h2><a href="/airfields/${esc(af.codeIcao)}">Aérodrome ${esc(deName(titleCase(af.name)))} (${esc(af.codeIcao)})</a></h2>`)
+  // Airfields are h2, or h3 under the section h2s
+  const h = page.sections ? 'h3' : 'h2'
+  entries.forEach(({ airfield: af, highlights, section }, i) => {
+    const sec = page.sections?.[section]
+    if (sec && entries[i - 1]?.section !== section) parts.push(`<h2>${esc(sec.h2)}</h2>`, `<p>${esc(sec.intro)}</p>`)
+    parts.push(`<${h}><a href="/airfields/${esc(af.codeIcao)}">Aérodrome ${esc(deName(titleCase(af.name)))} (${esc(af.codeIcao)})</a></${h}>`)
     if (af.status !== 'CAP') parts.push(`<p>${esc(labels.get(af.status) ?? '')}</p>`)
-    parts.push(nearbyList(highlights, (_i, id) => `/activities/${esc(id)}`, (i) => i.name))
-  }
+    if (highlights.length > 0) parts.push(nearbyList(highlights, (_i, id) => `/activities/${esc(id)}`, (i) => i.name))
+  })
   return parts.join('\n      ')
 }
 

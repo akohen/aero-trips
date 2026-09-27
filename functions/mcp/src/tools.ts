@@ -118,7 +118,9 @@ export function registerTools(server: McpServer) {
       fuel: z.enum(['100LL', 'SP9X', 'UL91']).optional().describe('Carburant disponible (SP9X couvre SP95/SP98).'),
       min_runway_length: z.number().int().min(0).optional().describe('Longueur minimale de la piste la plus longue, en mètres.'),
       hard_runway: z.boolean().optional().describe('Exiger au moins une piste revêtue (non herbe).'),
-      night_vfr: z.boolean().optional().describe('Exiger le VFR de nuit.'),
+      night_vfr: z.boolean().optional().describe('Exiger un agrément VFR de nuit, avec ou sans limitations.'),
+      night_vfr_unrestricted: z.boolean().optional()
+        .describe("Exiger un agrément VFR de nuit sans limitations. Les terrains avec limitations demandent un agrément préalable et la connaissance des procédures locales."),
       toilets: z.boolean().optional().describe('Exiger des toilettes.'),
       services: z.array(activityTypeEnum).optional()
         .describe("Exiger une activité de chacun de ces types à moins de 5 km du terrain."),
@@ -137,6 +139,7 @@ export function registerTools(server: McpServer) {
       ...(params.status ?? []),
       ...(params.fuel ? [params.fuel] : []),
       ...(params.night_vfr ? ['nvfr'] : []),
+      ...(params.night_vfr_unrestricted ? ['nvfr-full'] : []),
       ...(params.toilets ? ['toilet'] : []),
       ...(params.hard_runway ? ['concrete'] : []),
     ]

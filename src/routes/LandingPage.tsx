@@ -7,7 +7,7 @@ import CardListItem from "../components/CardListItem"
 import { CardConfig } from "../components/CardList"
 import { usePageSeo } from "../hooks/usePageSeo"
 import { getItemCardConfig, getItemImageUrl, getItemLink } from "../utils/itemCardConfig"
-import { buildLandingEntries, buildLandingSeo, LANDING_PAGES, LandingPage as Page, Nearby } from "../utils/landingPages"
+import { buildLandingEntries, buildLandingSeo, LANDING_PAGES, LandingEntry, LandingPage as Page, Nearby } from "../utils/landingPages"
 import { formatDistance } from "../utils/utils"
 
 const MAX_HIGHLIGHTS = 3
@@ -29,6 +29,23 @@ const Highlights = ({ highlights, onPhoto }: { highlights: Nearby[], onPhoto: bo
     {more > 0 && <Text size="xs" style={style}>+ {more} autre{more > 1 ? 's' : ''}</Text>}
   </>)
 }
+
+// All cards at once, no pagination: Google renders the page and should see every airfield
+const Cards = ({ entries, cardConfig }: { entries: LandingEntry[], cardConfig: CardConfig<Airfield> }) => (
+  <SimpleGrid mt="sm" minColWidth="280px">
+    {entries.map(({ airfield }) => (
+      <CardListItem
+        key={airfield.codeIcao}
+        item={airfield}
+        imgUrl={getItemImageUrl(airfield)}
+        link={getItemLink(airfield)}
+        cardConfig={cardConfig}
+        itemKey={airfield.codeIcao}
+        shadeBottom
+      />
+    ))}
+  </SimpleGrid>
+)
 
 const LandingContent = ({ page, airfields, activities, profile }: Data & { page: Page }) => {
   const entries = useMemo(() => buildLandingEntries(page, airfields, activities), [page, airfields, activities])
@@ -57,20 +74,16 @@ const LandingContent = ({ page, airfields, activities, profile }: Data & { page:
       onChange={(e) => setSearch(e.currentTarget.value)}
     />
     <Text size="sm" c="dimmed" mt="xs">{shown.length} terrain{shown.length > 1 ? 's' : ''}</Text>
-    {/* All cards at once, no pagination: Google renders the page and should see every airfield */}
-    <SimpleGrid mt="sm" minColWidth="280px">
-      {shown.map(({ airfield }) => (
-        <CardListItem
-          key={airfield.codeIcao}
-          item={airfield}
-          imgUrl={getItemImageUrl(airfield)}
-          link={getItemLink(airfield)}
-          cardConfig={cardConfig}
-          itemKey={airfield.codeIcao}
-          shadeBottom
-        />
-      ))}
-    </SimpleGrid>
+    {page.sections
+      ? page.sections.map((section, i) => {
+        const inSection = shown.filter(e => e.section === i)
+        return inSection.length > 0 && (<section key={section.h2}>
+          <Title order={2} mt="xl">{section.h2}</Title>
+          <Text mt="xs">{section.intro}</Text>
+          <Cards entries={inSection} cardConfig={cardConfig} />
+        </section>)
+      })
+      : <Cards entries={shown} cardConfig={cardConfig} />}
   </>)
 }
 

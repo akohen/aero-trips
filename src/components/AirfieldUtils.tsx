@@ -37,6 +37,7 @@ const AD_LABELS: Record<string, string> = {
   UL91: 'UL91',
   concrete: 'Piste en dur',
   nvfr: 'VFR de nuit',
+  'nvfr-full': 'VFR de nuit sans limitations',
   visited: 'Visité',
   favorite: 'Favori',
   upcomingEvents: 'Événements',

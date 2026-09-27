@@ -34,6 +34,7 @@ Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao
 de nuit" table in the yearly *Complément aux cartes aéronautiques VFR*, kept in `scripts/NVFR.json`. `'limited'` means
 prior approval + local procedures: travelling pilots care. `npm run import -- --nvfr` syncs Firestore both ways (deletes
 the field for airfields that left the list) and bumps `updated_at`. Labels: `nightVFRLabels` (`src/utils/labels.ts`).
+Filters: `nvfr` = any licensing, `nvfr-full` = without limitations (MCP: `night_vfr` / `night_vfr_unrestricted`).
 
 **List/map filters live in the URL** (shareable queries): `App.tsx` derives them from the query string on every render
 through `src/utils/filterParams.ts`. Never copy them into React state: react-router v7 applies location changes in a
@@ -65,7 +66,9 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   "restaurant aérodrome <ville>" searches). Prerender and SPA must list the same activities, or the title lies.
 - **Landing pages** (`/decouvrir/{slug}`): **`src/utils/landingPages.ts`** (`LANDING_PAGES`) is a React-free config of
   **rules** over the data (`highlights(nearby)` → the activities that qualify an airfield), not hand-picked lists.
-  First page: `restaurants-aerodromes`. Prerendered to `dist/decouvrir/{slug}/index.html`, rendered in the SPA by
+  Optional `listed(airfield, highlights)` qualifies on the airfield itself, and `sections` splits the list (first match wins).
+  Pages: `restaurants-aerodromes`, `aerodromes-vfr-de-nuit` (unrestricted first, cards show nearby food/lodging).
+  Prerendered to `dist/decouvrir/{slug}/index.html`, rendered in the SPA by
   `routes/LandingPage.tsx`, listed in the sitemap by `npm run export` (also added by hand to `public/sitemap.xml`).
   Uses the airfield page's nearby list (`nearbyActivities`), so an airfield titled "restaurants" is on the hub, and
   leaves out `MIL`/`OFF` airfields.

@@ -71,6 +71,7 @@ const AirfieldsFilterModal = ({ airfields, activities, data, profile, filters, s
               <Chip value="toilet" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconToiletPaper size={14} /> Toilettes</span></Chip>
               <Chip value="concrete" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconRoad size={14} /> Piste en dur</span></Chip>
               <Chip value="nvfr" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconMoon size={14} /> VFR de nuit</span></Chip>
+              <Chip value="nvfr-full" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconMoon size={14} /> VFR de nuit sans limitations</span></Chip>
             </Group>
           </Chip.Group>
         </Stack>
