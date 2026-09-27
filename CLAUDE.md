@@ -26,6 +26,9 @@ Entry point: `main.tsx` → `DataProvider` (loads/merges data) → `App.tsx` (`<
    collection, then are reviewed/applied manually via `npm run manage` (`scripts/manage-edits.js`).
 4. The JSON snapshot is regenerated from Firestore via `npm run export` (`scripts/export-data.ts`).
 
+**External sources** (SIA, VAC, clubs, OSM, webcams…): catalogued in **`docs/data-sources.md`** — check it before
+searching for a source, and add any new one there (coverage + date, access, freshness, rights, pitfalls).
+
 Firestore collections: `airfields`, `activities`, `trips`, `events`, `changes`, `profiles`.
 Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao`; `Activity` +
 `ActivityType`; `Trip` = list of `steps`; `Event`; `Profile`).
