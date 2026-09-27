@@ -22,7 +22,8 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common as c  # noqa: E402
 
-AIRFIELD_ALLOWED_KEYS = {'codeIcao', 'website', 'toilet', 'fuels', 'nightVFR', 'description'}
+# nightVFR n'en fait pas partie : il vient de la liste SIA via `npm run import -- --nvfr`
+AIRFIELD_ALLOWED_KEYS = {'codeIcao', 'website', 'toilet', 'fuels', 'description'}
 
 # URLs signées / à durée de vie limitée : expireront avant même la recopie sur
 # le serveur de l'application (cf. activity-format.md).

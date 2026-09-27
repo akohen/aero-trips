@@ -191,26 +191,26 @@ def build(icao, use_vac=True, manual_center=None):
     }
 
     # --- VAC : nightVFR et carburants ---------------------------------------
-    # nightVFR : la VAC fait autorité, mais on ne réécrit jamais en silence une
-    # valeur déjà en base — une contradiction est signalée, l'humain tranche.
+    # nightVFR : jamais écrit par le skill. La liste SIA (scripts/NVFR.json) fait
+    # référence et `npm run import -- --nvfr` la synchronise pour tous les terrains ;
+    # une valeur tirée de la VAC serait écrasée au prochain import. La VAC sert
+    # seulement de contrôle : une divergence est signalée, l'humain tranche.
     # fuels : purement additif (la section AVT est parfois incomplète), donc
     # union avec l'existant et jamais de retrait.
-    base_nvfr = entry.get('nightVFR')
+    base_nvfr = entry.get('nightVFR') or 'none'
     vac_nvfr = situation.get('night_vfr')
     nvfr = {'base': base_nvfr, 'vac': vac_nvfr, 'raw': situation.get('night_vfr_raw')}
     if vac_nvfr is None:
         nvfr['action'] = 'aucune'
-        nvfr['reason'] = 'VAC non concluante — ne pas renseigner nightVFR'
-    elif base_nvfr is None:
-        nvfr['action'] = 'proposer'
-        nvfr['value'] = vac_nvfr
-    elif bool(base_nvfr) == bool(vac_nvfr):
+        nvfr['reason'] = 'VAC non concluante'
+    elif base_nvfr == vac_nvfr:
         nvfr['action'] = 'aucune'
-        nvfr['reason'] = 'déjà conforme à la VAC'
+        nvfr['reason'] = 'base conforme à la VAC'
     else:
-        nvfr['action'] = 'conflit'
-        nvfr['reason'] = (f'base={base_nvfr} mais VAC={vac_nvfr} — signaler à '
-                          "l'utilisateur, ne rien écrire sans son accord")
+        nvfr['action'] = 'signaler'
+        nvfr['reason'] = (f'base={base_nvfr} mais VAC={vac_nvfr} — à signaler, sans rien écrire : '
+                          'la liste SIA (scripts/NVFR.json) fait référence, la corriger si besoin '
+                          'puis `npm run import -- --nvfr`')
 
     base_fuels = list(entry.get('fuels') or [])
     vac_fuels = situation.get('fuels')
@@ -275,11 +275,9 @@ def report(ctx):
     A(f"Champs présents : {ctx['existing_fields'] or '(aucun)'}")
     A('')
     n = ctx['night_vfr']
-    A(f"VFR de nuit (VAC §3) : base={n['base']}  VAC={n['vac']}  ({n['raw']!r})")
-    if n['action'] == 'proposer':
-        A(f"  → RENSEIGNER nightVFR = {str(n['value']).lower()}")
-    elif n['action'] == 'conflit':
-        A(f"  → ⚠ CONFLIT : {n['reason']}")
+    A(f"VFR de nuit (VAC §3, contrôle seulement) : base={n['base']}  VAC={n['vac']}  ({n['raw']!r})")
+    if n['action'] == 'signaler':
+        A(f"  → ⚠ À SIGNALER : {n['reason']}")
     else:
         A(f"  → rien à faire ({n['reason']})")
     f = ctx['fuels']

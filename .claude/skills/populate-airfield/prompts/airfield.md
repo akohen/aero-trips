@@ -15,7 +15,7 @@ fait foi pour tout ce qui suit.
 | `existing_fields` | champs déjà présents sur la fiche — **à omettre** du fichier de sortie |
 | `clubs` | clubs basés — **liste de référence** (point ACB de la VAC, ou `clubs.json`) ; voir plus bas |
 | `clubs_info` | d'où vient la liste (`source`), la ligne ACB brute (`raw`) et les réserves éventuelles (`note`) |
-| `night_vfr` | ce qu'il faut faire du champ `nightVFR` (voir plus bas) |
+| `night_vfr` | contrôle du VFR de nuit : base vs VAC — **ne jamais écrire** `nightVFR` (voir plus bas) |
 | `fuels` | ce qu'il faut faire du champ `fuels` (voir plus bas) |
 
 Ci-dessous, `{city}` désigne la valeur du champ `city`, `<ICAO>` le code ICAO.
@@ -91,12 +91,10 @@ Ne pas inclure d'information sur les carburants disponibles, sauf s'il y a une p
 Collecter les **champs de sortie** (seuls champs autorisés dans le JSON final, hors champs déjà présents) :
 - `website` : site officiel de l'aérodrome ou du gestionnaire
 - `toilet` : `"public"` | `"private"` | `"no"`
-- `nightVFR` : **ne pas chercher sur le web** — suivre `night_vfr` du contexte, qui vient du point 3
-  de la carte VAC :
-  - `action: "proposer"` → écrire `nightVFR` à la valeur indiquée ;
-  - `action: "conflit"` → **ne rien écrire** : la base contredit la VAC. Omettre le champ et
-    **signaler le conflit** en fin de réponse pour que l'utilisateur tranche ;
-  - `action: "aucune"` → omettre le champ.
+- `nightVFR` : **ne jamais l'écrire**, il vient de la liste SIA des aérodromes agréés VFR de nuit
+  (`scripts/NVFR.json`, synchronisée par `npm run import -- --nvfr`). Si `night_vfr.action` vaut
+  `"signaler"`, la base diverge du point 3 de la VAC : **le signaler en fin de réponse** avec la
+  ligne VAC (`raw`), l'utilisateur tranche.
 - `fuels` : liste parmi `"100LL"`, `"JETA1"`, `"SP98"`, `"UL91"` (SP95 = SP98). Suivre `fuels` du
   contexte, issu du point 10 (AVT) de la carte VAC :
   - si `added` est non vide → écrire `fuels` = la valeur `union` du contexte ;
@@ -111,7 +109,7 @@ Collecter les **champs de sortie** (seuls champs autorisés dans le JSON final, 
 
 ## Étape 2 — Rédiger et écrire le fichier
 
-Le JSON final ne peut contenir **que ces clés** : `codeIcao`, `website`, `toilet`, `fuels`, `nightVFR`, `description`. Tout autre champ est interdit. Les champs listés dans `existing_fields` sont déjà présents et doivent être omis du fichier de sortie.
+Le JSON final ne peut contenir **que ces clés** : `codeIcao`, `website`, `toilet`, `fuels`, `description`. Tout autre champ est interdit. Les champs listés dans `existing_fields` sont déjà présents et doivent être omis du fichier de sortie.
 
 ```json
 {
@@ -119,7 +117,6 @@ Le JSON final ne peut contenir **que ces clés** : `codeIcao`, `website`, `toile
   "website": "https://...",
   "toilet": "public",
   "fuels": ["100LL"],
-  "nightVFR": true,
   "description": {
     "type": "doc",
     "content": [
@@ -153,7 +150,7 @@ Le JSON final ne peut contenir **que ces clés** : `codeIcao`, `website`, `toile
 ```
 
 **Règles** :
-- Omettre `website` et `toilet` si non trouvés ; pour `fuels` et `nightVFR`, suivre le contexte VAC ci-dessus
+- Omettre `website` et `toilet` si non trouvés ; pour `fuels`, suivre le contexte VAC ci-dessus
 - Omettre le nœud `image` de la description si pas d'URL valide
 - Les infos clubs/gestionnaire vont dans le texte des paragraphes, **pas comme clés JSON**
 - Le nœud `image` n'a pas de clé `content`

@@ -140,10 +140,13 @@ Produit `tmp/$ICAO-context.json` et affiche tout ce dont les agents ont besoin :
   Le point « Restaurants » de la VAC n'est pas repris : il dit au mieux « sur AD », sans nom, et
   n'est pas tenu à jour. La règle de tri et de vérification des pistes est dans
   `prompts/activity-format.md` § Pistes.
-- **`night_vfr`** — point 3 de la VAC (« VFR de nuit / Night VFR »), qui **fait autorité**. Le
-  script dit quoi faire : `proposer` (le champ est absent en base → l'écrire), `conflit` (la base
-  contredit la VAC → **ne rien écrire**, signaler à l'utilisateur, il tranche), `aucune` (déjà
-  conforme, ou VAC non concluante comme « Voir Aides lumineuses »).
+- **`night_vfr`** — **contrôle seulement**, le skill n'écrit jamais `nightVFR` : la liste SIA des
+  aérodromes agréés VFR de nuit (`scripts/NVFR.json`) fait référence, et `npm run import -- --nvfr`
+  la synchronise pour tous les terrains (une valeur tirée de la VAC serait écrasée au prochain
+  import). Le script lit le point 3 de la VAC (`full` / `limited` / `none`) et le compare à la base :
+  `signaler` quand ils divergent (ex. LFPT, « Agréé » sur la VAC mais « avec limitations » dans la
+  liste) → le dire à l'utilisateur, il corrige `NVFR.json` s'il le faut ; `aucune` sinon (conforme,
+  ou VAC non concluante comme « Voir Aides lumineuses »).
 - **`fuels`** — point 10 de la VAC (AVT). **Purement additif** : la section AVT est parfois
   incomplète (mesuré : sur 20 aérodromes, 18 identiques à la base, 1 ajout réel, 1 où la VAC
   omettait un carburant pourtant présent). Écrire `union`, ne **jamais** retirer un carburant.
@@ -354,8 +357,8 @@ python3 .claude/skills/populate-airfield/scripts/validate.py $ICAO
 Le script contrôle ce qui est **mécanique** et sort en code 1 s'il trouve quelque chose :
 
 - structure ProseMirror (`paragraph` avec `content`, `image` sans `content`, liens en `marks`),
-  clés autorisées côté aérodrome (`codeIcao`, `website`, `toilet`, `fuels`, `nightVFR`,
-  `description` — toute autre clé est une erreur), types d'activité connus ;
+  clés autorisées côté aérodrome (`codeIcao`, `website`, `toilet`, `fuels`, `description` —
+  toute autre clé est une erreur, `nightVFR` compris), types d'activité connus ;
 - **noms d'activités** : suffixe accolé (`"… (Gordes)"`, `"… — Carpentras"`) ou qualificatif
   promotionnel, signes d'une reformulation — le `name` se recopie verbatim ;
 - images : **réponse HTTP** avec le bon User-Agent par hôte, URL à token, agrégateur. La provenance

@@ -143,25 +143,34 @@ def _item(text, label_rx):
         value = head[:label.start()]
         cut = FOOTER_RX.sub(' ', value)
         truncated = cut != value
-        # Les retours à la ligne sont conservés : `parse_night_vfr` ne lit que la
-        # dernière ligne du bloc, la valeur y étant sur sa propre ligne.
+        # Les retours à la ligne sont conservés (lignes FR puis EN) : les lecteurs
+        # de points qui en ont besoin les recollent eux-mêmes.
         lines = [re.sub(r'\s*←\s*|[ \t]+', ' ', ln).strip() for ln in cut.splitlines()]
         return int(m.group(1)), '\n'.join(ln for ln in lines if ln), truncated
     return None, None, False
 
 
 def parse_night_vfr(text):
-    """Point 3 — True / False / None (non renseigné)."""
+    """Point 3 — 'full' / 'limited' / 'none' (non agréé) / None (non concluant).
+
+    Sert seulement à contrôler la base : la liste SIA (scripts/NVFR.json) fait
+    référence, et les deux divergent parfois (LFPT : « Agréé » sur la VAC,
+    « avec limitations » dans la liste). Le libellé varie — « avec limitations »,
+    « with restrictions », ou une phrase « … est limitée aux pilotes … » sans le
+    mot agréé (LFYG) — et s'étale sur plusieurs lignes : on lit tout le bloc.
+    """
     _, block, _ = _item(text, r'VFR de nuit\s*/\s*Night\s*VFR')
     if not block:
         return None, None
-    value = block.splitlines()[-1]
+    value = ' '.join(block.split())
     low = value.lower()
     if re.search(r'\bnon\s+agr[ée]{2}|not\s+approved', low):
-        return False, value
+        return 'none', value
+    if re.search(r'limitation|restriction|\blimit[ée]e?s?\b|\blimited\b', low):
+        return 'limited', value
     if re.search(r'\bagr[ée]{2}\b|\bapproved\b', low):
-        return True, value
-    # "NIL." et tout autre libellé : non renseigné, on ne touche pas au champ.
+        return 'full', value
+    # "NIL.", « Voir Aides lumineuses »… : non concluant.
     return None, value
 
 

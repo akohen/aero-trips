@@ -85,8 +85,6 @@ def build(icao):
                       'no': 'Toilettes : non'}
         if 'toilet' in airfield:
             badges.append(badge(toilet_map.get(airfield['toilet'], f"Toilettes : {airfield['toilet']}")))
-        if airfield.get('nightVFR'):
-            badges.append(badge('VFR de nuit'))
         website = ''
         if airfield.get('website'):
             w = html.escape(airfield['website'], quote=True)
