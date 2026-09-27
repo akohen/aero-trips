@@ -38,6 +38,7 @@ export type LandingPage = {
 }
 
 const isFood = ([, a]: Nearby) => a.type.includes('food')
+const isBike = ([, a]: Nearby) => a.type.includes('bike')
 const isFoodOrLodging = ([, a]: Nearby) => a.type.includes('food') || a.type.includes('lodging')
 
 export const LANDING_PAGES: LandingPage[] = [
@@ -77,6 +78,18 @@ export const LANDING_PAGES: LandingPage[] = [
         test: () => true,
       },
     ],
+  },
+  {
+    slug: 'location-velo-aerodromes',
+    h1: 'Aérodromes avec location de vélos à proximité',
+    title: (n) => `Location de vélos : ${n} aérodromes où poser l'avion et pédaler | AeroTrips`,
+    description: (n) =>
+      `${n} aérodromes en France avec une location de vélos, des vélos en libre-service ou une voie verte à proximité : adresses, distance depuis la piste et fiches des terrains.`,
+    intro: [
+      "Pas de voiture à l'arrivée ? Un vélo suffit souvent pour rejoindre le centre-ville, la plage ou un site à visiter. Voici les aérodromes pour lesquels la communauté AeroTrips a repéré une location de vélos, des vélos en libre-service ou une voie verte à proximité, avec la distance depuis l'aérodrome.",
+      "Certains loueurs livrent les vélos au terrain, d'autres demandent de réserver, surtout en saison : appelez avant de partir. Vous connaissez une adresse qui manque ? Ajoutez-la depuis la fiche de l'aérodrome.",
+    ],
+    highlights: (nearby) => nearby.filter(isBike),
   },
 ]
 

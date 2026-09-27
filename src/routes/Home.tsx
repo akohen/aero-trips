@@ -35,7 +35,7 @@ const Home = ({ events, airfields }: Data) => {
       <li>Trouver facilement les <Link to="/decouvrir/restaurants-aerodromes">aérodromes avec un restaurant</Link>, un hôtel ou une autre activité à proximité</li>
       <li>Partager les sorties que vous avez réalisées</li>
       <li>Préparer un itinéraire de voyage à proposer à vos passagers</li>
-      <li>Trouver vélos à louer pour organiser des voyages en avion sans avoir besoin de voiture</li>
+      <li>Trouver des <Link to="/decouvrir/location-velo-aerodromes">vélos à louer près des aérodromes</Link> pour organiser des voyages en avion sans avoir besoin de voiture</li>
       <li>Sauvegarder la liste des aérodromes que vous avez visités, ou des châteaux que vous avez survolés!</li>
     </ul>
   </Paper>

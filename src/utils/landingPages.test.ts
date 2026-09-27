@@ -4,6 +4,7 @@ import { buildLandingEntries, buildLandingSeo, LANDING_PAGES } from './landingPa
 
 const restaurants = LANDING_PAGES.find((p) => p.slug === 'restaurants-aerodromes')!
 const nightVFR = LANDING_PAGES.find((p) => p.slug === 'aerodromes-vfr-de-nuit')!
+const bikes = LANDING_PAGES.find((p) => p.slug === 'location-velo-aerodromes')!
 
 const airfield = (codeIcao: string, name: string, latitude: number, status = 'CAP', nightVFR?: Airfield['nightVFR']) =>
   ({ codeIcao, name, status, nightVFR, runways: [], position: { latitude, longitude: 0 } }) as unknown as Airfield
@@ -63,5 +64,14 @@ describe('night VFR landing page', () => {
   it('highlights nearby food and lodging only', () => {
     expect(entries.find((e) => e.airfield.codeIcao === 'LFBB')!.highlights.map(([, , id]) => id)).toEqual(['gite-b'])
     expect(entries.find((e) => e.airfield.codeIcao === 'LFCC')!.highlights).toEqual([])
+  })
+})
+
+describe('bike hire landing page', () => {
+  const entries = buildLandingEntries(bikes, airfields, activities)
+
+  it('lists airfields with a bike activity nearby, highlighting only the bikes', () => {
+    expect(entries.map((e) => e.airfield.codeIcao)).toEqual(['LFBB'])
+    expect(entries[0].highlights.map(([, , id]) => id)).toEqual(['bike-b'])
   })
 })

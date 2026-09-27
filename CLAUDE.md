@@ -67,7 +67,8 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
 - **Landing pages** (`/decouvrir/{slug}`): **`src/utils/landingPages.ts`** (`LANDING_PAGES`) is a React-free config of
   **rules** over the data (`highlights(nearby)` → the activities that qualify an airfield), not hand-picked lists.
   Optional `listed(airfield, highlights)` qualifies on the airfield itself, and `sections` splits the list (first match wins).
-  Pages: `restaurants-aerodromes`, `aerodromes-vfr-de-nuit` (unrestricted first, cards show nearby food/lodging).
+  Pages: `restaurants-aerodromes`, `aerodromes-vfr-de-nuit` (unrestricted first, cards show nearby food/lodging),
+  `location-velo-aerodromes` (activities of type `bike`: hire, self-service bikes, greenways).
   Prerendered to `dist/decouvrir/{slug}/index.html`, rendered in the SPA by
   `routes/LandingPage.tsx`, listed in the sitemap by `npm run export` (also added by hand to `public/sitemap.xml`).
   Uses the airfield page's nearby list (`nearbyActivities`), so an airfield titled "restaurants" is on the hub, and
