@@ -8,6 +8,7 @@ export const AirfieldIcon = ({ airfield, profile, color }: { airfield: Airfield,
     <CommonIcon iconType='airfield' color={color} />
     <CommonIcon iconType={airfield.status} color={color} />
     {airfield.fuels?.includes('100LL') && <CommonIcon iconType='100LL' color={color} />}
+    {airfield.nightVFR && <CommonIcon iconType={`nvfr-${airfield.nightVFR}`} color={color} />}
     {profile && profile.visited?.find(v => v.type == 'airfields' && v.id == airfield.codeIcao) && <CommonIcon iconType='visited' color={color} />}
     {profile && profile.favorites?.find(v => v.type == 'airfields' && v.id == airfield.codeIcao) && <CommonIcon iconType='favorite' color={color} />}
   </>
@@ -18,6 +19,7 @@ export const AirfieldTitle = ({ad, profile}: {ad: Airfield, profile?: Profile}) 
     <CommonIcon iconType={ad.status} /> 
     {ad.name} 
     {ad.fuels?.map(e => <CommonIcon key={e} iconType={e} />)}
+    {ad.nightVFR && <CommonIcon iconType={`nvfr-${ad.nightVFR}`} />}
     {profile && profile.visited?.find(v => v.type == 'airfields' && v.id == ad.codeIcao) && <CommonIcon iconType="visited" />}
     {profile && profile.favorites?.find(v => v.type == 'airfields' && v.id == ad.codeIcao) && <CommonIcon iconType="favorite" />}
   </>)

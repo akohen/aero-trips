@@ -1,9 +1,9 @@
 import {
   IconBan, IconBed, IconBike, IconBuildingAirport, IconBulb, IconBus, IconCar, IconCircleCheck, IconEye,
-  IconForbid, IconGasStation, IconHistory, IconPaw, IconPlane, IconSailboat, IconShoe, IconSoup,
+  IconForbid, IconGasStation, IconHistory, IconMoon, IconMoonStars, IconPaw, IconPlane, IconSailboat, IconShoe, IconSoup,
   IconStar, IconToiletPaper, IconTower
 } from "@tabler/icons-react";
-import { labels } from "./labels";
+import { labels, nightVFRLabels } from "./labels";
 
 export const iconStyle = {
   size:16,
@@ -39,4 +39,7 @@ export const iconsList = new Map<string, {label: string,icon: React.FC,style: ob
   ['visited', {label:label('visited'), icon:IconHistory, style:iconStyle}],
   ['favorite', {label:label('favorite'), icon:IconStar, style:iconStyle}],
   ['airfield', {label:label('airfield'), icon:IconBuildingAirport, style:iconStyle}],
+  // Distinct shapes rather than colors: cards on a photo draw every icon in white
+  ['nvfr-full', {label:nightVFRLabels.full, icon:IconMoonStars, style:iconStyle}],
+  ['nvfr-limited', {label:nightVFRLabels.limited, icon:IconMoon, style:iconStyle}],
 ])

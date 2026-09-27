@@ -1,5 +1,5 @@
 import { Group, Button, Modal, NumberInput, Chip, Divider, Text, Stack, ScrollArea, em } from "@mantine/core"
-import { IconCalendarEvent, IconCircleCheck, IconForbid, IconGasStation, IconHistory, IconMoon, IconRoad, IconStar, IconToiletPaper, IconTrash } from "@tabler/icons-react"
+import { IconCalendarEvent, IconCircleCheck, IconForbid, IconGasStation, IconHistory, IconMoon, IconMoonStars, IconRoad, IconStar, IconToiletPaper, IconTrash } from "@tabler/icons-react"
 import { ADfilter, Activity, Airfield, Profile } from ".."
 import { useMediaQuery } from "@mantine/hooks"
 import { CommonIcon } from "./CommonIcon"
@@ -71,7 +71,7 @@ const AirfieldsFilterModal = ({ airfields, activities, data, profile, filters, s
               <Chip value="toilet" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconToiletPaper size={14} /> Toilettes</span></Chip>
               <Chip value="concrete" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconRoad size={14} /> Piste en dur</span></Chip>
               <Chip value="nvfr" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconMoon size={14} /> VFR de nuit</span></Chip>
-              <Chip value="nvfr-full" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconMoon size={14} /> VFR de nuit sans limitations</span></Chip>
+              <Chip value="nvfr-full" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconMoonStars size={14} /> VFR de nuit sans limitations</span></Chip>
             </Group>
           </Chip.Group>
         </Stack>
