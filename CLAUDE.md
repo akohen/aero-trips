@@ -30,6 +30,11 @@ Firestore collections: `airfields`, `activities`, `trips`, `events`, `changes`, 
 Domain model typed in `src/index.d.ts` (`Airfield` — key = ICAO code `codeIcao`; `Activity` +
 `ActivityType`; `Trip` = list of `steps`; `Event`; `Profile`).
 
+**Night VFR**: `Airfield.nightVFR` is `'full' | 'limited'` (absent = not licensed), from the SIA "Aérodromes agréés VFR
+de nuit" table in the yearly *Complément aux cartes aéronautiques VFR*, kept in `scripts/NVFR.json`. `'limited'` means
+prior approval + local procedures: travelling pilots care. `npm run import -- --nvfr` syncs Firestore both ways (deletes
+the field for airfields that left the list) and bumps `updated_at`. Labels: `nightVFRLabels` (`src/utils/labels.ts`).
+
 **List/map filters live in the URL** (shareable queries): `App.tsx` derives them from the query string on every render
 through `src/utils/filterParams.ts`. Never copy them into React state: react-router v7 applies location changes in a
 transition, so a copy renders ahead of the URL and the list's `page` write (`CardList`/`TableList`) erases them.

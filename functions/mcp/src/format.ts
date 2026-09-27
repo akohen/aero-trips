@@ -77,7 +77,7 @@ export const airfieldRow = (airfield: Airfield, distance?: number) => [
   label(airfield.status),
   runwaySummary(airfield),
   airfield.fuels?.length ? airfield.fuels.join(', ') : undefined,
-  airfield.nightVFR ? 'VFR nuit' : undefined,
+  airfield.nightVFR === 'limited' ? 'VFR nuit (avec limitations)' : airfield.nightVFR ? 'VFR nuit' : undefined,
   airfield.toilet && airfield.toilet !== 'no' ? label(airfield.toilet) : undefined,
   distance !== undefined ? km(distance) : undefined,
   itemImageMarkdown(airfield) || undefined,

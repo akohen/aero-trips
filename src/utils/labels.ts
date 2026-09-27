@@ -29,3 +29,10 @@ export const labels = new Map<string, string>([
   ['favorite', "Favori"],
   ['airfield', "Aérodrome"],
 ])
+
+// Airfield.nightVFR values. 'limited' fields ask travelling pilots for prior approval
+// and a briefing on local procedures (by phone, sometimes a flight with an instructor)
+export const nightVFRLabels: Record<'full' | 'limited', string> = {
+  full: "Agréé VFR de nuit",
+  limited: "Agréé VFR de nuit avec limitations",
+}

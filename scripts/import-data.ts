@@ -8,6 +8,7 @@ import chalk from 'chalk';
 import admin from "firebase-admin";
 import haversineDistance from "haversine-distance";
 import { select, input } from '@inquirer/prompts';
+import { titleCase } from '../src/utils/utils';
 
 
 const changes: {document: string, data: object}[] = []
@@ -117,16 +118,23 @@ const getActivities = async (db: admin.firestore.Firestore) => {
     return activities
 }
 
+// Syncs nightVFR with the SIA list, both ways: airfields that left the list lose the field
 const updateNightVFR = (airfields: Map<string, Airfield>) => {
-    const nvfr = JSON.parse(readFileSync(`./scripts/NVFR.json`, 'utf8'))
-    nvfr.forEach((code: string) => {
-        if(airfields.has(code) && !airfields.get(code)!.nightVFR) {
-            changes.push({document: `airfields/${code}`, data:{nightVFR: true}})
-        } else {
-            console.log(chalk.red(`Airfield ${code} not found`))
-        }
+    const nvfr: { source: string, airfields: Record<string, Airfield['nightVFR']> } =
+        JSON.parse(readFileSync(`./scripts/NVFR.json`, 'utf8'))
+    console.log(`Loaded ${Object.keys(nvfr.airfields).length} NVFR airfields from ${nvfr.source}`)
+    Object.keys(nvfr.airfields).filter((code) => !airfields.has(code))
+        .forEach((code) => console.log(chalk.red(`Airfield ${code} not found`)))
+    airfields.forEach((airfield, code) => {
+        const target = nvfr.airfields[code]
+        if (airfield.nightVFR === target) return
+        console.log(`${chalk.bold.blue(code)} ${titleCase(airfield.name)}: ${airfield.nightVFR} → ${target}`)
+        changes.push({document: `airfields/${code}`, data: {
+            nightVFR: target ?? admin.firestore.FieldValue.delete(),
+            // Clients only fetch docs modified since the snapshot
+            updated_at: admin.firestore.Timestamp.fromDate(new Date()),
+        }})
     })
-    console.log(`Loaded ${airfields.size} airfields`)
 }
 
 const getPOIs = (activities: Map<string, Activity>, search: string) => {

@@ -8,6 +8,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import haversineDistance from 'haversine-distance'
 import { filterActivities, filterAirfields, findNearest } from '../../../src/utils/utils.ts'
 import { getVacUrl } from '../../../src/data/airac.ts'
+import { nightVFRLabels } from '../../../src/utils/labels.ts'
 import { activities, airfields, SITE_URL } from './data.ts'
 import {
   DEFAULT_LIMIT, MAX_DESC_FULL, MAX_RESULTS,
@@ -199,7 +200,7 @@ export function registerTools(server: McpServer) {
       `Pistes : ${airfield.runways.map(r => [r.designation, `${r.length} m`, r.composition].filter(Boolean).join(' ')).join(' | ')}`,
       airfield.fuels?.length ? `Carburants : ${airfield.fuels.join(', ')}` : 'Carburants : non renseignés',
       `Toilettes : ${airfield.toilet && airfield.toilet !== 'no' ? label(airfield.toilet) : 'non'}`,
-      `VFR de nuit : ${airfield.nightVFR ? 'oui' : 'non'}`,
+      `VFR de nuit : ${airfield.nightVFR ? nightVFRLabels[airfield.nightVFR] : 'non'}`,
       airfield.website ? `Site web : ${airfield.website}` : undefined,
       `Carte VAC : ${getVacUrl(airfield.codeIcao)}`,
       itemImageMarkdown(airfield) || undefined,

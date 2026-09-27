@@ -22,7 +22,8 @@ type Airfield = {
   fuels?: string[],
   toilet?:'no'|'public'|'private',
   website?: string,
-  nightVFR?: boolean,
+  /** Night VFR licensing (SIA list): 'limited' needs prior approval and a briefing on local procedures */
+  nightVFR?: 'full' | 'limited',
   updated_at?: Timestamp,
 }
 

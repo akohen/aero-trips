@@ -17,7 +17,7 @@ import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Youtube from '@tiptap/extension-youtube'
 import { deName, findNearest, formatDistance, titleCase } from '../src/utils/utils.ts'
-import { labels } from '../src/utils/labels.ts'
+import { labels, nightVFRLabels } from '../src/utils/labels.ts'
 import { buildItemSeo, countFood, NEARBY_ACTIVITIES_LIMIT, nearbyActivitiesHeading } from '../src/utils/itemSeo.ts'
 import { fillImageAlt } from '../src/utils/descriptionAlt.ts'
 import { buildEmbedHtml } from '../src/utils/embedWidget.ts'
@@ -135,7 +135,7 @@ const buildBody = (
       .join(''),
   )
   parts.push('</ul>')
-  if (af.nightVFR) parts.push('<p>Agréé VFR de nuit</p>')
+  if (af.nightVFR) parts.push(`<p>${esc(nightVFRLabels[af.nightVFR])}</p>`)
   parts.push(
     `<p>${af.fuels && af.fuels.length > 0 ? `Avitaillement : ${esc(af.fuels.join(' '))}` : "Pas d'avitaillement disponible"}</p>`,
   )
