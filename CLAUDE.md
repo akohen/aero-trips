@@ -39,6 +39,13 @@ prior approval + local procedures: travelling pilots care. `npm run import -- --
 the field for airfields that left the list) and bumps `updated_at`. Labels: `nightVFRLabels` (`src/utils/labels.ts`).
 Filters: `nvfr` = any licensing, `nvfr-full` = without limitations (MCP: `night_vfr` / `night_vfr_unrestricted`).
 
+**Webcams**: `Airfield.webcams` (`{url, image?, label?, source?}[]`). `url` is always shown as a link; `image` (https
+only) adds a preview on the airfield page (`components/Webcams.tsx`, falls back to the link if it fails to load).
+Prerender and MCP output links only. Helpers in `src/utils/webcams.ts` (React-free): `isValidWebcam` rejects http
+previews and URLs carrying credentials (`usr=`/`pwd=`, some club IP cameras publish them) — apply it everywhere.
+`npm run import -- --webcams` syncs **Cam-Aéro** both ways (drops cameras flagged `old`), rewrites only
+`source: 'cam-aero'` entries and never touches manual ones; bumps `updated_at`. Sources: `docs/data-sources.md`.
+
 **List/map filters live in the URL** (shareable queries): `App.tsx` derives them from the query string on every render
 through `src/utils/filterParams.ts`. Never copy them into React state: react-router v7 applies location changes in a
 transition, so a copy renders ahead of the URL and the list's `page` write (`CardList`/`TableList`) erases them.

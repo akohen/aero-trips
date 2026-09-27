@@ -9,6 +9,7 @@ import admin from "firebase-admin";
 import haversineDistance from "haversine-distance";
 import { select, input } from '@inquirer/prompts';
 import { titleCase } from '../src/utils/utils';
+import { CAM_AERO_LIST_URL, CamAeroCam, camAeroWebcams, isValidWebcam, mergeWebcams } from '../src/utils/webcams';
 
 
 const changes: {document: string, data: object}[] = []
@@ -137,6 +138,32 @@ const updateNightVFR = (airfields: Map<string, Airfield>) => {
     })
 }
 
+// Firestore doesn't keep map key order: compare webcams by content
+const canonical = (webcams: object[]) => JSON.stringify(webcams.map(w => Object.entries(w).sort()))
+
+// Syncs the Cam-Aéro cameras, both ways: stale or removed ones are dropped, manual entries are kept
+const updateWebcams = async (airfields: Map<string, Airfield>) => {
+    const response = await fetch(CAM_AERO_LIST_URL)
+    if (!response.ok) throw new Error(`Cam-Aéro list: HTTP ${response.status}`)
+    const { cams }: { cams: CamAeroCam[] } = await response.json()
+    const byAirfield = camAeroWebcams(cams)
+    console.log(`Loaded ${cams.length} Cam-Aéro cameras, ${byAirfield.size} airfields with a fresh one`)
+    byAirfield.forEach((_, code) => {
+        if (!airfields.has(code)) console.log(chalk.red(`Airfield ${code} not found`))
+    })
+    airfields.forEach((airfield, code) => {
+        const imported = (byAirfield.get(code) ?? []).filter(isValidWebcam)
+        const webcams = mergeWebcams(airfield.webcams, imported)
+        if (canonical(webcams) === canonical(airfield.webcams ?? [])) return
+        console.log(`${chalk.bold.blue(code)} ${titleCase(airfield.name)}: ${airfield.webcams?.length ?? 0} → ${webcams.length} webcam(s)`)
+        changes.push({document: `airfields/${code}`, data: {
+            webcams: webcams.length > 0 ? webcams : admin.firestore.FieldValue.delete(),
+            // Clients only fetch docs modified since the snapshot
+            updated_at: admin.firestore.Timestamp.fromDate(new Date()),
+        }})
+    })
+}
+
 const getPOIs = (activities: Map<string, Activity>, search: string) => {
     const pois = JSON.parse(readFileSync(`./scripts/POI.json`, 'utf8'))
     console.log(`Loaded ${pois.length} POIs`)
@@ -236,6 +263,12 @@ if(process.argv.includes('--nvfr')) {
     updateNightVFR(airfields)
 }
 
+if(process.argv.includes('--webcams')) {
+    flags += 1
+    console.log(chalk.green('Updating webcams'))
+    await updateWebcams(await getAirfields(db))
+}
+
 if(process.argv.includes('--poi')) {
     flags += 1
 
@@ -275,6 +308,7 @@ if(flags === 0) {
         message: 'What would you like to do?',
         choices: [
             { name: 'Update NVFR airfields', value: 'nvfr' },
+            { name: 'Update Cam-Aéro webcams', value: 'webcams' },
             { name: 'Import POIs', value: 'poi' },
             { name: 'Import files', value: 'import' },
             { name: 'Exit', value: 'exit' },
@@ -289,6 +323,11 @@ if(flags === 0) {
         console.log(chalk.green('Updating NVFR'))
         const airfields = await getAirfields(db)
         updateNightVFR(airfields)
+    }
+
+    if (action === 'webcams') {
+        console.log(chalk.green('Updating webcams'))
+        await updateWebcams(await getAirfields(db))
     }
 
     if (action === 'poi') {

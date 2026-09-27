@@ -24,7 +24,19 @@ type Airfield = {
   website?: string,
   /** Night VFR licensing (SIA list): 'limited' needs prior approval and a briefing on local procedures */
   nightVFR?: 'full' | 'limited',
+  webcams?: Webcam[],
   updated_at?: Timestamp,
+}
+
+type Webcam = {
+  /** Page shown to users (the image itself when there is none): always rendered as a link */
+  url: string,
+  /** Direct https snapshot: enables the preview. Absent = link only */
+  image?: string,
+  /** Short label when an airfield has several: "Piste 29", "Parking" */
+  label?: string,
+  /** Set by imports, which only ever rewrite their own entries; absent = manual */
+  source?: 'cam-aero',
 }
 
 type Runway = {

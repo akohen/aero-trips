@@ -18,6 +18,7 @@ import { useDraftTrip } from "../hooks/useDraftTrip"
 import { Nearby } from "./Nearby"
 import { NearbyTrips } from "./ActivityUtils"
 import { ToiletText } from "./AirfieldUtils"
+import { Webcams } from "./Webcams"
 // Lazy: only webmasters open it, keep it out of the airfield page bundle.
 const EmbedModal = lazy(() => import("./EmbedModal"))
 
@@ -99,6 +100,7 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
         </Button>
       )}
       {item.website && <Text><b>Site internet</b> <Link to={item.website}>{shortener(item.website, 35)}</Link></Text>}
+      {('codeIcao' in item) && <Webcams webcams={item.webcams} />}
       {('codeIcao' in item) && (
         <Anchor component="button" type="button" size="sm" ta="left" onClick={() => setEmbedHash(EMBED_HASH)}>
           <IconCode size={16} style={{ verticalAlign: 'middle' }} /> Intégrer sur votre site

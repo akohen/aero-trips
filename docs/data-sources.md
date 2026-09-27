@@ -85,18 +85,21 @@ All fetched by `.claude/skills/populate-airfield/scripts/sources.py` into `tmp/<
 
 ## Webcams
 
-Not in the data model yet. Rule of thumb: preview an image only when its capture time is known;
-otherwise link to the page.
+Stored in `Airfield.webcams` (see CLAUDE.md § Webcams). Rule of thumb: preview an image only when its
+capture time is known; otherwise link to the page.
 
 ### Cam-Aéro — https://cam-aero.eu/
 - Coverage (2026-09-27): 108 cameras on 79 French airfields; 78 are in our data, 62 of them were up to date.
 - Access: JSON list `https://cam-aero.eu/raspicamaero/mosaic/list` → `cams[] {id, lfxx_acb, time, old, replay}`;
   `lfxx_acb` = `{ICAO}_{Club}` (several cameras per airfield possible, some non-ICAO ids like `LF4724_…`).
   Latest image: `https://cam-aero.eu/raspicamaero/{lfxx_acb}` (JPEG, https, `no-cache`, METAR stamped on it).
+  Pages: `…/{lfxx_acb}/replay` (last hours, when `replay` is true) and `…/{lfxx_acb}/img` (latest image).
+  No CORS on the list: the browser can't read it, freshness comes from the sync.
 - Freshness: `time` (capture, epoch s) + `old` flag for cameras that stopped updating.
 - Rights: not asked yet. **Ask before hotlinking** (small non-profit project; offer a backlink).
-- Used by: — (planned import script).
-- Pitfalls: no public page per camera found yet (link target to decide).
+- Used by: `npm run import -- --webcams` (`camAeroWebcams` in `src/utils/webcams.ts`). Dry run 2026-09-27:
+  76 cameras on 61 airfields, all codes known.
+- Pitfalls: ids that aren't ICAO codes (ULM fields, `LF4724_…`) are skipped.
 
 ### Club websites (manual entry)
 - Examples: LFPZ (AC Courbevoie, image on `liste.petitpilote.com`), LFOF Alençon (WebP, refreshed every minute),

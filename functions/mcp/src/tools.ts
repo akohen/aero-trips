@@ -9,6 +9,7 @@ import haversineDistance from 'haversine-distance'
 import { filterActivities, filterAirfields, findNearest } from '../../../src/utils/utils.ts'
 import { getVacUrl } from '../../../src/data/airac.ts'
 import { nightVFRLabels } from '../../../src/utils/labels.ts'
+import { isValidWebcam, webcamLabel } from '../../../src/utils/webcams.ts'
 import { activities, airfields, SITE_URL } from './data.ts'
 import {
   DEFAULT_LIMIT, MAX_DESC_FULL, MAX_RESULTS,
@@ -101,6 +102,14 @@ const RESPONSE_RULES =
 const TRIPS_EVENTS_NOTE =
   `Sorties (trips) et événements : non disponibles via ce serveur MCP ; `
   + `consulter la fiche de l'aérodrome sur ${SITE_URL} pour les voir.`
+
+// Links only: a snapshot relayed by a model would be taken for the current conditions
+const webcamsLine = (airfield: Airfield) => {
+  const webcams = (airfield.webcams ?? []).filter(isValidWebcam)
+  return webcams.length > 0
+    ? `Webcams (indicatives) : ${webcams.map((w, i) => `[${webcamLabel(w, i, webcams.length)}](${w.url})`).join(', ')}`
+    : undefined
+}
 
 export function registerTools(server: McpServer) {
   server.registerTool('search_airfields', {
@@ -206,6 +215,7 @@ export function registerTools(server: McpServer) {
       `VFR de nuit : ${airfield.nightVFR ? nightVFRLabels[airfield.nightVFR] : 'non'}`,
       airfield.website ? `Site web : ${airfield.website}` : undefined,
       `Carte VAC : ${getVacUrl(airfield.codeIcao)}`,
+      webcamsLine(airfield),
       itemImageMarkdown(airfield) || undefined,
     ].filter(Boolean) as string[]
 

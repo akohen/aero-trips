@@ -18,6 +18,7 @@ import Image from '@tiptap/extension-image'
 import Youtube from '@tiptap/extension-youtube'
 import { deName, findNearest, formatDistance, titleCase } from '../src/utils/utils.ts'
 import { labels, nightVFRLabels } from '../src/utils/labels.ts'
+import { isValidWebcam, webcamLabel } from '../src/utils/webcams.ts'
 import { buildItemSeo, countFood, NEARBY_ACTIVITIES_LIMIT, nearbyActivitiesHeading } from '../src/utils/itemSeo.ts'
 import { fillImageAlt } from '../src/utils/descriptionAlt.ts'
 import { buildEmbedHtml } from '../src/utils/embedWidget.ts'
@@ -141,6 +142,11 @@ const buildBody = (
   )
   if (af.toilet === 'private') parts.push('<p>Toilettes privées</p>')
   if (af.toilet === 'public') parts.push('<p>Toilettes publiques</p>')
+  // Links only: a hotlinked image in static HTML would show whatever frame the crawler caught
+  const webcams = (af.webcams ?? []).filter(isValidWebcam)
+  if (webcams.length > 0) {
+    parts.push(`<p>${webcams.map((w, i) => `<a href="${esc(w.url)}" rel="nofollow">${esc(webcamLabel(w, i, webcams.length))}</a>`).join(' - ')}</p>`)
+  }
 
   const descHtml = descriptionToHtml(af.description, ville)
   if (descHtml) parts.push(`<div>${descHtml}</div>`)
