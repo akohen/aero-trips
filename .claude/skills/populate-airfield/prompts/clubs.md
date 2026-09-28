@@ -59,6 +59,21 @@ visiteurs (redevances, où se garer, qui prévenir).
 | `poi` | lieu survolé en vol découverte (château, lac, viaduc…) — souvent à 20-50 km |
 | `other` | activité conseillée aux visiteurs (randonnée, baignade, musée de l'air…) |
 
+**Une webcam** (page « webcam », « météo », image de la piste rafraîchie) → `webcams`, pour la
+fiche aérodrome :
+
+- `url` : la page du club qui montre la caméra, `https` effective (`check_url.py`) ;
+- `image` : l'URL **directe** de l'image, si la page en affiche une (`src` de la balise `<img>`,
+  lue dans le HTML de la page), en `https` uniquement — une image `http://` se note sans `image` ;
+- `label` : seulement si le club en a plusieurs (« Piste 29 », « Parking ») ;
+- `source` : la page où elle figure ; `note` : fréquence de rafraîchissement annoncée, ou tout
+  signe que l'image est figée (date incrustée ancienne).
+
+⚠️ Certaines caméras IP sont publiées avec leur **identifiant et mot de passe dans l'URL**
+(`usr=`, `pwd=`, `user:pass@`). Ne **jamais** recopier une telle URL, ni dans `url` ni dans
+`image` : noter seulement dans `note` que la caméra existe. Ignorer aussi les caméras
+`cam-aero.eu`, déjà synchronisées par ailleurs.
+
 Ne pas noter ce qui ne sert pas un pilote de passage : vie du club, tarifs de formation, calendrier
 des sorties.
 
@@ -84,6 +99,14 @@ des sorties.
       "date": "2024"
     }
   ],
+  "webcams": [
+    {
+      "url": "https://aeroclub-dinard.com/webcam",
+      "image": "https://aeroclub-dinard.com/webcam/piste.jpg",
+      "source": "https://aeroclub-dinard.com/webcam",
+      "note": "Rafraîchie toutes les 5 minutes selon la page."
+    }
+  ],
   "leads": [
     {
       "name": "Taxi Émeraude",
@@ -100,7 +123,7 @@ des sorties.
 - `date` : ce que porte la page, sinon `null`. Ne jamais la deviner.
 - `text` et `note` : reformulés sobrement, en une ou deux phrases ; un nom de lieu reste verbatim.
 - Un club sans site trouvé figure quand même dans `clubs`, avec `website: null`.
-- Aucune note trouvée : `airfield_facts` et `leads` restent des tableaux vides — c'est une réponse
+- Aucune note trouvée : `airfield_facts`, `webcams` et `leads` restent des tableaux vides — c'est une réponse
   valable.
 
 Écris ce JSON dans `tmp/<ICAO>-club-notes.json`.

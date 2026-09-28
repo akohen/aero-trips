@@ -59,3 +59,9 @@ export const mergeWebcams = (current: Webcam[] | undefined, imported: Webcam[]) 
 /** Displayed name: the label, or "Webcam" / "Webcam 2" when an airfield has several */
 export const webcamLabel = (webcam: Webcam, index: number, count: number) =>
   webcam.label ?? (count > 1 ? `Webcam ${index + 1}` : 'Webcam')
+
+/** Adds proposed webcams to an airfield's list (file imports are additive), skipping known url/image. */
+export const appendWebcams = (current: Webcam[] | undefined, added: Webcam[]) => {
+  const known = new Set((current ?? []).flatMap(w => [w.url, w.image]).filter(Boolean))
+  return [...current ?? [], ...added.filter(w => !known.has(w.url) && !(w.image && known.has(w.image)))]
+}

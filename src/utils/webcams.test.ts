@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { camAeroWebcams, hasCredentials, isValidWebcam, mergeWebcams } from './webcams'
+import { appendWebcams, camAeroWebcams, hasCredentials, isValidWebcam, mergeWebcams } from './webcams'
 
 const cam = (lfxx_acb: string, extra = {}) => ({ id: lfxx_acb, lfxx_acb, time: 1790510400, old: false, replay: true, ...extra })
 
@@ -59,5 +59,20 @@ describe('mergeWebcams', () => {
   it('lets a manual entry win on the same image', () => {
     const edited = { ...imported, source: undefined, label: 'Piste 29' }
     expect(mergeWebcams([edited], [imported])).toEqual([edited])
+  })
+})
+
+describe('appendWebcams', () => {
+  const synced = { url: 'https://cam-aero.eu/raspicamaero/LFGO_X/replay', image: 'https://cam-aero.eu/raspicamaero/LFGO_X', source: 'cam-aero' as const }
+  const club = { url: 'https://club.fr/webcam', image: 'https://club.fr/cam.jpg' }
+
+  it('keeps the current list and appends new webcams', () => {
+    expect(appendWebcams([synced], [club])).toEqual([synced, club])
+    expect(appendWebcams(undefined, [club])).toEqual([club])
+  })
+
+  it('skips webcams already known by page or image', () => {
+    expect(appendWebcams([club], [{ url: 'https://club.fr/webcam' }])).toEqual([club])
+    expect(appendWebcams([club], [{ url: 'https://club.fr/autre-page', image: 'https://club.fr/cam.jpg' }])).toEqual([club])
   })
 })

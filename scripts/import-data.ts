@@ -9,7 +9,7 @@ import admin from "firebase-admin";
 import haversineDistance from "haversine-distance";
 import { select, input } from '@inquirer/prompts';
 import { titleCase } from '../src/utils/utils';
-import { CAM_AERO_LIST_URL, CamAeroCam, camAeroWebcams, isValidWebcam, mergeWebcams } from '../src/utils/webcams';
+import { appendWebcams, CAM_AERO_LIST_URL, CamAeroCam, camAeroWebcams, isValidWebcam, mergeWebcams } from '../src/utils/webcams';
 
 
 const changes: {document: string, data: object}[] = []
@@ -223,6 +223,8 @@ const importAirfields = async (filePath: string) => {
         await copyDescriptionImages(airfield.description)
         const existing = (await db.doc(docPath).get()).data() ?? null
         const data = { ...airfield as unknown as Record<string, unknown>, updated_at: admin.firestore.Timestamp.fromDate(new Date()) }
+        // A merge write replaces arrays whole: append, or the file would drop the synced Cam-Aéro cameras
+        if (airfield.webcams) data.webcams = appendWebcams((existing as Airfield | null)?.webcams, airfield.webcams.filter(isValidWebcam))
         showDiff(docPath, existing as Record<string, unknown> | null, data)
         changes.push({document: docPath, data})
     }

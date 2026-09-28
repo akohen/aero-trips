@@ -237,12 +237,14 @@ def build(icao, use_vac=True, manual_center=None):
         'bbox': {'lat_min': box[0], 'lat_max': box[1], 'lon_min': box[2], 'lon_max': box[3]},
         'category_radius_km': c.CATEGORY_RADIUS_KM,
         'radius_tolerance_km': c.RADIUS_TOLERANCE_KM,
-        'existing_fields': [k for k in entry if k not in c.PROTECTED_FIELDS],
+        # `webcams` est additif (l'import ajoute) : l'agent peut en proposer de nouvelles
+        'existing_fields': [k for k in entry if k not in c.PROTECTED_FIELDS and k != 'webcams'],
         'existing_activities': nearby,
         'clubs': clubs,
         'clubs_info': clubs_info,
         'night_vfr': nvfr,
         'fuels': fuels,
+        'webcams': {'existing': entry.get('webcams') or []},
     }
 
 
@@ -288,6 +290,11 @@ def report(ctx):
         A('  → rien à ajouter (la section AVT est parfois incomplète : ne jamais retirer)')
     if f['raw']:
         A(f"  AVT : {f['raw'][:150]}")
+    cams = ctx['webcams']['existing']
+    A(f"Webcams en base ({len(cams)}) — n'en proposer que de nouvelles "
+      "(jamais cam-aero.eu, gérées par `npm run import -- --webcams`) :")
+    for w in cams:
+        A(f"  - {w.get('label') or w['url']}  [{w.get('source', 'manuelle')}]")
     A('')
     ci = ctx['clubs_info']
     A(f"CLUBS ({len(ctx['clubs'])}) — source : {' + '.join(ci['sources']) or 'aucune'} "

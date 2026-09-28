@@ -147,6 +147,10 @@ Produit `tmp/$ICAO-context.json` et affiche tout ce dont les agents ont besoin :
   `signaler` quand ils divergent (ex. LFPT, « Agréé » sur la VAC mais « avec limitations » dans la
   liste) → le dire à l'utilisateur, il corrige `NVFR.json` s'il le faut ; `aucune` sinon (conforme,
   ou VAC non concluante comme « Voir Aides lumineuses »).
+- **`webcams`** — webcams déjà en base (dont celles de Cam-Aéro, synchronisées par
+  `npm run import -- --webcams`). Le champ est **additif** : l'agent aérodrome n'écrit que les
+  **nouvelles**, trouvées sur les sites de clubs (éclaireur) ou par recherche ; l'import les ajoute
+  à la liste existante. Jamais de caméra `cam-aero.eu`, jamais d'URL portant des identifiants.
 - **`fuels`** — point 10 de la VAC (AVT). **Purement additif** : la section AVT est parfois
   incomplète (mesuré : sur 20 aérodromes, 18 identiques à la base, 1 ajout réel, 1 où la VAC
   omettait un carburant pourtant présent). Écrire `union`, ne **jamais** retirer un carburant.
@@ -176,6 +180,7 @@ en tire :
   reprend au lieu de les rechercher ;
 - `airfield_facts` : ce qui concerne le terrain (vélos ou voiture du club, taxi, restaurant,
   carburant, accueil), pour la fiche aérodrome ;
+- `webcams` : les caméras que publient les clubs, candidates pour le champ `webcams` ;
 - `leads` : les lieux que les clubs recommandent, chacun adressé à un agent d'activités.
 
 Chaque note porte sa page source et la date qu'elle affiche : les pages de club vieillissent, les
@@ -357,8 +362,11 @@ python3 .claude/skills/populate-airfield/scripts/validate.py $ICAO
 Le script contrôle ce qui est **mécanique** et sort en code 1 s'il trouve quelque chose :
 
 - structure ProseMirror (`paragraph` avec `content`, `image` sans `content`, liens en `marks`),
-  clés autorisées côté aérodrome (`codeIcao`, `website`, `toilet`, `fuels`, `description` —
-  toute autre clé est une erreur, `nightVFR` compris), types d'activité connus ;
+  clés autorisées côté aérodrome (`codeIcao`, `website`, `toilet`, `fuels`, `webcams`,
+  `description` — toute autre clé est une erreur, `nightVFR` compris), types d'activité connus ;
+- **webcams** : forme (image `https`, pas d'identifiants, pas de `cam-aero.eu`, pas déjà en base),
+  page et image en 200, image de type `image/*`, et **âge de l'image** (`Last-Modified`) : au-delà
+  de 24 h, `⚠ FIGÉE ?` — caméra probablement en panne, à trancher en relecture ;
 - **noms d'activités** : suffixe accolé (`"… (Gordes)"`, `"… — Carpentras"`) ou qualificatif
   promotionnel, signes d'une reformulation — le `name` se recopie verbatim ;
 - images : **réponse HTTP** avec le bon User-Agent par hôte, URL à token, agrégateur. La provenance
@@ -390,7 +398,9 @@ python3 .claude/skills/populate-airfield/scripts/preview.py $ICAO
 ```
 
 Génère `tmp/$ICAO-preview.html` : fiches rendues, carte Leaflet (aérodrome + activités numérotées),
-et badges d'alerte (hors rayon, doublon possible avec la base, sans image).
+badges d'alerte (hors rayon, doublon possible avec la base, sans image), et les **webcams
+proposées** dans la carte de l'aérodrome : image en direct, âge (`Last-Modified`, « date inconnue »
+quand la caméra n'en publie pas), lien vers la page, case « Retirer ».
 
 Indiquer à l'utilisateur d'ouvrir le fichier (`open tmp/$ICAO-preview.html`), de **cocher** les
 activités à supprimer / améliorer, puis de **coller le bloc généré** dans le chat.
@@ -400,12 +410,16 @@ activités à supprimer / améliorer, puis de **coller le bloc généré** dans 
 Ne se déclenche **que si l'utilisateur colle un bloc de retours** :
 
 ```
+WEBCAMS À RETIRER: https://…, https://…
 SUPPRIMER: id-1, id-2
 AMÉLIORER:
 - id-3 : note explicative
 ```
 
-Les deux sections sont indépendantes.
+Les sections sont indépendantes.
+
+**`WEBCAMS À RETIRER`** : retirer de `webcams` dans `tmp/$ICAO-airfield.json` les entrées dont
+l'`url` est listée (supprimer la clé si la liste devient vide).
 
 **`SUPPRIMER`** :
 
@@ -433,7 +447,8 @@ nouveau tour. Répéter tant que l'utilisateur renvoie des retours.
 
 Une fois les données validées, **proposer** l'import dans Firestore. L'outil est `npm run import`
 (`scripts/import-data.ts`, cible **production**) : écriture en **merge** (les champs absents ne sont
-pas supprimés), diff colorisé avant application. Le suffixe du fichier détermine la collection :
+pas supprimés), diff colorisé avant application. Exception : `webcams` est **ajouté** à la liste
+en base (sans doublon), jamais substitué — les caméras Cam-Aéro synchronisées sont conservées. Le suffixe du fichier détermine la collection :
 `*airfield.json` → `airfields`, `*activities.json` → `activities`.
 
 ```bash

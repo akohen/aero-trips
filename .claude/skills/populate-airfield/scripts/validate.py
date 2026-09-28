@@ -12,7 +12,9 @@ Trois contrôles :
      jugée ici — la règle unique est celle d'prompts/activity-format.md, qui
      accepte l'image du sujet lui-même quel que soit l'hébergeur (CDN de CMS,
      maison-mère…). Le script classe donc en OK / REJET / À JUGER.
-  3. Distances au point de référence AIP, par rapport au rayon de la catégorie.
+  3. Webcams proposées : forme (même règle que le site), réponse HTTP de la page
+     et de l'image, doublon avec la base, âge de l'image (`Last-Modified`).
+  4. Distances au point de référence AIP, par rapport au rayon de la catégorie.
 """
 import json
 import os
@@ -23,7 +25,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common as c  # noqa: E402
 
 # nightVFR n'en fait pas partie : il vient de la liste SIA via `npm run import -- --nvfr`
-AIRFIELD_ALLOWED_KEYS = {'codeIcao', 'website', 'toilet', 'fuels', 'description'}
+AIRFIELD_ALLOWED_KEYS = {'codeIcao', 'website', 'toilet', 'fuels', 'webcams', 'description'}
 
 # URLs signées / à durée de vie limitée : expireront avant même la recopie sur
 # le serveur de l'application (cf. activity-format.md).
@@ -190,7 +192,47 @@ def main():
     if activities:
         print(f'\n  {n_missing}/{len(activities)} activité(s) sans image.')
 
-    # --- 3. Distances ---
+    # --- 3. Webcams ---
+    cams = (airfield or {}).get('webcams')
+    if cams is not None:
+        print('\n=== Webcams proposées ===')
+        if not isinstance(cams, list) or not cams:
+            problem('aérodrome : `webcams` doit être un tableau non vide (sinon omettre la clé).')
+            cams = []
+        known = {u for w in entry.get('webcams') or [] for u in (w.get('url'), w.get('image')) if u}
+        for w in cams:
+            where = f"webcam {w.get('label') or w.get('url')!r}" if isinstance(w, dict) else 'webcam'
+            shape = c.webcam_url_problems(w)
+            for p in shape:
+                problem(f'{where} : {p}.')
+            if shape:
+                continue
+            if {w.get('url'), w.get('image')} & known:
+                problem(f'{where} : déjà en base — ne proposer que de nouvelles webcams.')
+            page = c.http_status(w['url'])
+            if page != 200:
+                problem(f'{where} : page HTTP {page}.')
+            print(f"  {'✓' if page == 200 else '✗'} page  HTTP {page:<4} {w['url']}")
+            if not w.get('image'):
+                print('      (lien seul, sans aperçu)')
+                continue
+            status, ctype, age = c.webcam_image_info(w['image'])
+            if status != 200:
+                problem(f'{where} : image HTTP {status} — retirer `image` (lien seul).')
+            elif not (ctype or '').startswith('image/'):
+                problem(f'{where} : `image` renvoie {ctype!r}, pas une image — une page ou un '
+                        'lecteur se met dans `url`, sans `image`.')
+            stale = age is not None and age > c.WEBCAM_STALE_H
+            mark = '✓' if status == 200 and not stale else ('?' if status == 200 else '✗')
+            print(f"  {mark} image HTTP {status:<4} {ctype or '-'}  âge : {c.format_age(age)}"
+                  + ('   <-- FIGÉE ?' if stale else ''))
+            print(f"      {w['image']}")
+            if stale:
+                # Jugement : une caméra en panne sert encore de lien, pas d'aperçu.
+                print(f'      ⚠ image vieille de {c.format_age(age)} — caméra en panne ? '
+                      'À trancher en relecture (retirer `image`, ou l\'entrée).')
+
+    # --- 4. Distances ---
     if activities:
         print('\n=== Distance au point de référence AIP (décroissante) ===')
         print('  NB : le point AIP peut être à ~1 km du parking avions ; le rayon est')

@@ -33,6 +33,16 @@ def check(notes):
             problems.append(f"fait {f.get('text', '')[:40]!r} : topic {f.get('topic')!r} inconnu")
         if not f.get('source'):
             problems.append(f"fait {f.get('text', '')[:40]!r} : sans `source`")
+    if not isinstance(notes.get('webcams', []), list):
+        problems.append('`webcams` pas un tableau')
+    for w in notes.get('webcams') or []:
+        if not isinstance(w, dict):
+            problems.append(f'webcam non-objet : {w!r}')
+            continue
+        # `source` et `note` sont des notes d'éclaireur, pas des champs de la fiche
+        shape = {k: v for k, v in w.items() if k not in ('source', 'note')}
+        for p in c.webcam_url_problems(shape):
+            problems.append(f"webcam {w.get('url')!r} : {p}")
     for x in notes.get('leads') or []:
         if x.get('for_agent') not in AGENTS:
             problems.append(f"piste {x.get('name')!r} : for_agent {x.get('for_agent')!r} inconnu")
@@ -51,6 +61,10 @@ def report(notes):
     A(f'  {len(facts)} info(s) sur le terrain :')
     for f in facts:
         A(f"    [{f.get('topic')}] {f.get('text')}  ({f.get('date') or 'non daté'})")
+    cams = notes.get('webcams') or []
+    A(f'  {len(cams)} webcam(s) :')
+    for w in cams:
+        A(f"    📷 {w.get('label') or w.get('url')}  (image : {w.get('image') or 'aucune'})")
     leads = notes.get('leads') or []
     A(f'  {len(leads)} piste(s) de lieux :')
     for x in leads:

@@ -49,6 +49,46 @@ def osm_link(pos):
     return f'<a href="{url}" target="_blank" rel="noopener">{lat}, {lon}</a>'
 
 
+def webcams_block(proposed, existing):
+    """Webcams proposées (cochables) et déjà en base (pour mémoire), image en direct."""
+    if not proposed:
+        return ''
+    cards = []
+    for i, w in enumerate(proposed):
+        url = w.get('url') or ''
+        label = w.get('label') or (f'Webcam {i + 1}' if len(proposed) > 1 else 'Webcam')
+        u = html.escape(url, quote=True)
+        flags = ''.join(badge(p, 'warn') for p in c.webcam_url_problems(w))
+        img = '<p class="hint">lien seul, sans aperçu</p>'
+        if w.get('image') and not flags:
+            status, ctype, age = c.webcam_image_info(w['image'])
+            stale = age is not None and age > c.WEBCAM_STALE_H
+            if status != 200 or not (ctype or '').startswith('image/'):
+                flags += badge(f'image : HTTP {status} {ctype or ""}'.strip(), 'warn')
+            flags += badge(f'image : {c.format_age(age)}', 'warn' if stale or age is None else 'badge')
+            src = html.escape(w['image'], quote=True)
+            img = (f'<img src="{src}" alt="{html.escape(label, quote=True)}" loading="lazy" '
+                   'onerror="this.replaceWith(Object.assign(document.createElement(\'p\'),'
+                   '{className:\'hint\',textContent:\'image indisponible\'}))">')
+        cards.append(f'''<article class="card webcam" data-url="{u}">
+          <div class="cardhead"><h3>📷 {html.escape(label)}</h3></div>
+          <div class="badges">{flags}</div>
+          {img}
+          <p class="website"><a href="{u}" target="_blank" rel="noopener nofollow">{html.escape(url)}</a></p>
+          <div class="controls">
+            <label class="chk del"><input type="checkbox" class="c-wdel"> 🗑 Retirer</label>
+          </div>
+        </article>''')
+    known = ''
+    if existing:
+        known = ('<p class="hint">Déjà en base : '
+                 + ', '.join(html.escape(w.get('label') or w.get('url', '')) for w in existing) + '</p>')
+    return f'''<h3>Webcams proposées ({len(proposed)})</h3>
+      <p class="hint">L'âge vient de l'en-tête Last-Modified ; une image figée depuis des jours
+      trahit une caméra en panne.</p>
+      <div class="grid">{''.join(cards)}</div>{known}'''
+
+
 def dup_index(activities, existing):
     """id d'activité → (nom en base, id en base) pour les doublons probables."""
     out = {}
@@ -95,6 +135,7 @@ def build(icao):
       <div class="badges">{''.join(badges) or '<em>aucun champ</em>'}</div>
       {website}
       <div class="desc">{render(airfield.get('description'))}</div>
+      {webcams_block(airfield.get('webcams'), entry.get('webcams') or [])}
     </section>''')
 
     map_points = []
@@ -165,7 +206,7 @@ TOOLBAR = '''
 <div class="toolbar">
   <div class="tbrow">
     <strong>Retours de relecture</strong>
-    <span class="hint">Coche les cartes (Supprimer / À améliorer), puis copie le bloc et colle-le dans le chat.</span>
+    <span class="hint">Coche les cartes (Supprimer / À améliorer / Retirer), puis copie le bloc et colle-le dans le chat.</span>
     <button id="copybtn" onclick="copyOut()">📋 Copier</button>
   </div>
   <textarea id="out" readonly rows="4" onclick="this.select()"></textarea>
@@ -181,10 +222,13 @@ function build(){
     if(a.querySelector('.c-del').checked){ del.push(id); }
     if(a.querySelector('.c-imp').checked){ imp.push('- '+id+(note?' : '+note:'')+'  ('+name+')'); }
   });
+  const cams=[...document.querySelectorAll('article.webcam')]
+    .filter(w=>w.querySelector('.c-wdel').checked).map(w=>w.dataset.url);
   let out='';
+  if(cams.length) out+='WEBCAMS À RETIRER: '+cams.join(', ')+'\n';
   if(del.length) out+='SUPPRIMER: '+del.join(', ')+'\n';
   if(imp.length) out+='AMÉLIORER:\n'+imp.join('\n')+'\n';
-  if(!out) out='(rien de coché — coche « Supprimer » ou « À améliorer » sur les cartes)';
+  if(!out) out='(rien de coché — coche « Supprimer », « À améliorer » ou « Retirer » sur les cartes)';
   document.getElementById('out').value=out;
 }
 function copyOut(){
@@ -194,7 +238,7 @@ function copyOut(){
     b.textContent='✓ Copié'; setTimeout(()=>b.textContent=o,1500);
   });
 }
-document.addEventListener('change',e=>{ if(e.target.matches('.c-del,.c-imp')) build(); });
+document.addEventListener('change',e=>{ if(e.target.matches('.c-del,.c-imp,.c-wdel')) build(); });
 document.addEventListener('input',e=>{ if(e.target.matches('.note')) build(); });
 document.addEventListener('DOMContentLoaded',build);
 </script>'''
@@ -276,6 +320,8 @@ CSS = '''
            font-size: .85rem; }
   article.activity:has(.c-del:checked) { background: #fff0f0; border-color: #f3b0b0; opacity: .75; }
   article.activity:has(.c-imp:checked) { background: #fff7ee; border-color: #f6c68a; }
+  article.webcam:has(.c-wdel:checked) { background: #fff0f0; border-color: #f3b0b0; opacity: .75; }
+  .hint { color: #666; font-size: .85rem; }
   .toolbar { position: fixed; left: 0; right: 0; bottom: 0; background: #fff;
               border-top: 2px solid #1971c2; box-shadow: 0 -4px 12px rgba(0,0,0,.08);
               padding: .7rem 1.5rem; z-index: 10; }

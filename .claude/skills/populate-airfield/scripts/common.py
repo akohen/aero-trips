@@ -13,6 +13,8 @@ import time
 import unicodedata
 import urllib.error
 import urllib.request
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from urllib.parse import urlsplit
 
 AIRFIELDS_JSON = 'src/data/airfields.json'
@@ -282,6 +284,80 @@ def http_status(url, retries=3):
             continue
         return last
     return last
+
+
+# --- Webcams (Airfield.webcams, cf. src/utils/webcams.ts) ---
+
+WEBCAM_KEYS = {'url', 'image', 'label'}
+# Caméras gérées par `npm run import -- --webcams` : une entrée manuelle ferait doublon,
+# et survivrait à la caméra quand la synchro la retire.
+WEBCAM_SYNCED_HOSTS = ('cam-aero.eu',)
+WEBCAM_CREDENTIAL_KEYS = {'usr', 'user', 'username', 'login', 'pwd', 'pass', 'passwd', 'password'}
+# Au-delà, l'image est probablement figée (caméra en panne) : cas vécu sur LFPZ, 10 jours.
+WEBCAM_STALE_H = 24
+
+
+def webcam_url_problems(w):
+    """Problèmes de forme d'une webcam proposée — même règle que isValidWebcam côté site."""
+    out = []
+    if not isinstance(w, dict):
+        return ['entrée non-objet']
+    extra = set(w) - WEBCAM_KEYS
+    if extra:
+        out.append(f'clés interdites {sorted(extra)} (autorisées : {sorted(WEBCAM_KEYS)})')
+    for key in ('url', 'image'):
+        u = w.get(key)
+        if u is None:
+            if key == 'url':
+                out.append('`url` manquante')
+            continue
+        parts = urlsplit(u)
+        if parts.scheme not in ('http', 'https') or not parts.netloc:
+            out.append(f'{key} : URL invalide {u!r}')
+            continue
+        if key == 'image' and parts.scheme != 'https':
+            out.append('image non https — bloquée par le navigateur ; ne garder que `url`')
+        query_keys = {k.split('=')[0].lower() for k in parts.query.split('&') if k}
+        if parts.username or parts.password or query_keys & WEBCAM_CREDENTIAL_KEYS:
+            out.append(f'{key} : identifiants dans l\'URL — ne jamais la stocker')
+        if any(parts.netloc.endswith(h) for h in WEBCAM_SYNCED_HOSTS):
+            out.append(f'{key} : caméra {parts.netloc}, gérée par `npm run import -- --webcams`')
+    return out
+
+
+def webcam_image_info(url):
+    """(statut, content-type, âge en heures ou None) d'une image de webcam.
+
+    L'âge vient de `Last-Modified` : beaucoup de caméras n'en envoient pas (None =
+    inconnu, pas « frais »).
+    """
+    _throttle(url)
+    req = urllib.request.Request(url, method='GET', headers={'User-Agent': user_agent(url)})
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            ctype = (r.headers.get('Content-Type') or '').split(';')[0].strip()
+            lm = r.headers.get('Last-Modified')
+            age = None
+            if lm:
+                try:
+                    age = (datetime.now(timezone.utc) - parsedate_to_datetime(lm)).total_seconds() / 3600
+                except (TypeError, ValueError):
+                    age = None
+            return r.status, ctype, age
+    except urllib.error.HTTPError as e:
+        return e.code, None, None
+    except Exception as e:
+        return f'ERREUR ({type(e).__name__})', None, None
+
+
+def format_age(hours):
+    if hours is None:
+        return 'date inconnue'
+    if hours < 1:
+        return f'{max(1, round(hours * 60))} min'
+    if hours < 48:
+        return f'{round(hours)} h'
+    return f'{round(hours / 24)} jours'
 
 
 def agent_files(icao):

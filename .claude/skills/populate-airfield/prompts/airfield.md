@@ -17,6 +17,7 @@ fait foi pour tout ce qui suit.
 | `clubs_info` | d'où vient la liste (`source`), la ligne ACB brute (`raw`) et les réserves éventuelles (`note`) |
 | `night_vfr` | contrôle du VFR de nuit : base vs VAC — **ne jamais écrire** `nightVFR` (voir plus bas) |
 | `fuels` | ce qu'il faut faire du champ `fuels` (voir plus bas) |
+| `webcams.existing` | webcams déjà en base — n'en proposer que de **nouvelles** (voir plus bas) |
 
 Ci-dessous, `{city}` désigne la valeur du champ `city`, `<ICAO>` le code ICAO.
 
@@ -33,6 +34,8 @@ images) avant de rédiger la description.
 Effectue des recherches web sur les sources suivantes :
 - Recherches : `"aérodrome <ICAO>"`, `"aéroclub {city}"`, `"<ICAO> airfield"`, Wikipedia `<ICAO>`
 - Sites spécifiques : ourairports.com, basulm.ffplum.fr, fr.airfield.directory
+- Webcams : `"webcam <ICAO>"`, `"webcam aérodrome {city}"`, et la page webcam / météo des sites
+  de clubs (voir `webcams` plus bas)
 
 ### Clubs basés — liste de référence (ne pas la deviner)
 
@@ -46,6 +49,8 @@ vérifié le site de chaque club : reprendre ses `clubs[].website` et `clubs[].n
 club se donne) sans refaire la recherche. Ses `airfield_facts` (vélos ou voiture du club, taxi,
 restaurant, carburant, accueil des visiteurs) vont dans le paragraphe technique, **reformulés et
 datés s'ils sont anciens** (« le club indiquait en 2019… ») — ou écartés s'ils semblent périmés.
+Ses `webcams` sont des candidates pour le champ `webcams` : les reprendre (sans `source` ni `note`)
+après les contrôles ci-dessous.
 
 ⚠️ Pour les clubs venus de la VAC, la liste est un **découpage automatique** du point ACB, dont la
 mise en forme varie d'une carte à l'autre : un horaire, un libellé ou une note peut s'y retrouver
@@ -107,9 +112,23 @@ Collecter les **champs de sortie** (seuls champs autorisés dans le JSON final, 
   une URL trouvée mais non contrôlable (429, réseau) va dans une clé de premier niveau
   `image_candidates` (même format que pour les activités), reprise à l'Étape 2.6.
 
+- `webcams` : caméras qui montrent le terrain (piste, parking, manche à air), **nouvelles
+  uniquement** — le champ est additif, l'import les ajoute à `webcams.existing`. Une entrée :
+  - `url` (obligatoire) : la page publique de la caméra, `https` effective via `check_url.py` ;
+  - `image` (facultatif) : l'URL **directe** de l'image (`src` de la balise `<img>` de la page),
+    **`https` uniquement** et répondant 200 avec `check_url.py`. C'est elle qui donne l'aperçu sur
+    le site : pas d'`image` pour un flux vidéo, un lecteur intégré (iframe) ou une image `http://` —
+    l'entrée reste alors un simple lien ;
+  - `label` (facultatif) : seulement quand il y en a plusieurs (« Piste 29 », « Parking »).
+  - ⚠️ **Jamais** d'URL portant des identifiants (`usr=`, `pwd=`, `user:pass@`) — certaines caméras
+    IP sont publiées ainsi : les omettre et **le signaler en fin de réponse**.
+  - **Jamais** de caméra `cam-aero.eu` : elles sont synchronisées par `npm run import -- --webcams`.
+  - Pas de caméra de ville ou de station sans vue sur le terrain.
+  - Aucune nouvelle webcam trouvée → omettre le champ.
+
 ## Étape 2 — Rédiger et écrire le fichier
 
-Le JSON final ne peut contenir **que ces clés** : `codeIcao`, `website`, `toilet`, `fuels`, `description`. Tout autre champ est interdit. Les champs listés dans `existing_fields` sont déjà présents et doivent être omis du fichier de sortie.
+Le JSON final ne peut contenir **que ces clés** : `codeIcao`, `website`, `toilet`, `fuels`, `webcams`, `description`. Tout autre champ est interdit. Les champs listés dans `existing_fields` sont déjà présents et doivent être omis du fichier de sortie.
 
 ```json
 {
@@ -117,6 +136,9 @@ Le JSON final ne peut contenir **que ces clés** : `codeIcao`, `website`, `toile
   "website": "https://...",
   "toilet": "public",
   "fuels": ["100LL"],
+  "webcams": [
+    { "url": "https://aeroclub-exemple.fr/webcam", "image": "https://aeroclub-exemple.fr/webcam/piste.jpg" }
+  ],
   "description": {
     "type": "doc",
     "content": [
@@ -150,7 +172,7 @@ Le JSON final ne peut contenir **que ces clés** : `codeIcao`, `website`, `toile
 ```
 
 **Règles** :
-- Omettre `website` et `toilet` si non trouvés ; pour `fuels`, suivre le contexte VAC ci-dessus
+- Omettre `website`, `toilet` et `webcams` si non trouvés ; pour `fuels`, suivre le contexte VAC ci-dessus
 - Omettre le nœud `image` de la description si pas d'URL valide
 - Les infos clubs/gestionnaire vont dans le texte des paragraphes, **pas comme clés JSON**
 - Le nœud `image` n'a pas de clé `content`
