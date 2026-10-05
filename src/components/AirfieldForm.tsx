@@ -30,9 +30,11 @@ const AirfieldForm = ({airfield, profile, airfields, activities}: {airfield: Air
   });
 
   const submitFn = (document: typeof form.values) => {
-    // Carry all data from the existing airfield, mostly as its easier to test prod data on dev/staging where the entry might not exist
+    // Carry all data from the existing airfield, mostly as its easier to test prod data on dev/staging where the entry might not exist.
+    // Except landingFee: function-owned (derived from `reports`), writing back our possibly stale copy would overwrite it.
+    const { landingFee, ...editable } = airfield
     const updatedAirfield = {
-      ...airfield,
+      ...editable,
       ...document,
       updated_at: Timestamp.fromDate(new Date()),
       updated_by: profile ? profile.uid : 'anonymous',
@@ -45,7 +47,7 @@ const AirfieldForm = ({airfield, profile, airfields, activities}: {airfield: Air
     if(profile) {
       setDoc(doc(db, "airfields", airfield.codeIcao), updatedAirfield, {merge:true})
       .then(() => {
-        airfields.set(airfield.codeIcao, updatedAirfield)
+        airfields.set(airfield.codeIcao, { ...updatedAirfield, landingFee })
         navigate(`/airfields/${airfield.codeIcao}`)
       })
       .catch(e => console.error(e.message as string))

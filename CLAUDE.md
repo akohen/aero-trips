@@ -46,6 +46,17 @@ previews and URLs carrying credentials (`usr=`/`pwd=`, some club IP cameras publ
 `npm run import -- --webcams` syncs **Cam-Aéro** both ways (drops cameras flagged `old`), rewrites only
 `source: 'cam-aero'` entries and never touches manual ones; bumps `updated_at`. Sources: `docs/data-sources.md`.
 
+**Landing fees / reports** (#18; pilot reports #39 build on it): every price is a document of the **`reports`**
+collection (`Report` in `src/index.d.ts`: `target`, `source` = `import` (id) / `admin` / `pilot`, `observedAt`,
+`landingFee`), the single source. `Airfield.landingFee` is **function-owned**: a copy of the chosen report (TTC amount,
+parking, note, url, source, `checkedAt`), written only by `applyReports` (`functions/reports/`, codebase
+`reports`) on any report write, `updated_at` bumped only when it changed. `AirfieldForm` never writes it back (the
+rules don't enforce it yet: signed-in clients can still update whole airfield documents). The logic lives only in **`src/utils/reports.ts`** (React/SDK-free):
+`deriveLandingFee` (admin wins, else the newest by `observedAt`; prices are TTC;
+conflicts between sources), `sameLandingFee`, `formatLandingFee`. Absent = unknown, never free (free = `amount: 0`).
+**`npm run recompute`** (staging; `recompute:prod`; `--dry-run`) re-derives every airfield after a logic change:
+prints conflicts and changes, writes only what changed. Reports are never loaded by `DataProvider` nor exported.
+
 **List/map filters live in the URL** (shareable queries): `App.tsx` derives them from the query string on every render
 through `src/utils/filterParams.ts`. Never copy them into React state: react-router v7 applies location changes in a
 transition, so a copy renders ahead of the URL and the list's `page` write (`CardList`/`TableList`) erases them.
@@ -152,7 +163,7 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
 ## Firestore rules
 
 - **`firestore.rules`** is the source of truth (wired in `firebase.json`), imported from the production console
-  on 2026-09-25. **Deployed by the release CI** (tag workflow, together with `functions:mcp`,
+  on 2026-09-25. **Deployed by the release CI** (tag workflow, together with `functions:mcp`, `functions:reports`,
   `functions:passports` and hosting); manual deploy: `npx firebase deploy --only firestore:rules`. Staging's console rules could not be
   read at import time — deploying there overwrites whatever is in its console.
 

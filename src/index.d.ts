@@ -25,7 +25,48 @@ type Airfield = {
   /** Night VFR licensing (SIA list): 'limited' needs prior approval and a briefing on local procedures */
   nightVFR?: 'full' | 'limited',
   webcams?: Webcam[],
+  /** Function-owned (`applyReports`, from `reports`): clients never write it. Absent = unknown, never free */
+  landingFee?: AirfieldLandingFee,
   updated_at?: Timestamp,
+}
+
+/** Copy of the report `deriveLandingFee` chose (src/utils/reports.ts), so static consumers get source and date too */
+type AirfieldLandingFee = {
+  /** TTC, light aircraft < 2 t; 0 = free */
+  amount: number,
+  /** One night / 24 h, TTC; absent = unknown */
+  parking24h?: number,
+  note?: string,
+  url?: string,
+  /** 'aerops', 'edeis', 'pilot', 'admin'… */
+  source: string,
+  /** observedAt of the chosen report */
+  checkedAt: Timestamp,
+}
+
+type ReportSource =
+  | {type: 'pilot'}
+  | {type: 'import', id: string} // 'aerops', 'edeis', 'adp'…
+  | {type: 'admin'} // manual correction, always wins
+
+/** A dated observation about a target. Every landing fee is a report; `applyReports` derives the airfield's from them */
+type Report = {
+  id: string,
+  target: {type: 'airfields' | 'activities', id: string},
+  source: ReportSource,
+  /** Date of the data: the visit (pilot), the fee sheet's effective date or fetch date (import) */
+  observedAt: Timestamp,
+  /** Last write (import run, edit): set on every write */
+  updated_at: Timestamp,
+  landingFee?: {
+    /** TTC, reference case: light aircraft < 2 t (≈ 1.2 t MTOW when the source has finer classes); 0 = free */
+    amount: number,
+    /** One night / 24 h, same aircraft; absent = unknown */
+    parking24h?: number,
+    note?: string,
+    /** Official fee sheet or source page */
+    url?: string,
+  },
 }
 
 type Webcam = {

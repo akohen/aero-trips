@@ -20,6 +20,11 @@ service cloud.firestore {
     match /events/{document} {
       allow write: if request.auth != null;
     }
+    // Reports (landing fees…): written by imports through the Admin SDK only for
+    // now; pilot reports (#39) will open creates here.
+    match /reports/{reportId} {
+      allow read: if true;
+    }
     match /airfields/{document} {
       allow update: if request.auth != null;
     }
