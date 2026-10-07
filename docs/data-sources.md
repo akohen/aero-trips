@@ -141,7 +141,7 @@ its 2 live prices right; Natim right on 6.
   (Metz), HT (Dijon), FFA −50 % rate (Périgueux), outdated grid (Courchevel, Dinard/Rennes).
 - Rights: no reuse clause; individual prices are facts, but bulk extraction may fall under the EU database right
   (aeroPS GmbH, Germany). Import the reference values only, link back to their page.
-- Used by: lowest-priority import source (live above estimates).
+- Used by: import sources `aerops-live` (below sheets and pilots) and `aerops` (estimates, lowest tier).
 - Pitfalls: no VAT wording on the page; flat « landing and parking » rates (9) can't be split; parking only when the
   example covers 18–24 h or one per-day/night line (12 h, 48 h, « redevance minimale »: unknown); the stylesheet
   of every page contains `price-notice-valid`, match the span's class attribute.
@@ -158,9 +158,40 @@ its 2 live prices right; Natim right on 6.
 - Coverage: ~325 airfields, ~244 « gratuit », KML snapshot 2024-06-02; observations from 2011 to 2022 (date in the
   note text, not in `observed_on`).
 - Rights: reused through Natim's MIT repo; prices are facts. Credit the map's author.
-- Used by: planned, unconditional « gratuit » entries only, with their real date.
+- Used by: `scripts/build-community-fees.ts` → `scripts/community-fees.json` (unconditional « gratuit » only, dated from
+  the note; 243 airfields, 166 dated 2011) → `npm run import:fees -- community`, tier `community`: above aeroPS
+  estimates, below live prices. Pilot reports on airfield.directory (2025–2026) confirmed every free entry they
+  mention. Conflicts: LFCD, LFGY, LFOC, LFPM charge per aeroPS live (live wins); LFBS per an aeroPS estimate (free wins).
 - Pitfalls: conditional free cases parsed as free by Natim (LFLM « taxe offerte si repas », LFRI « gratuit si
   avitaillement »); old amounts (ADP fields 7.10 € vs 14.40 € today).
+
+### Airfield Directory — https://airfield.directory/airfield/{ICAO}
+- Coverage (2026-10-07): 425 French airfields listed; 101 with pilot reports (PIREPs, 170 in all, mostly 2025–2026),
+  75 mentioning a fee, 16 saying landing is free (LFAB, LFDE, LFGF, LFGQ, LFGT, LFGW, LFGY, LFGZ, LFHO, LFLX, LFMS,
+  LFNE, LFRW, LFSA, LFSU, LFXU, LFYG). Extract: `scripts/airfield-directory-pireps.json` (gitignored).
+- Access: HTML pages (sitemap `sitemap_airfields_europe_en.xml`), PIREPs as JSON-LD (`reviewBody`, `datePublished`).
+  robots.txt disallows `/airfield/*.json` and `/api/`; `Content-Signal: ai-train=no, ai-input=yes`.
+- Rights: data **CC BY-SA 4.0** (attribution + share-alike on adapted data); site code/design not licensed. Their
+  structured fees are aeroPS's (« pricing information from Aerops »): nothing new there, use the PIREPs.
+- Used by: leads and confirmations only, never imported or linked. Every « free » PIREP matches the community map's « gratuit », even entries dated
+  2011 — the old free list holds up. Paid PIREPs confirm checked sheets (LFBZ ≈ 100 € all-in < 2 t, LFMV
+  27,92 + 3,40 €) and Brest's app rate (6,85 € in 2025).
+- Pitfalls: free text in several languages, aircraft of any weight, conditional cases (LFAY free on weekends,
+  LFLX free < 2 t, LFLC waived). LFGY: « no fees, donations welcome » (2026) vs aeroPS live 3 €.
+
+### AeroTrips airfield descriptions
+- Coverage (2026-10-07): 7 of 432 mention the fee; « pas de taxe » on LFAE, LFAK, LFQW, LFSJ; amounts on LFRF (~5 €),
+  LFEQ (12 €); LFLD links its guide. Contributed by pilots/clubs, no date beyond `updated_at`.
+- Used by: `build-community-fees.ts` (« pas de taxe » → source `aerotrips`, dated by `updated_at`).
+
+### Checked, not usable (2026-10-07)
+- **OpenStreetMap**: no landing-fee tag on any of the 439 `LF` aerodromes (only `internet_access:fee`).
+- **Aerotaxe** (`aerotaxe.aenet.fr`, TTC fees + map, cited by aerovfr.com): domain gone (NXDOMAIN).
+- **AeroClub Explorer** (aeroclub-explorer.org): European pilot reviews with `landing_fee`, Supabase SPA, started
+  2026; few reports, rights unknown. Same idea as #39: watch, don't import.
+- **Pilot-Hub**, **Lightwings** (ULM), **BASULM** (ULM, login), **CartaBossy** / Bottlang (paid guides, no reuse):
+  no reusable per-airfield fee data.
+- Absence from aeroPS / operator lists does **not** mean free: never infer `amount: 0`.
 
 ## Leads (not evaluated yet)
 

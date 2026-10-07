@@ -10,10 +10,13 @@
  *   official  scripts/fees.json         operator fee sheets, checked by hand; observedAt = validFrom
  *   aerops    scripts/aerops-fees.json  from `fetch-aerops-fees.ts`; source `aerops-live` when the airfield bills
  *                                       through aeroPS, `aerops` for estimates (lowest trust tiers); observedAt = fetch
+ *   community scripts/community-fees.json  « free » only, from `build-community-fees.ts`: the community map
+ *                                       (`community`, between aeroPS live and estimates) and our descriptions (`aerotrips`)
  *
  * Usage (dry run unless --apply):
  *   npm run import:fees -- official [--apply]       # staging
  *   npm run import:fees:prod -- aerops [--apply]
+ *   npx tsx scripts/build-community-fees.ts && npm run import:fees -- community [--apply]
  */
 import admin from 'firebase-admin'
 import chalk from 'chalk'
@@ -35,6 +38,10 @@ type AeropsFile = {
     live: boolean,
     reference?: { amount: number, parking24h?: number, flatRate?: boolean },
   }>,
+}
+
+type CommunityFile = {
+  airfields: Record<string, { source: string, amount: number, observedAt: string, note: string, url?: string }>,
 }
 
 const readJson = <T>(path: string): T => JSON.parse(readFileSync(path, 'utf8'))
@@ -76,6 +83,15 @@ const SOURCES: Record<string, () => Entry[]> = {
         url,
       }),
     }] : [])
+  },
+  community: () => {
+    const { airfields } = readJson<CommunityFile>('./scripts/community-fees.json')
+    return Object.entries(airfields).map(([icao, e]) => ({
+      icao,
+      source: { type: 'import', id: e.source },
+      observedAt: new Date(e.observedAt),
+      landingFee: compact({ amount: e.amount, note: e.note, url: e.url }),
+    }))
   },
 }
 

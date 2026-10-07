@@ -73,6 +73,10 @@ describe('deriveLandingFee', () => {
     expect(deriveLandingFee([live, sheet]).landingFee).toMatchObject({ amount: 39.6, source: 'official' })
     expect(deriveLandingFee([estimate, live]).landingFee).toMatchObject({ amount: 7.22, source: 'aerops-live' })
     expect(deriveLandingFee([estimate]).landingFee).toMatchObject({ amount: 5, source: 'aerops' })
+    // The community map's « gratuit » beats an aeroPS estimate, not a live price
+    const map = report('community-X', { type: 'import', id: 'community' }, '2011-12-01', { amount: 0 })
+    expect(deriveLandingFee([map, estimate]).landingFee).toMatchObject({ amount: 0, source: 'community' })
+    expect(deriveLandingFee([map, live]).landingFee).toMatchObject({ amount: 7.22, source: 'aerops-live' })
     // A newer pilot report updates an outdated sheet
     const visit = report('p', pilot, '2026-06-01', { amount: 42 })
     expect(deriveLandingFee([sheet, visit, live]).landingFee).toMatchObject({ amount: 42, source: 'pilot' })

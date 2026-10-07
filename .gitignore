@@ -32,6 +32,7 @@ tmp
 scripts/*.xml
 scripts/*.json
 !scripts/fees.json
+!scripts/community-fees.json
 
 ### Firebase Patch ###
 .runtimeconfig.json

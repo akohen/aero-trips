@@ -52,13 +52,14 @@ collection (`Report` in `src/index.d.ts`: `target`, `source` = `import` (id) / `
 parking, note, url, source, `checkedAt`), written only by `applyReports` (`functions/reports/`, codebase
 `reports`) on any report write, `updated_at` bumped only when it changed. `AirfieldForm` never writes it back (the
 rules don't enforce it yet: signed-in clients can still update whole airfield documents). The logic lives only in **`src/utils/reports.ts`** (React/SDK-free):
-`deriveLandingFee` (newest report of the best trust tier, `SOURCE_TIERS`: admin > `official` sheets and pilots >
-`aerops-live` > `aerops` estimates; prices are TTC; conflicts between sources), `sameLandingFee`, `formatLandingFee`.
+`deriveLandingFee` (newest report of the best trust tier, `SOURCE_TIERS`: admin > `official` sheets, pilots and
+`aerotrips` > `aerops-live` > `community` « gratuit » > `aerops` estimates; prices are TTC; conflicts between sources), `sameLandingFee`, `formatLandingFee`.
 Absent = unknown, never free (free = `amount: 0`). Reference case: visiting aircraft, MTOW 1.15 t, mandatory
 assistance included (`docs/data-sources.md`, *Landing fees*).
-**`npm run import:fees -- official|aerops`** (staging; `import:fees:prod`; dry run unless `--apply`) writes reports
-`{source}-{ICAO}` from `scripts/fees.json` (operator sheets, hand-checked, committed) or `scripts/aerops-fees.json`
-(`npx tsx scripts/fetch-aerops-fees.ts`, gitignored).
+**`npm run import:fees -- official|aerops|community`** (staging; `import:fees:prod`; dry run unless `--apply`) writes
+reports `{source}-{ICAO}` from `scripts/fees.json` (operator sheets, hand-checked, committed), `scripts/aerops-fees.json`
+(`npx tsx scripts/fetch-aerops-fees.ts`, gitignored) or `scripts/community-fees.json` (free only:
+`npx tsx scripts/build-community-fees.ts`, committed). Staging needs `serviceAccountKey.staging.json`.
 **`npm run recompute`** (staging; `recompute:prod`; `--dry-run`) re-derives every airfield after a logic change:
 prints conflicts and changes, writes only what changed. Reports are never loaded by `DataProvider` nor exported.
 

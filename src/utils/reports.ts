@@ -62,10 +62,12 @@ export const sourceKey = (source: FeeReportSource) => source.type === 'import' ?
 
 /**
  * Trust tiers, lower wins; within a tier, the newest report. Admin corrections first; then operator fee sheets
- * ('official') and pilots (a newer pilot report updates an outdated sheet); then aeroPS: prices billed through its
- * app ('aerops-live', sometimes misconfigured), then its estimates ('aerops', often the wrong tariff line).
+ * ('official'), pilots (a newer pilot report updates an outdated sheet) and our own airfield descriptions ('aerotrips');
+ * then prices billed through the aeroPS app ('aerops-live', sometimes misconfigured); then the community map's
+ * « gratuit » ('community', old but confirmed by recent pilot reports); last aeroPS estimates ('aerops', often the
+ * wrong tariff line).
  */
-export const SOURCE_TIERS: Record<string, number> = { admin: 0, 'aerops-live': 2, aerops: 3 }
+export const SOURCE_TIERS: Record<string, number> = { admin: 0, 'aerops-live': 2, community: 3, aerops: 4 }
 const DEFAULT_TIER = 1
 
 export const sourceTier = (source: FeeReportSource) => SOURCE_TIERS[sourceKey(source)] ?? DEFAULT_TIER

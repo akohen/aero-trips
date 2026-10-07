@@ -1,0 +1,1702 @@
+{
+  "builtAt": "2026-10-07",
+  "airfields": {
+    "LFAB": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2019-03-24",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFAD": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2012-11-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFAE": {
+      "source": "aerotrips",
+      "amount": 0,
+      "observedAt": "2026-09-27",
+      "note": "Pas de taxe d'atterrissage, d'après la fiche de l'aérodrome."
+    },
+    "LFAF": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFAG": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-02-15",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFAI": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2020-08-15",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFAJ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFAK": {
+      "source": "aerotrips",
+      "amount": 0,
+      "observedAt": "2026-09-27",
+      "note": "Pas de taxe d'atterrissage, d'après la fiche de l'aérodrome."
+    },
+    "LFAL": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFAM": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFAO": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFAP": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFAR": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2015-07-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFAS": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFAU": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFAW": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFAX": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2013-06-26",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFBG": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFBJ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFBS": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2019-07-09",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFBY": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCA": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-02-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCB": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-08-06",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCD": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2015-07-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCE": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCF": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-07-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCJ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCM": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2026-09-16",
+      "note": "Signalé gratuit (Natim/france-ga-pilot-maps).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCN": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-08-09",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCO": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2019-12-20",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCP": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCQ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCS": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-04-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCT": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-11-05",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCV": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2015-07-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCW": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFCX": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDA": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDB": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2015-07-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDC": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDE": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDF": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDG": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDL": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2020-06-29",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDM": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDP": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDQ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDR": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDT": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDU": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDV": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDW": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-11-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFDX": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFEB": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2026-09-18",
+      "note": "Signalé gratuit (Natim/france-ga-pilot-maps).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFED": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFEG": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2020-07-27",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFEH": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFEI": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2016-04-19",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFEJ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFEK": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFEL": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFEM": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2015-05-17",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFEN": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-01-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFER": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2024-04-17",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFET": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2023-01-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFEU": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFEV": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFEW": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFEX": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFB": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2016-06-19",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFC": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFD": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFE": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFG": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFH": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2021-08-27",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFJ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFK": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFL": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFN": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFO": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2016-06-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFP": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFQ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFR": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFT": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFU": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFV": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFW": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFX": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFY": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFFZ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGE": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGF": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGG": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2013-07-30",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGH": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2018-04-26",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGI": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGK": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGL": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGM": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2015-08-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGN": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGO": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2019-08-10",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGP": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGQ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2021-02-27",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGR": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGS": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGT": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2026-09-16",
+      "note": "Signalé gratuit (Natim/france-ga-pilot-maps).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGU": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGW": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-09-25",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGX": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGY": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFGZ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHA": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2012-11-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHC": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2018-05-24",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHD": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHE": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHF": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHG": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHH": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHI": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHJ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-07-30",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHL": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHN": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHO": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2020-08-11",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHR": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2012-11-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHU": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2016-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHW": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFHX": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFIB": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-07-03",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFID": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-08-07",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFIF": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFIG": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFIH": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFIK": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFIL": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFIM": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFIP": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFIR": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFIS": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2016-07-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFIT": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFIV": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFIX": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFIY": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFJB": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-11-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFJC": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFJD": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFJE": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-02-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFJF": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFJH": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFJI": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFJS": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2021-08-27",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFJT": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFJU": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFJY": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2026-09-16",
+      "note": "Signalé gratuit (Natim/france-ga-pilot-maps).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFKD": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFKE": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFKH": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFKL": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFKM": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFKP": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFKR": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-07-02",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFKT": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-07-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFKX": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFKY": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFLE": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2016-08-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFLQ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2016-09-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFLR": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-07-16",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFLT": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFLX": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-11-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFLZ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFMC": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFME": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFMF": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFMG": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFMI": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFMS": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-03-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFMW": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFMX": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNB": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-07-31",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNE": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2022-03-13",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNF": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-03-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNG": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2016-07-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNJ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNL": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNN": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-06-25",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNO": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNQ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNR": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNS": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNT": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNU": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNV": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNW": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNX": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFNZ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFOC": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFOF": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFOG": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFOJ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFOL": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFOM": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFON": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-03-11",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFOO": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-05-24",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFOR": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2015-07-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFOS": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFOW": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFOY": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFPD": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2015-11-23",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFPF": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFPM": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2016-10-16",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFPU": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2016-09-09",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFQC": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFQD": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFQF": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2015-08-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFQH": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFQJ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2017-07-13",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFQK": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFQL": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFQN": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFQO": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFQU": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFQW": {
+      "source": "aerotrips",
+      "amount": 0,
+      "observedAt": "2026-09-27",
+      "note": "Pas de taxe d'atterrissage, d'après la fiche de l'aérodrome."
+    },
+    "LFQX": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFQY": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFQZ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFRP": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFRW": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFSA": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFSE": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFSJ": {
+      "source": "aerotrips",
+      "amount": 0,
+      "observedAt": "2025-05-05",
+      "note": "Pas de taxe d'atterrissage, d'après la fiche de l'aérodrome."
+    },
+    "LFSK": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFSP": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2013-08-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFSU": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFSV": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFSW": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFTM": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFTN": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFTP": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFTQ": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFXA": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2018-05-25",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFXB": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFXU": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2020-05-23",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFYG": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFYR": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    },
+    "LFYS": {
+      "source": "community",
+      "amount": 0,
+      "observedAt": "2011-12-01",
+      "note": "Signalé gratuit sur la carte communautaire des taxes d'atterrissage (C. Rousseau).",
+      "url": "https://github.com/Natim/france-ga-pilot-maps"
+    }
+  }
+}
