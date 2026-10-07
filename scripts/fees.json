@@ -1,0 +1,123 @@
+{
+  "source": "official",
+  "reference": "Avion léger visiteur (non basé), MTOW 1,15 t (C172S / DR400-180), un atterrissage, tarif standard sans réduction. amount = TTC, assistance et frais obligatoires inclus ; frais évitables (mode de paiement, PPR) et réductions dans note.",
+  "airfields": {
+    "LFBZ": {
+      "amount": 103.94,
+      "ht": 86.62,
+      "vat": 0.2,
+      "parkingIncludedHours": 1,
+      "note": "Forfait atterrissage + 1 h de stationnement + balisage + passager 37,42 € HT, plus assistance obligatoire 49,20 € HT (aéronefs non basés). Stationnement au-delà de 1 h : 0,40 €/t/h HT (nov.–mars), 1,41 €/t/h HT (avr.–oct.). Assistance +50 % dimanches et fériés ; +100 € HT sans PPR. Aucune réduction (hors SAMU).",
+      "url": "https://biarritz.aeroport.fr/wp-content/uploads/2026/06/tarifs-publics-2026-fr-v8.pdf",
+      "validFrom": "2026-04-01",
+      "checkedAt": "2026-10-06"
+    },
+    "LFRB": {
+      "amount": 39.6,
+      "ht": 33,
+      "vat": 0.2,
+      "parkingIncludedHours": 24,
+      "note": "Forfait jour (24 h) aéronef non basé < 4 t : atterrissage, balisage, stationnement et passagers. Jour supplémentaire −50 % (7 jours max). 50 € sans PPR. L'appli aeroPS facture 7,22 € TTC (tarif des aéronefs basés, probable erreur de paramétrage) : le guide fait foi, la différence peut être réclamée.",
+      "url": "https://www.brest.aeroport.bzh/documents/20181/313580/Guide+tarifaire+Aeronautique+LFRB+BES+2026+francais.pdf",
+      "pageUrl": "https://www.brest.aeroport.bzh/guide-tarifaire",
+      "validFrom": "2026-02-01",
+      "checkedAt": "2026-10-06"
+    },
+    "LFOT": {
+      "amount": 12.6,
+      "ht": 10.5,
+      "vat": 0.2,
+      "note": "Tranche 1 t à 1,999 t ; chaque touch-and-go ou remise des gaz est facturé. MMD « arrondie à la tonne supérieure » : selon la lecture, un avion de 1,15 t paierait la tranche 2 t (26,20 € HT). Stationnement : 2 h gratuites puis 0,67 €/t/h HT. Balisage 44,71 € HT.",
+      "url": "https://tours.aeroport.fr/wp-content/uploads/sites/21/2025/02/Copie-de-TOURS-GUIDE-DES-REDEVANCES-2026.pdf",
+      "pageUrl": "https://tours.aeroport.fr/domaines-application/espace-pilote/",
+      "validFrom": "2026-03-01",
+      "checkedAt": "2026-10-06"
+    },
+    "LFLJ": {
+      "amount": 15.5,
+      "ht": 12.92,
+      "vat": 0.2,
+      "parking24h": 15,
+      "note": "Tarif été, classe A1 (0–1299 kg) ; tour de piste / école 7,75 € TTC. Hiver (1er déc.–30 avr.) : 51,50 € TTC, stationnement 42 € TTC la nuit, −50 % le jeudi (« Happy Thursday »).",
+      "url": "https://altiport.mairie-courchevel.com/fileadmin/courchevel/MINI-SITES/Altiport/Tarifs/AVIONS_ETE_2026_A_PUBLIER.pdf",
+      "pageUrl": "https://altiport.mairie-courchevel.com/altiport-de-courchevel/fonctionnement/tarifs.html",
+      "validFrom": "2026-05-01",
+      "validUntil": "2026-11-30",
+      "checkedAt": "2026-10-06"
+    },
+    "LFJL": {
+      "amount": 65.52,
+      "ht": 54.6,
+      "vat": 0.2,
+      "parkingIncludedHours": 24,
+      "note": "Redevance aviation générale < 1,99 t : atterrissage, balisage, 24 h de stationnement, passagers, placement et calage. +400 € HT hors horaires d'ouverture.",
+      "url": "https://lorraineaeroport.com/wp-content/uploads/2026/01/GUIDE-REDEVANCES-AERONAUTIQUES-2026-version-finale.pdf",
+      "pageUrl": "https://lorraineaeroport.com/aeroport/professionnels/",
+      "validFrom": "2026-04-01",
+      "validUntil": "2027-03-31",
+      "checkedAt": "2026-10-06"
+    },
+    "LFBK": {
+      "amount": 10.5,
+      "ht": 8.75,
+      "vat": 0.2,
+      "parking24h": 15.75,
+      "note": "Classe A2 (560 kg à 1,2 t) ; de 1,2 t à 2 t : 42 € TTC. Stationnement : 3 h gratuites puis par 24 h.",
+      "url": "https://www.aerodrome-montlucon-gueret.fr/_files/ugd/4ed8d8_fbd6deff09bc49d1a3c3edbe0c1745e1.pdf",
+      "pageUrl": "https://www.aerodrome-montlucon-gueret.fr/espace-pilote",
+      "validFrom": "2026-01-01",
+      "checkedAt": "2026-10-06"
+    },
+    "LFRD": {
+      "amount": 16.2,
+      "ht": 13.5,
+      "vat": 0.2,
+      "parkingIncludedHours": 24,
+      "note": "Forfait journée aéronef non basé ≤ 2 t (atterrissage, balisage, stationnement). 10,80 € HT via l'appli Touch&Go ; +2 € HT de frais de facturation sans l'appli ; 10 € HT si non réglé au comptoir.",
+      "url": "https://www.dinard.aeroport.fr/sites/default/files/FR%20DNR%202026%20-%20Guide%20Tarifaire%20A%C3%A9ronautique%20%C3%A0-c%20du%201er%20avril%202026_0.pdf",
+      "validFrom": "2026-04-01",
+      "checkedAt": "2026-10-06"
+    },
+    "LFRN": {
+      "amount": 16.2,
+      "ht": 13.5,
+      "vat": 0.2,
+      "parkingIncludedHours": 24,
+      "note": "Forfait journée aéronef non basé ≤ 2 t (atterrissage, balisage, stationnement). 10,80 € HT via l'appli Touch&Go ; +2 € HT de frais de facturation sans l'appli.",
+      "url": "https://www.rennes.aeroport.fr/sites/default/files/FR%20RNS%202026%20-%20Guide%20Tarifaire%20A%C3%A9ronautique%202026_%20%C3%A0%20compter%20du%2001%20avril%2026.pdf",
+      "validFrom": "2026-04-01",
+      "checkedAt": "2026-10-06"
+    },
+    "LFSD": {
+      "amount": 14.4,
+      "ht": 12,
+      "vat": 0.2,
+      "note": "Tarif identique de 0 à 2 t. Stationnement 0,73 €/t/h HT dès la première heure. Aéroclubs affiliés à l'UAF −50 %. 10 € de frais par facture si non réglé comptant.",
+      "url": "https://dijon.aeroport.fr/wp-content/uploads/sites/13/2025/02/Guide-tarifaire-Redevances-SPA-Dijon-2025-2.pdf",
+      "pageUrl": "https://dijon.aeroport.fr/domaines-application/infos-pilotes/",
+      "validFrom": "2025-04-10",
+      "checkedAt": "2026-10-06"
+    },
+    "LFMV": {
+      "amount": 37.58,
+      "ht": 31.32,
+      "vat": 0.2,
+      "parkingIncludedHours": 24,
+      "note": "Forfait 1er jour (> 2 h) < 2 t 27,92 € HT (atterrissage, décollage, stationnement, balisage, vols locaux, passagers, de 0 h à minuit) + frais de gestion 3,40 € HT. Escale courte < 2 h : 13,96 € HT. Aéroclubs −20 %, aéroclubs limitrophes et ULM −50 %. +40 € HT si non réglé au comptoir.",
+      "url": "https://avignon.aero/wp-content/uploads/2023/04/Plaquette-Tarifaire-2026-FR-EN-V2-1.pdf",
+      "validFrom": "2026-01-01",
+      "checkedAt": "2026-10-06"
+    },
+    "LFBX": {
+      "amount": 12,
+      "ht": 10,
+      "vat": 0.2,
+      "parking24h": 14.69,
+      "note": "MMD arrondie à la tonne supérieure : tranche 2 t (1 t : 7,20 € TTC). Aéroclubs et écoles affiliés FFA −50 %. Stationnement gratuit jusqu'à 6 h. 10 € de frais par facture si non réglé comptant.",
+      "url": "https://perigueux.aeroport.fr/wp-content/uploads/sites/27/2026/03/PERIGUEUX_Guide-redevances-reglementees-2025-v1.pdf",
+      "pageUrl": "https://perigueux.aeroport.fr/espace-pilotes-aeroport-perigueux/",
+      "validFrom": "2025-07-01",
+      "checkedAt": "2026-10-06"
+    }
+  }
+}

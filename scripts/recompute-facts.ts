@@ -13,33 +13,12 @@
  *   npm run recompute:prod
  * Against the emulator: FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 npm run recompute
  */
-import { firebaseConfig } from '../src/data/firebase.ts'
 import admin from 'firebase-admin'
 import chalk from 'chalk'
-import { createRequire } from 'node:module'
 import { DerivedLandingFee, deriveLandingFee, FeeReport, formatLandingFee, sameLandingFee } from '../src/utils/reports.ts'
-
-const require = createRequire(import.meta.url)
+import { db, projectId } from './firestore-admin.ts'
 
 const dryRun = process.argv.includes('--dry-run')
-const env = process.env.NODE_ENV === 'production' ? 'production' : 'staging'
-const emulator = process.env.FIRESTORE_EMULATOR_HOST
-const projectId = emulator ? process.env.GCLOUD_PROJECT ?? 'demo-aerotrips' : firebaseConfig[env].projectId
-
-// The checked-in service-account key belongs to production only, so staging
-// runs fall back to application-default credentials (`gcloud auth
-// application-default login`). The emulator needs none.
-const credential = (() => {
-  if (emulator) return undefined
-  try {
-    const creds = require('../serviceAccountKey.json')
-    if (creds.project_id === projectId) return admin.credential.cert(creds)
-  } catch { /* no key on disk */ }
-  return admin.credential.applicationDefault()
-})()
-
-admin.initializeApp({ projectId, ...(credential && { credential }) })
-const db = admin.firestore()
 
 type Timestamp = admin.firestore.Timestamp
 

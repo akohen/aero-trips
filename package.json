@@ -20,6 +20,8 @@
     "import-images:prod": "NODE_ENV=production tsx scripts/import-external-images.ts --production",
     "recompute": "tsx scripts/recompute-facts.ts",
     "recompute:prod": "NODE_ENV=production tsx scripts/recompute-facts.ts",
+    "import:fees": "tsx scripts/import-fees.ts",
+    "import:fees:prod": "NODE_ENV=production tsx scripts/import-fees.ts",
     "verify:resize": "tsx scripts/verify-resize.ts",
     "postversion": "git push --follow-tags"
   },

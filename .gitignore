@@ -31,10 +31,11 @@ tmp
 **/.firebaserc
 scripts/*.xml
 scripts/*.json
+!scripts/fees.json
 
 ### Firebase Patch ###
 .runtimeconfig.json
 .firebase/
 
-serviceAccountKey.json
+serviceAccountKey*.json
 backups/

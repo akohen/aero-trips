@@ -108,6 +108,60 @@ capture time is known; otherwise link to the page.
   images are blocked on https, some IP cameras expose their login in the URL (`usr=`/`pwd=`, e.g.
   Andernos): never store those.
 
+## Landing fees
+
+Reference case (#18): a visiting light aircraft, MTOW 1.15 t (C172S / DR400-180), one landing, standard price
+without discounts, TTC, **mandatory assistance and fees included** (avoidable ones — payment method, missing PPR —
+and discounts go in the note). Checked 2026-10-06 on 11 airfields: aeroPS estimates were wrong on all 9 checked,
+its 2 live prices right; Natim right on 6.
+
+### Operator fee sheets (« guide des redevances », tariff pages)
+- Coverage: one per airfield or operator (Edeis, SEARD, CCI, towns…). 11 transcribed in `scripts/fees.json` (2026-10-06).
+- Access: PDFs, a new URL each edition; links break (Tours' « 2026 » link served HTML). Store the stable tariff /
+  pilot page as `pageUrl` next to the document `url`.
+- Freshness: yearly, but **not by calendar year** (1 Jan, 1 Feb, 1 Mar, 1 Apr, 10 Apr, 1 Jul seen) → `validFrom`
+  (+ `validUntil` when stated). Seasonal sheets (Courchevel: summer / winter).
+- Rights: public tariffs (facts), link to the source.
+- Used by: `scripts/fees.json` (hand-transcribed; import to `reports` to come).
+- Pitfalls: HT almost everywhere (VAT 20 %); based vs visiting aircraft lines; commercial per-tonne grid vs GA flat
+  fee (Metz); MTOW « arrondie à la tonne supérieure » (Dijon, Périgueux, Tours: 1.15 t → 2 t line); sharp class edges
+  (Montluçon ×4 at 1.2 t); packages including parking (Brest, Metz, Avignon, Dinard/Rennes); mandatory assistance
+  (Biarritz 49.20 € HT, more than the landing fee).
+
+### aeroPS — https://www.aerops.com/fr/airports/fee-info/{ICAO}-{name}/
+- Coverage (2026-10-07): 131 French airfields listed, 117 with prices, 115 with the C172 example (114 in our data);
+  **31 live**, 84 estimates. Only paying airfields: no source of « free ».
+- Access: HTML pages listed in the sitemap, allowed by robots.txt; no public API. Fixed examples (ULM, C172, SR22,
+  PA34, PC12), the C172 one = one landing + one overnight stay. `scripts/fetch-aerops-fees.ts` → `scripts/aerops-fees.json`
+  (raw grid + `reference`: landing, `parking24h`, flat-rate and VAT flags).
+- Freshness: **live** pages (`price-notice-valid`, « prix en temps réel valides ») are the airfield's own billing
+  through the aeroPS app: what pilots actually pay, TTC. Can still be misconfigured (Brest: the app charges visitors
+  the based-aircraft 7.22 € while the guide says 33 € HT) → the operator sheet wins over a live price.
+  Estimates (« les prix peuvent varier légèrement ») are often wrong: based-aircraft rate (Biarritz), commercial grid
+  (Metz), HT (Dijon), FFA −50 % rate (Périgueux), outdated grid (Courchevel, Dinard/Rennes).
+- Rights: no reuse clause; individual prices are facts, but bulk extraction may fall under the EU database right
+  (aeroPS GmbH, Germany). Import the reference values only, link back to their page.
+- Used by: lowest-priority import source (live above estimates).
+- Pitfalls: no VAT wording on the page; flat « landing and parking » rates (9) can't be split; parking only when the
+  example covers 18–24 h or one per-day/night line (12 h, 48 h, « redevance minimale »: unknown); the stylesheet
+  of every page contains `price-notice-valid`, match the span's class attribute.
+
+### Natim/france-ga-pilot-maps — https://github.com/Natim/france-ga-pilot-maps
+- Coverage (2026-10-06): `docs/landing_fees.csv`, 410 rows (TTC, < 2 t): 12 from parsed Edeis PDFs
+  (`data/landing_fee_sources.csv`, plus a `.pending.csv` backlog of operator PDF / page URLs — useful leads),
+  ~70 hand-entered in 2026 (« HT x € (TVA 20 %) », no source recorded), ~325 from the community map below.
+- Rights: MIT. Credit the repo.
+- Used by: leads to verify against the operator sheets, not imported as-is.
+- Pitfalls: 2026 values sometimes already outdated (grids change in spring), uses the 1.2–2 t class (Montluçon).
+
+### Google My Maps « carte taxes d'atterrissage » (C. Rousseau), via Natim
+- Coverage: ~325 airfields, ~244 « gratuit », KML snapshot 2024-06-02; observations from 2011 to 2022 (date in the
+  note text, not in `observed_on`).
+- Rights: reused through Natim's MIT repo; prices are facts. Credit the map's author.
+- Used by: planned, unconditional « gratuit » entries only, with their real date.
+- Pitfalls: conditional free cases parsed as free by Natim (LFLM « taxe offerte si repas », LFRI « gratuit si
+  avitaillement »); old amounts (ADP fields 7.10 € vs 14.40 € today).
+
 ## Leads (not evaluated yet)
 
 - Webcams: aeroVFR interactive map (https://www.aerovfr.com/2024/02/carte-interactive-des-webcams-des-aerodromes/),

@@ -32,13 +32,18 @@ type Airfield = {
 
 /** Copy of the report `deriveLandingFee` chose (src/utils/reports.ts), so static consumers get source and date too */
 type AirfieldLandingFee = {
-  /** TTC, light aircraft < 2 t; 0 = free */
+  /** TTC, visiting light aircraft (MTOW 1.15 t), mandatory assistance included; 0 = free */
   amount: number,
   /** One night / 24 h, TTC; absent = unknown */
   parking24h?: number,
+  /** Parking included in the amount (flat rates), in hours */
+  parkingIncludedHours?: number,
   note?: string,
+  /** The document the price comes from */
   url?: string,
-  /** 'aerops', 'edeis', 'pilot', 'admin'… */
+  /** Stable page listing the latest fee sheet */
+  pageUrl?: string,
+  /** 'official', 'aerops-live', 'aerops', 'pilot', 'admin' (trust tiers: SOURCE_TIERS in src/utils/reports.ts) */
   source: string,
   /** observedAt of the chosen report */
   checkedAt: Timestamp,
@@ -46,8 +51,8 @@ type AirfieldLandingFee = {
 
 type ReportSource =
   | {type: 'pilot'}
-  | {type: 'import', id: string} // 'aerops', 'edeis', 'adp'…
-  | {type: 'admin'} // manual correction, always wins
+  | {type: 'import', id: string} // 'official' (operator fee sheets), 'aerops-live', 'aerops'
+  | {type: 'admin'} // manual correction, always wins (trust tiers: SOURCE_TIERS in src/utils/reports.ts)
 
 /** A dated observation about a target. Every landing fee is a report; `applyReports` derives the airfield's from them */
 type Report = {
@@ -59,13 +64,17 @@ type Report = {
   /** Last write (import run, edit): set on every write */
   updated_at: Timestamp,
   landingFee?: {
-    /** TTC, reference case: light aircraft < 2 t (≈ 1.2 t MTOW when the source has finer classes); 0 = free */
+    /** TTC, reference case: visiting light aircraft, MTOW 1.15 t, mandatory assistance included; 0 = free */
     amount: number,
     /** One night / 24 h, same aircraft; absent = unknown */
     parking24h?: number,
+    /** Parking included in the amount (flat rates), in hours */
+    parkingIncludedHours?: number,
     note?: string,
-    /** Official fee sheet or source page */
+    /** The document the price comes from (fee sheet, source page) */
     url?: string,
+    /** Stable page listing the latest fee sheet */
+    pageUrl?: string,
   },
 }
 

@@ -9,6 +9,8 @@ const report = (id: string, source: FeeReport['source'], observedAt: string, lan
   ({ id, source, observedAt: at(observedAt), updated_at: at(observedAt), landingFee })
 
 const aerops = { type: 'import', id: 'aerops' } as const
+const aeropsLive = { type: 'import', id: 'aerops-live' } as const
+const official = { type: 'import', id: 'official' } as const
 const edeis = { type: 'import', id: 'edeis' } as const
 const admin = { type: 'admin' } as const
 const pilot = { type: 'pilot' } as const
@@ -28,10 +30,9 @@ describe('deriveLandingFee', () => {
   })
 
   it('copies the chosen report', () => {
-    const r = report('aerops-LFXX', aerops, '2026-09-01', { amount: 12.5, parking24h: 8, note: 'FFA −50 %', url: 'https://x.test' })
-    expect(deriveLandingFee([r]).landingFee).toEqual({
-      amount: 12.5, parking24h: 8, note: 'FFA −50 %', url: 'https://x.test', source: 'aerops', checkedAt: r.observedAt,
-    })
+    const fee = { amount: 12.5, parking24h: 8, parkingIncludedHours: 1, note: 'FFA −50 %', url: 'https://x.test/a.pdf', pageUrl: 'https://x.test' }
+    const r = report('official-LFXX', official, '2026-09-01', fee)
+    expect(deriveLandingFee([r]).landingFee).toEqual({ ...fee, source: 'official', checkedAt: r.observedAt })
   })
 
   it('keeps free as an explicit 0 and omits absent fields', () => {
@@ -62,6 +63,21 @@ describe('deriveLandingFee', () => {
   it('lets an old admin report win too', () => {
     const reports = [report('a', admin, '2015-01-01', { amount: 0 }), report('p', pilot, '2026-01-01', { amount: 9 })]
     expect(deriveLandingFee(reports).landingFee).toMatchObject({ amount: 0, source: 'admin' })
+  })
+
+  it('ranks sources by trust tier, then by date', () => {
+    const sheet = report('official-X', official, '2026-02-01', { amount: 39.6 })
+    const live = report('aerops-X', aeropsLive, '2026-10-07', { amount: 7.22 })
+    const estimate = report('aerops-Y', aerops, '2026-10-07', { amount: 5 })
+    // A live aeroPS price can be misconfigured: the operator's sheet wins, even older
+    expect(deriveLandingFee([live, sheet]).landingFee).toMatchObject({ amount: 39.6, source: 'official' })
+    expect(deriveLandingFee([estimate, live]).landingFee).toMatchObject({ amount: 7.22, source: 'aerops-live' })
+    expect(deriveLandingFee([estimate]).landingFee).toMatchObject({ amount: 5, source: 'aerops' })
+    // A newer pilot report updates an outdated sheet
+    const visit = report('p', pilot, '2026-06-01', { amount: 42 })
+    expect(deriveLandingFee([sheet, visit, live]).landingFee).toMatchObject({ amount: 42, source: 'pilot' })
+    expect(deriveLandingFee([sheet, visit, live, report('a', admin, '2020-01-01', { amount: 1 })]).landingFee)
+      .toMatchObject({ source: 'admin' })
   })
 
   it('uses old reports when there is nothing newer', () => {
@@ -145,6 +161,8 @@ describe('sameLandingFee', () => {
     expect(sameLandingFee(fee, { ...fee, checkedAt: at('2026-01-02') })).toBe(false)
     expect(sameLandingFee(fee, { ...fee, parking24h: 5 })).toBe(false)
     expect(sameLandingFee(fee, { ...fee, note: 'x' })).toBe(false)
+    expect(sameLandingFee(fee, { ...fee, parkingIncludedHours: 24 })).toBe(false)
+    expect(sameLandingFee(fee, { ...fee, pageUrl: 'https://x.test' })).toBe(false)
   })
 })
 
