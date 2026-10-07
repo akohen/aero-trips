@@ -2,11 +2,12 @@ import { useMemo } from 'react';
 import { Activity, Airfield } from "..";
 import TripStepSelect from './TripStepSelect';
 
-const ObjectFinder = ({ activities, airfields, value, onChange }: {
+const ObjectFinder = ({ activities, airfields, value, onChange, w = 210 }: {
   activities: Map<string, Activity>;
   airfields: Map<string, Airfield>;
   value: string | null;
   onChange: (value: string | null) => void;
+  w?: number | string;
 }) => {
   const data = useMemo(() => [
     {
@@ -19,7 +20,7 @@ const ObjectFinder = ({ activities, airfields, value, onChange }: {
     },
   ], [airfields, activities])
 
-  return <TripStepSelect data={data} value={value} onChange={onChange} w={210} />
+  return <TripStepSelect data={data} value={value} onChange={onChange} w={w} />
 }
 
 export default ObjectFinder;

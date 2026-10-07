@@ -1,9 +1,9 @@
-import { Group, Button, Modal, NumberInput, Chip, Divider, Text, Stack, ScrollArea, em } from "@mantine/core"
-import { IconTrash } from "@tabler/icons-react"
+import { Group, Modal, Chip, Divider, Text, Stack, ScrollArea, em } from "@mantine/core"
 import { ActivityFilter, Activity, Airfield } from ".."
 import { useMediaQuery } from "@mantine/hooks"
 import { CommonIcon } from "./CommonIcon"
-import ObjectFinder from "./ObjectFinder"
+import DistanceFilter from "./DistanceFilter"
+import FilterModalFooter from "./FilterModalFooter"
 
 const TYPE_LABELS: Record<string, string> = {
   food: 'Restauration', lodging: 'Hébergement', bike: 'Vélo',
@@ -32,7 +32,7 @@ const ActivitiesFilterModal = ({ airfields, activities, data, filters, setFilter
     <Modal
       opened={opened}
       onClose={onClose}
-      title={`Filtrer les activités (${data.size} résultats)`}
+      title="Filtrer les activités"
       size="lg"
       scrollAreaComponent={ScrollArea.Autosize}
       fullScreen={isMobile}
@@ -56,35 +56,18 @@ const ActivitiesFilterModal = ({ airfields, activities, data, filters, setFilter
 
         <Stack gap="xs">
           <Text size="sm" fw={500}>Distance depuis un terrain ou une activité</Text>
-          <Group gap="xs" align="center">
-            <Text size="sm">Moins de</Text>
-            <NumberInput
-              style={{ width: 90 }}
-              size="sm"
-              suffix="km"
-              min={0} max={9999} step={5}
-              placeholder="5km"
-              value={filters.distance}
-              onChange={v => setFilters({ ...filters, distance: v as number })}
-            />
-            <Text size="sm">de</Text>
-            <ObjectFinder
-              activities={activities} airfields={airfields}
-              value={filters.target} onChange={v => setFilters({ ...filters, target: v })} />
-          </Group>
+          <DistanceFilter
+            activities={activities} airfields={airfields}
+            distance={filters.distance} target={filters.target}
+            onChange={change => setFilters({ ...filters, ...change })}
+            isMobile={!!isMobile} />
         </Stack>
 
-        <Group justify="space-between">
-          <Button
-            variant="subtle"
-            color="red"
-            leftSection={<IconTrash size={16} />}
-            onClick={() => {setFilters(EMPTY_FILTERS); onClose()}}
-          >
-            Supprimer tous les filtres
-          </Button>
-          <Button onClick={onClose}>Fermer</Button>
-        </Group>
+        <FilterModalFooter
+          onReset={() => { setFilters(EMPTY_FILTERS); onClose() }}
+          onClose={onClose}
+          label={`Voir ${data.size} activité${data.size > 1 ? 's' : ''}`}
+        />
 
       </Stack>
     </Modal>

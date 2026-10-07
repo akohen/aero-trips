@@ -1,12 +1,25 @@
-import { Group, Button, Modal, NumberInput, Chip, Divider, Text, Stack, ScrollArea, em } from "@mantine/core"
-import { IconCalendarEvent, IconCircleCheck, IconCoinEuro, IconCurrencyEuroOff, IconForbid, IconGasStation, IconHistory, IconMoon, IconMoonStars, IconRoad, IconStar, IconToiletPaper, IconTrash } from "@tabler/icons-react"
+import { Group, Modal, NumberInput, Chip, Divider, Text, Stack, ScrollArea, SegmentedControl, em } from "@mantine/core"
+import { ReactNode } from "react"
+import { IconCalendarEvent, IconCircleCheck, IconForbid, IconGasStation, IconHistory, IconRoad, IconStar, IconToiletPaper } from "@tabler/icons-react"
 import { ADfilter, Activity, Airfield, Profile } from ".."
 import { useMediaQuery } from "@mantine/hooks"
 import { CommonIcon } from "./CommonIcon"
-import ObjectFinder from "./ObjectFinder"
+import DistanceFilter from "./DistanceFilter"
+import FilterModalFooter from "./FilterModalFooter"
 import { LANDING_FEE_FILTERS } from "../utils/reports"
 
-const isFeeFilter = (value: string) => value in LANDING_FEE_FILTERS
+const NVFR_FILTERS = ['nvfr', 'nvfr-full']
+const FEE_FILTERS = Object.keys(LANDING_FEE_FILTERS)
+
+// Single-choice groups stored in `ad`: '' clears the group
+const pickOne = (ad: string[], group: string[], value: string) =>
+  [...ad.filter(x => !group.includes(x)), ...(value ? [value] : [])]
+const pickedIn = (ad: string[], group: string[]) => ad.find(x => group.includes(x)) ?? ''
+
+// Label above the controls on desktop, inline before them on mobile
+const FilterRow = ({ label, isMobile, children }: { label: string, isMobile: boolean, children: ReactNode }) => isMobile
+  ? <Group gap="xs" align="center"><Text size="sm" fw={500} c="dimmed">{label}</Text>{children}</Group>
+  : <Stack gap="xs"><Text size="sm" fw={500}>{label}</Text>{children}</Stack>
 
 const SERVICE_LABELS: Record<string, string> = {
   food: 'Restauration', lodging: 'Hébergement', bike: 'Vélo',
@@ -34,7 +47,7 @@ const AirfieldsFilterModal = ({ airfields, activities, data, profile, filters, s
     <Modal
       opened={opened}
       onClose={onClose}
-      title={`Filtrer les terrains (${data.size} résultats)`}
+      title="Filtrer les terrains"
       size="lg"
       scrollAreaComponent={ScrollArea.Autosize}
       fullScreen={isMobile}
@@ -45,8 +58,7 @@ const AirfieldsFilterModal = ({ airfields, activities, data, profile, filters, s
         {/* ── À propos du terrain ── */}
         <Divider label="À propos du terrain" labelPosition="left" />
 
-        <Stack gap="xs">
-          <Text size="sm" fw={500}>Longueur de piste minimum</Text>
+        <FilterRow label="Piste minimum" isMobile={isMobile}>
           <NumberInput
             style={{ width: 130 }}
             suffix="m"
@@ -55,46 +67,57 @@ const AirfieldsFilterModal = ({ airfields, activities, data, profile, filters, s
             value={filters.runway}
             onChange={(v) => setFilters({ ...filters, runway: v as number })}
           />
-        </Stack>
+        </FilterRow>
 
-        <Stack gap="xs">
-          {!isMobile && <Text size="sm" fw={500}>Statut d'accès</Text>}
+        <FilterRow label="Accès" isMobile={isMobile}>
           <Chip.Group multiple value={filters.ad} onChange={(v) => setFilters({ ...filters, ad: v })}>
             <Group gap="xs">
-              <Chip value="CAP" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconCircleCheck size={14} color="teal" /> Accès public</span></Chip>
-              <Chip value="RST" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconForbid size={14} color="orange" /> Accès restreint</span></Chip>
+              <Chip value="CAP" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconCircleCheck size={14} color="teal" /> Public</span></Chip>
+              <Chip value="RST" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconForbid size={14} color="orange" /> Restreint</span></Chip>
             </Group>
           </Chip.Group>
-        </Stack>
+        </FilterRow>
 
-        <Stack gap="xs">
-          {!isMobile && <Text size="sm" fw={500}>Équipements</Text>}
+        <FilterRow label="Équipements" isMobile={isMobile}>
           <Chip.Group multiple value={filters.ad} onChange={(v) => setFilters({ ...filters, ad: v })}>
             <Group gap="xs">
               <Chip value="toilet" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconToiletPaper size={14} /> Toilettes</span></Chip>
               <Chip value="concrete" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconRoad size={14} /> Piste en dur</span></Chip>
-              <Chip value="nvfr" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconMoon size={14} /> VFR de nuit</span></Chip>
-              <Chip value="nvfr-full" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconMoonStars size={14} /> VFR de nuit sans limitations</span></Chip>
             </Group>
           </Chip.Group>
-        </Stack>
+        </FilterRow>
 
-        <Stack gap="xs">
-          {!isMobile && <Text size="sm" fw={500}>Taxe d'atterrissage</Text>}
-          {/* One at a time: free is a subset of < 15 € */}
-          <Chip.Group multiple value={filters.ad.filter(isFeeFilter)} onChange={(v) => {
-            const picked = v.find(x => !filters.ad.includes(x))
-            setFilters({ ...filters, ad: [...filters.ad.filter(x => !isFeeFilter(x)), ...(picked ? [picked] : [])] })
-          }}>
-            <Group gap="xs">
-              <Chip value="fee-free" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconCurrencyEuroOff size={14} /> Sans taxe d'atterrissage</span></Chip>
-              <Chip value="fee-15" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconCoinEuro size={14} /> Taxe &lt; 15 €</span></Chip>
-            </Group>
-          </Chip.Group>
-        </Stack>
+        {/* Single choice: unrestricted is a subset of any licensing */}
+        <FilterRow label="VFR de nuit" isMobile={isMobile}>
+          <SegmentedControl
+            size="xs"
+            style={{ alignSelf: 'flex-start' }}
+            value={pickedIn(filters.ad, NVFR_FILTERS)}
+            onChange={(v) => setFilters({ ...filters, ad: pickOne(filters.ad, NVFR_FILTERS, v) })}
+            data={[
+              { value: '', label: 'Indifférent' },
+              { value: 'nvfr', label: 'Agréé' },
+              { value: 'nvfr-full', label: 'Sans limitations' },
+            ]}
+          />
+        </FilterRow>
 
-        <Stack gap="xs">
-          {!isMobile && <Text size="sm" fw={500}>Carburant disponible</Text>}
+        {/* Single choice: free is a subset of < 15 € */}
+        <FilterRow label="Taxe d'atterrissage" isMobile={isMobile}>
+          <SegmentedControl
+            size="xs"
+            style={{ alignSelf: 'flex-start' }}
+            value={pickedIn(filters.ad, FEE_FILTERS)}
+            onChange={(v) => setFilters({ ...filters, ad: pickOne(filters.ad, FEE_FILTERS, v) })}
+            data={[
+              { value: '', label: 'Indifférent' },
+              { value: 'fee-15', label: '< 15 €' },
+              { value: 'fee-free', label: 'Gratuite' },
+            ]}
+          />
+        </FilterRow>
+
+        <FilterRow label="Carburant" isMobile={isMobile}>
           <Chip.Group multiple value={filters.ad} onChange={(v) => setFilters({ ...filters, ad: v })}>
             <Group gap="xs">
               <Chip value="100LL" size="sm"><CommonIcon iconType="100LL" />100LL</Chip>
@@ -102,25 +125,24 @@ const AirfieldsFilterModal = ({ airfields, activities, data, profile, filters, s
               <Chip value="UL91" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconGasStation size={14} color="red" /> UL91</span></Chip>
             </Group>
           </Chip.Group>
-        </Stack>
+        </FilterRow>
 
         {profile && (
-          <Stack gap="xs">
-            {!isMobile && <Text size="sm" fw={500}>Mon profil</Text>}
+          <FilterRow label="Mon profil" isMobile={isMobile}>
             <Chip.Group multiple value={filters.ad} onChange={(v) => setFilters({ ...filters, ad: v })}>
               <Group gap="xs">
                 <Chip value="visited" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconHistory size={14} /> Déjà visité</span></Chip>
                 <Chip value="favorite" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconStar size={14} /> Favori</span></Chip>
               </Group>
             </Chip.Group>
-          </Stack>
+          </FilterRow>
         )}
 
         {/* ── Alentours ── */}
         <Divider label="Alentours" labelPosition="left" mt="xs" />
 
         <Stack gap="xs">
-          {!isMobile && <Text size="sm" fw={500}>Activités à proximité</Text>}
+          <Text size="sm" fw={500} c={isMobile ? 'dimmed' : undefined}>Activités à proximité</Text>
           <Chip.Group multiple value={filters.services} onChange={(v) => setFilters({ ...filters, services: v })}>
             <Group gap="xs">
               {['food', 'lodging', 'bike', 'transit', 'car', 'hiking', 'culture', 'aero', 'nautical', 'other'].map(e => (
@@ -138,37 +160,19 @@ const AirfieldsFilterModal = ({ airfields, activities, data, profile, filters, s
         </Stack>
 
         <Stack gap="xs">
-          {!isMobile && <Text size="sm" fw={500}>Distance depuis un terrain ou une activité</Text>}
-          <Group gap="xs" align="center">
-            <Text size="sm">Moins de</Text>
-            <NumberInput
-              style={{ width: 90 }}
-              size="sm"
-              suffix="km"
-              min={0} max={9999} step={5}
-              placeholder="5km"
-              value={filters.distance}
-              onChange={v => setFilters({ ...filters, distance: v as number })}
-            />
-            <Text size="sm">de</Text>
-            <ObjectFinder
-              activities={activities} airfields={airfields}
-              value={filters.target} onChange={v => setFilters({ ...filters, target: v })} />
-          </Group>
+          <Text size="sm" fw={500} c={isMobile ? 'dimmed' : undefined}>Distance depuis un terrain ou une activité</Text>
+          <DistanceFilter
+            activities={activities} airfields={airfields}
+            distance={filters.distance} target={filters.target}
+            onChange={change => setFilters({ ...filters, ...change })}
+            isMobile={!!isMobile} />
         </Stack>
 
-        {/* Footer actions */}
-        <Group justify="space-between">
-          <Button
-            variant="subtle"
-            color="red"
-            leftSection={<IconTrash size={16} />}
-            onClick={() => {setFilters(EMPTY_FILTERS); onClose()}}
-          >
-            Supprimer tous les filtres
-          </Button>
-          <Button onClick={onClose}>Fermer</Button>
-        </Group>
+        <FilterModalFooter
+          onReset={() => { setFilters(EMPTY_FILTERS); onClose() }}
+          onClose={onClose}
+          label={`Voir ${data.size} terrain${data.size > 1 ? 's' : ''}`}
+        />
 
       </Stack>
     </Modal>
