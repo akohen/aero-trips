@@ -1,6 +1,28 @@
 import { Activity, ADfilter, Airfield, Profile } from "..";
-import { Text } from "@mantine/core";
+import { Text, Tooltip } from "@mantine/core";
+import { IconCoins, IconCurrencyEuro, IconCurrencyEuroOff } from "@tabler/icons-react";
 import { CommonIcon } from "./CommonIcon";
+import { iconStyle } from "../utils/icons";
+import { LandingFeeLevel, landingFeeDisplay, landingFeeLevel } from "../utils/reports";
+
+// A glyph per level, not just a colour: cards with a photo draw every icon white
+const FEE_ICONS: Record<LandingFeeLevel, { icon: typeof IconCoins, color: string }> = {
+  free: { icon: IconCurrencyEuroOff, color: 'green' },
+  cheap: { icon: IconCurrencyEuro, color: 'orange' },
+  high: { icon: IconCoins, color: 'red' },
+}
+
+/** Landing fee level, the price in the tooltip; nothing when unknown */
+export const LandingFeeIcon = ({ airfield, color }: { airfield: Airfield, color?: string }) => {
+  const level = landingFeeLevel(airfield.landingFee)
+  if (!level) return null
+  const { icon: Icon, color: levelColor } = FEE_ICONS[level]
+  return (
+    <Tooltip label={landingFeeDisplay(airfield.landingFee).label} zIndex={1201}>
+      <Icon {...iconStyle} color={color ?? levelColor} />
+    </Tooltip>
+  )
+}
 
 
 export const AirfieldIcon = ({ airfield, profile, color }: { airfield: Airfield, profile?: Profile, color?: string }) => (
@@ -9,6 +31,7 @@ export const AirfieldIcon = ({ airfield, profile, color }: { airfield: Airfield,
     <CommonIcon iconType={airfield.status} color={color} />
     {airfield.fuels?.includes('100LL') && <CommonIcon iconType='100LL' color={color} />}
     {airfield.nightVFR && <CommonIcon iconType={`nvfr-${airfield.nightVFR}`} color={color} />}
+    <LandingFeeIcon airfield={airfield} color={color} />
     {profile && profile.visited?.find(v => v.type == 'airfields' && v.id == airfield.codeIcao) && <CommonIcon iconType='visited' color={color} />}
     {profile && profile.favorites?.find(v => v.type == 'airfields' && v.id == airfield.codeIcao) && <CommonIcon iconType='favorite' color={color} />}
   </>
@@ -20,6 +43,7 @@ export const AirfieldTitle = ({ad, profile}: {ad: Airfield, profile?: Profile}) 
     {ad.name} 
     {ad.fuels?.map(e => <CommonIcon key={e} iconType={e} />)}
     {ad.nightVFR && <CommonIcon iconType={`nvfr-${ad.nightVFR}`} />}
+    <LandingFeeIcon airfield={ad} />
     {profile && profile.visited?.find(v => v.type == 'airfields' && v.id == ad.codeIcao) && <CommonIcon iconType="visited" />}
     {profile && profile.favorites?.find(v => v.type == 'airfields' && v.id == ad.codeIcao) && <CommonIcon iconType="favorite" />}
   </>)
@@ -40,6 +64,8 @@ const AD_LABELS: Record<string, string> = {
   concrete: 'Piste en dur',
   nvfr: 'VFR de nuit',
   'nvfr-full': 'VFR de nuit sans limitations',
+  'fee-free': "Sans taxe d'atterrissage",
+  'fee-15': 'Taxe < 15 €',
   visited: 'Visité',
   favorite: 'Favori',
   upcomingEvents: 'Événements',

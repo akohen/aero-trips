@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Timestamp } from 'firebase/firestore'
 import { Report } from '..'
-import { deriveLandingFee, FeeReport, formatFeeAmount, formatLandingFee, sameLandingFee, sourceKey, TimestampLike } from './reports'
+import { deriveLandingFee, FeeReport, formatFeeAmount, formatLandingFee, landingFeeAtMost, landingFeeLevel, landingFeeDisplay, landingFeeSource, sameLandingFee, sourceKey, TimestampLike } from './reports'
 
 const at = (date: string): TimestampLike => ({ seconds: Date.parse(date) / 1000, nanoseconds: 0 })
 
@@ -11,7 +11,6 @@ const report = (id: string, source: FeeReport['source'], observedAt: string, lan
 const aerops = { type: 'import', id: 'aerops' } as const
 const aeropsLive = { type: 'import', id: 'aerops-live' } as const
 const official = { type: 'import', id: 'official' } as const
-const edeis = { type: 'import', id: 'edeis' } as const
 const admin = { type: 'admin' } as const
 const pilot = { type: 'pilot' } as const
 
@@ -44,11 +43,11 @@ describe('deriveLandingFee', () => {
   it('picks the newest report by observedAt, whatever the input order', () => {
     const reports = [
       report('old', aerops, '2024-01-01', { amount: 10 }),
-      report('new', edeis, '2026-03-01', { amount: 11 }),
+      report('new', official, '2026-03-01', { amount: 11 }),
       report('mid', pilot, '2025-05-01', { amount: 12 }),
     ]
-    expect(deriveLandingFee(reports).landingFee).toMatchObject({ amount: 11, source: 'edeis' })
-    expect(deriveLandingFee([...reports].reverse()).landingFee).toMatchObject({ amount: 11, source: 'edeis' })
+    expect(deriveLandingFee(reports).landingFee).toMatchObject({ amount: 11, source: 'official' })
+    expect(deriveLandingFee([...reports].reverse()).landingFee).toMatchObject({ amount: 11, source: 'official' })
   })
 
   it('lets an admin report win over newer ones, the newest admin first', () => {
@@ -73,20 +72,26 @@ describe('deriveLandingFee', () => {
     expect(deriveLandingFee([live, sheet]).landingFee).toMatchObject({ amount: 39.6, source: 'official' })
     expect(deriveLandingFee([estimate, live]).landingFee).toMatchObject({ amount: 7.22, source: 'aerops-live' })
     expect(deriveLandingFee([estimate]).landingFee).toMatchObject({ amount: 5, source: 'aerops' })
-    // The community map's « gratuit » beats an aeroPS estimate, not a live price
-    const map = report('community-X', { type: 'import', id: 'community' }, '2011-12-01', { amount: 0 })
-    expect(deriveLandingFee([map, estimate]).landingFee).toMatchObject({ amount: 0, source: 'community' })
-    expect(deriveLandingFee([map, live]).landingFee).toMatchObject({ amount: 7.22, source: 'aerops-live' })
-    // A newer pilot report updates an outdated sheet
-    const visit = report('p', pilot, '2026-06-01', { amount: 42 })
-    expect(deriveLandingFee([sheet, visit, live]).landingFee).toMatchObject({ amount: 42, source: 'pilot' })
+    // Pilots, reported here or imported: below live prices, above estimates
+    const visit = report('p', pilot, '2026-10-08', { amount: 0 })
+    expect(deriveLandingFee([visit, live]).landingFee).toMatchObject({ amount: 7.22, source: 'aerops-live' })
+    expect(deriveLandingFee([report('community-X', pilot, '2011-12-01', { amount: 0 }), estimate]).landingFee)
+      .toMatchObject({ amount: 0, source: 'pilot' })
+    // A newer pilot report doesn't replace a sheet (a conflict, for review); an admin report does
+    expect(deriveLandingFee([sheet, visit]).landingFee).toMatchObject({ amount: 39.6, source: 'official' })
     expect(deriveLandingFee([sheet, visit, live, report('a', admin, '2020-01-01', { amount: 1 })]).landingFee)
       .toMatchObject({ source: 'admin' })
   })
 
+  it('ranks unknown sources last', () => {
+    const unknown = report('x', { type: 'import', id: 'edeis' }, '2026-10-01', { amount: 11 })
+    expect(deriveLandingFee([unknown, report('e', aerops, '2020-01-01', { amount: 5 })]).landingFee).toMatchObject({ source: 'aerops' })
+    expect(deriveLandingFee([unknown]).landingFee).toMatchObject({ source: 'edeis' })
+  })
+
   it('uses old reports when there is nothing newer', () => {
-    const reports = [report('a', aerops, '2011-06-01', { amount: 0 }), report('b', edeis, '2018-02-01', { amount: 4 })]
-    expect(deriveLandingFee(reports).landingFee).toEqual({ amount: 4, source: 'edeis', checkedAt: at('2018-02-01') })
+    const reports = [report('a', aerops, '2011-06-01', { amount: 0 }), report('b', official, '2018-02-01', { amount: 4 })]
+    expect(deriveLandingFee(reports).landingFee).toEqual({ amount: 4, source: 'official', checkedAt: at('2018-02-01') })
   })
 
   it('takes parking from the chosen report only', () => {
@@ -99,29 +104,29 @@ describe('deriveLandingFee', () => {
 
   it('breaks observedAt ties by updated_at, then by id', () => {
     const a = { ...report('a', aerops, '2026-01-01', { amount: 10 }), updated_at: at('2026-02-01') }
-    const b = { ...report('b', edeis, '2026-01-01', { amount: 11 }), updated_at: at('2026-03-01') }
-    expect(deriveLandingFee([a, b]).landingFee?.source).toBe('edeis')
-    expect(deriveLandingFee([b, a]).landingFee?.source).toBe('edeis')
+    const b = { ...report('b', official, '2026-01-01', { amount: 11 }), updated_at: at('2026-03-01') }
+    expect(deriveLandingFee([a, b]).landingFee?.source).toBe('official')
+    expect(deriveLandingFee([b, a]).landingFee?.source).toBe('official')
 
     const c = report('c', aerops, '2026-01-01', { amount: 10 })
-    const d = report('d', edeis, '2026-01-01', { amount: 11 })
+    const d = report('d', official, '2026-01-01', { amount: 11 })
     expect(deriveLandingFee([c, d]).landingFee?.source).toBe(deriveLandingFee([d, c]).landingFee?.source)
   })
 
   describe('conflicts', () => {
     it('reports sources disagreeing by more than 20 % and 2 €', () => {
-      const reports = [report('aerops-X', aerops, '2026-01-01', { amount: 43.81 }), report('edeis-X', edeis, '2026-09-01', { amount: 5.99 })]
+      const reports = [report('aerops-X', aerops, '2026-01-01', { amount: 43.81 }), report('official-X', official, '2026-09-01', { amount: 5.99 })]
       const { landingFee, conflicts } = deriveLandingFee(reports)
-      expect(landingFee?.source).toBe('edeis')
+      expect(landingFee?.source).toBe('official')
       expect(conflicts).toEqual([{ reports: [
-        { id: 'edeis-X', source: 'edeis', amount: 5.99 },
+        { id: 'official-X', source: 'official', amount: 5.99 },
         { id: 'aerops-X', source: 'aerops', amount: 43.81 },
       ] }])
     })
 
     it('ignores small gaps: under 2 €, or under 20 %', () => {
-      const under2 = [report('a', aerops, '2026-01-01', { amount: 5 }), report('b', edeis, '2026-02-01', { amount: 6.5 })]
-      const under20 = [report('a', aerops, '2026-01-01', { amount: 50 }), report('b', edeis, '2026-02-01', { amount: 45 })]
+      const under2 = [report('a', aerops, '2026-01-01', { amount: 5 }), report('b', official, '2026-02-01', { amount: 6.5 })]
+      const under20 = [report('a', aerops, '2026-01-01', { amount: 50 }), report('b', official, '2026-02-01', { amount: 45 })]
       expect(deriveLandingFee(under2).conflicts).toEqual([])
       expect(deriveLandingFee(under20).conflicts).toEqual([])
     })
@@ -130,7 +135,7 @@ describe('deriveLandingFee', () => {
       const reports = [
         report('p1', pilot, '2025-01-01', { amount: 40 }),
         report('p2', pilot, '2026-01-01', { amount: 10 }),
-        report('e', edeis, '2026-02-01', { amount: 10 }),
+        report('e', official, '2026-02-01', { amount: 10 }),
       ]
       expect(deriveLandingFee(reports).conflicts).toEqual([])
     })
@@ -184,3 +189,61 @@ describe('formatLandingFee', () => {
   })
 })
 
+
+describe('landingFeeAtMost', () => {
+  it('compares the shown amount, free meaning exactly 0, unknown never', () => {
+    expect(landingFeeAtMost(undefined, 10)).toBe(false)
+    expect(landingFeeAtMost({ amount: 0 }, 0)).toBe(true)
+    expect(landingFeeAtMost({ amount: 0.4 }, 0)).toBe(false)
+    expect(landingFeeAtMost({ amount: 0 }, 10)).toBe(true)
+    expect(landingFeeAtMost({ amount: 10.4 }, 10)).toBe(true)
+    expect(landingFeeAtMost({ amount: 10.5 }, 10)).toBe(false)
+  })
+})
+
+describe('landingFeeSource', () => {
+  it('words each source with its date, in Paris time', () => {
+    expect(landingFeeSource({ source: 'official', checkedAt: at('2026-04-01T00:00:00Z') })).toBe('Guide tarifaire, en vigueur depuis avril 2026')
+    expect(landingFeeSource({ source: 'pilot', checkedAt: at('2026-09-12') })).toBe('Signalé par un pilote en septembre 2026')
+    expect(landingFeeSource({ source: 'aerops', checkedAt: at('2026-10-07T09:27:13Z') })).toBe('Estimation aeroPS, relevée le 7 oct. 2026')
+    expect(landingFeeSource({ source: 'aerops-live', checkedAt: at('2026-10-07') })).toBe('aeroPS, relevé le 7 oct. 2026')
+    expect(landingFeeSource({ source: 'edeis', checkedAt: at('2026-03-01') })).toBe('edeis, mars 2026')
+    // 31 Dec 23:30 UTC is already 1 Jan in Paris
+    expect(landingFeeSource({ source: 'pilot', checkedAt: at('2011-12-31T23:30:00Z') })).toBe('Signalé par un pilote en janvier 2012')
+  })
+})
+
+describe('landingFeeDisplay', () => {
+  it('says unknown when there is no fee, never free', () => {
+    expect(landingFeeDisplay(undefined)).toEqual({ label: "Taxe d'atterrissage : inconnue", known: false, parking: [] })
+  })
+
+  it('shows free landings and their source', () => {
+    const display = landingFeeDisplay({ amount: 0, source: 'pilot', checkedAt: at('2011-06-01'), note: 'n', url: 'https://x.test' })
+    expect(display).toEqual({ label: 'Atterrissage gratuit', known: true, parking: [], note: 'n', source: 'Signalé par un pilote en juin 2011', url: 'https://x.test' })
+  })
+
+  it('shows paid fees with parking, included or per 24 h', () => {
+    const display = landingFeeDisplay({ amount: 39.6, parkingIncludedHours: 24, parking24h: 0, pageUrl: 'https://x.test', source: 'official', checkedAt: at('2026-02-01') })
+    expect(display.label).toBe("Taxe d'atterrissage : ≈ 40 €")
+    expect(display.parking).toEqual(['Stationnement 24 h inclus', 'Stationnement 24 h : gratuit'])
+    expect(display.pageUrl).toBe('https://x.test')
+    expect(display).not.toHaveProperty('url')
+    expect(landingFeeDisplay({ amount: 5, url: 'javascript:alert(1)', source: 'admin', checkedAt: at('2026-10-07') })).not.toHaveProperty('url')
+    expect(landingFeeDisplay({ amount: 5, parkingIncludedHours: 1, parking24h: 6.3, source: 'aerops', checkedAt: at('2026-10-07') }).parking)
+      .toEqual(['1 h de stationnement incluse', 'Stationnement 24 h : ≈ 6 €'])
+    expect(landingFeeDisplay({ amount: 5, parkingIncludedHours: 3, source: 'aerops', checkedAt: at('2026-10-07') }).parking)
+      .toEqual(['3 h de stationnement incluses'])
+  })
+})
+
+describe('landingFeeLevel', () => {
+  it('buckets the shown amount: free, < 15 €, 15 € and more; unknown has none', () => {
+    expect(landingFeeLevel(undefined)).toBeUndefined()
+    expect(landingFeeLevel({ amount: 0 })).toBe('free')
+    expect(landingFeeLevel({ amount: 0.4 })).toBe('cheap')
+    expect(landingFeeLevel({ amount: 14.4 })).toBe('cheap')
+    expect(landingFeeLevel({ amount: 14.5 })).toBe('high')
+    expect(landingFeeLevel({ amount: 104 })).toBe('high')
+  })
+})

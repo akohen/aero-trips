@@ -10,8 +10,8 @@
  *   official  scripts/fees.json         operator fee sheets, checked by hand; observedAt = validFrom
  *   aerops    scripts/aerops-fees.json  from `fetch-aerops-fees.ts`; source `aerops-live` when the airfield bills
  *                                       through aeroPS, `aerops` for estimates (lowest trust tiers); observedAt = fetch
- *   community scripts/community-fees.json  « free » only, from `build-community-fees.ts`: the community map
- *                                       (`community`, between aeroPS live and estimates) and our descriptions (`aerotrips`)
+ *   community scripts/community-fees.json  « free » only, from `build-community-fees.ts`: pilot reports (community
+ *                                       map, Natim, our descriptions), imported as `{type: 'pilot'}` reports
  *
  * Usage (dry run unless --apply; `all` or no source = every source, in order):
  *   npm run import:fees -- all [--apply]            # staging
@@ -42,7 +42,7 @@ type AeropsFile = {
 }
 
 type CommunityFile = {
-  airfields: Record<string, { source: string, amount: number, observedAt: string, note: string, url?: string }>,
+  airfields: Record<string, { origin: string, amount: number, observedAt: string }>,
 }
 
 const readJson = <T>(path: string): T => JSON.parse(readFileSync(path, 'utf8'))
@@ -77,10 +77,8 @@ const SOURCES: Record<string, () => Entry[]> = {
       landingFee: compact({
         amount: reference.amount,
         parking24h: reference.parking24h,
-        note: [
-          reference.flatRate && 'Forfait atterrissage et stationnement.',
-          live ? 'Tarif facturé via l\'appli aeroPS.' : 'Estimation aeroPS, HT ou TTC non précisé.',
-        ].filter(Boolean).join(' '),
+        // The source line already says aeroPS, live or estimate (`landingFeeSource`); prices are TTC
+        note: reference.flatRate ? 'Forfait atterrissage et stationnement.' : undefined,
         url,
       }),
     }] : [])
@@ -89,9 +87,9 @@ const SOURCES: Record<string, () => Entry[]> = {
     const { airfields } = readJson<CommunityFile>('./scripts/community-fees.json')
     return Object.entries(airfields).map(([icao, e]) => ({
       icao,
-      source: { type: 'import', id: e.source },
+      source: { type: 'pilot' },
       observedAt: new Date(e.observedAt),
-      landingFee: compact({ amount: e.amount, note: e.note, url: e.url }),
+      landingFee: { amount: e.amount },
     }))
   },
 }

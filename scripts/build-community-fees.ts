@@ -1,12 +1,13 @@
 /**
  * Builds scripts/community-fees.json, the « free » landing fees no bulk source has (#18), for `npm run import:fees --
- * community`. Only `amount: 0` entries: paying amounts come from operator sheets and aeroPS.
+ * community`. Only `amount: 0` entries: paying amounts come from operator sheets and aeroPS. All are pilot reports,
+ * imported as such (`source: {type: 'pilot'}`, no note, no link); `origin` is kept in the file for traceability only.
  *
  * - `community`: the « gratuit » entries of the community map « carte taxes d'atterrissage » (C. Rousseau), via
  *   Natim/france-ga-pilot-maps (`docs/landing_fees.csv`, MIT), plus Natim's own free rows. Unconditional only
  *   (« gratuit si avitaillement », « taxe offerte si repas » are not free); dated from the note (the CSV's date is the
- *   2024 snapshot), entries without a date skipped. Tier above aeroPS estimates, below live prices: old, but pilot
- *   reports (airfield.directory, 2025–2026) confirmed every free entry they mention.
+ *   2024 snapshot), entries without a date skipped. Old, but pilot reports (airfield.directory, 2025–2026) confirmed
+ *   every free entry they mention.
  * - `aerotrips`: our airfield descriptions saying « pas de taxe d'atterrissage », dated by the airfield's `updated_at`.
  *
  *   npx tsx scripts/build-community-fees.ts
@@ -15,12 +16,11 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import type { JSONContent } from '@tiptap/core'
 
 const NATIM_CSV = 'https://raw.githubusercontent.com/Natim/france-ga-pilot-maps/main/docs/landing_fees.csv'
-const NATIM_REPO = 'https://github.com/Natim/france-ga-pilot-maps'
 const OUTPUT = './scripts/community-fees.json'
 
 const MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
 
-type Entry = { source: string, amount: 0, observedAt: string, note: string, url?: string }
+type Entry = { origin: 'map' | 'natim' | 'aerotrips', amount: 0, observedAt: string }
 
 const parseCsvLine = (line: string) => {
   const cells: string[] = []
@@ -61,15 +61,7 @@ const community = async () => {
       console.log(icao, 'skipped, no date:', text.slice(0, 80))
       continue
     }
-    entries[icao] = {
-      source: 'community',
-      amount: 0,
-      observedAt,
-      note: fromMap
-        ? 'Signalé gratuit sur la carte communautaire des taxes d\'atterrissage (C. Rousseau).'
-        : 'Signalé gratuit (Natim/france-ga-pilot-maps).',
-      url: NATIM_REPO,
-    }
+    entries[icao] = { origin: fromMap ? 'map' : 'natim', amount: 0, observedAt }
   }
   return entries
 }
@@ -84,10 +76,9 @@ const descriptions = () => {
   for (const airfield of airfields) {
     if (!NO_FEE.test(text(airfield.description)) || !airfield.updated_at) continue
     entries[airfield.codeIcao] = {
-      source: 'aerotrips',
+      origin: 'aerotrips',
       amount: 0,
       observedAt: new Date(airfield.updated_at.seconds * 1000).toISOString().slice(0, 10),
-      note: 'Pas de taxe d\'atterrissage, d\'après la fiche de l\'aérodrome.',
     }
   }
   return entries

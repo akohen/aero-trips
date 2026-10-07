@@ -19,6 +19,7 @@ import { Nearby } from "./Nearby"
 import { NearbyTrips } from "./ActivityUtils"
 import { ToiletText } from "./AirfieldUtils"
 import { Webcams } from "./Webcams"
+import { LandingFee } from "./LandingFee"
 // Lazy: only webmasters open it, keep it out of the airfield page bundle.
 const EmbedModal = lazy(() => import("./EmbedModal"))
 
@@ -78,6 +79,7 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
         {item.nightVFR && <Text>{nightVFRLabels[item.nightVFR]}</Text>}
         {(item.fuels && item.fuels.length > 0) ? `Avitaillement: ${item.fuels?.join(' ')}` : `Pas d'avitaillement disponible`}
         <ToiletText airfield={item} />
+        <LandingFee airfield={item} />
         <ButtonVACMap airfield={item} />
       </>}
       

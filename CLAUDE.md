@@ -52,17 +52,26 @@ collection (`Report` in `src/index.d.ts`: `target`, `source` = `import` (id) / `
 parking, note, url, source, `checkedAt`), written only by `applyReports` (`functions/reports/`, codebase
 `reports`) on any report write, `updated_at` bumped only when it changed. `AirfieldForm` never writes it back (the
 rules don't enforce it yet: signed-in clients can still update whole airfield documents). The logic lives only in **`src/utils/reports.ts`** (React/SDK-free):
-`deriveLandingFee` (newest report of the best trust tier, `SOURCE_TIERS`: admin > `official` sheets, pilots and
-`aerotrips` > `aerops-live` > `community` « gratuit » > `aerops` estimates; prices are TTC; conflicts between sources), `sameLandingFee`, `formatLandingFee`.
+`deriveLandingFee` (newest report of the best trust tier, `SOURCE_TIERS`: admin > `official` sheets > `aerops-live` >
+pilots (reported here or imported) > `aerops` estimates > unknown sources; an outdated sheet gets a newer one, is removed
+or overridden by an admin report; prices are TTC; conflicts between sources), `sameLandingFee`, `formatLandingFee`.
 Absent = unknown, never free (free = `amount: 0`). Reference case: visiting aircraft, MTOW 1.15 t, mandatory
 assistance included (`docs/data-sources.md`, *Landing fees*).
 **`npm run import:fees -- all|official|aerops|community`** (no source = all; staging; `import:fees:prod`; dry run
 unless `--apply`) writes
 reports `{source}-{ICAO}` from `scripts/fees.json` (operator sheets, hand-checked, committed), `scripts/aerops-fees.json`
-(`npx tsx scripts/fetch-aerops-fees.ts`, gitignored) or `scripts/community-fees.json` (free only:
-`npx tsx scripts/build-community-fees.ts`, committed). Staging needs `serviceAccountKey.staging.json`.
+(`npx tsx scripts/fetch-aerops-fees.ts`, gitignored) or `scripts/community-fees.json` (free only, imported as
+pilot reports: `npx tsx scripts/build-community-fees.ts`, committed). Staging needs `serviceAccountKey.staging.json`.
 **`npm run recompute`** (staging; `recompute:prod`; `--dry-run`) re-derives every airfield after a logic change:
 prints conflicts and changes, writes only what changed. Reports are never loaded by `DataProvider` nor exported.
+**Display** goes through `landingFeeDisplay` (same file): label, parking lines, note, dated source line
+(`landingFeeSource`, wording per source) linked to `url`, `pageUrl`; non-http(s) links dropped. Rendered by
+`components/LandingFee.tsx` (airfield info block: price + parking, the rest in a click-to-open popover), `scripts/prerender.ts` and MCP `landingFeeLines` (`get_airfield`;
+search rows show the amount). Unknown shows « inconnue » (#39 will turn it into a report prompt).
+**Filters** `fee-free` (amount exactly 0) and `fee-15` (shown, rounded amount < 15 €), one at a time in the modal:
+`LANDING_FEE_FILTERS` / `landingFeeAtMost`; unknown never matches. MCP: `free_landing`, `max_landing_fee`.
+**Icon** in `AirfieldTitle` / `AirfieldIcon` (lists, cards, map popups; the pins have no icons): `landingFeeLevel` free /
+< 15 € / 15 € and more (paid fees cluster at 7–14 €), one glyph per level (photo cards draw icons white), the price in the tooltip (`LandingFeeIcon`).
 
 **List/map filters live in the URL** (shareable queries): `App.tsx` derives them from the query string on every render
 through `src/utils/filterParams.ts`. Never copy them into React state: react-router v7 applies location changes in a

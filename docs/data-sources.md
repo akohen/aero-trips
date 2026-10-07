@@ -141,8 +141,8 @@ its 2 live prices right; Natim right on 6.
   (Metz), HT (Dijon), FFA −50 % rate (Périgueux), outdated grid (Courchevel, Dinard/Rennes).
 - Rights: no reuse clause; individual prices are facts, but bulk extraction may fall under the EU database right
   (aeroPS GmbH, Germany). Import the reference values only, link back to their page.
-- Used by: import sources `aerops-live` (below sheets and pilots) and `aerops` (estimates, lowest tier).
-- Pitfalls: no VAT wording on the page; flat « landing and parking » rates (9) can't be split; parking only when the
+- Used by: import sources `aerops-live` (below sheets, above pilots) and `aerops` (estimates, lowest tier).
+- Pitfalls: no VAT wording on estimate pages, but amounts are TTC (checked on LFAQ, LFBI, LFAT, 2026-10-07); flat « landing and parking » rates (9) can't be split; parking only when the
   example covers 18–24 h or one per-day/night line (12 h, 48 h, « redevance minimale »: unknown); the stylesheet
   of every page contains `price-notice-valid`, match the span's class attribute.
 
@@ -159,9 +159,12 @@ its 2 live prices right; Natim right on 6.
   note text, not in `observed_on`).
 - Rights: reused through Natim's MIT repo; prices are facts. Credit the map's author.
 - Used by: `scripts/build-community-fees.ts` → `scripts/community-fees.json` (unconditional « gratuit » only, dated from
-  the note; 243 airfields, 166 dated 2011) → `npm run import:fees -- community`, tier `community`: above aeroPS
-  estimates, below live prices. Pilot reports on airfield.directory (2025–2026) confirmed every free entry they
-  mention. Conflicts: LFCD, LFGY, LFOC, LFPM charge per aeroPS live (live wins); LFBS per an aeroPS estimate (free wins).
+  the note; 243 airfields with Natim's free rows and our descriptions, 166 dated 2011) → `npm run import:fees --
+  community`, imported as **pilot reports** (`{type: 'pilot'}`, ids `community-{ICAO}`, no note, no link; `origin` in the
+  file says where each comes from): shown « Signalé par un pilote en novembre 2012 », pilot tier (below aeroPS live,
+  above estimates). Pilot reports on airfield.directory (2025–2026) confirmed every free entry they mention.
+  Conflicts: LFCD, LFGY, LFOC, LFPM charge per aeroPS live (live wins); LFBS per an aeroPS estimate (free wins).
+  Dates are month-precise (189), day (49) or year-only (1, shown as January).
 - Pitfalls: conditional free cases parsed as free by Natim (LFLM « taxe offerte si repas », LFRI « gratuit si
   avitaillement »); old amounts (ADP fields 7.10 € vs 14.40 € today).
 
@@ -182,7 +185,7 @@ its 2 live prices right; Natim right on 6.
 ### AeroTrips airfield descriptions
 - Coverage (2026-10-07): 7 of 432 mention the fee; « pas de taxe » on LFAE, LFAK, LFQW, LFSJ; amounts on LFRF (~5 €),
   LFEQ (12 €); LFLD links its guide. Contributed by pilots/clubs, no date beyond `updated_at`.
-- Used by: `build-community-fees.ts` (« pas de taxe » → source `aerotrips`, dated by `updated_at`).
+- Used by: `build-community-fees.ts` (« pas de taxe » → a pilot report, `origin: 'aerotrips'`, dated by `updated_at`).
 
 ### Checked, not usable (2026-10-07)
 - **OpenStreetMap**: no landing-fee tag on any of the 439 `LF` aerodromes (only `internet_access:fee`).

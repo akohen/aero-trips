@@ -1,9 +1,12 @@
 import { Group, Button, Modal, NumberInput, Chip, Divider, Text, Stack, ScrollArea, em } from "@mantine/core"
-import { IconCalendarEvent, IconCircleCheck, IconForbid, IconGasStation, IconHistory, IconMoon, IconMoonStars, IconRoad, IconStar, IconToiletPaper, IconTrash } from "@tabler/icons-react"
+import { IconCalendarEvent, IconCircleCheck, IconCoinEuro, IconCurrencyEuroOff, IconForbid, IconGasStation, IconHistory, IconMoon, IconMoonStars, IconRoad, IconStar, IconToiletPaper, IconTrash } from "@tabler/icons-react"
 import { ADfilter, Activity, Airfield, Profile } from ".."
 import { useMediaQuery } from "@mantine/hooks"
 import { CommonIcon } from "./CommonIcon"
 import ObjectFinder from "./ObjectFinder"
+import { LANDING_FEE_FILTERS } from "../utils/reports"
+
+const isFeeFilter = (value: string) => value in LANDING_FEE_FILTERS
 
 const SERVICE_LABELS: Record<string, string> = {
   food: 'Restauration', lodging: 'Hébergement', bike: 'Vélo',
@@ -72,6 +75,20 @@ const AirfieldsFilterModal = ({ airfields, activities, data, profile, filters, s
               <Chip value="concrete" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconRoad size={14} /> Piste en dur</span></Chip>
               <Chip value="nvfr" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconMoon size={14} /> VFR de nuit</span></Chip>
               <Chip value="nvfr-full" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconMoonStars size={14} /> VFR de nuit sans limitations</span></Chip>
+            </Group>
+          </Chip.Group>
+        </Stack>
+
+        <Stack gap="xs">
+          {!isMobile && <Text size="sm" fw={500}>Taxe d'atterrissage</Text>}
+          {/* One at a time: free is a subset of < 15 € */}
+          <Chip.Group multiple value={filters.ad.filter(isFeeFilter)} onChange={(v) => {
+            const picked = v.find(x => !filters.ad.includes(x))
+            setFilters({ ...filters, ad: [...filters.ad.filter(x => !isFeeFilter(x)), ...(picked ? [picked] : [])] })
+          }}>
+            <Group gap="xs">
+              <Chip value="fee-free" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconCurrencyEuroOff size={14} /> Sans taxe d'atterrissage</span></Chip>
+              <Chip value="fee-15" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconCoinEuro size={14} /> Taxe &lt; 15 €</span></Chip>
             </Group>
           </Chip.Group>
         </Stack>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { activityRow, airfieldRow, header, itemImageMarkdown, itemLink, itemUrl } from './format.ts'
+import { activityRow, airfieldRow, header, itemImageMarkdown, itemLink, itemUrl, landingFeeLines } from './format.ts'
 import type { Activity, Airfield } from '../../../src'
 
 // Minimal stand-ins shaped like the snapshot records. Positions are plain
@@ -98,5 +98,30 @@ describe('itemImageMarkdown', () => {
   it('puts the photo on the search row only when one exists', () => {
     expect(activityRow(withImage)).toContain('![La Tannière](https://storage.googleapis.com/a.jpg)')
     expect(activityRow(activity)).not.toContain('![')
+  })
+})
+
+describe('landing fee', () => {
+  const checkedAt = { seconds: Date.parse('2026-10-07') / 1000, nanoseconds: 0 }
+  const paid = { ...airfield, landingFee: {
+    amount: 10.2, parking24h: 6.3, note: 'Estimation aeroPS.', url: 'https://aerops.test/LFAB', source: 'aerops', checkedAt,
+  } } as unknown as Airfield
+  const free = { ...airfield, landingFee: { amount: 0, source: 'pilot', checkedAt } } as unknown as Airfield
+
+  it('adds the fee to search rows only when known', () => {
+    expect(airfieldRow(paid)).toContain("taxe d'atterrissage ≈ 10 €")
+    expect(airfieldRow(free)).toContain('atterrissage gratuit')
+    expect(airfieldRow(airfield)).not.toContain('atterrissage')
+  })
+
+  it('details amount, parking, note and the linked, dated source', () => {
+    expect(landingFeeLines(paid)).toEqual([
+      "Taxe d'atterrissage : ≈ 10 € (avion léger visiteur, TTC), indicatif",
+      'Stationnement 24 h : ≈ 6 €',
+      'Précisions : Estimation aeroPS.',
+      'Source : [Estimation aeroPS, relevée le 7 oct. 2026](https://aerops.test/LFAB)',
+    ])
+    expect(landingFeeLines(free)).toEqual(['Atterrissage gratuit, indicatif', 'Source : Signalé par un pilote en octobre 2026'])
+    expect(landingFeeLines(airfield)).toEqual(["Taxe d'atterrissage : inconnue"])
   })
 })

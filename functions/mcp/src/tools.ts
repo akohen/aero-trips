@@ -14,8 +14,9 @@ import { activities, airfields, SITE_URL } from './data.ts'
 import {
   DEFAULT_LIMIT, MAX_DESC_FULL, MAX_RESULTS,
   activityRow, airfieldRow, description, displayName, errorResult, header, itemImageMarkdown, itemLink,
-  km, label, textResult,
+  km, label, landingFeeLines, textResult,
 } from './format.ts'
+import { landingFeeAtMost } from '../../../src/utils/reports.ts'
 import { withLogging } from './logging.ts'
 import type { Activity, ActivityType, Airfield } from '../../../src'
 
@@ -115,7 +116,7 @@ export function registerTools(server: McpServer) {
   server.registerTool('search_airfields', {
     title: 'Rechercher des aérodromes',
     description:
-      "Recherche des aérodromes français par nom, code OACI, équipements et position. "
+      "Recherche des aérodromes français par nom, code OACI, équipements, taxe d'atterrissage et position. "
       + "Le texte recherché est comparé au code OACI et au nom du terrain. "
       + "Pour chercher autour d'un point, fournir near_icao, ou near_lat + near_lon. "
       + "Chaque résultat inclut le lien markdown de sa fiche AeroTrips, et sa photo quand il en existe une."
@@ -131,6 +132,10 @@ export function registerTools(server: McpServer) {
       night_vfr_unrestricted: z.boolean().optional()
         .describe("Exiger un agrément VFR de nuit sans limitations. Les terrains avec limitations demandent un agrément préalable et la connaissance des procédures locales."),
       toilets: z.boolean().optional().describe('Exiger des toilettes.'),
+      free_landing: z.boolean().optional()
+        .describe("Exiger un atterrissage gratuit. Les terrains dont la taxe est inconnue sont exclus."),
+      max_landing_fee: z.number().min(0).optional()
+        .describe("Taxe d'atterrissage maximale en euros TTC (avion léger visiteur), montant arrondi à l'euro. Les terrains dont la taxe est inconnue sont exclus."),
       services: z.array(activityTypeEnum).optional()
         .describe("Exiger une activité de chacun de ces types à moins de 5 km du terrain."),
       near_icao: z.string().optional().describe("Code OACI du terrain servant de point de référence."),
@@ -151,6 +156,7 @@ export function registerTools(server: McpServer) {
       ...(params.night_vfr_unrestricted ? ['nvfr-full'] : []),
       ...(params.toilets ? ['toilet'] : []),
       ...(params.hard_runway ? ['concrete'] : []),
+      ...(params.free_landing ? ['fee-free'] : []),
     ]
 
     // filterAirfields' own distance filter only understands an item id, so it
@@ -167,6 +173,10 @@ export function registerTools(server: McpServer) {
     let results = [...matched.values()]
     if (near.reference && !params.near_icao) {
       results = results.filter(a => haversineDistance(near.reference!.position, a.position) <= params.radius_km * 1000)
+    }
+    // The site only offers « < 15 € »: any max is the same rule (landingFeeAtMost), applied here
+    if (params.max_landing_fee !== undefined) {
+      results = results.filter(a => landingFeeAtMost(a.landingFee, params.max_landing_fee!))
     }
 
     const ranked = rank(results, near.reference)
@@ -191,7 +201,7 @@ export function registerTools(server: McpServer) {
 
   server.registerTool('get_airfield', {
     title: "Détail d'un aérodrome",
-    description: "Fiche complète d'un aérodrome français : pistes, carburants, services, description, "
+    description: "Fiche complète d'un aérodrome français : pistes, carburants, services, taxe d'atterrissage indicative, description, "
       + "carte VAC, photo et environs. Fournit le lien de la fiche et la photo à utiliser pour illustrer."
       + RESPONSE_RULES,
     inputSchema: {
@@ -213,6 +223,7 @@ export function registerTools(server: McpServer) {
       airfield.fuels?.length ? `Carburants : ${airfield.fuels.join(', ')}` : 'Carburants : non renseignés',
       `Toilettes : ${airfield.toilet && airfield.toilet !== 'no' ? label(airfield.toilet) : 'non'}`,
       `VFR de nuit : ${airfield.nightVFR ? nightVFRLabels[airfield.nightVFR] : 'non'}`,
+      ...landingFeeLines(airfield),
       airfield.website ? `Site web : ${airfield.website}` : undefined,
       `Carte VAC : ${getVacUrl(airfield.codeIcao)}`,
       webcamsLine(airfield),

@@ -6,6 +6,7 @@ import { labels } from '../../../src/utils/labels.ts'
 import { descriptionToText } from '../../../src/utils/descriptionText.ts'
 import { titleCase } from '../../../src/utils/utils.ts'
 import { getImgNode } from '../../../src/utils/itemImages.ts'
+import { formatLandingFee, LANDING_FEE_REFERENCE, landingFeeDisplay } from '../../../src/utils/reports.ts'
 import { SITE_URL, SNAPSHOT_DATE } from './data.ts'
 import type { ToolOutcome } from './logging.ts'
 import type { Activity, Airfield } from '../../../src'
@@ -79,6 +80,7 @@ export const airfieldRow = (airfield: Airfield, distance?: number) => [
   airfield.fuels?.length ? airfield.fuels.join(', ') : undefined,
   airfield.nightVFR === 'limited' ? 'VFR nuit (avec limitations)' : airfield.nightVFR ? 'VFR nuit' : undefined,
   airfield.toilet && airfield.toilet !== 'no' ? label(airfield.toilet) : undefined,
+  airfield.landingFee ? (airfield.landingFee.amount === 0 ? 'atterrissage gratuit' : `taxe d'atterrissage ${formatLandingFee(airfield.landingFee)}`) : undefined,
   distance !== undefined ? km(distance) : undefined,
   itemImageMarkdown(airfield) || undefined,
 ].filter(Boolean).join(' · ')
@@ -132,3 +134,20 @@ export const textResult = (text: string, count?: number): ToolOutcome => ({
 })
 
 export const errorResult = (text: string): ToolOutcome => ({ text, isError: true })
+
+/**
+ * get_airfield's landing fee lines: amount, parking, note, dated source with its link. Labelled indicative:
+ * imported or reported, not an operator's quote.
+ */
+export const landingFeeLines = (airfield: Airfield) => {
+  const fee = landingFeeDisplay(airfield.landingFee)
+  if (!fee.known) return ["Taxe d'atterrissage : inconnue"]
+  const paid = airfield.landingFee!.amount > 0
+  return [
+    `${fee.label}${paid ? ` (${LANDING_FEE_REFERENCE[0].toLowerCase()}${LANDING_FEE_REFERENCE.slice(1)})` : ''}, indicatif`,
+    ...fee.parking,
+    ...(fee.note ? [`Précisions : ${fee.note}`] : []),
+    `Source : ${fee.url ? `[${fee.source}](${fee.url})` : fee.source}`
+      + (fee.pageUrl ? ` · [Tarifs de l'aérodrome](${fee.pageUrl})` : ''),
+  ]
+}

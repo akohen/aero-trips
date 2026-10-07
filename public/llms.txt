@@ -1,8 +1,8 @@
 # AeroTrips
 
 > Annuaire communautaire des destinations aériennes en France : 432 aérodromes et 494 activités
-> à proximité, renseignés et enrichis par des pilotes. Pistes, carburants, VFR de nuit, services,
-> restaurants, transports et points d'intérêt autour de chaque terrain.
+> à proximité, renseignés et enrichis par des pilotes. Pistes, carburants, VFR de nuit, taxes
+> d'atterrissage indicatives, services, restaurants, transports et points d'intérêt autour de chaque terrain.
 
 AeroTrips aide les pilotes à choisir où voler : trouver un terrain selon ses équipements, voir ce
 qu'il y a à faire une fois posé, et préparer une sortie à la journée. Le contenu est en français.
@@ -25,7 +25,7 @@ officielle et les sources officielles (SIA).
 ## Pages principales
 
 - [Accueil](https://aerotrips.fr/): présentation et recherche.
-- [Aérodromes](https://aerotrips.fr/airfields): liste et filtres (statut, carburant, longueur de piste, VFR de nuit, services à proximité).
+- [Aérodromes](https://aerotrips.fr/airfields): liste et filtres (statut, carburant, longueur de piste, VFR de nuit, taxe d'atterrissage, services à proximité).
 - [Activités](https://aerotrips.fr/activities): restaurants, culture, transports, nature et points d'intérêt près des terrains.
 - [Trips](https://aerotrips.fr/trips): idées de sorties à étapes proposées par la communauté.
 - [Événements](https://aerotrips.fr/events): rassemblements et manifestations aériennes.

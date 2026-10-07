@@ -29,7 +29,7 @@ export type ToolOutcome = {
 const LOGGED_KEYS = [
   'icao', 'near_icao', 'activity_id', 'id', 'types', 'services', 'status',
   'fuel', 'radius_km', 'limit', 'what', 'night_vfr', 'night_vfr_unrestricted', 'hard_runway', 'toilets',
-  'min_runway_length', 'include_nearby',
+  'min_runway_length', 'include_nearby', 'free_landing', 'max_landing_fee',
 ] as const
 
 const COARSE_COORDS = ['lat', 'lon', 'near_lat', 'near_lon'] as const

@@ -1,6 +1,7 @@
 import haversineDistance from "haversine-distance";
 import { Activity, Airfield, ADfilter, ActivityFilter, ActivityType, Event, Profile } from "..";
 import type { Timestamp } from "firebase/firestore";
+import { LANDING_FEE_FILTERS, landingFeeAtMost } from "./reports";
 
 // "DIEPPE SAINT AUBIN" -> "Dieppe Saint Aubin", "SAINT-CYR-L'ECOLE" -> "Saint-Cyr-L'Ecole"
 export const titleCase = (str: string) => {
@@ -40,6 +41,8 @@ export const formatDistance = (m: number) =>
 export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map<string,Activity>, filters: ADfilter, profile?: Profile, events?: Map<string,Event>) => {
   const query = filters.search.toLowerCase().trim().normalize("NFD").replace(/\p{Diacritic}/gu, "");
   const status = ['CAP', 'PRV', 'RST'].filter( e => filters.ad.includes(e))
+  const feeLimits = filters.ad.filter(e => e in LANDING_FEE_FILTERS).map(e => LANDING_FEE_FILTERS[e])
+  const feeMax = feeLimits.length > 0 ? Math.min(...feeLimits) : undefined
 
   return new Map([...airfields]
     .filter(([key, item]) => {
@@ -52,6 +55,7 @@ export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map
       if( filters.ad.includes('nvfr') && !item.nightVFR) return false
       if( filters.ad.includes('nvfr-full') && item.nightVFR !== 'full') return false
       if( filters.ad.includes('concrete') && !item.runways.some(r => r.composition != 'GRASS') ) return false
+      if( feeMax !== undefined && !landingFeeAtMost(item.landingFee, feeMax)) return false
       if( profile && filters.ad.includes('visited') && !profile.visited?.find(v => v.type == 'airfields' && v.id == key)) return false
       if( profile && filters.ad.includes('favorite') && !profile.favorites?.find(f => f.type == 'airfields' && f.id == key)) return false
       if( filters.ad.includes('upcomingEvents') ) {

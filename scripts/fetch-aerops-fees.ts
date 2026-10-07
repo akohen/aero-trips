@@ -38,7 +38,8 @@ const isFlatRate = (item: Item) => PARKING.test(item.label) && LANDING.test(item
  * - `amount`: every non-parking line (flat landing + parking rates included).
  * - `parking24h`: an hourly rate over 18–24 h (the rest is free time included with the landing), or one
  *   "per day / per night / 12<>24 h" line. 12 h, 48 h, minimum charges and missing lines: unknown, not free.
- * - `vat`: live prices are what the aeroPS app charges, shown TTC there; estimates don't say (some are HT).
+ * - `vat`: TTC. Live prices are what the aeroPS app charges; unspecified estimates are TTC too (checked on LFAQ,
+ *   LFBI, LFAT, 2026-10-07), even when the amount itself is wrong (Dijon's estimate is the HT grid).
  */
 const reduce = (prices: Price[], live: boolean) => {
   const reference = prices.find((p) => p.class === REFERENCE_CLASS)
@@ -52,7 +53,7 @@ const reduce = (prices: Price[], live: boolean) => {
     amount: sum(landing),
     parking24h: covers24h ? sum(parking) : undefined,
     flatRate: landing.some(isFlatRate) || undefined,
-    vat: live ? 'ttc' as const : 'unknown' as const,
+    vat: 'ttc' as const,
   }
 }
 

@@ -62,13 +62,13 @@ export const sourceKey = (source: FeeReportSource) => source.type === 'import' ?
 
 /**
  * Trust tiers, lower wins; within a tier, the newest report. Admin corrections first; then operator fee sheets
- * ('official'), pilots (a newer pilot report updates an outdated sheet) and our own airfield descriptions ('aerotrips');
- * then prices billed through the aeroPS app ('aerops-live', sometimes misconfigured); then the community map's
- * « gratuit » ('community', old but confirmed by recent pilot reports); last aeroPS estimates ('aerops', often the
- * wrong tariff line).
+ * ('official': an outdated one gets a newer sheet, is removed, or is overridden by an admin report); then prices billed
+ * through the aeroPS app ('aerops-live', sometimes misconfigured); then pilots, whether reported here or imported
+ * (discounts, based rates and mistakes happen: a disagreement with a sheet shows up as a conflict, for review); last
+ * aeroPS estimates ('aerops', often the wrong tariff line). Unknown sources rank last until given a tier.
  */
-export const SOURCE_TIERS: Record<string, number> = { admin: 0, 'aerops-live': 2, community: 3, aerops: 4 }
-const DEFAULT_TIER = 1
+export const SOURCE_TIERS: Record<string, number> = { admin: 0, official: 1, 'aerops-live': 2, pilot: 3, aerops: 4 }
+const DEFAULT_TIER = 5
 
 export const sourceTier = (source: FeeReportSource) => SOURCE_TIERS[sourceKey(source)] ?? DEFAULT_TIER
 
@@ -148,3 +148,91 @@ export const formatFeeAmount = (amount: number) =>
   amount === 0 ? 'Gratuit' : amount < 1 ? '< 1 €' : `≈ ${Math.round(amount)} €`
 
 export const formatLandingFee = (fee: Pick<DerivedLandingFee, 'amount'>) => formatFeeAmount(fee.amount)
+
+/**
+ * Fees count as "≤ max €" by their shown (rounded) amount, so a « ≈ 10 € » airfield is under 10 €; free (max 0) means
+ * exactly 0, not « < 1 € ». Unknown never matches.
+ */
+export const landingFeeAtMost = (fee: Pick<DerivedLandingFee, 'amount'> | undefined, max: number) =>
+  fee !== undefined && (max === 0 ? fee.amount === 0 : Math.round(fee.amount) <= max)
+
+/**
+ * Price level shown as an icon in lists, same thresholds as the filters: free, under 15 € (paid fees cluster at
+ * 7–14 €, median 12 €), 15 € and more.
+ */
+/** « < 15 € »: the largest shown (rounded) amount still cheap */
+const CHEAP_MAX = 14
+
+export type LandingFeeLevel = 'free' | 'cheap' | 'high'
+
+export const landingFeeLevel = (fee?: Pick<DerivedLandingFee, 'amount'>): LandingFeeLevel | undefined => {
+  if (!fee) return undefined
+  if (landingFeeAtMost(fee, 0)) return 'free'
+  return landingFeeAtMost(fee, CHEAP_MAX) ? 'cheap' : 'high'
+}
+
+/** Filter values (`ADfilter.ad`, URL `adMisc`) → the max shown amount they allow. */
+export const LANDING_FEE_FILTERS: Record<string, number> = { 'fee-free': 0, 'fee-15': CHEAP_MAX }
+
+// Paris time, so a midnight-UTC date (fee sheets' validFrom) keeps its day wherever it is rendered (prerender, MCP)
+const monthYear = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric', timeZone: 'Europe/Paris' })
+const dayMonthYear = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Paris' })
+const toDate = (t: TimestampLike) => new Date(t.seconds * 1000)
+
+/** "Guide tarifaire, en vigueur depuis avril 2026", "Signalé par un pilote en décembre 2011": where the shown fee comes from, and its date. */
+export const landingFeeSource = (fee: Pick<DerivedLandingFee, 'source' | 'checkedAt'>) => {
+  const date = toDate(fee.checkedAt)
+  switch (fee.source) {
+    case 'official': return `Guide tarifaire, en vigueur depuis ${monthYear.format(date)}`
+    // Month only: imported reports (community map) are dated to the month, and the line stays short
+    case 'pilot': return `Signalé par un pilote en ${monthYear.format(date)}`
+    case 'admin': return `Vérifié par AeroTrips le ${dayMonthYear.format(date)}`
+    case 'aerops-live': return `aeroPS, relevé le ${dayMonthYear.format(date)}`
+    case 'aerops': return `Estimation aeroPS, relevée le ${dayMonthYear.format(date)}`
+    default: return `${fee.source}, ${monthYear.format(date)}`
+  }
+}
+
+/** What the airfield page, prerender and MCP show; each renders it its own way. */
+export interface LandingFeeDisplay {
+  /** "Taxe d'atterrissage : ≈ 10 €", "Atterrissage gratuit", "Taxe d'atterrissage : inconnue" */
+  label: string
+  known: boolean
+  /** Parking lines: "Stationnement 24 h : ≈ 12 €", "1 h de stationnement incluse" */
+  parking: string[]
+  note?: string
+  /** Source line, linked to `url` (the document the price comes from) */
+  source?: string
+  url?: string
+  /** Stable page listing the latest fee sheet */
+  pageUrl?: string
+}
+
+/** Reference case of paid amounts (in the page's details popover, the prerender's title attribute, MCP inline) */
+export const LANDING_FEE_REFERENCE = 'Avion léger visiteur, TTC'
+
+// Rendered as href by the page, prerender and MCP
+const isWebUrl = (url?: string): url is string => !!url && /^https?:\/\//i.test(url)
+
+const parkingIncluded = (hours: number) => hours >= 24
+  ? `Stationnement ${hours} h inclus`
+  : `${hours} h de stationnement incluse${hours > 1 ? 's' : ''}`
+
+export const landingFeeDisplay = (fee?: DerivedLandingFee): LandingFeeDisplay => {
+  if (!fee) return { label: "Taxe d'atterrissage : inconnue", known: false, parking: [] }
+  const parking = [
+    ...(fee.parkingIncludedHours ? [parkingIncluded(fee.parkingIncludedHours)] : []),
+    ...(fee.parking24h !== undefined
+      ? [fee.parking24h === 0 ? 'Stationnement 24 h : gratuit' : `Stationnement 24 h : ${formatFeeAmount(fee.parking24h)}`]
+      : []),
+  ]
+  return {
+    label: fee.amount === 0 ? 'Atterrissage gratuit' : `Taxe d'atterrissage : ${formatLandingFee(fee)}`,
+    known: true,
+    parking,
+    ...(fee.note && { note: fee.note }),
+    source: landingFeeSource(fee),
+    ...(isWebUrl(fee.url) && { url: fee.url }),
+    ...(isWebUrl(fee.pageUrl) && { pageUrl: fee.pageUrl }),
+  }
+}
