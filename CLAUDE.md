@@ -56,7 +56,8 @@ rules don't enforce it yet: signed-in clients can still update whole airfield do
 `aerotrips` > `aerops-live` > `community` « gratuit » > `aerops` estimates; prices are TTC; conflicts between sources), `sameLandingFee`, `formatLandingFee`.
 Absent = unknown, never free (free = `amount: 0`). Reference case: visiting aircraft, MTOW 1.15 t, mandatory
 assistance included (`docs/data-sources.md`, *Landing fees*).
-**`npm run import:fees -- official|aerops|community`** (staging; `import:fees:prod`; dry run unless `--apply`) writes
+**`npm run import:fees -- all|official|aerops|community`** (no source = all; staging; `import:fees:prod`; dry run
+unless `--apply`) writes
 reports `{source}-{ICAO}` from `scripts/fees.json` (operator sheets, hand-checked, committed), `scripts/aerops-fees.json`
 (`npx tsx scripts/fetch-aerops-fees.ts`, gitignored) or `scripts/community-fees.json` (free only:
 `npx tsx scripts/build-community-fees.ts`, committed). Staging needs `serviceAccountKey.staging.json`.

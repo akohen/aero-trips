@@ -13,8 +13,9 @@
  *   community scripts/community-fees.json  « free » only, from `build-community-fees.ts`: the community map
  *                                       (`community`, between aeroPS live and estimates) and our descriptions (`aerotrips`)
  *
- * Usage (dry run unless --apply):
- *   npm run import:fees -- official [--apply]       # staging
+ * Usage (dry run unless --apply; `all` or no source = every source, in order):
+ *   npm run import:fees -- all [--apply]            # staging
+ *   npm run import:fees -- official [--apply]
  *   npm run import:fees:prod -- aerops [--apply]
  *   npx tsx scripts/build-community-fees.ts && npm run import:fees -- community [--apply]
  */
@@ -100,13 +101,7 @@ const canonical = (value: unknown): unknown => value && typeof value === 'object
   ? Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => [k, canonical(v)]))
   : value
 
-const main = async () => {
-  const name = process.argv.slice(2).find((arg) => !arg.startsWith('--'))
-  if (!name || !SOURCES[name]) {
-    console.log(chalk.red(`Usage: import-fees.ts <${Object.keys(SOURCES).join('|')}> [--apply]`))
-    process.exit(1)
-  }
-  const apply = process.argv.includes('--apply')
+const importSource = async (name: string, apply: boolean) => {
   const entries = SOURCES[name]()
   console.log(chalk.bold(`Importing ${entries.length} ${name} landing fees into ${projectId}${apply ? '' : ' (dry run)'}`))
 
@@ -149,14 +144,28 @@ const main = async () => {
   deletes.forEach((id) => console.log(chalk.red(`${id}: no longer in the source, deleted`)))
 
   console.log(chalk.bold(`${writes.length} write(s), ${kept.size - writes.length} unchanged, ${deletes.length} delete(s)`))
-  if (!apply || writes.length + deletes.length === 0) return
+  if (!apply || writes.length + deletes.length === 0) return 0
 
   const writer = db.bulkWriter()
   const now = admin.firestore.Timestamp.now()
   for (const { id, data } of writes) writer.set(db.collection('reports').doc(id), { ...data, updated_at: now })
   for (const id of deletes) writer.delete(db.collection('reports').doc(id))
   await writer.close()
-  console.log(chalk.green(`Applied. applyReports derives the airfields; run \`npm run recompute\` where it isn't deployed.`))
+  return writes.length + deletes.length
+}
+
+const main = async () => {
+  const args = process.argv.slice(2).filter((arg) => !arg.startsWith('--'))
+  const names = args.includes('all') ? Object.keys(SOURCES) : args
+  const unknown = names.filter((name) => !SOURCES[name])
+  if (unknown.length) {
+    console.log(chalk.red(`Unknown source ${unknown.join(', ')}. Usage: import-fees.ts [all|${Object.keys(SOURCES).join('|')}…] [--apply]`))
+    process.exit(1)
+  }
+  const apply = process.argv.includes('--apply')
+  let written = 0
+  for (const name of names.length ? names : Object.keys(SOURCES)) written += await importSource(name, apply)
+  if (written) console.log(chalk.green(`Applied ${written} write(s). applyReports derives the airfields; run \`npm run recompute\` where it isn't deployed.`))
 }
 
 main().then(() => process.exit(0), (e) => {
