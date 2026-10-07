@@ -46,6 +46,7 @@ const ActivitiesFilterModal = ({ airfields, activities, data, filters, setFilter
             activities={activities} airfields={airfields}
             distance={filters.distance} target={filters.target}
             onChange={change => setFilters({ ...filters, ...change })}
+            defaultDistance={10}
             isMobile={!!isMobile} />
         </Stack>
 
@@ -63,9 +64,9 @@ const ActivitiesFilterModal = ({ airfields, activities, data, filters, setFilter
         </Stack>
 
         <FilterModalFooter
-          onReset={() => { setFilters(EMPTY_FILTERS); onClose() }}
+          onReset={() => setFilters(EMPTY_FILTERS)}
           onClose={onClose}
-          label={`Voir ${data.size} activité${data.size > 1 ? 's' : ''}`}
+          count={data.size} noun="activité" none="Aucune activité"
         />
 
       </Stack>

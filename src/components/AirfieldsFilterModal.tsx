@@ -1,6 +1,6 @@
 import { Group, Modal, NumberInput, Chip, Text, Stack, ScrollArea, SegmentedControl, em } from "@mantine/core"
 import { ReactNode } from "react"
-import { IconCalendarEvent, IconCircleCheck, IconForbid, IconGasStation, IconHistory, IconRoad, IconStar, IconToiletPaper } from "@tabler/icons-react"
+import { IconCalendarEvent, IconGasStation, IconHistory, IconRoad, IconStar, IconToiletPaper } from "@tabler/icons-react"
 import { ADfilter, Activity, Airfield, Profile } from ".."
 import { useMediaQuery } from "@mantine/hooks"
 import { CommonIcon } from "./CommonIcon"
@@ -8,6 +8,7 @@ import DistanceFilter from "./DistanceFilter"
 import FilterModalFooter from "./FilterModalFooter"
 import { LANDING_FEE_FILTERS } from "../utils/reports"
 
+const ACCESS_FILTERS = ['CAP', 'RST']
 const NVFR_FILTERS = ['nvfr', 'nvfr-full']
 const FEE_FILTERS = Object.keys(LANDING_FEE_FILTERS)
 
@@ -61,6 +62,7 @@ const AirfieldsFilterModal = ({ airfields, activities, data, profile, filters, s
             activities={activities} airfields={airfields}
             distance={filters.distance} target={filters.target}
             onChange={change => setFilters({ ...filters, ...change })}
+            defaultDistance={300}
             isMobile={!!isMobile} />
         </Stack>
 
@@ -75,13 +77,19 @@ const AirfieldsFilterModal = ({ airfields, activities, data, profile, filters, s
           />
         </FilterRow>
 
+        {/* Single choice: both statuses selected meant the same as none */}
         <FilterRow label="Accès" isMobile={isMobile}>
-          <Chip.Group multiple value={filters.ad} onChange={(v) => setFilters({ ...filters, ad: v })}>
-            <Group gap="xs">
-              <Chip value="CAP" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconCircleCheck size={14} color="teal" /> Public</span></Chip>
-              <Chip value="RST" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconForbid size={14} color="orange" /> Restreint</span></Chip>
-            </Group>
-          </Chip.Group>
+          <SegmentedControl
+            size="xs"
+            style={{ alignSelf: 'flex-start' }}
+            value={pickedIn(filters.ad, ACCESS_FILTERS)}
+            onChange={(v) => setFilters({ ...filters, ad: pickOne(filters.ad, ACCESS_FILTERS, v) })}
+            data={[
+              { value: '', label: 'Indifférent' },
+              { value: 'CAP', label: 'Public' },
+              { value: 'RST', label: 'Restreint' },
+            ]}
+          />
         </FilterRow>
 
         <FilterRow label="Équipements" isMobile={isMobile}>
@@ -164,9 +172,9 @@ const AirfieldsFilterModal = ({ airfields, activities, data, profile, filters, s
         </Stack>
 
         <FilterModalFooter
-          onReset={() => { setFilters(EMPTY_FILTERS); onClose() }}
+          onReset={() => setFilters(EMPTY_FILTERS)}
           onClose={onClose}
-          label={`Voir ${data.size} terrain${data.size > 1 ? 's' : ''}`}
+          count={data.size} noun="terrain" none="Aucun terrain"
         />
 
       </Stack>
