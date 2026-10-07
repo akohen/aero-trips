@@ -1,4 +1,4 @@
-import { Group, Modal, Chip, Divider, Text, Stack, ScrollArea, em } from "@mantine/core"
+import { Group, Modal, Chip, Text, Stack, ScrollArea, em } from "@mantine/core"
 import { ActivityFilter, Activity, Airfield } from ".."
 import { useMediaQuery } from "@mantine/hooks"
 import { CommonIcon } from "./CommonIcon"
@@ -40,27 +40,26 @@ const ActivitiesFilterModal = ({ airfields, activities, data, filters, setFilter
     >
       <Stack gap="md">
 
-        <Divider label="Type d'activité" labelPosition="left" />
-
-        <Chip.Group multiple value={filters.type} onChange={(v) => setFilters({ ...filters, type: v })}>
-          <Group gap="xs">
-            {['food', 'lodging', 'bike', 'transit', 'car', 'hiking', 'culture', 'poi', 'aero', 'nautical', 'nature', 'other'].map(e => (
-              <Chip value={e} key={e} size="sm">
-                <CommonIcon iconType={e} />&nbsp;{TYPE_LABELS[e]}
-              </Chip>
-            ))}
-          </Group>
-        </Chip.Group>
-
-        <Divider label="Distance" labelPosition="left" mt="xs" />
-
         <Stack gap="xs">
-          <Text size="sm" fw={500}>Distance depuis un terrain ou une activité</Text>
+          {!isMobile && <Text size="sm" fw={500}>Distance</Text>}
           <DistanceFilter
             activities={activities} airfields={airfields}
             distance={filters.distance} target={filters.target}
             onChange={change => setFilters({ ...filters, ...change })}
             isMobile={!!isMobile} />
+        </Stack>
+
+        <Stack gap="xs">
+          <Text size="sm" fw={500} c={isMobile ? 'dimmed' : undefined}>Type d'activité</Text>
+          <Chip.Group multiple value={filters.type} onChange={(v) => setFilters({ ...filters, type: v })}>
+            <Group gap="xs">
+              {['food', 'lodging', 'bike', 'transit', 'car', 'hiking', 'culture', 'poi', 'aero', 'nautical', 'nature', 'other'].map(e => (
+                <Chip value={e} key={e} size="sm">
+                  <CommonIcon iconType={e} />&nbsp;{TYPE_LABELS[e]}
+                </Chip>
+              ))}
+            </Group>
+          </Chip.Group>
         </Stack>
 
         <FilterModalFooter

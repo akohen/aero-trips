@@ -1,4 +1,4 @@
-import { Group, Modal, NumberInput, Chip, Divider, Text, Stack, ScrollArea, SegmentedControl, em } from "@mantine/core"
+import { Group, Modal, NumberInput, Chip, Text, Stack, ScrollArea, SegmentedControl, em } from "@mantine/core"
 import { ReactNode } from "react"
 import { IconCalendarEvent, IconCircleCheck, IconForbid, IconGasStation, IconHistory, IconRoad, IconStar, IconToiletPaper } from "@tabler/icons-react"
 import { ADfilter, Activity, Airfield, Profile } from ".."
@@ -55,8 +55,14 @@ const AirfieldsFilterModal = ({ airfields, activities, data, profile, filters, s
     >
       <Stack gap="md">
 
-        {/* ── À propos du terrain ── */}
-        <Divider label="À propos du terrain" labelPosition="left" />
+        <Stack gap="xs">
+          {!isMobile && <Text size="sm" fw={500}>Distance</Text>}
+          <DistanceFilter
+            activities={activities} airfields={airfields}
+            distance={filters.distance} target={filters.target}
+            onChange={change => setFilters({ ...filters, ...change })}
+            isMobile={!!isMobile} />
+        </Stack>
 
         <FilterRow label="Piste minimum" isMobile={isMobile}>
           <NumberInput
@@ -138,10 +144,8 @@ const AirfieldsFilterModal = ({ airfields, activities, data, profile, filters, s
           </FilterRow>
         )}
 
-        {/* ── Alentours ── */}
-        <Divider label="Alentours" labelPosition="left" mt="xs" />
-
-        <Stack gap="xs">
+        {/* Extra space: the filters around the airfield form their own block */}
+        <Stack gap="xs" mt="sm">
           <Text size="sm" fw={500} c={isMobile ? 'dimmed' : undefined}>Activités à proximité</Text>
           <Chip.Group multiple value={filters.services} onChange={(v) => setFilters({ ...filters, services: v })}>
             <Group gap="xs">
@@ -157,15 +161,6 @@ const AirfieldsFilterModal = ({ airfields, activities, data, profile, filters, s
               <Chip value="upcomingEvents" size="sm"><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><IconCalendarEvent size={14} /> Événements à venir</span></Chip>
             </Group>
           </Chip.Group>
-        </Stack>
-
-        <Stack gap="xs">
-          <Text size="sm" fw={500} c={isMobile ? 'dimmed' : undefined}>Distance depuis un terrain ou une activité</Text>
-          <DistanceFilter
-            activities={activities} airfields={airfields}
-            distance={filters.distance} target={filters.target}
-            onChange={change => setFilters({ ...filters, ...change })}
-            isMobile={!!isMobile} />
         </Stack>
 
         <FilterModalFooter
