@@ -56,6 +56,7 @@ function MapPage({airfields, activities, events, ADfilter, ActFilter, setADfilte
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        crossOrigin
       />
       <MapMenu />
       <MapViewTracker setView={setMapView} />

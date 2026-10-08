@@ -24,6 +24,19 @@ export default defineConfig({
           { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
           { src: '/icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
+        // Shown by Chrome's richer install dialog; recaptured by hand.
+        screenshots: [
+          { src: '/screenshots/mobile-airfields.webp', sizes: '1080x1920', type: 'image/webp', form_factor: 'narrow', label: 'Les terrains' },
+          { src: '/screenshots/mobile-map.webp', sizes: '1080x1920', type: 'image/webp', form_factor: 'narrow', label: 'La carte des terrains et activités' },
+          { src: '/screenshots/mobile-airfield.webp', sizes: '1080x1920', type: 'image/webp', form_factor: 'narrow', label: "La fiche d'un terrain" },
+          { src: '/screenshots/desktop-airfield.webp', sizes: '1920x1080', type: 'image/webp', form_factor: 'wide', label: "La fiche d'un terrain" },
+          { src: '/screenshots/desktop-map.webp', sizes: '1920x1080', type: 'image/webp', form_factor: 'wide', label: 'La carte des terrains et activités' },
+        ],
+        shortcuts: [
+          { name: 'Carte', url: '/map' },
+          { name: 'Terrains', url: '/airfields' },
+          { name: 'Ajouter', url: '/edit' },
+        ],
       },
       workbox: {
         // Precache only the app shell (what index.html loads); lazy chunks are
@@ -50,6 +63,32 @@ export default defineConfig({
             urlPattern: ({ url, sameOrigin }) => sameOrigin && url.pathname.startsWith('/assets/'),
             handler: 'CacheFirst',
             options: { cacheName: 'assets', expiration: { maxEntries: 60 } },
+          },
+          // Map tiles already viewed, for weak signal on the field. Within the
+          // OSM tile policy: no prefetching, kept no longer than its headers
+          // allow. The TileLayers request them with CORS (`crossOrigin`), so
+          // they are not opaque responses padded to megabytes of quota each.
+          {
+            urlPattern: /^https:\/\/tile\.openstreetmap\.org\//,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'map-tiles',
+              expiration: { maxEntries: 1000, maxAgeSeconds: 7 * 24 * 3600, purgeOnQuotaError: true },
+            },
+          },
+          // Photos already viewed. Storage sends no CORS headers and the cards
+          // use CSS backgrounds, so these are opaque: each counts for megabytes
+          // of quota and a failure can't be told apart, hence few entries and a
+          // background refresh (served by the HTTP cache: Storage URLs are
+          // long-lived).
+          {
+            urlPattern: /^https:\/\/(firebasestorage|storage)\.googleapis\.com\//,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'photos',
+              cacheableResponse: { statuses: [0, 200] },
+              expiration: { maxEntries: 50, maxAgeSeconds: 30 * 24 * 3600, purgeOnQuotaError: true },
+            },
           },
           {
             urlPattern: /^\/(sitemap\.xml|robots\.txt|llms\.txt)$/,
