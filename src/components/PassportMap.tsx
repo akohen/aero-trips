@@ -1,27 +1,30 @@
 import { useState } from "react"
-import { Box, Group, Text, Title } from "@mantine/core"
+import { Box, BoxProps, Group, Text, Title } from "@mantine/core"
 import { IconLink } from "@tabler/icons-react"
-import { Airfield, Profile } from ".."
-import { usePassportMapSvg } from "../hooks/usePassportMapSvg"
-import { svgDataUrl, visitedLabel } from "../utils/passportBadge"
+import { Profile } from ".."
+import { countVisitedAirfields, svgDataUrl, visitedLabel } from "../utils/passportBadge"
 import { PASSPORT_IMAGES, passportImageUrl } from "../utils/passport"
 import { storageBucket } from "../data/firebase"
 import ShareImageMenu from "./ShareImageMenu"
 
-const PassportMap = ({ profile, airfields }: { profile: Profile, airfields: Map<string, Airfield> }) => {
+/** The passport map drawn by `usePassportMapSvg` (4:5); its box keeps the space while it loads. */
+export const PassportMapImage = ({ svg, count, ...box }: { svg?: string, count: number } & BoxProps) => (
+  <Box {...box} style={{ aspectRatio: '4 / 5', borderRadius: 8, overflow: 'hidden', background: '#16233F' }}>
+    {svg && <img src={svgDataUrl(svg)} alt={`Carte : ${count} ${visitedLabel(count)}`} style={{ display: 'block', width: '100%' }} />}
+  </Box>
+)
+
+/** Sharing the map: a thumbnail (the full map sits next to the visits list) and the share menu. */
+const PassportMap = ({ profile, svg }: { profile: Profile, svg?: string }) => {
   const [status, setStatus] = useState<string>()
   const homebase = profile.homebase || undefined
-  const visited = [...new Set(profile.visited?.filter(v => v.type === 'airfields').map(v => v.id))]
-  const svg = usePassportMapSvg({ displayName: profile.displayName, homebase, visited, airfields })
   const mapUrl = passportImageUrl(storageBucket, profile.uid, PASSPORT_IMAGES.map)
 
   return (
     <Box mt="md">
       <Title order={5}>Ma carte</Title>
       <Group mt="sm" gap="md" align="flex-start">
-        <Box w={240} style={{ aspectRatio: '4 / 5', borderRadius: 8, overflow: 'hidden', background: '#16233F' }}>
-          {svg && <img src={svgDataUrl(svg)} alt={`Carte : ${visited.length} ${visitedLabel(visited.length)}`} style={{ display: 'block', width: '100%' }} />}
-        </Box>
+        <PassportMapImage svg={svg} count={countVisitedAirfields(profile)} w={120} />
         <ShareImageMenu
           svg={svg}
           scale={1}

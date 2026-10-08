@@ -12,7 +12,9 @@ import ListPanel from "../components/ListPanel"
 import { TripTitle } from "../components/TripsUtils"
 import { ActivityTitle } from "../components/ActivityUtils"
 import PassportBadge from "../components/PassportBadge"
-import PassportMap from "../components/PassportMap"
+import PassportMap, { PassportMapImage } from "../components/PassportMap"
+import { usePassportMapSvg } from "../hooks/usePassportMapSvg"
+import { countVisitedAirfields } from "../utils/passportBadge"
 import { titleCase } from "../utils/utils"
 import VisitsPanel from "../components/VisitsPanel"
 
@@ -21,6 +23,13 @@ const byId = (a: {id: string}, b: {id: string}) => a.id.localeCompare(b.id)
 const Profile = ({profile, authLoading, airfields, activities, trips} : Data) => {
   const [openedShare, { toggle: toggleShare, open: openShare }] = useDisclosure(false)
   const [saveStatus, setSaveStatus] = useState<string>()
+  // Built once for the map next to the visits and the thumbnail in « Profil public »
+  const mapSvg = usePassportMapSvg({
+    displayName: profile?.displayName,
+    homebase: profile?.homebase || undefined,
+    visited: [...new Set(profile?.visited?.filter(v => v.type === 'airfields').map(v => v.id))],
+    airfields,
+  }, !!profile)
   const share = () => {
     navigator.clipboard.writeText(`${location.origin}/profile/${profile?.uid}`).then(openShare)
   }
@@ -82,7 +91,17 @@ const Profile = ({profile, authLoading, airfields, activities, trips} : Data) =>
 
   return (profile ? <>
   <Title order={1}><BackButton />Votre profil utilisateur</Title>
-  <VisitsPanel profile={profile} airfields={airfields} />
+  <Grid mt="md">
+    <Grid.Col span={{base: 12, sm: 6}}>
+      <VisitsPanel profile={profile} airfields={airfields} />
+    </Grid.Col>
+    <Grid.Col span={{base: 12, sm: 6}}>
+      <Paper shadow="md" radius="md" p="sm" withBorder>
+        <Title order={4}>Ma carte</Title>
+        <PassportMapImage svg={mapSvg} count={countVisitedAirfields(profile)} mt="xs" mx="auto" maw={360} />
+      </Paper>
+    </Grid.Col>
+  </Grid>
   { sections.length > 0 &&
     <Grid grow mt="md">
       { sections.map(s => (
@@ -115,7 +134,7 @@ const Profile = ({profile, authLoading, airfields, activities, trips} : Data) =>
         </Popover>
       </Group>
       <PassportBadge profile={profile} />
-      <PassportMap profile={profile} airfields={airfields} />
+      <PassportMap profile={profile} svg={mapSvg} />
     </Fieldset>
       <form onSubmit={form.onSubmit(saveProfile)}>
         <Fieldset legend='Modifier vos informations' mt={"md"}>

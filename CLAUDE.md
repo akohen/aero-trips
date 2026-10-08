@@ -198,7 +198,8 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   positions from Firestore (`airfields/{ICAO}`, `position` only) at render time; unknown codes still count but get
   no dot.
 - UI: the "Profil public" section shows the badge and **"Ma carte"**, each with a `ShareImageMenu` (download / copy /
-  share the client-rendered PNG, then hosted-copy embeds, disabled until public). The map is built client-side by
+  share the client-rendered PNG, then hosted-copy embeds, disabled until public); the map there is a thumbnail, the
+  full one sits next to the visits list (`PassportMapImage`). `Profile` builds the map SVG once, client-side, with
   `usePassportMapSvg`, which **dynamic-imports** `passportMap` so the outline (≈21 KB chunk) stays out of the eager
   bundle — keep it that way. `/profile/{uid}` shows the hosted `map.png`, drawing it locally only if it 404s.
 - Not yet: backfill of past visits, OG image for `/profile/{uid}`.

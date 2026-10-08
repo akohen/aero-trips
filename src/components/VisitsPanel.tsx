@@ -80,7 +80,7 @@ const VisitsPanel = ({ profile, airfields }: { profile: Profile, airfields: Map<
   }
 
   return (
-    <Paper shadow="md" radius="md" p="sm" mt="md" withBorder>
+    <Paper shadow="md" radius="md" p="sm" withBorder>
       <Title order={4}>Terrains visités ({countVisitedAirfields(profile)})</Title>
       <Button mt="xs" leftSection={<IconMessagePlus size={18} />} onClick={() => openReport()}>Ajouter une visite</Button>
       {reportForm.thanks && <Text c="teal" fw={500} size="sm" mt="xs">{reportForm.thanks}</Text>}

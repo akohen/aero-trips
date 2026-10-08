@@ -1,11 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, renderHook, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import { MantineProvider } from '@mantine/core'
 import { GeoPoint } from 'firebase/firestore'
 import type { Airfield, Profile } from '..'
 import PassportMap from './PassportMap'
+import { usePassportMapSvg } from '../hooks/usePassportMapSvg'
 
 vi.mock('../data/firebase', () => ({ storageBucket: 'test-bucket' }))
 
@@ -26,9 +27,14 @@ const profile: Profile = {
 afterEach(cleanup)
 
 describe('PassportMap', () => {
-  it('draws the map on demand and offers the hosted link', async () => {
-    render(<MantineProvider env="test"><PassportMap profile={profile} airfields={airfields} /></MantineProvider>)
-    expect(await screen.findByAltText('Carte : 1 terrain visité')).toBeInTheDocument()
+  it('draws the map on demand', async () => {
+    const { result } = renderHook(() => usePassportMapSvg({ displayName: 'Camille', homebase: 'LFPN', visited: ['LFAT'], airfields }))
+    await waitFor(() => expect(result.current).toMatch(/^<svg/))
+  })
+
+  it('shows a thumbnail and offers the hosted link', async () => {
+    render(<MantineProvider env="test"><PassportMap profile={profile} svg="<svg xmlns='http://www.w3.org/2000/svg'/>" /></MantineProvider>)
+    expect(screen.getByAltText('Carte : 1 terrain visité')).toBeInTheDocument()
 
     await userEvent.click(screen.getByRole('button', { name: 'Partager' }))
     expect(await screen.findByRole('menuitem', { name: 'Télécharger' })).toBeInTheDocument()
