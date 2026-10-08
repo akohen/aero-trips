@@ -14,7 +14,7 @@
  * import would mail hundreds). Flags a fee that disagrees with the airfield's.
  */
 import { onDocumentCreated } from 'firebase-functions/v2/firestore'
-import { defineSecret } from 'firebase-functions/params'
+import { defineSecret, projectID } from 'firebase-functions/params'
 import { info } from 'firebase-functions/logger'
 import { initializeApp } from 'firebase-admin/app'
 import { DocumentReference, GeoPoint, getFirestore, Timestamp } from 'firebase-admin/firestore'
@@ -41,11 +41,16 @@ function replacer(_key: string, value: unknown) {
 const escapeHtml = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
+const PRODUCTION = 'aero-trips'
+
+// Anything but production (staging, emulator) is flagged, so a test mail never passes for a real one
+const subjectTag = () => projectID.value() === PRODUCTION ? '[AeroTrips]' : `[${projectID.value()}]`
+
 const send = async (subject: string, text: string, html: string) => {
   const form = new FormData()
   form.append('from', SENDER)
   form.append('to', RECIPIENT)
-  form.append('subject', subject)
+  form.append('subject', `${subjectTag()} ${subject}`)
   form.append('text', text)
   form.append('html', html)
 
@@ -78,7 +83,7 @@ export const notifyNewChange = onDocumentCreated(
     const target = typeof data.targetDocument === 'string' ? data.targetDocument : snapshot.id
 
     await send(
-      `[AeroTrips] Nouveau changement : ${target}`,
+      `Nouveau changement : ${target}`,
       `Document changes/${snapshot.id}\n\n${json}`,
       `<p>Document <code>changes/${escapeHtml(snapshot.id)}</code></p><pre>${escapeHtml(json)}</pre>`,
     )
@@ -120,7 +125,7 @@ export const notifyNewReport = onDocumentCreated(
     const text = `${lines.join('\n')}\n\n${link}\n\nDocument reports/${snapshot.id}\n${json}`
 
     await send(
-      `[AeroTrips] Compte rendu de visite : ${icao}${fee ? ` · ${fee}` : ''}`,
+      `Compte rendu de visite : ${icao}${fee ? ` · ${fee}` : ''}`,
       text,
       `<pre style="white-space: pre-wrap">${escapeHtml(text)}</pre>`,
     )
