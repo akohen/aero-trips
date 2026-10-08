@@ -106,7 +106,7 @@ function CardList<T>({
       )}
 
       {items && items.length > 0 ? (
-        <SimpleGrid minColWidth="350px" mb="md">
+        <SimpleGrid minColWidth="min(350px, 100%)" mb="md">
           {items.map(([key, item]) => (
             <ErrorBoundary key={key}>
               <CardListItem
