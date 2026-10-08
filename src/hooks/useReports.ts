@@ -24,12 +24,11 @@ export const newReport = (icao: string, profile: Profile, input: ReportInput) =>
 }
 
 /**
- * Every report on one airfield (imports too, for `facts`), read after the page renders. Writes are optimistic and
- * rolled back on failure. `facts` is set only once this page wrote, until the delta merge brings applyReports' result.
+ * Every report on one airfield (imports too), read after the page renders. Writes are optimistic and rolled back on
+ * failure. `facts` is what applyReports derives from them: fresher than the airfield DataProvider loaded at startup.
  */
 export const useReports = (icao: string | undefined, profile: Profile | undefined) => {
   const [loaded, setLoaded] = useState<{ icao: string, reports: Report[] }>()
-  const [touched, setTouched] = useState(false)
   const reports = loaded?.icao === icao ? loaded?.reports : undefined
 
   useEffect(() => {
@@ -49,7 +48,6 @@ export const useReports = (icao: string | undefined, profile: Profile | undefine
     if (!icao) return
     const before = loaded?.icao === icao ? loaded.reports : []
     setLoaded({ icao, reports: next(before) })
-    setTouched(true)
     try {
       await write()
     } catch (e) {
@@ -81,7 +79,7 @@ export const useReports = (icao: string | undefined, profile: Profile | undefine
     optimistic(list => list.filter(r => r.id !== report.id), () => deleteDoc(doc(db, REPORTS, report.id))), [optimistic])
 
   const pilotReports = useMemo(() => reports && sortReports(reports.filter(isPilotReport)), [reports])
-  const facts = useMemo(() => touched && reports ? deriveAirfieldFacts(reports) : undefined, [touched, reports])
+  const facts = useMemo(() => reports && deriveAirfieldFacts(reports), [reports])
 
   return { pilotReports, facts, add, update, remove }
 }

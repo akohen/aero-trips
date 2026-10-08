@@ -87,9 +87,9 @@ Pilot fees rank below `official` and `aerops-live` (`SOURCE_TIERS`), so they fil
 both facts via `deriveAirfieldFacts`. `notifyNewReport` (codebase **`notifications`**, which holds the Mailgun secret)
 emails each new pilot report, flagging a fee that disagrees with the airfield's; imports send nothing.
 UI: `useReports` (`src/hooks/`) reads one airfield's reports after render (`where('target.id', '==', icao)`, no index),
-writes optimistically with rollback, and exposes `facts` once the page wrote, so the shown fee updates before the
-function's write reaches the delta merge. `components/Reports.tsx`: `ReportButton` (« Raconter ma visite » in the
-airfield info block, then the thanks line), `ReportsSection` (after the description, only when there are reports: cards,
+writes optimistically with rollback, and exposes `facts` (`deriveAirfieldFacts` over them): the airfield page shows
+that fee rather than the one DataProvider loaded at startup, which stays stale until a reload. `components/Reports.tsx`: `ReportButton` (« Raconter ma visite » in the
+airfield info block, then the thanks line), `ReportsSection` (bottom of the page, only when there are reports: cards,
 own-report menu), `VisitedPrompt` after the « visited » icon, `ReportFormHost`. The Add page (`routes/AddData.tsx`)
 opens the same form without an airfield: it shows an airfield picker, saves through `newReport` and navigates to the
 airfield page. `useReportForm` (signed out → Google popup, then the form), lazy `ReportForm.tsx` (date picker defaulting to today, text, fee block always

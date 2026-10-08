@@ -88,10 +88,7 @@ export const ReportsSection = ({ profile, reports, control }: {
   if (list.length === 0) return null
   return (
     <Stack gap="sm">
-      <Title order={2} size="h4">Comptes rendus de visite ({list.length})</Title>
-      <Text size="xs" c="dimmed">
-        Retours de pilotes, non vérifiés : pas une information opérationnelle. Consultez la carte VAC et les sources officielles.
-      </Text>
+      <Title order={2} size="h4">Comptes rendus de pilotes ({list.length})</Title>
       {error && <Text c="red" size="sm">{error}</Text>}
       {list.map(r => (
         <ReportCard

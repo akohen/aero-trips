@@ -54,7 +54,6 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
   const reports = useReports(airfield?.codeIcao, profile)
   const reportForm = useReportForm(id, profile)
   const [visitedPrompt, setVisitedPrompt] = useState(false)
-  // After a report is posted here, show the fee applyReports is about to write
   const shownAirfield = airfield && reports.facts ? { ...airfield, landingFee: reports.facts.landingFee } : airfield
 
   return (<>
@@ -128,11 +127,6 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
   </Grid.Col>
   {item.description && <Grid.Col span={6}><Description content={item.description} label={'codeIcao' in item ? titleCase(item.name) : item.name} /></Grid.Col>}
   <NearbyTrips items={nearbyTrips} events={airfieldEvents} />
-  {airfield && !!reports.pilotReports?.length && (
-    <Grid.Col span={12}>
-      <ReportsSection profile={profile} reports={reports} control={reportForm} />
-    </Grid.Col>
-  )}
   <Grid.Col span={12}>
     <Title order={2} size="h4">{nearbyActivitiesHeading(item, nearbyFoodCount)}</Title>
     <Nearby items={nearbyActivities} profile={profile} />
@@ -146,6 +140,11 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
     <Title order={4}>Terrains à proximité</Title>
     <Nearby items={nearbyAirfields} profile={profile} />
   </Grid.Col>
+  {airfield && !!reports.pilotReports?.length && (
+    <Grid.Col span={12}>
+      <ReportsSection profile={profile} reports={reports} control={reportForm} />
+    </Grid.Col>
+  )}
   </Grid>
   {airfield && <ReportFormHost airfield={shownAirfield!} airfields={airfields} profile={profile} reports={reports} control={reportForm} />}
   <VisitedPrompt opened={visitedPrompt} onClose={() => setVisitedPrompt(false)} onReport={() => reportForm.open()} />
