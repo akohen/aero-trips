@@ -99,7 +99,7 @@ export const notifyNewReport = onDocumentCreated(
     const snapshot = event.data
     if (!snapshot) return
     const data = snapshot.data()
-    if (!isPilotReport(data as { source: { type: 'pilot' } })) return
+    if (!isPilotReport(data as { source: { type: 'pilot' }, uid?: string })) return
 
     const icao = typeof data.target?.id === 'string' ? data.target.id : '?'
     const lines = [

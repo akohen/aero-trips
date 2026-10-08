@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Timestamp } from 'firebase/firestore'
 import { Report } from '..'
-import { authorName, deriveAirfieldFacts, deriveLandingFee, deriveReportStats, FeeReport, formatVisitDate, parseFeeAmount, reportFeeLabel, sameReportStats, sortReports, visitDayToUtc, formatFeeAmount, formatLandingFee, landingFeeAtMost, landingFeeLevel, landingFeeDisplay, landingFeeSource, sameLandingFee, sourceKey, TimestampLike } from './reports'
+import { authorName, deriveAirfieldFacts, isPilotReport, deriveLandingFee, deriveReportStats, FeeReport, formatVisitDate, parseFeeAmount, reportFeeLabel, sameReportStats, sortReports, visitDayToUtc, formatFeeAmount, formatLandingFee, landingFeeAtMost, landingFeeLevel, landingFeeDisplay, landingFeeSource, sameLandingFee, sourceKey, TimestampLike } from './reports'
 
 const at = (date: string): TimestampLike => ({ seconds: Date.parse(date) / 1000, nanoseconds: 0 })
 
@@ -300,14 +300,16 @@ describe('pilot reports', () => {
     expect(formatVisitDate({ seconds: day.getTime() / 1000, nanoseconds: 0 })).toBe('12/08/2026')
   })
 
-  it('counts pilot reports only in the stats', () => {
+  it('counts pilot reports posted on the site only in the stats', () => {
     const reports = [
       report('official-LFXX', official, '2026-10-01', { amount: 10 }),
-      report('a', pilot, '2026-01-01'),
-      report('b', pilot, '2026-09-01', { amount: 12 }),
+      { ...report('a', pilot, '2026-01-01'), uid: 'u1' },
+      { ...report('b', pilot, '2026-09-01', { amount: 12 }), uid: 'u2' },
+      report('community-LFXX', pilot, '2026-10-02', { amount: 11 }),
     ]
     expect(deriveReportStats(reports)).toEqual({ count: 2, lastVisit: at('2026-09-01') })
     expect(deriveReportStats([reports[0]])).toBeUndefined()
+    expect(isPilotReport(reports[3])).toBe(false)
     expect(deriveAirfieldFacts(reports)).toEqual({
       landingFee: { amount: 10, source: 'official', checkedAt: at('2026-10-01') },
       reportStats: { count: 2, lastVisit: at('2026-09-01') },

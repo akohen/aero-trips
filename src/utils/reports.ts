@@ -37,6 +37,8 @@ export interface FeeReport<T extends TimestampLike = TimestampLike> {
   landingFee?: ReportLandingFee
   /** Pilot fees: 'heavy' (MTOW > 1.2 t) is another weight class than the reference case */
   aircraftClass?: 'light' | 'heavy'
+  /** Author of a pilot report posted on the site */
+  uid?: string
 }
 
 /** Mirrors `Airfield.landingFee` (src/index.d.ts). */
@@ -249,8 +251,12 @@ export const REPORT_NOTE_MAX = 300
 /** Sanity cap on a reported fee, also in firestore.rules */
 export const REPORT_FEE_MAX = 1000
 
-/** Listed, counted in `reportStats` and emailed; imports and admin reports only feed the fee. */
-export const isPilotReport = <R extends Pick<FeeReport, 'source'>>(r: R) => r.source?.type === 'pilot'
+/**
+ * Posted on the site by a member: listed, counted in `reportStats` and emailed. Imported pilot data (`community`, no
+ * uid) and other imports and admin reports only feed the fee.
+ */
+export const isPilotReport = <R extends Pick<FeeReport, 'source'> & { uid?: unknown }>(r: R) =>
+  r.source?.type === 'pilot' && typeof r.uid === 'string'
 
 /** Newest visit first, then the latest written, then id. */
 export const sortReports = <R extends FeeReport>(reports: R[]) => [...reports].sort(newestFirst)

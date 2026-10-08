@@ -80,7 +80,8 @@ section open (see *Visit reports*).
 (plain, ≤ 2000) and/or the `landingFee` they paid (`{amount, note?}`, TTC, standard visitor price) with
 `aircraftClass` (`light` = MTOW ≤ 1.2 t, the reference case; `heavy` fees stay on the report card and never set the
 airfield's fee nor raise a conflict). `observedAt` = the visit day as **midnight UTC** (`visitDayToUtc`, shown with
-`formatVisitDate` in UTC). Published at once; moderation = delete the report (`applyReports` then recomputes).
+`formatVisitDate` in UTC). **`isPilotReport` = pilot source + `uid`**: imported pilot data (`community`, no uid) feeds
+the fee only, never the list, `reportStats` or emails. Published at once; moderation = delete the report (`applyReports` then recomputes).
 Pilot fees rank below `official` and `aerops-live` (`SOURCE_TIERS`), so they fill gaps and beat estimates only.
 `applyReports` also writes **`Airfield.reportStats`** (`{count, lastVisit}`, pilot reports only; not displayed yet) —
 both facts via `deriveAirfieldFacts`. `notifyNewReport` (codebase **`notifications`**, which holds the Mailgun secret)
