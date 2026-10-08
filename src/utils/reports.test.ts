@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Timestamp } from 'firebase/firestore'
 import { Report } from '..'
-import { authorName, deriveAirfieldFacts, isPilotReport, deriveLandingFee, deriveReportStats, FeeReport, formatVisitDate, parseFeeAmount, reportFeeLabel, sameReportStats, sortReports, visitDayToUtc, formatFeeAmount, formatLandingFee, landingFeeAtMost, landingFeeLevel, landingFeeDisplay, landingFeeSource, sameLandingFee, sourceKey, TimestampLike } from './reports'
+import { authorName, deriveAirfieldFacts, groupVisits, isPilotReport, deriveLandingFee, deriveReportStats, FeeReport, formatVisitDate, parseFeeAmount, reportFeeLabel, sameReportStats, sortReports, visitDayToUtc, formatFeeAmount, formatLandingFee, landingFeeAtMost, landingFeeLevel, landingFeeDisplay, landingFeeSource, sameLandingFee, sourceKey, TimestampLike } from './reports'
 
 const at = (date: string): TimestampLike => ({ seconds: Date.parse(date) / 1000, nanoseconds: 0 })
 
@@ -323,5 +323,22 @@ describe('pilot reports', () => {
     expect(sameReportStats(stats, { ...stats, count: 3 })).toBe(false)
     expect(sameReportStats(undefined, undefined)).toBe(true)
     expect(sameReportStats(stats, undefined)).toBe(false)
+  })
+})
+
+describe('groupVisits', () => {
+  const visit = (id: string, icao: string, observedAt: string) => ({ ...report(id, pilot, observedAt), target: { id: icao } })
+
+  it('lists the latest visit first, then the airfields with no report by ICAO code', () => {
+    const rows = groupVisits(['LFPZ', 'LFAT', 'LFOU', 'LFQA'], [
+      visit('a', 'LFOU', '2026-05-01'), visit('b', 'LFQA', '2026-08-01'), visit('c', 'LFOU', '2026-09-01'),
+    ])
+    expect(rows.map(r => [r.id, r.reports.map(x => x.id)])).toEqual([
+      ['LFOU', ['c', 'a']], ['LFQA', ['b']], ['LFAT', []], ['LFPZ', []],
+    ])
+  })
+
+  it('keeps an airfield reported on but no longer marked visited', () => {
+    expect(groupVisits([], [visit('a', 'LFAT', '2026-05-01')]).map(r => r.id)).toEqual(['LFAT'])
   })
 })

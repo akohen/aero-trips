@@ -314,3 +314,26 @@ export const deriveAirfieldFacts = <T extends TimestampLike>(reports: FeeReport<
   const { landingFee, conflicts } = deriveLandingFee(reports)
   return { landingFee, reportStats: deriveReportStats(reports), conflicts }
 }
+
+/**
+ * The airfields a pilot visited (`profile.visited`) and their own reports, one row per airfield: the latest visit first,
+ * then the airfields with no report (no date), by ICAO code. An airfield reported on but no longer marked visited keeps its row.
+ */
+export const groupVisits = <R extends FeeReport & { target: { id: string } }>(visited: string[], reports: R[]) => {
+  const byAirfield = new Map<string, R[]>(visited.map(id => [id, []]))
+  for (const r of sortReports(reports)) {
+    const list = byAirfield.get(r.target.id)
+    if (list) list.push(r)
+    else byAirfield.set(r.target.id, [r])
+  }
+  return [...byAirfield].map(([id, reports]) => ({ id, reports })).sort((a, b) => {
+    if (a.reports.length && b.reports.length) {
+      const byDate = compareTime(b.reports[0].observedAt, a.reports[0].observedAt)
+      if (byDate) return byDate
+    } else if (a.reports.length || b.reports.length) return a.reports.length ? -1 : 1
+    return a.id.localeCompare(b.id)
+  })
+}
+
+/** Link to one report on its airfield page, which scrolls to it and outlines it. */
+export const reportPath = (report: { id: string, target: { id: string } }) => `/airfields/${report.target.id}#report-${report.id}`

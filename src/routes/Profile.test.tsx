@@ -4,11 +4,13 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import { MantineProvider } from '@mantine/core'
 import { MemoryRouter } from 'react-router'
-import { GeoPoint } from 'firebase/firestore'
-import type { Airfield, Data, Profile as ProfileType } from '..'
+import { GeoPoint, Timestamp } from 'firebase/firestore'
+import type { Airfield, Data, Profile as ProfileType, Report } from '..'
 import Profile from './Profile'
 
 vi.mock('../data/firebase', () => ({ storageBucket: 'test-bucket', googleLogin: vi.fn() }))
+const userReports = vi.hoisted(() => ({ list: undefined as Report[] | undefined }))
+vi.mock('../hooks/useReports', () => ({ useUserReports: () => userReports.list }))
 
 const airfield = (codeIcao: string, name: string): [string, Airfield] =>
   [codeIcao, { codeIcao, name, position: new GeoPoint(48, 2), runways: [], status: 'CAP' }]
@@ -35,7 +37,7 @@ const renderProfile = (p?: ProfileType, authLoading = false) => {
   return render(<MantineProvider env="test"><MemoryRouter><Profile {...data} /></MemoryRouter></MantineProvider>)
 }
 
-afterEach(cleanup)
+afterEach(() => { cleanup(); userReports.list = undefined })
 
 describe('Profile', () => {
   it('shows a loader, not the login button, while auth resolves', () => {
@@ -47,6 +49,19 @@ describe('Profile', () => {
     renderProfile(profile({ visited: [{ type: 'airfields', id: 'LFPZ' }, { type: 'airfields', id: 'LFAT' }] }))
     const links = screen.getAllByRole('link').map(l => l.textContent).filter(t => /^LF/.test(t ?? ''))
     expect(links).toEqual([expect.stringMatching(/^LFAT/), expect.stringMatching(/^LFPZ/)])
+  })
+
+  it('lists visits with their reports, latest first, then airfields with no report', () => {
+    userReports.list = [{
+      id: 'r1', target: { type: 'airfields', id: 'LFPZ' }, source: { type: 'pilot' }, uid: 'u1', author: 'Camille',
+      observedAt: Timestamp.fromDate(new Date(Date.UTC(2026, 8, 12))), updated_at: Timestamp.now(),
+      text: 'Accueil sympa', landingFee: { amount: 10 }, aircraftClass: 'light',
+    }]
+    renderProfile(profile({ visited: [{ type: 'airfields', id: 'LFPZ' }, { type: 'airfields', id: 'LFAT' }] }))
+    const links = screen.getAllByRole('link').map(l => l.textContent).filter(t => /^LF/.test(t ?? ''))
+    expect(links).toEqual([expect.stringMatching(/^LFPZ/), expect.stringMatching(/^LFAT/)])
+    expect(screen.getByRole('link', { name: /Visite du 12\/09\/2026 · Taxe payée : 10/ })).toHaveAttribute('href', '/airfields/LFPZ#report-r1')
+    expect(screen.queryByText('Accueil sympa')).toBeNull()
   })
 
   it('only renders non-empty sections', () => {

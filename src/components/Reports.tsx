@@ -1,4 +1,5 @@
-import { lazy, Suspense, useState } from "react"
+import { lazy, Suspense, useEffect, useRef, useState } from "react"
+import { useLocation } from "react-router"
 import { ActionIcon, Badge, Button, Dialog, Group, Loader, Menu, Modal, Paper, Stack, Text, Title } from "@mantine/core"
 import { IconDots, IconMessagePlus, IconPencil, IconTrash } from "@tabler/icons-react"
 import { Airfield, Profile, Report } from ".."
@@ -43,10 +44,12 @@ export const ReportFormHost = ({ airfield, airfields, profile, reports, control,
   )
 }
 
-const ReportCard = ({ report, own, onEdit, onDelete }: { report: Report, own: boolean, onEdit: () => void, onDelete: () => void }) => {
+const ReportCard = ({ report, own, highlighted, onEdit, onDelete }: {
+  report: Report, own: boolean, highlighted: boolean, onEdit: () => void, onDelete: () => void,
+}) => {
   const fee = reportFeeLabel(report)
   return (
-    <Paper withBorder radius="md" p="sm">
+    <Paper id={`report-${report.id}`} withBorder radius="md" p="sm" style={highlighted ? { borderColor: 'var(--mantine-primary-color-filled)' } : undefined}>
       <Group justify="space-between" wrap="nowrap" align="flex-start">
         <Text size="sm" c="dimmed">Visite du {formatVisitDate(report.observedAt)} · {report.author ?? 'Pilote'}</Text>
         {own && (
@@ -77,6 +80,15 @@ export const ReportsSection = ({ profile, reports, control }: {
 }) => {
   const list = reports.pilotReports ?? []
   const [error, setError] = useState<string>()
+  const { hash } = useLocation()
+  const target = hash.startsWith('#report-') ? hash.slice('#report-'.length) : undefined
+  // Reports load after the page renders, too late for the browser's own jump to the anchor
+  const scrolledTo = useRef<string>(undefined)
+  useEffect(() => {
+    if (!target || scrolledTo.current === target || !reports.pilotReports?.some(r => r.id === target)) return
+    scrolledTo.current = target
+    document.getElementById(`report-${target}`)?.scrollIntoView({ block: 'center' })
+  }, [target, reports.pilotReports])
   const remove = (report: Report) => {
     if (!window.confirm('Supprimer ce compte rendu ?')) return
     setError(undefined)
@@ -95,6 +107,7 @@ export const ReportsSection = ({ profile, reports, control }: {
           key={r.id}
           report={r}
           own={!!profile && r.uid === profile.uid}
+          highlighted={r.id === target}
           onEdit={() => control.open({ report: r })}
           onDelete={() => remove(r)}
         />

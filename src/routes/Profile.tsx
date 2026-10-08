@@ -14,12 +14,21 @@ import { ActivityTitle } from "../components/ActivityUtils"
 import PassportBadge from "../components/PassportBadge"
 import PassportMap from "../components/PassportMap"
 import { titleCase } from "../utils/utils"
+import { useUserReports } from "../hooks/useReports"
+import { formatVisitDate, groupVisits, reportFeeLabel, reportPath } from "../utils/reports"
+import { Report } from ".."
 
 const byId = (a: {id: string}, b: {id: string}) => a.id.localeCompare(b.id)
+
+const VisitReport = ({report}: {report: Report}) => {
+  const fee = reportFeeLabel(report)
+  return <Text size="xs"><Link to={reportPath(report)}>Visite du {formatVisitDate(report.observedAt)}{fee && ` · ${fee}`}</Link></Text>
+}
 
 const Profile = ({profile, authLoading, airfields, activities, trips} : Data) => {
   const [openedShare, { toggle: toggleShare, open: openShare }] = useDisclosure(false)
   const [saveStatus, setSaveStatus] = useState<string>()
+  const reports = useUserReports(profile?.uid)
   const share = () => {
     navigator.clipboard.writeText(`${location.origin}/profile/${profile?.uid}`).then(openShare)
   }
@@ -66,14 +75,17 @@ const Profile = ({profile, authLoading, airfields, activities, trips} : Data) =>
     return <Text size="sm" className="ad-list"><Link to={`/activities/${id}`}><ActivityTitle activity={act} /></Link></Text>
   }
   
-  const visitedAirfields = profile?.visited?.filter(v => v.type === 'airfields').sort(byId) ?? []
+  const visits = groupVisits(profile?.visited?.filter(v => v.type === 'airfields').map(v => v.id) ?? [], reports ?? [])
   const sharedTrips = [...trips].filter(([, trip]) => trip.uid === profile?.uid);
   const favoriteAirfields = profile?.favorites?.filter(f => f.type === 'airfields').sort(byId) ?? [];
   const favoriteActivities = profile?.favorites?.filter(f => f.type === 'activities') ?? [];
 
   // Only non-empty sections get a column, so the grid has no holes; `grow` widens the last one when their number is odd
   const sections: {title: string, items: ReactNode[]}[] = [
-    {title: `Terrains visités (${visitedAirfields.length})`, items: visitedAirfields.map(v => <AirfieldLink key={v.id} id={v.id}/>)},
+    {title: `Terrains visités (${visits.length})`, items: visits.map(v => <div key={v.id}>
+      <AirfieldLink id={v.id}/>
+      {v.reports.map(r => <VisitReport key={r.id} report={r}/>)}
+    </div>)},
     {title: `Sorties partagées (${sharedTrips.length})`, items: sharedTrips.map(([key,trip]) => <Link key={key} to={`/trips/${key}`}><TripTitle trip={trip} details /></Link>)},
     {title: `Terrains favoris (${favoriteAirfields.length})`, items: favoriteAirfields.map(v => <AirfieldLink key={v.id} id={v.id}/>)},
     {title: `Activités favorites (${favoriteActivities.length})`, items: favoriteActivities.map(v => <ActivityLink key={v.id} id={v.id}/>)},

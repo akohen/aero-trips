@@ -86,6 +86,27 @@ export const useReports = (icao: string | undefined, profile: Profile | undefine
 
 export type ReportsState = ReturnType<typeof useReports>
 
+/** A pilot's own visit reports, newest first; undefined while loading. */
+export const useUserReports = (uid: string | undefined) => {
+  const [loaded, setLoaded] = useState<{ uid: string, reports: Report[] }>()
+
+  useEffect(() => {
+    if (!uid) return
+    let cancelled = false
+    getDocs(query(collection(db, REPORTS), where('uid', '==', uid)))
+      .then(snap => snap.docs.map(d => ({ ...d.data(), id: d.id }) as Report)
+        .filter(r => r.target?.type === 'airfields' && isPilotReport(r)))
+      .catch(e => {
+        console.error('[useUserReports]', e)
+        return []
+      })
+      .then(list => { if (!cancelled) setLoaded({ uid, reports: sortReports(list) }) })
+    return () => { cancelled = true }
+  }, [uid])
+
+  return loaded?.uid === uid ? loaded?.reports : undefined
+}
+
 // Firestore rejects undefined values
 const content = ({ text, landingFee, aircraftClass }: ReportInput) => ({
   ...(text && { text }),
