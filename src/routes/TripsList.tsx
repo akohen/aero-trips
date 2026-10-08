@@ -7,36 +7,31 @@ import TableList from '../components/TableList';
 import CardList from '../components/CardList';
 import { getImgNode } from '../utils/itemImages';
 import type { CardColumn, CardConfig } from '../components/CardList';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { IconCirclePlus, IconSearch } from '@tabler/icons-react';
 import { TripTitle } from '../components/TripsUtils';
 import dayjs from 'dayjs';
 
+function filterData(data: Map<string,Trip>, search: string) {
+  const query = search.toLowerCase().trim();
+  return new Map([...data].filter(([key, item]) => 
+    [key, item.name, item.author].some((x) => x?.toLowerCase().includes(query.normalize("NFD").replace(/\p{Diacritic}/gu, "")))
+  ))
+}
 
 function TripsList({trips} : {trips: Map<string,Trip>}) {
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
   const [search, setSearch] = useState('');
-  const [data, setData] = useState(trips);
   const [view, setView] = useState<'list' | 'cards'>(isMobile ? 'cards' : 'list');
   const navigate = useNavigate();
   const tripTypes = {short:'Quelques heures', day:'A la journée', multi:'Sur plusieurs jours'}
 
-  useEffect(()=>{
-    setData( trips )
-  },[trips])
+  const data = useMemo(() => filterData(trips, search), [trips, search])
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
-    setData( filterData(trips, value) )
   };
-
-  function filterData(data: Map<string,Trip>, search: string) {
-    const query = search.toLowerCase().trim();
-    return new Map([...data].filter(([key, item]) => 
-      [key, item.name, item.author].some((x) => x?.toLowerCase().includes(query.normalize("NFD").replace(/\p{Diacritic}/gu, "")))
-    ))
-  }
 
   return (<>
     <Group justify="space-between" mb={'sm'}>

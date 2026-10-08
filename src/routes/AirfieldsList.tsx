@@ -4,7 +4,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { ADfilter, Airfield, Data } from '..';
 import TableList from '../components/TableList';
 import CardList from '../components/CardList';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { filterAirfields } from '../utils/utils';
 import AirfieldsFilters from '../components/AirfieldsFilters';
 import { AirfieldIcon, AirfieldTitle } from '../components/AirfieldUtils';
@@ -16,14 +16,13 @@ import { IconRoad } from '@tabler/icons-react';
 function AirfieldsPage({airfields, activities, events, filters, setFilters, setMapView, profile} :
   Data & {filters: ADfilter, setFilters: (newFilters: ADfilter) => void}) {
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`, undefined, { getInitialValueInEffect: false });
-  const [data, setData] = useState(airfields);
   const [view, setView] = useState<'list' | 'cards'>(isMobile ? 'cards' : 'list');
 
 
 
-  useEffect(()=>{
-    setData( filterAirfields(airfields, activities, filters, profile, events) )
-  },[airfields, activities, filters, profile, events])
+  const data = useMemo(
+    () => filterAirfields(airfields, activities, filters, profile, events),
+    [airfields, activities, filters, profile, events])
   
   const columns: CardColumn<Airfield>[] = [
         {

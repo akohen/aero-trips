@@ -59,6 +59,8 @@ function CardList<T>({
   };
 
   useEffect(() => {
+    // Clamps the page to the new page count; it writes the URL too, so it can't be derived during render
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     updatePage(activePage);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chunks.length]);

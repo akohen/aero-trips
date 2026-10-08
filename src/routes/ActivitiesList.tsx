@@ -4,7 +4,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { Activity, ActivityFilter, Data } from '..';
 import TableList from '../components/TableList';
 import CardList from '../components/CardList';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import ActivitiesFilters from '../components/ActivitiesFilters';
 import { filterActivities } from '../utils/utils';
 import { ButtonViewOnMap } from '../components/CommonButtons';
@@ -19,7 +19,6 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
   Data & {filters: ActivityFilter, setFilters: (newFilters: ActivityFilter) => void}) {
 
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`, undefined, { getInitialValueInEffect: false });
-  const [data, setData] = useState(activities);
   const [view, setView] = useState<'list' | 'cards'>(isMobile ? 'cards' : 'list');
   const { draft, setDraft } = useDraftTrip()
   const isInDraft = (id: string) => draft.steps.some(s => s.type === 'activities' && s.id === id)
@@ -27,9 +26,7 @@ function ActivitiesList({airfields, activities, filters, setFilters, setMapView,
     if (!isInDraft(e.id)) setDraft({ ...draft, steps: [...draft.steps, { type: 'activities', id: e.id }] })
   }
 
-  useEffect(()=>{
-    setData( filterActivities( airfields, activities, filters) )
-  },[activities, airfields, filters])
+  const data = useMemo(() => filterActivities(airfields, activities, filters), [activities, airfields, filters])
 
   const columns: CardColumn<Activity>[] = [
     {

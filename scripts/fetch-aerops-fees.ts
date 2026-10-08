@@ -41,7 +41,7 @@ const isFlatRate = (item: Item) => PARKING.test(item.label) && LANDING.test(item
  * - `vat`: TTC. Live prices are what the aeroPS app charges; unspecified estimates are TTC too (checked on LFAQ,
  *   LFBI, LFAT, 2026-10-07), even when the amount itself is wrong (Dijon's estimate is the HT grid).
  */
-const reduce = (prices: Price[], live: boolean) => {
+const reduce = (prices: Price[]) => {
   const reference = prices.find((p) => p.class === REFERENCE_CLASS)
   if (!reference) return undefined
   const landing = reference.items.filter((i) => !isParking(i))
@@ -122,7 +122,7 @@ for (const { url, code } of selected) {
   }
   // The class alone also appears in the page's stylesheet
   const live = /class="price-notice price-notice-valid"/.test(html)
-  const reference = reduce(prices, live)
+  const reference = reduce(prices)
   airfields[code] = { url, live, reference, prices }
   const items = prices.find((p) => p.class === REFERENCE_CLASS)?.items
   console.log(code, live ? 'live' : 'estimate', reference
