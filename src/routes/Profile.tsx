@@ -87,20 +87,24 @@ const Profile = ({profile, authLoading, airfields, activities, trips} : Data) =>
     {title: `Activités favorites (${favoriteActivities.length})`, items: favoriteActivities.map(v => <ActivityLink key={v.id} id={v.id}/>)},
   ].filter(s => s.items.length > 0)
 
+  const visitedCount = countVisitedAirfields(profile)
+
   if (authLoading) return <Center h="50vh"><Loader /></Center>
 
   return (profile ? <>
   <Title order={1}><BackButton />Votre profil utilisateur</Title>
   <Grid mt="md">
-    <Grid.Col span={{base: 12, sm: 6}}>
+    <Grid.Col span={{base: 12, sm: visitedCount > 0 ? 6 : 12}}>
       <VisitsPanel profile={profile} airfields={airfields} />
     </Grid.Col>
-    <Grid.Col span={{base: 12, sm: 6}}>
-      <Paper shadow="md" radius="md" p="sm" withBorder>
-        <Title order={4}>Ma carte</Title>
-        <PassportMapImage svg={mapSvg} count={countVisitedAirfields(profile)} mt="xs" mx="auto" maw={360} />
-      </Paper>
-    </Grid.Col>
+    {visitedCount > 0 &&
+      <Grid.Col span={{base: 12, sm: 6}}>
+        {/* Stays in view along a long visits list; the column stretches to the row */}
+        <Paper shadow="md" radius="md" p="sm" withBorder pos="sticky" style={{ top: 'calc(var(--app-shell-header-offset, 0rem) + var(--mantine-spacing-md))' }}>
+          <Title order={4}>Ma carte</Title>
+          <PassportMapImage svg={mapSvg} count={visitedCount} mt="xs" mx="auto" maw={360} />
+        </Paper>
+      </Grid.Col>}
   </Grid>
   { sections.length > 0 &&
     <Grid grow mt="md">

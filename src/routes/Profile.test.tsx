@@ -89,6 +89,14 @@ describe('Profile', () => {
     expect(p.update).toHaveBeenCalledWith({ visited: [{ type: 'airfields', id: 'LFPZ' }, { type: 'airfields', id: 'LFAT' }] })
   })
 
+  it('shows the map next to the visits only once there are some', () => {
+    renderProfile(profile())
+    expect(screen.getAllByText('Ma carte')).toHaveLength(1) // the share block in « Profil public »
+    cleanup()
+    renderProfile(profile({ visited: [{ type: 'airfields', id: 'LFAT' }] }))
+    expect(screen.getAllByText('Ma carte')).toHaveLength(2)
+  })
+
   it('only renders non-empty sections', () => {
     renderProfile(profile({ visited: [{ type: 'airfields', id: 'LFAT' }] }))
     expect(screen.getByText('Terrains visités (1)')).toBeInTheDocument()
