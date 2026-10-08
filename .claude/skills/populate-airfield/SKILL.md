@@ -1,7 +1,7 @@
 ---
 name: populate-airfield
-description: Enrichir la base de données aero-trips pour un aérodrome donné : recherche web, description, clubs, et activités à proximité. Sert aussi à reprendre une session laissée en plan dans tmp/ (relecture en cours, import pas encore fait). Usage: /populate-airfield LFXX [clubs] [airfield] [transport] [poi] [restaurants] [other] [city]
-argument-hint: Code ICAO de l'aérodrome (ex. LFBJ), suivi optionnellement des agents à lancer parmi : clubs, airfield, transport, poi, restaurants, other, city
+description: "Enrichir la base de données aero-trips pour un aérodrome donné : recherche web, description, clubs, et activités à proximité. Sert aussi à reprendre une session laissée en plan dans tmp/ (relecture en cours, import pas encore fait). Usage: /populate-airfield LFXX [clubs] [airfield] [transport] [poi] [restaurants] [other] [city]"
+argument-hint: "Code ICAO de l'aérodrome (ex. LFBJ), suivi optionnellement des agents à lancer parmi : clubs, airfield, transport, poi, restaurants, other, city"
 ---
 
 Tu vas enrichir la base de données aero-trips pour l'aérodrome **$ARGUMENTS**.

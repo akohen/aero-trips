@@ -6,15 +6,9 @@ nearby activities, day-trips ("trips") and events, contributed and enriched by p
 ## Stack & architecture
 
 - **SPA**: Vite + React + TypeScript, routed with `react-router` (v7 — import from `react-router`).
-- **UI**: Mantine (`@mantine/core`, `dates`, `form`, `hooks`), icons from `@tabler/icons-react`.
-- **Maps**: Leaflet + `react-leaflet`. **Rich-text descriptions**: tiptap (`@tiptap/*`), rendered via
-  `generateHTML` (`Description` component) and edited via `TextEditor`.
 - **Backend**: Firebase — Firestore (data) + Auth. Hosted on Firebase Hosting (static, `rewrites ** → /index.html`,
   `trailingSlash: false`). **No SSR**; airfield detail pages are **statically prerendered at build time** (see SEO).
-- **PWA** via `vite-plugin-pwa`. Geo distances via `haversine-distance` (`findNearest` in `src/utils/utils.ts`).
 - Package manager: **npm only** (`package-lock.json` is authoritative). Never introduce pnpm/yarn.
-
-Entry point: `main.tsx` → `DataProvider` (loads/merges data) → `App.tsx` (`<Routes>`).
 
 ## Data flow (non-obvious — important)
 
@@ -111,13 +105,10 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
 
 ## Commands
 
-- `npm start` — dev (Vite). `npm test` — vitest (happy-dom env). `npm run lint` — ESLint, **0 warnings allowed**.
 - `npm run test:rules` — `firestore.rules.test.ts` in the Firestore emulator (needs Java: Homebrew `openjdk` is picked
   up by default; skipped by `npm test`). Emulators with functions also need `java` on `PATH`.
-- `npm run build` — `tsc && vite build`. `npm run preview` — serve the build.
 - `npm version patch|minor` — tag a release (postversion: `git push --follow-tags`) → deploys.
 - `npm run backup` — dated Firestore export to `backups/`. Admin scripts need `serviceAccountKey.json` at the root.
-- `npm --prefix functions/mcp run build` — bundle the MCP function. `npx firebase emulators:start --only functions,hosting --project demo-aerotrips` to test it.
 
 ## SEO
 
@@ -190,13 +181,8 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   **`passports/{uid}`**; turning it off or deleting the profile deletes the passport. Unchanged projections are
   not rewritten. Clients never write `passports`; `/profile/{uid}` (`UserDetails`) reads it.
 - Server-side consumers (future hosted badge URL, OG images, map image) must read **`passports`**, never `profiles`.
-- **Hosted images** are rendered at **write time**, never per view: `syncPassport` also renders the badge
-  (`functions/passports/src/images.ts`, `@resvg/resvg-js` with the **IBM Plex** TTFs bundled in
-  `functions/passports/fonts/`, OFL) and uploads `badge.svg`, `badge.png`, `badge@2x.png` to the **default bucket**
-  under `passports/{uid}/`, world-readable (per-object ACL), `Cache-Control: public, max-age=3600`, overwritten in
-  place. Hotlinks cost egress only. Opt-out deletes the prefix. URL: `passportImageUrl()` →
-  `https://storage.googleapis.com/{bucket}/passports/{uid}/…`. Bump `IMAGES_VERSION` in the function when the
-  rendering changes (passports re-render on their next profile write). The resizer ignores this prefix (`img/` only).
+- **Hosted images** are rendered at **write time**, never per view, by `syncPassport` into `passports/{uid}/` of the
+  default bucket (URL: `passportImageUrl()`); rendering details in `functions/passports/CLAUDE.md`.
 - The profile page offers the image link, HTML (`srcset` 2x, linked to `/profile/{uid}`) and BBCode snippets
   (`badgeEmbedCodes`) once the profile is public; `/profile/{uid}` shows the hosted PNG, local SVG as fallback.
 - **Map image** (`map.png`, 1080×1350, rendered with the badge): `src/utils/passportMap.ts` → `buildPassportMap()`.
@@ -231,14 +217,8 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   original, leaving the stored `src` pointing at a file that no longer existed (24% of production
   images) and forcing every consumer to guess between two names. Static consumers (MCP, prerender)
   can't guess. **Don't reintroduce a variant-naming scheme.**
-- Invariants the resizer must keep: carry `firebaseStorageDownloadTokens` through every write (it is
-  the secret in every URL already handed out); set the `resizedAt` custom-metadata marker, which is the
-  **loop guard** against the write-back re-firing `finalize`; never touch `images/` (served via
-  `publicUrl()` + per-object ACL, which an overwrite would drop) or legacy `_WxH` objects.
-- **`npm run verify:resize`** drives the resizer against the real staging bucket (token survival,
-  generation preconditions, loop guard). Needs staging credentials; cleans up after itself.
 - **Deployed by hand, not by the release CI** (on purpose: standalone, rarely changed, and a bug rewrites users'
-  originals): run `verify:resize`, then `npx firebase deploy --only functions:images --project aero-trips`.
+  originals). Resizer invariants and the deploy procedure: `functions/images/CLAUDE.md`.
 - **`npm run heal`** (`scripts/heal-image-urls.ts`) repairs data left behind by the old extension:
   copies each orphaned `<path>_WxH` back to `<path>` and rewrites the few Firestore refs that name a
   variant directly. Dry run by default; `--apply` to write, `--production` to target prod,
@@ -251,12 +231,8 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   Creates only — `npm run manage` applying/deleting a change sends nothing. `retry: false` to avoid duplicate mail.
   `notifyNewReport` (`onDocumentCreated('reports/{id}')`) does the same for **pilot** visit reports only, readable text
   first (author, date, text, fee, a ⚠️ line when the fee disagrees with the airfield's), then the JSON.
-- **Deployed by the release CI** (it bundles `src/utils/reports.ts`, so it must ship with the app). The CI account
-  (`github-action-…`, Secret Manager Viewer) can't grant secret access: the runtime account already has
-  `secretAccessor` on `MAILGUN_API_KEY`; a new secret needs that grant by hand (`gcloud secrets add-iam-policy-binding`).
-- Config: secret `MAILGUN_API_KEY` (`firebase functions:secrets:set`). Sends through the EU endpoint from the
-  `mg.aerotrips.fr` domain, hardcoded in `src/index.ts`. Subjects start with `[AeroTrips]` in production and
-  `[<project id>]` anywhere else (staging, emulator), from the built-in `projectID` param.
+- **Deployed by the release CI** (it bundles `src/utils/reports.ts`, so it must ship with the app). Mailgun config
+  and secret grants: `functions/notifications/CLAUDE.md`.
 
 ## MCP server (public API)
 
@@ -264,17 +240,11 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   `search_airfields`, `get_airfield`, `search_activities`, `get_activity`, `find_nearby`.
 - Lives in **`functions/mcp/`** (its own npm package), deployed as a **Firebase Cloud Function v2**
   (`europe-west1`); `firebase.json` rewrites `/mcp` and `/mcp/**` to it **before** the SPA catch-all.
-- Transport is **Streamable HTTP, stateless**: a fresh `McpServer` + transport per request,
-  `sessionIdGenerator: undefined`, `enableJsonResponse: true`. firebase-functions already parses the
-  body, so `transport.handleRequest(req, res, req.body)` **must** receive it explicitly.
-- **esbuild** bundles `functions/mcp/src/index.ts` → `functions/mcp/lib/index.js`, inlining the JSON
-  snapshots and the `src/` utils it reuses. No Firestore at runtime. Data is therefore only as fresh
-  as the last `npm run export` + deploy — the snapshot date is surfaced in every tool response.
+  It bundles the JSON snapshots and the `src/` utils it reuses (no Firestore at runtime): data is only as fresh as
+  the last `npm run export` + deploy. Transport, build and testing: `functions/mcp/CLAUDE.md`.
 - Filtering **reuses `filterAirfields`/`filterActivities`** so MCP answers match the site. This is
   why `src/utils/utils.ts` must stay **React-free** (icons live in `src/utils/icons.tsx`, labels in
   `src/utils/labels.ts`).
-- Test through the **Hosting** emulator on `:5000`, not the functions emulator on `:5001` — only
-  that exercises the rewrite. POSTs require `Accept: application/json, text/event-stream` (406 without).
 
 ### Discovery
 
@@ -286,15 +256,12 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   registry rejects it. No static `tools` array on purpose — it would drift from `tools.ts`.
 - `firebase.json` hosting `ignore` must **not** contain `**/.*`, or `.well-known` never deploys.
 - `public/llms.txt` describes the site and the MCP server for AI crawlers (llmstxt.org format).
-- Not yet published to `registry.modelcontextprotocol.io`. To do so, claim the `fr.aerotrips/*`
-  namespace with a DNS TXT record on `aerotrips.fr` (`v=MCPv1; k=ed25519; p=<public key>`), then
-  `mcp-publisher login dns --domain=aerotrips.fr --private-key=<hex>` and `mcp-publisher publish`.
+- Not yet published to `registry.modelcontextprotocol.io` (steps in `functions/mcp/CLAUDE.md`).
 
 ## Conventions
 
 - User-facing content and UI are in **French**; code, comments, identifiers and **commit messages** in
   **English** (even though some past commits are in French).
-- Layout: `routes/` (pages), `components/`, `hooks/`, `utils/`, `data/`. `tsconfig` uses `moduleResolution: "bundler"`.
 - **Bundle perf**: map routes (`MapPage`, `TripDetails`) are **lazy-loaded** to keep Leaflet out of the
   initial bundle; Leaflet components (e.g. `AirfieldMarker`) are **kept separate** from utilities used off
   the map. Avoid reintroducing a Leaflet/tiptap import into the eager graph of the home/airfield pages.
