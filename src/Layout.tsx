@@ -56,7 +56,7 @@ function Layout({airfields, activities, profile}: Data) {
       <AppShell.Header  zIndex={1200}>
         <Group px="md">
           <Burger opened={opened} onClick={toggle} size="sm" />
-          <img src="/icon.png" style={{width: 32, height: 32}} />
+          <img src="/icon.svg" style={{width: 32, height: 32}} />
           <h3>Aero Trips</h3>
         </Group>
       </AppShell.Header>
@@ -65,7 +65,7 @@ function Layout({airfields, activities, profile}: Data) {
         <Stack style={{flexGrow:1}}>
           <Stack style={{flexGrow:1}}>
             <Group visibleFrom='sm'>
-              <img src="/icon.png" style={{width: 32, height: 32}} />
+              <img src="/icon.svg" style={{width: 32, height: 32}} />
               <Title order={3}>Aero Trips</Title>
             </Group>
           <Button 

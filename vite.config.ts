@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises'
 import { defineConfig } from 'vitest/config'
 import { VitePWA } from 'vite-plugin-pwa'
 import react from '@vitejs/plugin-react-swc'
@@ -6,10 +7,31 @@ import react from '@vitejs/plugin-react-swc'
 export default defineConfig({
   plugins: [
     react(),
-    VitePWA({ 
-      registerType: 'autoUpdate', 
+    VitePWA({
+      registerType: 'autoUpdate',
       devOptions: { enabled: false },
+      manifest: {
+        id: '/',
+        name: 'AeroTrips',
+        short_name: 'AeroTrips',
+        description: 'Idées de sorties aériennes en France : terrains, activités, événements et itinéraires.',
+        lang: 'fr',
+        categories: ['travel'],
+        theme_color: '#ffffff',
+        background_color: '#ffffff',
+        icons: [
+          { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: '/icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
       workbox: {
+        // Precache only the app shell (what index.html loads); lazy chunks are
+        // cached on first use by the /assets/ rule below.
+        manifestTransforms: [async (entries) => {
+          const html = await readFile(new URL('./dist/index.html', import.meta.url), 'utf8')
+          return { manifest: entries.filter(e => !e.url.startsWith('assets/') || html.includes(e.url)) }
+        }],
         globIgnores: ['**/sitemap.xml', '**/robots.txt', '**/llms.txt', '**/.well-known/**'],
         navigateFallbackDenylist: [
           /^\/sitemap\.xml$/,
@@ -23,6 +45,12 @@ export default defineConfig({
           /__/,
         ],
         runtimeCaching: [
+          // Hashed file names never change content.
+          {
+            urlPattern: ({ url, sameOrigin }) => sameOrigin && url.pathname.startsWith('/assets/'),
+            handler: 'CacheFirst',
+            options: { cacheName: 'assets', expiration: { maxEntries: 60 } },
+          },
           {
             urlPattern: /^\/(sitemap\.xml|robots\.txt|llms\.txt)$/,
             handler: 'NetworkOnly',
