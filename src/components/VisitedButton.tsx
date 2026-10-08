@@ -7,12 +7,16 @@ interface VisitedButtonProps {
   item: { type: "activities" | "airfields", id: string };
   profile: Profile;
   icon?: boolean;
+  onVisited?: () => void;
 }
 
-const VisitedButton: React.FC<VisitedButtonProps> = ({ item, profile, icon }) => {
+const VisitedButton: React.FC<VisitedButtonProps> = ({ item, profile, icon, onVisited }) => {
   const isVisited = profile.visited?.some((v) => v.id === item.id);
   const markAsNotVisited = () => profile.update({ visited: profile.visited?.filter((v) => v.id !== item.id) })
-  const markAsVisited = () => profile.update({ visited: (profile.visited ?? []).concat([item]) })
+  const markAsVisited = () => {
+    profile.update({ visited: (profile.visited ?? []).concat([item]) })
+    onVisited?.()
+  }
 
   if(icon) return (isVisited ? 
     <Tooltip label="Marquer comme non visité">

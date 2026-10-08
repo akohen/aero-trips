@@ -27,7 +27,15 @@ type Airfield = {
   webcams?: Webcam[],
   /** Function-owned (`applyReports`, from `reports`): clients never write it. Absent = unknown, never free */
   landingFee?: AirfieldLandingFee,
+  /** Function-owned (`applyReports`): pilot reports only. Absent = none */
+  reportStats?: ReportStats,
   updated_at?: Timestamp,
+}
+
+type ReportStats = {
+  count: number,
+  /** observedAt of the latest pilot report */
+  lastVisit: Timestamp,
 }
 
 /** Copy of the report `deriveLandingFee` chose (src/utils/reports.ts), so static consumers get source and date too */
@@ -54,7 +62,10 @@ type ReportSource =
   | {type: 'import', id: string} // 'official' (operator fee sheets), 'aerops-live', 'aerops'
   | {type: 'admin'} // manual correction, always wins (trust tiers: SOURCE_TIERS in src/utils/reports.ts)
 
-/** A dated observation about a target. Every landing fee is a report; `applyReports` derives the airfield's from them */
+/**
+ * A dated observation about a target. Every landing fee is a report; `applyReports` derives the airfield's from them.
+ * Pilot reports (#39, `source.type: 'pilot'`) add the author and a text; rules in firestore.rules.
+ */
 type Report = {
   id: string,
   target: {type: 'airfields' | 'activities', id: string},
@@ -76,7 +87,17 @@ type Report = {
     /** Stable page listing the latest fee sheet */
     pageUrl?: string,
   },
+  /** Pilot reports: the author */
+  uid?: string,
+  /** Pilot reports: display name at write time ("Jean D.") */
+  author?: string,
+  /** Pilot reports: plain text, ≤ REPORT_TEXT_MAX */
+  text?: string,
+  /** Pilot reports with a fee: 'light' = MTOW ≤ 1.2 t (the reference case); 'heavy' fees never set the airfield's */
+  aircraftClass?: AircraftClass,
 }
+
+type AircraftClass = 'light' | 'heavy'
 
 type Webcam = {
   /** Page shown to users (the image itself when there is none): always rendered as a link */

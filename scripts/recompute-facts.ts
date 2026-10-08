@@ -3,9 +3,10 @@
  *
  * The `reports` Cloud Function (`applyReports`) only runs when a report is
  * written, so a change to the derivation (src/utils/reports.ts) or a missed
- * trigger leaves airfields behind. This runs the same `deriveLandingFee` over
- * every airfield, prints the source conflicts and the changes, and writes only
- * the airfields whose fee changed (bumping `updated_at`, like the function).
+ * trigger leaves airfields behind. This runs the same `deriveAirfieldFacts`
+ * over every airfield (landing fee, pilot `reportStats`), prints the source
+ * conflicts and the changes, and writes only the airfields whose facts changed
+ * (bumping `updated_at`, like the function).
  *
  * Usage:
  *   npm run recompute                 # staging
@@ -15,7 +16,7 @@
  */
 import admin from 'firebase-admin'
 import chalk from 'chalk'
-import { DerivedLandingFee, deriveLandingFee, FeeReport, formatLandingFee, sameLandingFee } from '../src/utils/reports.ts'
+import { DerivedLandingFee, deriveAirfieldFacts, FeeReport, formatLandingFee, ReportStats, sameLandingFee, sameReportStats } from '../src/utils/reports.ts'
 import { db, projectId } from './firestore-admin.ts'
 
 const dryRun = process.argv.includes('--dry-run')
@@ -27,9 +28,9 @@ const describe = (fee?: DerivedLandingFee) => fee
   : 'unknown'
 
 const main = async () => {
-  console.log(chalk.bold(`Recomputing landing fees on ${projectId}${dryRun ? ' (dry run)' : ''}`))
+  console.log(chalk.bold(`Recomputing airfield facts on ${projectId}${dryRun ? ' (dry run)' : ''}`))
   const [airfields, reports] = await Promise.all([
-    db.collection('airfields').select('landingFee').get(),
+    db.collection('airfields').select('landingFee', 'reportStats').get(),
     db.collection('reports').get(),
   ])
 
@@ -47,18 +48,26 @@ const main = async () => {
     if (!known.has(icao)) console.log(chalk.yellow(`${icao}: ${list.length} report(s) on an unknown airfield`))
   }
 
-  const changes: { ref: admin.firestore.DocumentReference, landingFee?: DerivedLandingFee<Timestamp> }[] = []
+  const changes: {
+    ref: admin.firestore.DocumentReference,
+    landingFee?: DerivedLandingFee<Timestamp>,
+    reportStats?: ReportStats<Timestamp>,
+  }[] = []
   let conflictCount = 0
   for (const doc of airfields.docs) {
-    const { landingFee, conflicts } = deriveLandingFee(byAirfield.get(doc.id) ?? [])
+    const { landingFee, reportStats, conflicts } = deriveAirfieldFacts(byAirfield.get(doc.id) ?? [])
     for (const { reports: pair } of conflicts) {
       conflictCount++
       console.log(chalk.yellow(`${doc.id}: conflict ${pair.map((r) => `${r.source} ${r.amount} € (${r.id})`).join(' vs ')}`))
     }
     const current = doc.get('landingFee') as DerivedLandingFee | undefined
-    if (sameLandingFee(current, landingFee)) continue
-    console.log(`${chalk.cyan(doc.id)}: ${describe(current)} → ${chalk.green(describe(landingFee))}`)
-    changes.push({ ref: doc.ref, landingFee })
+    const currentStats = doc.get('reportStats') as ReportStats | undefined
+    const feeChanged = !sameLandingFee(current, landingFee)
+    const statsChanged = !sameReportStats(currentStats, reportStats)
+    if (!feeChanged && !statsChanged) continue
+    if (feeChanged) console.log(`${chalk.cyan(doc.id)}: ${describe(current)} → ${chalk.green(describe(landingFee))}`)
+    if (statsChanged) console.log(`${chalk.cyan(doc.id)}: ${currentStats?.count ?? 0} → ${chalk.green(reportStats?.count ?? 0)} pilot report(s)`)
+    changes.push({ ref: doc.ref, landingFee, reportStats })
   }
 
   console.log(chalk.bold(`${airfields.size} airfields, ${reports.size} reports, ${conflictCount} conflict(s), ${changes.length} change(s)`))
@@ -66,8 +75,12 @@ const main = async () => {
 
   const writer = db.bulkWriter()
   const now = admin.firestore.Timestamp.now()
-  for (const { ref, landingFee } of changes) {
-    writer.update(ref, { landingFee: landingFee ?? admin.firestore.FieldValue.delete(), updated_at: now })
+  for (const { ref, landingFee, reportStats } of changes) {
+    writer.update(ref, {
+      landingFee: landingFee ?? admin.firestore.FieldValue.delete(),
+      reportStats: reportStats ?? admin.firestore.FieldValue.delete(),
+      updated_at: now,
+    })
   }
   await writer.close()
   console.log(chalk.green(`Wrote ${changes.length} airfield(s)`))

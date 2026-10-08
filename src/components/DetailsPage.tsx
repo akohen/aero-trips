@@ -13,13 +13,16 @@ import { Link, useLocation, useNavigate } from "react-router"
 import Description from "./Description"
 import FavoriteButton from "./FavoriteButton"
 import VisitedButton from "./VisitedButton"
-import { lazy, Suspense } from "react"
+import { lazy, Suspense, useState } from "react"
 import { useDraftTrip } from "../hooks/useDraftTrip"
 import { Nearby } from "./Nearby"
 import { NearbyTrips } from "./ActivityUtils"
 import { ToiletText } from "./AirfieldUtils"
 import { Webcams } from "./Webcams"
 import { LandingFee } from "./LandingFee"
+import { ReportButton, ReportFormHost, ReportsSection, VisitedPrompt } from "./Reports"
+import { useReportForm } from "../hooks/useReportForm"
+import { useReports } from "../hooks/useReports"
 // Lazy: only webmasters open it, keep it out of the airfield page bundle.
 const EmbedModal = lazy(() => import("./EmbedModal"))
 
@@ -47,11 +50,17 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
   }
   const seo = buildItemSeo(item, { nearbyFoodCount })
   usePageSeo(seo)
+  const airfield = 'codeIcao' in item ? item : undefined
+  const reports = useReports(airfield?.codeIcao, profile)
+  const reportForm = useReportForm(id, profile)
+  const [visitedPrompt, setVisitedPrompt] = useState(false)
+  // After a report is posted here, show the fee applyReports is about to write
+  const shownAirfield = airfield && reports.facts ? { ...airfield, landingFee: reports.facts.landingFee } : airfield
 
   return (<>
   <Title order={1}>
     <BackButton />{('codeIcao' in item) ? (<>Aérodrome {deName(titleCase(item.name))} - {item.codeIcao}</>) : titleCase(item.name)}
-    {profile && <VisitedButton item={{ type, id }} profile={profile} icon />}
+    {profile && <VisitedButton item={{ type, id }} profile={profile} icon onVisited={airfield && (() => setVisitedPrompt(true))} />}
     {profile && <FavoriteButton item={{ type, id }} profile={profile} icon />}
     <EditButton />
   </Title>
@@ -79,7 +88,7 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
         {item.nightVFR && <Text>{nightVFRLabels[item.nightVFR]}</Text>}
         {(item.fuels && item.fuels.length > 0) ? `Avitaillement: ${item.fuels?.join(' ')}` : `Pas d'avitaillement disponible`}
         <ToiletText airfield={item} />
-        <LandingFee airfield={item} />
+        <LandingFee airfield={shownAirfield!} onReport={() => reportForm.open({ focusFee: true })} />
         <ButtonVACMap airfield={item} />
       </>}
       
@@ -101,6 +110,7 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
           {isInDraft ? 'Ajouté à la sortie' : 'Ajouter à la sortie'}
         </Button>
       )}
+      {airfield && <ReportButton control={reportForm} />}
       {item.website && <Text><b>Site internet</b> <Link to={item.website}>{shortener(item.website, 35)}</Link></Text>}
       {('codeIcao' in item) && <Webcams webcams={item.webcams} />}
       {('codeIcao' in item) && (
@@ -118,6 +128,11 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
   </Grid.Col>
   {item.description && <Grid.Col span={6}><Description content={item.description} label={'codeIcao' in item ? titleCase(item.name) : item.name} /></Grid.Col>}
   <NearbyTrips items={nearbyTrips} events={airfieldEvents} />
+  {airfield && !!reports.pilotReports?.length && (
+    <Grid.Col span={12}>
+      <ReportsSection profile={profile} reports={reports} control={reportForm} />
+    </Grid.Col>
+  )}
   <Grid.Col span={12}>
     <Title order={2} size="h4">{nearbyActivitiesHeading(item, nearbyFoodCount)}</Title>
     <Nearby items={nearbyActivities} profile={profile} />
@@ -132,6 +147,8 @@ const DetailsPage = ({id, item, airfields, activities, trips, events, setMapView
     <Nearby items={nearbyAirfields} profile={profile} />
   </Grid.Col>
   </Grid>
+  {airfield && <ReportFormHost airfield={shownAirfield!} airfields={airfields} profile={profile} reports={reports} control={reportForm} />}
+  <VisitedPrompt opened={visitedPrompt} onClose={() => setVisitedPrompt(false)} onReport={() => reportForm.open()} />
   {('codeIcao' in item) && embedOpened && (
     <Suspense fallback={null}>
       <EmbedModal airfield={item} opened onClose={() => setEmbedHash('')} />

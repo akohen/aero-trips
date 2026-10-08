@@ -4,10 +4,14 @@ import { Airfield } from ".."
 import { LANDING_FEE_REFERENCE, landingFeeDisplay } from "../utils/reports"
 
 // Price and parking stay visible; reference case, source, note and links open on click (touch screens have no hover).
-export const LandingFee = ({ airfield }: { airfield: Airfield }) => {
+export const LandingFee = ({ airfield, onReport }: { airfield: Airfield, onReport?: () => void }) => {
   const fee = landingFeeDisplay(airfield.landingFee)
-  // #39 turns this into a prompt to report the fee
-  if (!fee.known) return <Text c="dimmed">{fee.label}</Text>
+  if (!fee.known) return (
+    <Text c="dimmed">
+      {fee.label}
+      {onReport && <> · <Anchor component="button" type="button" inherit onClick={onReport}>Signaler</Anchor></>}
+    </Text>
+  )
 
   const paid = airfield.landingFee!.amount > 0
   return (

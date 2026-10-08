@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Timestamp } from 'firebase/firestore'
 import { Report } from '..'
-import { deriveLandingFee, FeeReport, formatFeeAmount, formatLandingFee, landingFeeAtMost, landingFeeLevel, landingFeeDisplay, landingFeeSource, sameLandingFee, sourceKey, TimestampLike } from './reports'
+import { authorName, deriveAirfieldFacts, deriveLandingFee, deriveReportStats, FeeReport, formatVisitDate, parseFeeAmount, reportFeeLabel, sameReportStats, sortReports, visitDayToUtc, formatFeeAmount, formatLandingFee, landingFeeAtMost, landingFeeLevel, landingFeeDisplay, landingFeeSource, sameLandingFee, sourceKey, TimestampLike } from './reports'
 
 const at = (date: string): TimestampLike => ({ seconds: Date.parse(date) / 1000, nanoseconds: 0 })
 
@@ -245,5 +245,81 @@ describe('landingFeeLevel', () => {
     expect(landingFeeLevel({ amount: 14.4 })).toBe('cheap')
     expect(landingFeeLevel({ amount: 14.5 })).toBe('high')
     expect(landingFeeLevel({ amount: 104 })).toBe('high')
+  })
+})
+
+describe('heavier aircraft', () => {
+  it('never sets the airfield fee nor conflicts with it', () => {
+    const reports = [
+      report('official-LFXX', official, '2026-01-01', { amount: 10 }),
+      { ...report('p', pilot, '2026-09-01', { amount: 40 }), aircraftClass: 'heavy' as const },
+    ]
+    expect(deriveLandingFee(reports)).toEqual({ landingFee: { amount: 10, source: 'official', checkedAt: at('2026-01-01') }, conflicts: [] })
+    expect(deriveLandingFee([reports[1]]).landingFee).toBeUndefined()
+  })
+
+  it('counts light pilot fees like any pilot fee', () => {
+    const r = { ...report('p', pilot, '2026-09-01', { amount: 12 }), aircraftClass: 'light' as const }
+    expect(deriveLandingFee([r]).landingFee?.amount).toBe(12)
+  })
+})
+
+describe('pilot reports', () => {
+  it('sorts newest visit first', () => {
+    const reports = [report('a', pilot, '2026-01-01'), report('b', pilot, '2026-09-01'), report('c', pilot, '2026-05-01')]
+    expect(sortReports(reports).map(r => r.id)).toEqual(['b', 'c', 'a'])
+  })
+
+  it('publishes first names and initials', () => {
+    expect(authorName('Jean-Pierre Dupont')).toBe('Jean-Pierre D.')
+    expect(authorName('  marie  de la tour ')).toBe('marie D. L. T.')
+    expect(authorName('Alex')).toBe('Alex')
+    expect(authorName('')).toBe('Pilote')
+    expect(authorName(null)).toBe('Pilote')
+  })
+
+  it('parses amounts typed with a comma or a euro sign', () => {
+    expect(parseFeeAmount('12,50')).toBe(12.5)
+    expect(parseFeeAmount(' 12.5 € ')).toBe(12.5)
+    expect(parseFeeAmount('0')).toBe(0)
+    expect(parseFeeAmount('1 000')).toBe(1000)
+    for (const bad of ['', 'abc', '-3', '12,555', '1001', '1e3']) expect(parseFeeAmount(bad)).toBeUndefined()
+  })
+
+  it('labels the fee paid, exactly, with the weight class', () => {
+    expect(reportFeeLabel({ landingFee: { amount: 12.5 } })).toBe('Taxe payée : 12,50\u00a0€')
+    expect(reportFeeLabel({ landingFee: { amount: 10 } })).toBe('Taxe payée : 10\u00a0€')
+    expect(reportFeeLabel({ landingFee: { amount: 0 } })).toBe('Atterrissage gratuit')
+    expect(reportFeeLabel({ landingFee: { amount: 40 }, aircraftClass: 'heavy' })).toBe('Taxe payée : 40\u00a0€ (avion > 1,2 t)')
+    expect(reportFeeLabel({})).toBeUndefined()
+  })
+
+  it('stores visit days as midnight UTC and shows the same day', () => {
+    const day = visitDayToUtc(new Date(2026, 7, 12, 23, 30))
+    expect(day.toISOString()).toBe('2026-08-12T00:00:00.000Z')
+    expect(formatVisitDate({ seconds: day.getTime() / 1000, nanoseconds: 0 })).toBe('12/08/2026')
+  })
+
+  it('counts pilot reports only in the stats', () => {
+    const reports = [
+      report('official-LFXX', official, '2026-10-01', { amount: 10 }),
+      report('a', pilot, '2026-01-01'),
+      report('b', pilot, '2026-09-01', { amount: 12 }),
+    ]
+    expect(deriveReportStats(reports)).toEqual({ count: 2, lastVisit: at('2026-09-01') })
+    expect(deriveReportStats([reports[0]])).toBeUndefined()
+    expect(deriveAirfieldFacts(reports)).toEqual({
+      landingFee: { amount: 10, source: 'official', checkedAt: at('2026-10-01') },
+      reportStats: { count: 2, lastVisit: at('2026-09-01') },
+      conflicts: [],
+    })
+  })
+
+  it('compares stats by value', () => {
+    const stats = { count: 2, lastVisit: at('2026-09-01') }
+    expect(sameReportStats(stats, { ...stats, lastVisit: Timestamp.fromDate(new Date('2026-09-01')) })).toBe(true)
+    expect(sameReportStats(stats, { ...stats, count: 3 })).toBe(false)
+    expect(sameReportStats(undefined, undefined)).toBe(true)
+    expect(sameReportStats(stats, undefined)).toBe(false)
   })
 })

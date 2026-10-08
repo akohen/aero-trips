@@ -10,6 +10,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest",
+    "test:rules": "JAVA_HOME=${JAVA_HOME:-/opt/homebrew/opt/openjdk} npx firebase emulators:exec --only firestore --project demo-aerotrips 'vitest run firestore.rules'",
     "backup": "npx -p node-firestore-import-export firestore-export -a serviceAccountKey.json -b backups/$(date +\"%Y-%m-%d\").json",
     "export": "NODE_ENV=production tsx scripts/export-data.ts",
     "import": "NODE_ENV=production tsx scripts/import-data.ts",
@@ -52,6 +53,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@firebase/rules-unit-testing": "^5.0.2",
     "@inquirer/prompts": "^8.4.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",

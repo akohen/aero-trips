@@ -1,7 +1,7 @@
 import { Link, useNavigate, useParams } from "react-router";
 import { Activity, Airfield, Data, Event, Trip } from "..";
 import { Button, Group, Paper, Title } from "@mantine/core";
-import { IconCalendarEvent, IconMapRoute, IconBulb } from "@tabler/icons-react";
+import { IconCalendarEvent, IconMapRoute, IconBulb, IconMessagePlus } from "@tabler/icons-react";
 import ActivityForm from "../components/ActivityForm";
 import { GeoPoint } from "firebase/firestore";
 import AirfieldForm from "../components/AirfieldForm";
@@ -9,11 +9,14 @@ import TripForm from "../components/TripForm";
 import EventForm from "../components/EventForm";
 import BackButton from "../components/BackButton";
 import { useDraftTrip } from "../hooks/useDraftTrip";
+import { useReportForm } from "../hooks/useReportForm";
+import { ReportFormHost } from "../components/Reports";
 
 const AddData = (data: Data) => {
   const params = useParams();
   const navigate = useNavigate();
   const { hasNewTripDraft } = useDraftTrip()
+  const reportForm = useReportForm('', data.profile)
 
   const type: 'activities'|'airfields'|'trips'|'events'|undefined =
     params.lat && params.lng ? 'activities'
@@ -54,12 +57,20 @@ const AddData = (data: Data) => {
           <li><b>Les activités</b>: Pour ajouter une activité, faites un clic-droit sur la carte à l'endroit où vous souhaitez ajouter l'activité. Pour modifier une activité, allez sur sa fiche et cliquez sur le bouton "modifier" en haut.</li>
           <li><b>Les sorties</b>: Pour ajouter une sortie, cliquez sur le bouton ci-dessous. Seule la personne ayant proposé une sortie peut la modifier.</li>
           <li><b>Les événements</b>: Pour ajouter un évènement sur ou à proximité d'un terrain, cliquez sur le bouton ci-dessous.</li>
+          <li><b>Les comptes rendus de visite</b>: Racontez votre passage sur un terrain (accueil, taxe d'atterrissage payée, conseils…).</li>
         </ul>
       <Group>
         <Button leftSection={<IconBulb size={14} />} component={Link} to="/map">Lieu ou activité</Button>
         <Button leftSection={<IconMapRoute size={14} />} onClick={() => navigate('/trips/edit')}>Sortie</Button>
         <Button leftSection={<IconCalendarEvent size={14} />} onClick={() => navigate('/events/edit')}>Événement</Button>
+        <Button leftSection={<IconMessagePlus size={14} />} onClick={() => reportForm.open()}>Compte rendu</Button>
       </Group>
+      <ReportFormHost
+        airfields={data.airfields}
+        profile={data.profile}
+        control={reportForm}
+        onPublished={airfield => navigate(`/airfields/${airfield.codeIcao}`)}
+      />
       <p>En cas de problème ou de questions, n'hésitez pas à <Link to={'/contact'}>nous contacter directement</Link>.</p>
 
     </Paper></>

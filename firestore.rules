@@ -2,8 +2,33 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Signed in, not a guest: Anonymous Auth (#39 phase 3) must not open any write path by itself
+    function isMember() {
+      return request.auth != null && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+    // A visit date: a calendar day stored as midnight UTC, so "today" may be up to a day ahead of request.time
+    function validVisitDate(t) {
+      return t is timestamp && t <= request.time + duration.value(1, 'd') && t >= timestamp.date(1990, 1, 1);
+    }
+    function validFee(d) {
+      return d.landingFee is map
+        && d.landingFee.keys().hasAll(['amount']) && d.landingFee.keys().hasOnly(['amount', 'note'])
+        && d.landingFee.amount is number && d.landingFee.amount >= 0 && d.landingFee.amount <= 1000
+        && (!('note' in d.landingFee) || (d.landingFee.note is string && d.landingFee.note.size() <= 300))
+        && d.aircraftClass in ['light', 'heavy'];
+    }
+    // At least a text or a fee; the weight class only with a fee
+    function validPilotReport(d) {
+      return d.keys().hasOnly(['target', 'source', 'uid', 'author', 'observedAt', 'updated_at', 'text', 'landingFee', 'aircraftClass'])
+        && d.updated_at == request.time
+        && validVisitDate(d.observedAt)
+        && d.author is string && d.author.size() > 0 && d.author.size() <= 60
+        && (!('text' in d) || (d.text is string && d.text.size() > 0 && d.text.size() <= 2000))
+        && ('landingFee' in d ? validFee(d) : !('aircraftClass' in d))
+        && ('text' in d || 'landingFee' in d);
+    }
   	match /profiles/{userId} {
-      allow create, read, update, delete: if request.auth != null && request.auth.uid == userId;
+      allow create, read, update, delete: if isMember() && request.auth.uid == userId;
     }
     // Public pilot passports: written only by the `passports` Cloud Function
     // (Admin SDK bypasses these rules), readable by anyone.
@@ -11,22 +36,40 @@ service cloud.firestore {
       allow read: if true;
     }
     match /trips/{document} {
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.uid;
-      allow update, delete: if request.auth != null && request.auth.uid == resource.data.uid;
+      allow create: if isMember() && request.auth.uid == request.resource.data.uid;
+      allow update, delete: if isMember() && request.auth.uid == resource.data.uid;
     }
     match /activities/{document} {
-      allow write: if request.auth != null;
+      allow write: if isMember();
     }
     match /events/{document} {
-      allow write: if request.auth != null;
+      allow write: if isMember();
     }
-    // Reports (landing fees…): written by imports through the Admin SDK only for
-    // now; pilot reports (#39) will open creates here.
+    // Reports (#18, #39). Imports and admin corrections are written through the
+    // Admin SDK only (no uid, so the ownership checks below never match them).
+    // Members write their own pilot visit reports; `applyReports` derives the
+    // airfield facts from all of them. Limits match src/utils/reports.ts.
     match /reports/{reportId} {
       allow read: if true;
+      allow create: if isMember()
+        && request.resource.data.source == {'type': 'pilot'}
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.target.keys().hasOnly(['type', 'id'])
+        && request.resource.data.target.type == 'airfields'
+        && request.resource.data.target.id is string
+        && exists(/databases/$(database)/documents/airfields/$(request.resource.data.target.id))
+        && validPilotReport(request.resource.data);
+      allow update: if isMember() && request.auth.uid == resource.data.uid
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['text', 'landingFee', 'aircraftClass', 'observedAt', 'author', 'updated_at'])
+        && validPilotReport(request.resource.data);
+      allow delete: if isMember() && request.auth.uid == resource.data.uid;
     }
     match /airfields/{document} {
-      allow update: if request.auth != null;
+      // landingFee, reportStats: function-owned (applyReports)
+      allow update: if isMember()
+        && !request.resource.data.diff(resource.data).affectedKeys()
+             .hasAny(['landingFee', 'reportStats']);
     }
     match /{collection}/{document=**} {
     	allow read: if collection in ['trips','activities', 'airfields', 'events'];

@@ -31,8 +31,9 @@ const AirfieldForm = ({airfield, profile, airfields, activities}: {airfield: Air
 
   const submitFn = (document: typeof form.values) => {
     // Carry all data from the existing airfield, mostly as its easier to test prod data on dev/staging where the entry might not exist.
-    // Except landingFee: function-owned (derived from `reports`), writing back our possibly stale copy would overwrite it.
-    const { landingFee, ...editable } = airfield
+    // Except the function-owned facts (derived from `reports`): writing back our possibly stale copy would overwrite them,
+    // and firestore.rules rejects it.
+    const { landingFee, reportStats, ...editable } = airfield
     const updatedAirfield = {
       ...editable,
       ...document,
@@ -47,7 +48,7 @@ const AirfieldForm = ({airfield, profile, airfields, activities}: {airfield: Air
     if(profile) {
       setDoc(doc(db, "airfields", airfield.codeIcao), updatedAirfield, {merge:true})
       .then(() => {
-        airfields.set(airfield.codeIcao, { ...updatedAirfield, landingFee })
+        airfields.set(airfield.codeIcao, { ...updatedAirfield, landingFee, reportStats })
         navigate(`/airfields/${airfield.codeIcao}`)
       })
       .catch(e => console.error(e.message as string))

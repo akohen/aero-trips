@@ -68,11 +68,36 @@ prints conflicts and changes, writes only what changed. Reports are never loaded
 **Display** goes through `landingFeeDisplay` (same file): label, parking lines, note, dated source line
 (`landingFeeSource`, wording per source) linked to `url`, `pageUrl`; non-http(s) links dropped. Rendered by
 `components/LandingFee.tsx` (airfield info block: price + parking, the rest in a click-to-open popover), `scripts/prerender.ts` and MCP `landingFeeLines` (`get_airfield`;
-search rows show the amount). Unknown shows « inconnue » (#39 will turn it into a report prompt).
+search rows show the amount). Unknown shows « inconnue · Signaler », which opens the visit report form with the fee
+section open (see *Visit reports*).
 **Filters** `fee-free` (amount exactly 0) and `fee-15` (shown, rounded amount < 15 €), one at a time in the modal:
 `LANDING_FEE_FILTERS` / `landingFeeAtMost`; unknown never matches. MCP: `free_landing`, `max_landing_fee`.
 **Icon** in `AirfieldTitle` / `AirfieldIcon` (lists, cards, map popups; the pins have no icons): `landingFeeLevel` free /
 < 15 € / 15 € and more (paid fees cluster at 7–14 €), one glyph per level (photo cards draw icons white), the price in the tooltip (`LandingFeeIcon`).
+
+**Visit reports** (#39, phases 1–2): pilots (signed-in members only; guests are phase 3) post short dated
+`reports` with `source: {type: 'pilot'}`, `uid`, `author` (`authorName`: « Jean D. », copied at write time), `text`
+(plain, ≤ 2000) and/or the `landingFee` they paid (`{amount, note?}`, TTC, standard visitor price) with
+`aircraftClass` (`light` = MTOW ≤ 1.2 t, the reference case; `heavy` fees stay on the report card and never set the
+airfield's fee nor raise a conflict). `observedAt` = the visit day as **midnight UTC** (`visitDayToUtc`, shown with
+`formatVisitDate` in UTC). Published at once; moderation = delete the report (`applyReports` then recomputes).
+Pilot fees rank below `official` and `aerops-live` (`SOURCE_TIERS`), so they fill gaps and beat estimates only.
+`applyReports` also writes **`Airfield.reportStats`** (`{count, lastVisit}`, pilot reports only; not displayed yet) —
+both facts via `deriveAirfieldFacts`. `notifyNewReport` (codebase **`notifications`**, which holds the Mailgun secret)
+emails each new pilot report, flagging a fee that disagrees with the airfield's; imports send nothing.
+UI: `useReports` (`src/hooks/`) reads one airfield's reports after render (`where('target.id', '==', icao)`, no index),
+writes optimistically with rollback, and exposes `facts` once the page wrote, so the shown fee updates before the
+function's write reaches the delta merge. `components/Reports.tsx`: `ReportButton` (« Raconter ma visite » in the
+airfield info block, then the thanks line), `ReportsSection` (after the description, only when there are reports: cards,
+own-report menu), `VisitedPrompt` after the « visited » icon, `ReportFormHost`. The Add page (`routes/AddData.tsx`)
+opens the same form without an airfield: it shows an airfield picker, saves through `newReport` and navigates to the
+airfield page. `useReportForm` (signed out → Google popup, then the form), lazy `ReportForm.tsx` (date picker defaulting to today, text, fee block always
+shown with « Toujours exact », weight class and note once a fee is entered, « Marquer comme visité » checked by default,
+per-airfield localStorage draft). Its modal and the date dropdown sit above the header/navbar (`zIndex` 1500 / 1501,
+like the other modals).
+Rules: `firestore.rules` `reports` (owner-only edit/delete, field whitelist, limits mirrored from `reports.ts`); airfield
+updates may no longer touch `landingFee` / `reportStats`. Every write rule goes through `isMember()` (signed in, not
+anonymous), so enabling Anonymous Auth opens nothing by itself; phase 3 opens report creates to guests explicitly. Not yet: guests, prerender/MCP.
 
 **List/map filters live in the URL** (shareable queries): `App.tsx` derives them from the query string on every render
 through `src/utils/filterParams.ts`. Never copy them into React state: react-router v7 applies location changes in a
@@ -82,6 +107,8 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
 ## Commands
 
 - `npm start` — dev (Vite). `npm test` — vitest (happy-dom env). `npm run lint` — ESLint, **0 warnings allowed**.
+- `npm run test:rules` — `firestore.rules.test.ts` in the Firestore emulator (needs Java: Homebrew `openjdk` is picked
+  up by default; skipped by `npm test`). Emulators with functions also need `java` on `PATH`.
 - `npm run build` — `tsc && vite build`. `npm run preview` — serve the build.
 - `npm version patch|minor` — tag a release (postversion: `git push --follow-tags`) → deploys.
 - `npm run backup` — dated Firestore export to `backups/`. Admin scripts need `serviceAccountKey.json` at the root.
@@ -185,7 +212,7 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
 - **`firestore.rules`** is the source of truth (wired in `firebase.json`), imported from the production console
   on 2026-09-25. **Deployed by the release CI** (tag workflow, together with `functions:mcp`, `functions:reports`,
   `functions:passports` and hosting); manual deploy: `npx firebase deploy --only firestore:rules`. Staging's console rules could not be
-  read at import time — deploying there overwrites whatever is in its console.
+  read at import time — deploying there overwrites whatever is in its console. Test changes with `npm run test:rules`.
 
 ## Images
 
@@ -215,6 +242,9 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
 - **`functions/notifications/`** (codebase `notifications`, `europe-west1`): `onDocumentCreated('changes/{id}')`
   emails the new document as JSON to the maintainer via the Mailgun REST API (`fetch`, no SDK).
   Creates only — `npm run manage` applying/deleting a change sends nothing. `retry: false` to avoid duplicate mail.
+  `notifyNewReport` (`onDocumentCreated('reports/{id}')`) does the same for **pilot** visit reports only, readable text
+  first (author, date, text, fee, a ⚠️ line when the fee disagrees with the airfield's), then the JSON.
+- **Not deployed by the release CI**: `npx firebase deploy --only functions:notifications` by hand.
 - Config: secret `MAILGUN_API_KEY` (`firebase functions:secrets:set`). Sends through the EU endpoint from the
   `mg.aerotrips.fr` domain, hardcoded in `src/index.ts`.
 

@@ -1,4 +1,5 @@
-// Reports: dated observations about an airfield (landing fee today; pilot text and fuel later, #39).
+// Reports: dated observations about an airfield: landing fees (imports, admin corrections) and pilot visit
+// reports (#39: text, and the fee they paid).
 //
 // Every landing fee is a report (imports, admin corrections, pilot reports). The `reports` Cloud
 // Function (`applyReports`) and `npm run recompute` derive the single `Airfield.landingFee` from an
@@ -34,6 +35,8 @@ export interface FeeReport<T extends TimestampLike = TimestampLike> {
   observedAt: T
   updated_at?: T
   landingFee?: ReportLandingFee
+  /** Pilot fees: 'heavy' (MTOW > 1.2 t) is another weight class than the reference case */
+  aircraftClass?: 'light' | 'heavy'
 }
 
 /** Mirrors `Airfield.landingFee` (src/index.d.ts). */
@@ -75,8 +78,9 @@ export const sourceTier = (source: FeeReportSource) => SOURCE_TIERS[sourceKey(so
 const isAmount = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value >= 0
 
+// Heavier aircraft pay another weight class: their fee stays in the report, never on the airfield
 const hasFee = <T extends TimestampLike>(r: FeeReport<T>): r is FeeReport<T> & { landingFee: ReportLandingFee } =>
-  isAmount(r.landingFee?.amount) && typeof r.observedAt?.seconds === 'number'
+  isAmount(r.landingFee?.amount) && typeof r.observedAt?.seconds === 'number' && r.aircraftClass !== 'heavy'
 
 const compareTime = (a?: TimestampLike, b?: TimestampLike) =>
   (a?.seconds ?? 0) - (b?.seconds ?? 0) || (a?.nanoseconds ?? 0) - (b?.nanoseconds ?? 0)
@@ -85,7 +89,8 @@ const compareTime = (a?: TimestampLike, b?: TimestampLike) =>
 const newestFirst = (a: FeeReport, b: FeeReport) =>
   compareTime(b.observedAt, a.observedAt) || compareTime(b.updated_at, a.updated_at) || (a.id < b.id ? 1 : a.id > b.id ? -1 : 0)
 
-const disagree = (a: number, b: number) => {
+/** Whether two amounts conflict (`CONFLICT_RATIO` and `CONFLICT_MIN_EUROS`) */
+export const disagree = (a: number, b: number) => {
   const diff = Math.abs(a - b)
   return diff > CONFLICT_MIN_EUROS && diff > CONFLICT_RATIO * Math.max(a, b)
 }
@@ -93,7 +98,7 @@ const disagree = (a: number, b: number) => {
 /**
  * The landing fee to show on an airfield, from all its reports:
  * the newest report of the best trust tier (`SOURCE_TIERS`), so an admin report always wins.
- * Parking comes from the same report. Reports without a fee are ignored.
+ * Parking comes from the same report. Reports without a fee, or for a heavier aircraft, are ignored.
  * `conflicts` lists sources that disagree, still resolved by the rule above.
  */
 export const deriveLandingFee = <T extends TimestampLike>(reports: FeeReport<T>[]): {
@@ -235,4 +240,71 @@ export const landingFeeDisplay = (fee?: DerivedLandingFee): LandingFeeDisplay =>
     ...(isWebUrl(fee.url) && { url: fee.url }),
     ...(isWebUrl(fee.pageUrl) && { pageUrl: fee.pageUrl }),
   }
+}
+
+// --- Pilot visit reports (#39) ---
+
+export const REPORT_TEXT_MAX = 2000
+export const REPORT_NOTE_MAX = 300
+/** Sanity cap on a reported fee, also in firestore.rules */
+export const REPORT_FEE_MAX = 1000
+
+/** Listed, counted in `reportStats` and emailed; imports and admin reports only feed the fee. */
+export const isPilotReport = <R extends Pick<FeeReport, 'source'>>(r: R) => r.source?.type === 'pilot'
+
+/** Newest visit first, then the latest written, then id. */
+export const sortReports = <R extends FeeReport>(reports: R[]) => [...reports].sort(newestFirst)
+
+/** "Jean-Pierre Dupont" → "Jean-Pierre D.": first name and initials, published with each report. */
+export const authorName = (displayName?: string | null) => {
+  const [first, ...rest] = (displayName ?? '').trim().split(/\s+/).filter(Boolean)
+  if (!first) return 'Pilote'
+  return [first, ...rest.map(word => `${word[0].toUpperCase()}.`)].join(' ')
+}
+
+/** "12,50", "12.5", "12 €" → 12.5; anything else (empty, negative, over the cap) → undefined. */
+export const parseFeeAmount = (input: string) => {
+  const cleaned = input.replace(/€/g, '').replace(/\s/g, '').replace(',', '.')
+  if (!/^\d+(\.\d{1,2})?$/.test(cleaned)) return undefined
+  const amount = Number(cleaned)
+  return amount <= REPORT_FEE_MAX ? amount : undefined
+}
+
+const euros = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' })
+const wholeEuros = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })
+
+/** The fee on a report card, exact (what the pilot paid): "Taxe payée : 12,50 €", "Atterrissage gratuit". */
+export const reportFeeLabel = (r: Pick<FeeReport, 'landingFee' | 'aircraftClass'>) => {
+  if (!r.landingFee || !isAmount(r.landingFee.amount)) return undefined
+  const label = r.landingFee.amount === 0 ? 'Atterrissage gratuit' : `Taxe payée : ${(Number.isInteger(r.landingFee.amount) ? wholeEuros : euros).format(r.landingFee.amount)}`
+  return r.aircraftClass === 'heavy' ? `${label} (avion > 1,2 t)` : label
+}
+
+// Visit dates are calendar days stored as midnight UTC: the same day wherever they are rendered.
+const visitDay = new Intl.DateTimeFormat('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' })
+
+export const formatVisitDate = (t: TimestampLike) => visitDay.format(toDate(t))
+
+/** A calendar day (local date picked in the form) → midnight UTC, how `observedAt` stores a visit. */
+export const visitDayToUtc = (day: Date) => new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate()))
+
+/** Mirrors `Airfield.reportStats`. */
+export interface ReportStats<T extends TimestampLike = TimestampLike> {
+  count: number
+  lastVisit: T
+}
+
+/** Pilot reports only; undefined when there are none. */
+export const deriveReportStats = <T extends TimestampLike>(reports: FeeReport<T>[]): ReportStats<T> | undefined => {
+  const pilot = sortReports(reports.filter(isPilotReport))
+  return pilot.length ? { count: pilot.length, lastVisit: pilot[0].observedAt } : undefined
+}
+
+export const sameReportStats = (a?: ReportStats, b?: ReportStats) =>
+  !a || !b ? !a && !b : a.count === b.count && compareTime(a.lastVisit, b.lastVisit) === 0
+
+/** Every function-owned airfield fact, from all its reports: what `applyReports` writes and the page shows at once. */
+export const deriveAirfieldFacts = <T extends TimestampLike>(reports: FeeReport<T>[]) => {
+  const { landingFee, conflicts } = deriveLandingFee(reports)
+  return { landingFee, reportStats: deriveReportStats(reports), conflicts }
 }
