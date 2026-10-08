@@ -39,6 +39,7 @@ def main():
         ('sources.json', 'pistes (OSM, PoiFrance…)'),
         ('club-notes.json', 'notes des clubs'),
         ('airfield.json', 'fiche aérodrome'),
+        ('fee.json', "taxe d'atterrissage proposée"),
         ('activities.json', 'activités fusionnées (fait foi)'),
         ('preview.html', 'aperçu'),
     ]] + [(f, "sortie d'agent") for f in c.agent_files(icao)]
@@ -86,6 +87,9 @@ def main():
     paths = ' '.join(p for p in (c.tmp_path(icao, 'airfield.json'),
                                  c.tmp_path(icao, 'activities.json')) if os.path.exists(p))
     print(f'     npm run import -- --import {paths}')
+    if os.path.exists(c.tmp_path(icao, 'fee.json')):
+        print(f'     python3 .claude/skills/populate-airfield/scripts/add_fee.py {icao}   # taxe → scripts/fees.json')
+        print('     npm run import:fees:prod -- official')
 
 
 if __name__ == '__main__':

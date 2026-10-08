@@ -223,6 +223,25 @@ def build(icao, use_vac=True, manual_center=None):
         'raw': situation.get('fuels_raw'),
     }
 
+    # Taxe d'atterrissage : jamais dans la fiche (champ calculé par la fonction `applyReports`),
+    # proposée à part dans tmp/<ICAO>-fee.json puis ajoutée à scripts/fees.json (Étape 6)
+    current = entry.get('landingFee')
+    sheet = c.load_fee_sheet(icao)
+    if sheet:
+        fee_action = ('vérifier : une fiche tarifaire existe déjà dans scripts/fees.json ; ne proposer '
+                      'qu\'une édition plus récente (validFrom postérieur) ou une correction')
+    elif current and current.get('source') == 'admin':
+        fee_action = 'rien : corrigée à la main (admin), ne pas chercher'
+    else:
+        fee_action = ('chercher la fiche tarifaire de l\'exploitant (ou la page du club qui dit « pas de '
+                      'taxe ») ; les tarifs aeroPS et les signalements de pilotes ne valent pas une fiche')
+    landing_fee = {
+        'current': {k: current[k] for k in ('amount', 'source', 'url', 'pageUrl') if k in current}
+        if current else None,
+        'sheet': {k: sheet[k] for k in ('amount', 'validFrom', 'url', 'pageUrl') if k in sheet} if sheet else None,
+        'action': fee_action,
+    }
+
     return {
         'icao': icao,
         'airfield_name': entry['name'],
@@ -238,13 +257,15 @@ def build(icao, use_vac=True, manual_center=None):
         'category_radius_km': c.CATEGORY_RADIUS_KM,
         'radius_tolerance_km': c.RADIUS_TOLERANCE_KM,
         # `webcams` est additif (l'import ajoute) : l'agent peut en proposer de nouvelles
-        'existing_fields': [k for k in entry if k not in c.PROTECTED_FIELDS and k != 'webcams'],
+        # `landingFee` : calculé par la fonction, jamais écrit par la fiche (voir landing_fee)
+        'existing_fields': [k for k in entry if k not in c.PROTECTED_FIELDS and k not in ('webcams', 'landingFee')],
         'existing_activities': nearby,
         'clubs': clubs,
         'clubs_info': clubs_info,
         'night_vfr': nvfr,
         'fuels': fuels,
         'webcams': {'existing': entry.get('webcams') or []},
+        'landing_fee': landing_fee,
     }
 
 
@@ -290,6 +311,13 @@ def report(ctx):
         A('  → rien à ajouter (la section AVT est parfois incomplète : ne jamais retirer)')
     if f['raw']:
         A(f"  AVT : {f['raw'][:150]}")
+    lf = ctx['landing_fee']
+    cur = lf['current']
+    base = f"{cur['amount']} € ({cur['source']})" if cur else 'inconnue'
+    sh = lf['sheet']
+    sheet = f"{sh['amount']} € depuis {sh['validFrom']}" if sh else 'aucune'
+    A(f"Taxe d'atterrissage : base={base}  fiche fees.json={sheet}")
+    A(f"  → {lf['action']}")
     cams = ctx['webcams']['existing']
     A(f"Webcams en base ({len(cams)}) — n'en proposer que de nouvelles "
       "(jamais cam-aero.eu, gérées par `npm run import -- --webcams`) :")
@@ -335,10 +363,11 @@ def clean_outputs(icao, agents):
     """Supprime les fichiers des agents sur le point d'être relancés."""
     removed = []
     for agent in agents:
-        path = c.tmp_path(icao, c.AGENT_OUTPUTS[agent])
-        if os.path.exists(path):
-            os.remove(path)
-            removed.append(path)
+        for name in [c.AGENT_OUTPUTS[agent], *c.AGENT_EXTRA_OUTPUTS.get(agent, [])]:
+            path = c.tmp_path(icao, name)
+            if os.path.exists(path):
+                os.remove(path)
+                removed.append(path)
     return removed
 
 

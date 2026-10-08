@@ -122,8 +122,8 @@ def main():
     af_path, act_path = c.tmp_path(icao, 'airfield.json'), c.tmp_path(icao, 'activities.json')
     airfield = json.load(open(af_path)) if os.path.exists(af_path) else None
     activities = json.load(open(act_path)) if os.path.exists(act_path) else None
-    if airfield is None and activities is None:
-        c.die(f'ni {af_path} ni {act_path} — rien à valider.')
+    if airfield is None and activities is None and not os.path.exists(c.tmp_path(icao, 'fee.json')):
+        c.die(f'ni {af_path} ni {act_path} ni taxe proposée — rien à valider.')
 
     # --- 1. Structure ---
     print('=== Structure ===')
@@ -149,6 +149,19 @@ def main():
         if airfield.get('codeIcao') != icao:
             problem(f'aérodrome : codeIcao={airfield.get("codeIcao")!r}, attendu {icao!r}.')
         check_doc(airfield.get('description'), 'aérodrome')
+    fee_path = c.tmp_path(icao, 'fee.json')
+    if os.path.exists(fee_path):
+        fee = json.load(open(fee_path))
+        if fee.get('codeIcao') != icao:
+            problem(f'taxe : codeIcao={fee.get("codeIcao")!r}, attendu {icao!r}.')
+        for p in c.fee_problems({k: v for k, v in fee.items() if k != 'codeIcao'}):
+            problem(f'taxe ({fee_path}) : {p}.')
+    if airfield is not None:
+        text = ' '.join(n.get('text', '') for n in c.iter_nodes(airfield.get('description'), skip_marks=True))
+        # Pas bloquant : « 10 € » peut être autre chose qu'une taxe, à juger à la relecture
+        if re.search(r"taxe d.atterrissage|redevance|\d\s?€", text, re.I):
+            print("  ⚠ aérodrome : la description parle de taxe ou de prix — une taxe n'y a pas sa place, "
+                  f"elle va dans {fee_path} (airfield.md § Taxe d'atterrissage).")
     ctx_path = c.tmp_path(icao, 'context.json')
     city = json.load(open(ctx_path)).get('city') if os.path.exists(ctx_path) else None
     for a in activities or []:

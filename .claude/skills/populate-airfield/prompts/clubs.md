@@ -48,7 +48,9 @@ indiquée ; un pied de page « © 2016 » compte aussi).
 **Sur le terrain lui-même** → `airfield_facts`, pour la fiche aérodrome : vélos ou voiture prêtés
 ou loués au club, taxi (numéro, ou le club qui l'appelle), comment rejoindre la ville, restaurant du
 terrain (horaires, réservation), accès au carburant (appeler avant, badge, horaires), accueil des
-visiteurs (redevances, où se garer, qui prévenir).
+visiteurs (où se garer, qui prévenir). **Taxe d'atterrissage** : noter ce que la page en dit (montant,
+« pas de taxe », lien vers la grille tarifaire) **avec l'URL de la page et sa date** si elle en a une —
+l'agent aérodrome en fait une proposition de taxe, jamais une phrase de la description.
 
 **Des lieux** → `leads`, pour les agents d'activités, avec l'agent destinataire :
 

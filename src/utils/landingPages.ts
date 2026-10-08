@@ -19,7 +19,7 @@ export type LandingEntry = {
 export type LandingSection = {
   h2: string
   intro: string
-  test: (airfield: Airfield) => boolean
+  test: (airfield: Airfield, highlights: Nearby[]) => boolean
 }
 
 export type LandingPage = {
@@ -91,6 +91,32 @@ export const LANDING_PAGES: LandingPage[] = [
     ],
     highlights: (nearby) => nearby.filter(isBike),
   },
+  {
+    slug: 'aerodromes-sans-taxe-atterrissage',
+    h1: "Aérodromes sans taxe d'atterrissage",
+    title: (n) => `Sans taxe d'atterrissage : ${n} aérodromes où se poser gratuitement | AeroTrips`,
+    description: (n) =>
+      `${n} aérodromes en France où l'atterrissage est gratuit pour un avion léger, d'après les pilotes et les tarifs publiés, avec les restaurants à proximité et les fiches des terrains.`,
+    intro: [
+      "Beaucoup de terrains, souvent municipaux ou gérés par un aéroclub, ne font pas payer l'atterrissage aux avions légers de passage. Voici les aérodromes signalés gratuits par des pilotes ou par leurs tarifs publiés, avec les restaurants repérés à proximité par la communauté AeroTrips.",
+      "Ces informations sont indicatives et parfois anciennes : un terrain gratuit peut devenir payant, et le stationnement ou le balisage de nuit peuvent rester facturés. La fiche de chaque aérodrome indique la source et sa date ; vérifiez auprès de l'exploitant et sur la carte VAC avant de partir.",
+    ],
+    highlights: (nearby) => nearby.filter(isFood),
+    // Exactly 0: « < 1 € » is not free, and unknown is never free
+    listed: (airfield) => airfield.landingFee?.amount === 0,
+    sections: [
+      {
+        h2: 'Avec un restaurant à proximité',
+        intro: "De quoi transformer une navigation en sortie déjeuner, sans frais d'atterrissage.",
+        test: (_airfield, highlights) => highlights.length > 0,
+      },
+      {
+        h2: 'Autres terrains',
+        intro: "Pas encore de restaurant repéré à proximité. Vous connaissez une adresse ? Ajoutez-la depuis la fiche de l'aérodrome.",
+        test: () => true,
+      },
+    ],
+  },
 ]
 
 export const landingPageUrl = (page: LandingPage) => `/decouvrir/${page.slug}`
@@ -111,7 +137,7 @@ export const buildLandingEntries = (
     .filter((af) => LISTED_STATUSES.includes(af.status))
     .map((airfield) => ({ airfield, highlights: page.highlights(nearbyActivities(airfield, activities)) }))
     .filter(({ airfield, highlights }) => page.listed ? page.listed(airfield, highlights) : highlights.length > 0)
-    .map((e) => ({ ...e, section: Math.max(0, page.sections?.findIndex((s) => s.test(e.airfield)) ?? 0) }))
+    .map((e) => ({ ...e, section: Math.max(0, page.sections?.findIndex((s) => s.test(e.airfield, e.highlights)) ?? 0) }))
     .sort((a, b) => a.section - b.section || titleCase(a.airfield.name).localeCompare(titleCase(b.airfield.name), 'fr'))
 
 export const buildLandingSeo = (page: LandingPage, entries: LandingEntry[]): ItemSeo => {

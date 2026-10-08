@@ -75,3 +75,23 @@ describe('bike hire landing page', () => {
     expect(entries[0].highlights.map(([, , id]) => id)).toEqual(['bike-b'])
   })
 })
+
+describe('free landing page', () => {
+  const free = LANDING_PAGES.find((p) => p.slug === 'aerodromes-sans-taxe-atterrissage')!
+  const checkedAt = { seconds: 0, nanoseconds: 0 }
+  const withFee = (a: Airfield, amount?: number) =>
+    (amount === undefined ? a : { ...a, landingFee: { amount, source: 'pilot', checkedAt } }) as Airfield
+  const feeAirfields = new Map([
+    ['LFBB', withFee(airfields.get('LFBB')!, 0)],
+    ['LFAA', withFee(airfields.get('LFAA')!, 0.4)],
+    ['LFCC', withFee(airfields.get('LFCC')!, 0)],
+    ['LFDD', withFee(airfield('LFDD', 'DELTA', 41))],
+    ['LFMM', withFee(airfields.get('LFMM')!, 0)],
+  ])
+  const entries = buildLandingEntries(free, feeAirfields, activities)
+
+  it('lists free airfields only (not « < 1 € », not unknown, not military), with a restaurant first', () => {
+    expect(entries.map((e) => [e.airfield.codeIcao, e.section])).toEqual([['LFBB', 0], ['LFCC', 1]])
+    expect(entries[0].highlights.map(([, , id]) => id)).toEqual(['gite-b'])
+  })
+})

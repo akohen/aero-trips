@@ -89,6 +89,37 @@ def webcams_block(proposed, existing):
       <div class="grid">{''.join(cards)}</div>{known}'''
 
 
+def fee_block(icao, entry):
+    """Taxe proposée (tmp/<ICAO>-fee.json), à côté de la valeur en base et de la fiche existante."""
+    path = c.tmp_path(icao, 'fee.json')
+    if not os.path.exists(path):
+        return ''
+    fee = json.load(open(path))
+    flags = ''.join(badge(p, 'warn') for p in c.fee_problems({k: v for k, v in fee.items() if k != 'codeIcao'}))
+    amount = fee.get('amount')
+    label = 'Gratuit' if amount == 0 else f'{amount} € TTC'
+    if fee.get('ht') is not None:
+        label += f" ({fee['ht']} € HT)"
+    parking = ' · '.join(x for x in (
+        f"stationnement {fee['parkingIncludedHours']} h inclus" if fee.get('parkingIncludedHours') else '',
+        f"stationnement 24 h {fee['parking24h']} €" if fee.get('parking24h') is not None else '',
+    ) if x)
+    links = ' · '.join(f'<a href="{html.escape(fee[k], quote=True)}" target="_blank" rel="noopener">{t}</a>'
+                       for k, t in (('url', 'document'), ('pageUrl', 'page tarifs')) if fee.get(k))
+    current = entry.get('landingFee')
+    sheet = c.load_fee_sheet(icao)
+    was = ' · '.join(x for x in (
+        f"en base : {current['amount']} € ({current['source']})" if current else 'en base : inconnue',
+        f"fees.json : {sheet['amount']} € depuis {sheet['validFrom']}" if sheet else '',
+    ) if x)
+    note = f'<p>{html.escape(fee["note"])}</p>' if fee.get('note') else ''
+    return f'''<div class="fee"><h3>Taxe d'atterrissage proposée {flags}</h3>
+      <p><b>{html.escape(label)}</b>{' · ' + html.escape(parking) if parking else ''}
+      — en vigueur depuis {html.escape(str(fee.get('validFrom')))}, relevée le {html.escape(str(fee.get('checkedAt')))}</p>
+      {note}
+      <p>{links}</p><p class="muted">{html.escape(was)}</p></div>'''
+
+
 def dup_index(activities, existing):
     """id d'activité → (nom en base, id en base) pour les doublons probables."""
     out = {}
@@ -136,6 +167,13 @@ def build(icao):
       {website}
       <div class="desc">{render(airfield.get('description'))}</div>
       {webcams_block(airfield.get('webcams'), entry.get('webcams') or [])}
+      {fee_block(icao, entry)}
+    </section>''')
+
+    elif fee_block(icao, entry):
+        parts.append(f'''<section class="card airfield">
+      <h2>Aérodrome {html.escape(icao)}</h2>
+      {fee_block(icao, entry)}
     </section>''')
 
     map_points = []

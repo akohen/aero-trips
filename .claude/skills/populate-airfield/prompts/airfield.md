@@ -18,6 +18,7 @@ fait foi pour tout ce qui suit.
 | `night_vfr` | contrôle du VFR de nuit : base vs VAC — **ne jamais écrire** `nightVFR` (voir plus bas) |
 | `fuels` | ce qu'il faut faire du champ `fuels` (voir plus bas) |
 | `webcams.existing` | webcams déjà en base — n'en proposer que de **nouvelles** (voir plus bas) |
+| `landing_fee` | taxe en base (`current`), fiche déjà relue dans `scripts/fees.json` (`sheet`) et ce qu'il faut faire (`action`) — voir § Taxe d'atterrissage |
 
 Ci-dessous, `{city}` désigne la valeur du champ `city`, `<ICAO>` le code ICAO.
 
@@ -36,6 +37,61 @@ Effectue des recherches web sur les sources suivantes :
 - Sites spécifiques : ourairports.com, basulm.ffplum.fr, fr.airfield.directory
 - Webcams : `"webcam <ICAO>"`, `"webcam aérodrome {city}"`, et la page webcam / météo des sites
   de clubs (voir `webcams` plus bas)
+- Taxe d'atterrissage, selon `landing_fee.action` : `"redevances aéroport {city}"`, `"guide des
+  redevances <ICAO>"`, `"tarifs aéronautiques {city}"`, la page « pilotes » / « aviation générale » du
+  site de l'aérodrome ou du gestionnaire, et les `airfield_facts` des notes de l'éclaireur
+
+### Taxe d'atterrissage — fichier à part, jamais dans la fiche
+
+`landingFee` est calculé par une fonction à partir de rapports : **ne jamais l'écrire** dans
+`tmp/<ICAO>-airfield.json`, et **ne pas parler de la taxe dans la description** (ni montant, ni
+« gratuit ») — elle s'affiche déjà sur la fiche, avec sa source et sa date. Suivre `landing_fee.action` :
+
+- **`rien`** : ne pas chercher.
+- **`vérifier`** : une fiche est déjà relue (`landing_fee.sheet`). Ne proposer une entrée que pour une
+  **édition plus récente** (`validFrom` postérieur) ou une erreur manifeste, en le disant en fin de réponse.
+- **`chercher`** : trouver la **grille tarifaire de l'exploitant** (guide des redevances, délibération
+  municipale, page tarifs de l'aéroclub gestionnaire), ou une page officielle (exploitant, mairie, club
+  basé) qui dit qu'il n'y a **pas de taxe**. Les tarifs aeroPS, les forums, les cartes communautaires et
+  les avis de pilotes ne suffisent pas : ils sont déjà importés à part. Rien d'officiel → pas de fichier.
+
+**Cas de référence** (celui de toutes les fiches) : avion léger **visiteur** (non basé), **MTOW
+1,15 t** (C172S / DR400-180), **un atterrissage**, tarif standard **sans réduction**, **TTC**, frais et
+assistance **obligatoires inclus**. Pièges vus : grilles **HT** presque partout (TVA 20 % → `ht` +
+`vat: 0.2`, `amount` = TTC) ; ligne « basés » au lieu de « visiteurs » ; tranches de masse (prendre
+celle qui couvre 1,15 t ; « arrondie à la tonne supérieure » → la tranche 2 t, le dire en `note`) ;
+forfaits incluant le stationnement (`parkingIncludedHours`) ; assistance obligatoire facturée à part
+(à **ajouter** au montant). Réductions (FFA, club), frais évitables (sans PPR, hors horaires,
+paiement) et tarifs saisonniers vont dans `note`, pas dans le montant. « Gratuit si avitaillement » ou
+« si repas » n'est **pas** gratuit : pas de fichier, ou le tarif normal avec la condition en `note`.
+
+Écrire **`tmp/<ICAO>-fee.json`** (au format d'une entrée de `scripts/fees.json`) :
+
+```json
+{
+  "codeIcao": "<ICAO>",
+  "amount": 12.6,
+  "ht": 10.5,
+  "vat": 0.2,
+  "parking24h": 8.4,
+  "note": "Tranche 1 t à 1,999 t. Stationnement : 2 h gratuites puis par 24 h. FFA −50 %.",
+  "url": "https://exemple.fr/guide-des-redevances-2026.pdf",
+  "pageUrl": "https://exemple.fr/espace-pilotes",
+  "validFrom": "2026-03-01",
+  "checkedAt": "2026-10-08"
+}
+```
+
+- Obligatoires : `amount` (TTC, `0` = gratuit), `url` (le document ou la page qui donne le tarif,
+  `https` effective via `check_url.py`), `validFrom` (date d'entrée en vigueur écrite sur la grille ;
+  à défaut, la date de la page, sinon celle du jour) et `checkedAt` (aujourd'hui), au format AAAA-MM-JJ.
+- Facultatifs : `ht` + `vat` quand la source est HT ; `parking24h` (une nuit / 24 h, TTC) ;
+  `parkingIncludedHours` ; `note` (courte, en français) ; `pageUrl` (page **stable** qui liste la
+  dernière grille : les PDF changent d'URL à chaque édition).
+- Gratuit : `{"codeIcao": "<ICAO>", "amount": 0, "note": "Pas de taxe d'atterrissage pour les
+  avions de passage, d'après le site de l'aéroclub.", "url": "https://…", "validFrom": "…",
+  "checkedAt": "…"}`.
+- Le **dire en fin de réponse** : montant retenu, ligne de la grille, et ce qui reste douteux.
 
 ### Clubs basés — liste de référence (ne pas la deviner)
 
@@ -47,7 +103,8 @@ existe — dont chaque club porte la trace dans son champ `source` (`clubs_info.
 **Notes de l'éclaireur** — si `tmp/<ICAO>-club-notes.json` existe (agent `clubs`, lancé avant toi), il a déjà cherché et
 vérifié le site de chaque club : reprendre ses `clubs[].website` et `clubs[].name` (le nom que le
 club se donne) sans refaire la recherche. Ses `airfield_facts` (vélos ou voiture du club, taxi,
-restaurant, carburant, accueil des visiteurs) vont dans le paragraphe technique, **reformulés et
+restaurant, carburant, accueil des visiteurs) vont dans le paragraphe technique — sauf la **taxe
+d'atterrissage**, qui sert au fichier de taxe (§ Taxe d'atterrissage) et jamais à la description, **reformulés et
 datés s'ils sont anciens** (« le club indiquait en 2019… ») — ou écartés s'ils semblent périmés.
 Ses `webcams` sont des candidates pour le champ `webcams` : les reprendre (sans `source` ni `note`)
 après les contrôles ci-dessous.
@@ -90,7 +147,8 @@ Collecter les **notes de recherche** suivantes (usage interne uniquement, ne pas
 
 Champs déjà présents dans la base (ne pas les inclure dans le fichier de sortie) : champ `existing_fields` du contexte.
 
-Ne pas inclure dans la description d'informations sur les pistes et les fréquences.
+Ne pas inclure dans la description d'informations sur les pistes et les fréquences, ni sur la taxe
+d'atterrissage (elle va dans `tmp/<ICAO>-fee.json`, voir plus haut).
 Ne pas inclure d'information sur les carburants disponibles, sauf s'il y a une procédure d'accès particulière (eg. demander au club au préalable...)
 
 Collecter les **champs de sortie** (seuls champs autorisés dans le JSON final, hors champs déjà présents) :
@@ -179,4 +237,5 @@ Le JSON final ne peut contenir **que ces clés** : `codeIcao`, `website`, `toile
 - **Style factuel** : rédiger sobrement, sans superlatifs ni tournures promotionnelles (« incomparable », « les joies de… »). Employer le vocabulaire juste (une association de vol est « aéronautique », jamais « aviaire »).
 - Le JSON doit être parseable
 
-Écrire ce JSON dans `tmp/<ICAO>-airfield.json`.
+Écrire ce JSON dans `tmp/<ICAO>-airfield.json` — et, s'il y a lieu, la taxe dans
+`tmp/<ICAO>-fee.json` (§ Taxe d'atterrissage).

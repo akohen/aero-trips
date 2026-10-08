@@ -59,7 +59,8 @@ Absent = unknown, never free (free = `amount: 0`). Reference case: visiting airc
 assistance included (`docs/data-sources.md`, *Landing fees*).
 **`npm run import:fees -- all|official|aerops|community`** (no source = all; staging; `import:fees:prod`; dry run
 unless `--apply`) writes
-reports `{source}-{ICAO}` from `scripts/fees.json` (operator sheets, hand-checked, committed), `scripts/aerops-fees.json`
+reports `{source}-{ICAO}` from `scripts/fees.json` (operator sheets, hand-checked, committed; the `populate-airfield` skill proposes new ones
+through `tmp/<ICAO>-fee.json` + `add_fee.py`, never through the airfield document), `scripts/aerops-fees.json`
 (`npx tsx scripts/fetch-aerops-fees.ts`, gitignored) or `scripts/community-fees.json` (free only, imported as
 pilot reports: `npx tsx scripts/build-community-fees.ts`, committed). Staging needs `serviceAccountKey.staging.json`.
 **`npm run recompute`** (staging; `recompute:prod`; `--dry-run`) re-derives every airfield after a logic change:
@@ -105,9 +106,12 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   **rules** over the data (`highlights(nearby)` → the activities that qualify an airfield), not hand-picked lists.
   Optional `listed(airfield, highlights)` qualifies on the airfield itself, and `sections` splits the list (first match wins).
   Pages: `restaurants-aerodromes`, `aerodromes-vfr-de-nuit` (unrestricted first, cards show nearby food/lodging),
-  `location-velo-aerodromes` (activities of type `bike`: hire, self-service bikes, greenways).
+  `location-velo-aerodromes` (activities of type `bike`: hire, self-service bikes, greenways),
+  `aerodromes-sans-taxe-atterrissage` (`landingFee.amount === 0`, nearby food highlighted, airfields with a restaurant
+  first; section tests get the highlights too). Free airfields also say « atterrissage gratuit » in their meta description.
   Prerendered to `dist/decouvrir/{slug}/index.html`, rendered in the SPA by
   `routes/LandingPage.tsx`, listed in the sitemap by `npm run export` (also added by hand to `public/sitemap.xml`).
+  A page with no airfields (data not exported yet) is neither prerendered nor listed in the sitemap.
   Uses the airfield page's nearby list (`nearbyActivities`), so an airfield titled "restaurants" is on the hub, and
   leaves out `MIL`/`OFF` airfields.
   `usePageSeo` (`src/hooks/`) applies any `ItemSeo` to `<head>`; `App.tsx` must not reset the title on those paths.

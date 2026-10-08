@@ -122,7 +122,8 @@ its 2 live prices right; Natim right on 6.
 - Freshness: yearly, but **not by calendar year** (1 Jan, 1 Feb, 1 Mar, 1 Apr, 10 Apr, 1 Jul seen) → `validFrom`
   (+ `validUntil` when stated). Seasonal sheets (Courchevel: summer / winter).
 - Rights: public tariffs (facts), link to the source.
-- Used by: `scripts/fees.json` (hand-transcribed; import to `reports` to come).
+- Used by: `scripts/fees.json` (hand-transcribed, `npm run import:fees -- official`); the `populate-airfield` skill
+  proposes new sheets (`tmp/<ICAO>-fee.json` → `add_fee.py`).
 - Pitfalls: HT almost everywhere (VAT 20 %); based vs visiting aircraft lines; commercial per-tonne grid vs GA flat
   fee (Metz); MTOW « arrondie à la tonne supérieure » (Dijon, Périgueux, Tours: 1.15 t → 2 t line); sharp class edges
   (Montluçon ×4 at 1.2 t); packages including parking (Brest, Metz, Avignon, Dinard/Rennes); mandatory assistance

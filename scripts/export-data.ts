@@ -2,7 +2,7 @@ import { db } from '../src/data/firebase.ts';
 import { collection, getDocs, Firestore, Timestamp } from "firebase/firestore";
 import { Activity, Airfield } from '../src';
 import fs from 'fs';
-import { LANDING_PAGES, landingPageUrl } from '../src/utils/landingPages.ts';
+import { buildLandingEntries, LANDING_PAGES, landingPageUrl } from '../src/utils/landingPages.ts';
 
 const ROOT_URL = 'https://aerotrips.fr'
 
@@ -58,8 +58,13 @@ const generateSitemap = (
     const entry = (loc: string, lastmod: string, changefreq: string = 'monthly', priority: string = '0.8') =>
         `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`
 
+    // Same rule as the prerender: a landing page without airfields is not built, so not listed
+    const airfieldMap = new Map(airfields.map(a => [a.codeIcao, a]))
+    const activityMap = new Map(activities.map(a => [a.id, a]))
+    const landingPages = LANDING_PAGES.filter(p => buildLandingEntries(p, airfieldMap, activityMap).length > 0)
+
     const entries = [
-        ...LANDING_PAGES.map(p => entry(`${ROOT_URL}${landingPageUrl(p)}`, toDateString(), 'weekly', '0.9')),
+        ...landingPages.map(p => entry(`${ROOT_URL}${landingPageUrl(p)}`, toDateString(), 'weekly', '0.9')),
         entry(`${ROOT_URL}/airfields`, toDateString()),
         ...airfields.map(a => entry(`${ROOT_URL}/airfields/${a.codeIcao}`, toDateString(a.updated_at), 'monthly', '0.8')),
         entry(`${ROOT_URL}/activities`, toDateString()),

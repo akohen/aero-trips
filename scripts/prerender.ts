@@ -229,6 +229,11 @@ const buildLandingBody = (page: LandingPage, entries: LandingEntry[]) => {
 
 for (const page of LANDING_PAGES) {
   const entries = buildLandingEntries(page, airfields, activities)
+  // No page rather than "0 aérodromes" (data not exported yet); the sitemap skips it too (export-data.ts)
+  if (entries.length === 0) {
+    console.log(`Skipped ${landingPageUrl(page)}: no airfields`)
+    continue
+  }
   const html = template
     .replace(headRegion, buildHead(buildLandingSeo(page, entries)))
     .replace('<div id="root"></div>', `<div id="root">\n      ${buildLandingBody(page, entries)}\n    </div>`)

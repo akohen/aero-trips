@@ -39,6 +39,14 @@ describe('airfield title and heading', () => {
     expect(nearbyActivitiesHeading(lfov, 0)).toBe("Activités près de l'aérodrome de Laval Entrammes")
   })
 
+  it('mention a free landing only when the fee is exactly 0', () => {
+    const fee = (amount: number) => ({ ...lfov, landingFee: { amount, source: 'pilot', checkedAt: { seconds: 0, nanoseconds: 0 } } })
+    expect(buildItemSeo(fee(0) as typeof lfov, { nearbyFoodCount: 0 }).description)
+      .toContain('à proximité, atterrissage gratuit, pistes, services')
+    expect(buildItemSeo(fee(12) as typeof lfov, { nearbyFoodCount: 0 }).description).not.toContain('gratuit')
+    expect(buildItemSeo(lfov, { nearbyFoodCount: 0 }).description).not.toContain('gratuit')
+  })
+
   it('keep the generic heading on activity pages', () => {
     expect(nearbyActivitiesHeading(activity('x', ['food']), 3)).toBe('Activités à proximité')
   })

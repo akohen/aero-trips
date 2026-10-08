@@ -154,6 +154,12 @@ Produit `tmp/$ICAO-context.json` et affiche tout ce dont les agents ont besoin :
 - **`fuels`** — point 10 de la VAC (AVT). **Purement additif** : la section AVT est parfois
   incomplète (mesuré : sur 20 aérodromes, 18 identiques à la base, 1 ajout réel, 1 où la VAC
   omettait un carburant pourtant présent). Écrire `union`, ne **jamais** retirer un carburant.
+- **`landing_fee`** — taxe en base (`current`, calculée par la fonction `applyReports` à partir des
+  rapports : **jamais écrite par la fiche**), fiche déjà relue dans `scripts/fees.json` (`sheet`) et
+  l'`action` : `chercher` (pas de fiche officielle), `vérifier` (une fiche existe : seulement une
+  édition plus récente), `rien` (corrigée à la main). L'agent aérodrome propose une taxe dans
+  **`tmp/$ICAO-fee.json`**, à part ; elle rejoint `scripts/fees.json` à l'Étape 6. La description
+  ne parle jamais de taxe.
 
 ## Étape 1 — Pistes et éclaireur des clubs, en parallèle
 
@@ -209,7 +215,7 @@ sélectionnés :
 
 | Agent | Fiche de tâche | Fichier de sortie |
 |---|---|---|
-| Airfield | `prompts/airfield.md` | `tmp/$ICAO-airfield.json` |
+| Airfield | `prompts/airfield.md` | `tmp/$ICAO-airfield.json` (+ `tmp/$ICAO-fee.json` s'il trouve une grille officielle) |
 | Transport | `prompts/activities-transport.md` | `tmp/$ICAO-activities-transport.json` |
 | POI | `prompts/activities-poi.md` | `tmp/$ICAO-activities-poi.json` |
 | Restaurants | `prompts/activities-restaurants.md` | `tmp/$ICAO-activities-restaurants.json` |
@@ -388,6 +394,10 @@ Relire ensuite à la main ce qu'aucun script ne peut juger :
   « aéronautique »).
 - **Relecture FR** : anglicismes et artefacts de traduction laissés par les agents (cas vécus :
   « Bistro *characteristic* », « *dynamic* »).
+- **Taxe** (`tmp/$ICAO-fee.json`, si présent) : ouvrir le document `url` et vérifier la ligne
+  retenue — visiteur et non basé, tranche couvrant 1,15 t, **TTC** (`ht` × 1,2), assistance
+  obligatoire incluse, réductions et conditions en `note` seulement. `validate.py` contrôle la forme,
+  pas le montant. Rien sur la taxe dans la description (`validate.py` le signale).
 - **Clubs** : tous les clubs de `$CLUBS` figurent dans la description, chacun lié à son site (URL
   `https` effective après redirection), et aucun club inventé.
 
@@ -458,6 +468,22 @@ npm run import -- --import tmp/$ICAO-airfield.json tmp/$ICAO-activities.json
 # Appliquer sans prompt, après relecture du diff
 npm run import -- --import tmp/$ICAO-airfield.json tmp/$ICAO-activities.json --apply
 ```
+
+**Taxe d'atterrissage** — si `tmp/$ICAO-fee.json` existe, **proposer** de l'ajouter aux fiches
+tarifaires relues (source `official`), puis d'importer les rapports. Jamais par `npm run import` :
+la fiche ne porte pas `landingFee`, la fonction `applyReports` le calcule.
+
+```bash
+# Affiche l'entrée et ce qu'elle remplace, puis --apply écrit scripts/fees.json (fichier versionné)
+python3 .claude/skills/populate-airfield/scripts/add_fee.py $ICAO
+python3 .claude/skills/populate-airfield/scripts/add_fee.py $ICAO --apply
+
+# Dry run (diff des rapports), puis --apply : écrit le rapport official-$ICAO, la fonction met la fiche à jour
+npm run import:fees:prod -- official
+npm run import:fees:prod -- official --apply
+```
+
+`scripts/fees.json` est versionné : rappeler de le committer avec le reste.
 
 Prérequis : `serviceAccountKey.json` à la racine. Après un import réussi, rappeler de régénérer le
 snapshot bundlé avec `npm run export`.

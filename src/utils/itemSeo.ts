@@ -54,8 +54,10 @@ export const buildItemSeo = (
     : `${displayName} — activité à proximité d'un aérodrome | AeroTrips`
 
   const foodMention = nearbyFoodCount > 0 ? ', dont des restaurants,' : ''
+  // Exactly 0 only: unknown is never free (matches the « sans taxe » landing page)
+  const freeMention = isAirfield && item.landingFee?.amount === 0 ? 'atterrissage gratuit, ' : ''
   const description = isAirfield
-    ? `Que faire près de l'aérodrome ${deName(displayName)} (${item.codeIcao}) ? Activités et bonnes adresses${foodMention} à proximité, pistes, services et sorties partagées par la communauté des pilotes.`
+    ? `Que faire près de l'aérodrome ${deName(displayName)} (${item.codeIcao}) ? Activités et bonnes adresses${foodMention} à proximité, ${freeMention}pistes, services et sorties partagées par la communauté des pilotes.`
     : `${displayName} — activité à découvrir en avion à proximité d'un aérodrome, avec les terrains et sorties AeroTrips les plus proches.`
 
   const image = getImgNode(item.description)?.attrs.src ?? DEFAULT_IMAGE

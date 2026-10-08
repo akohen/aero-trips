@@ -20,6 +20,12 @@ from urllib.parse import urlsplit
 AIRFIELDS_JSON = 'src/data/airfields.json'
 ACTIVITIES_JSON = 'src/data/activities.json'
 CLUBS_JSON = 'scripts/clubs.json'
+# Fiches tarifaires relues à la main (source `official`), importées par `npm run import:fees -- official`
+FEES_JSON = 'scripts/fees.json'
+# Une entrée de FEES_JSON ; `amount` TTC, cas de référence de `reference` dans le fichier
+FEE_KEYS = {'amount', 'ht', 'vat', 'parking24h', 'parkingIncludedHours', 'note', 'url', 'pageUrl',
+            'validFrom', 'checkedAt'}
+FEE_REQUIRED = {'amount', 'url', 'validFrom', 'checkedAt'}
 
 # Rayons par catégorie, en km (cf. SKILL.md § Périmètre de recherche).
 CATEGORY_RADIUS_KM = {
@@ -84,6 +90,8 @@ AGENT_OUTPUTS = {
     'other': 'activities-other.json',
     'city': 'activities-city.json',
 }
+# Autres fichiers écrits par un agent, supprimés avec sa sortie principale quand il est relancé
+AGENT_EXTRA_OUTPUTS = {'airfield': ['fee.json']}
 
 # Champs de l'aérodrome que le skill ne doit jamais toucher.
 PROTECTED_FIELDS = {'codeIcao', 'name', 'status', 'position', 'runways'}
@@ -110,6 +118,39 @@ def load_airfield(icao):
         near = [a['codeIcao'] for a in entries if a.get('codeIcao', '').startswith(icao[:2])][:12]
         die(f'aérodrome {icao} absent de {AIRFIELDS_JSON}. Codes proches : {", ".join(near)}')
     return entry
+
+
+def load_fee_sheet(icao):
+    """L'entrée de scripts/fees.json pour ce terrain, ou None."""
+    if not os.path.exists(FEES_JSON):
+        return None
+    return json.load(open(FEES_JSON))['airfields'].get(icao)
+
+
+def fee_problems(fee):
+    """Problèmes de forme d'une entrée de taxe (tmp/<ICAO>-fee.json, sans `codeIcao`)."""
+    out = []
+    extra = set(fee) - FEE_KEYS
+    if extra:
+        out.append(f'clés inconnues {sorted(extra)}')
+    missing = FEE_REQUIRED - set(fee)
+    if missing:
+        out.append(f'clés obligatoires manquantes {sorted(missing)}')
+    for k in ('amount', 'ht', 'parking24h', 'parkingIncludedHours'):
+        if k in fee and not (isinstance(fee[k], (int, float)) and not isinstance(fee[k], bool) and fee[k] >= 0):
+            out.append(f'`{k}` doit être un nombre ≥ 0')
+    if 'vat' in fee and fee['vat'] not in (0, 0.2):
+        out.append('`vat` vaut 0.2 (TVA 20 %) ou 0')
+    if 'ht' in fee and isinstance(fee.get('amount'), (int, float)) and fee.get('vat') == 0.2 \
+            and abs(fee['ht'] * 1.2 - fee['amount']) > 0.02:
+        out.append(f"`amount` ({fee['amount']}) ≠ `ht` × 1,2 ({round(fee['ht'] * 1.2, 2)})")
+    for k in ('url', 'pageUrl'):
+        if k in fee and not str(fee[k]).startswith('https://'):
+            out.append(f'`{k}` doit être une URL https')
+    for k in ('validFrom', 'checkedAt'):
+        if k in fee and not re.fullmatch(r'\d{4}-\d\d-\d\d', str(fee[k])):
+            out.append(f'`{k}` au format AAAA-MM-JJ')
+    return out
 
 
 def load_activities():

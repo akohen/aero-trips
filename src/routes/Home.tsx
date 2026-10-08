@@ -31,7 +31,7 @@ const Home = ({ events, airfields }: Data) => {
       Ce site permet par exemple de:
     </Text>
     <ul>
-      <li>Consulter les informations des terrains accessibles aux vols VFR, accéder aux dernières cartes VAC, repérer les <Link to="/decouvrir/aerodromes-vfr-de-nuit">aérodromes agréés VFR de nuit</Link></li>
+      <li>Consulter les informations des terrains accessibles aux vols VFR, accéder aux dernières cartes VAC, repérer les <Link to="/decouvrir/aerodromes-vfr-de-nuit">aérodromes agréés VFR de nuit</Link> ou les <Link to="/decouvrir/aerodromes-sans-taxe-atterrissage">aérodromes sans taxe d'atterrissage</Link></li>
       <li>Trouver facilement les <Link to="/decouvrir/restaurants-aerodromes">aérodromes avec un restaurant</Link>, un hôtel ou une autre activité à proximité</li>
       <li>Partager les sorties que vous avez réalisées</li>
       <li>Préparer un itinéraire de voyage à proposer à vos passagers</li>
