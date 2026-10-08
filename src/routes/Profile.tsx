@@ -1,4 +1,4 @@
-import { Button, Center, Fieldset, Loader, Paper, Select, TextInput, Title, Text, Grid, Group, Popover, Switch } from "@mantine/core"
+import { Button, Center, Loader, Paper, Select, TextInput, Title, Text, Grid, Group, Popover, Switch } from "@mantine/core"
 import { IconBrandGoogleFilled, IconShare } from "@tabler/icons-react"
 import { Data } from ".."
 import { googleLogin } from "../data/firebase"
@@ -116,52 +116,60 @@ const Profile = ({profile, authLoading, airfields, activities, trips} : Data) =>
     </Grid>
   }
   
-  <Paper shadow="md" radius="md" p='sm' mt="md" withBorder>
-    <Fieldset legend='Profil public'>
-      <Switch
-        mb="md"
-        checked={!!profile.passportPublic}
-        onChange={e => profile.update({ passportPublic: e.currentTarget.checked })}
-        label="Rendre mon profil public"
-      />
-      <Group justify="left">
-        <Link to={`/profile/${profile.uid}`}>Voir mon profil public</Link>
-        <Popover width={200} position="bottom" withArrow shadow="md" opened={openedShare} onChange={toggleShare}>
-          <Popover.Target>
-            <Button onClick={share} leftSection={<IconShare size={18} />}>
-              Partager
-            </Button>
-          </Popover.Target>
-          <Popover.Dropdown>
-            <Text size="xs">L'URL de votre profil public a été copiée dans le presse-papier.</Text>
-          </Popover.Dropdown>
-        </Popover>
-      </Group>
-      <PassportBadge profile={profile} />
-      <PassportMap profile={profile} svg={mapSvg} />
-    </Fieldset>
-      <form onSubmit={form.onSubmit(saveProfile)}>
-        <Fieldset legend='Modifier vos informations' mt={"md"}>
-        <TextInput
-          label="Votre nom ou pseudo"
-          {...form.getInputProps('displayName')}
+  <Grid mt="md">
+    <Grid.Col span={{base: 12, sm: 6}}>
+      <Paper shadow="md" radius="md" p='sm' withBorder h="100%">
+        <form onSubmit={form.onSubmit(saveProfile)}>
+          <Title order={4}>Modifier vos informations</Title>
+          <TextInput
+            mt="xs"
+            label="Votre nom ou pseudo"
+            {...form.getInputProps('displayName')}
+          />
+          <Select
+            mt="md"
+            {...form.getInputProps('homebase')}
+            label={"Où êtes-vous basé ?"}
+            placeholder="Entrez le nom ou le code OACI"
+            data={data}
+            searchable
+            clearable
+          />
+          <Group mt="md">
+            <Button type="submit">Enregistrer</Button>
+            {saveStatus && <Text size="xs" role="status">{saveStatus}</Text>}
+          </Group>
+        </form>
+      </Paper>
+    </Grid.Col>
+    <Grid.Col span={{base: 12, sm: 6}}>
+      <Paper shadow="md" radius="md" p='sm' withBorder h="100%">
+        <Title order={4}>Profil public</Title>
+        <Switch
+          mt="xs"
+          mb="md"
+          checked={!!profile.passportPublic}
+          onChange={e => profile.update({ passportPublic: e.currentTarget.checked })}
+          label="Rendre mon profil public"
         />
-        <Select
-          mt="md"
-          {...form.getInputProps('homebase')}
-          label={"Où êtes-vous basé ?"}
-          placeholder="Entrez le nom ou le code OACI"
-          data={data}
-          searchable
-          clearable
-        />
-        <Group mt="md">
-          <Button type="submit">Enregistrer</Button>
-          {saveStatus && <Text size="xs" role="status">{saveStatus}</Text>}
+        <Group justify="left">
+          <Link to={`/profile/${profile.uid}`}>Voir mon profil public</Link>
+          <Popover width={200} position="bottom" withArrow shadow="md" opened={openedShare} onChange={toggleShare}>
+            <Popover.Target>
+              <Button onClick={share} leftSection={<IconShare size={18} />}>
+                Partager
+              </Button>
+            </Popover.Target>
+            <Popover.Dropdown>
+              <Text size="xs">L'URL de votre profil public a été copiée dans le presse-papier.</Text>
+            </Popover.Dropdown>
+          </Popover>
         </Group>
-        </Fieldset>
-      </form>
-  </Paper>
+        <PassportBadge profile={profile} />
+        <PassportMap profile={profile} svg={mapSvg} />
+      </Paper>
+    </Grid.Col>
+  </Grid>
 </> 
 : 
   <Paper shadow="md" radius="md" p='sm' mt="md" withBorder>
