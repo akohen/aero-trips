@@ -12,18 +12,23 @@ const ReportForm = lazy(() => import("./ReportForm"))
 
 /**
  * On an airfield page, pass `airfield` and its `reports` (optimistic list). Elsewhere the form asks for the airfield and
- * `onPublished` takes over once the report is saved.
+ * `onPublished` takes over once the report is saved, with the new report.
  */
 export const ReportFormHost = ({ airfield, airfields, profile, reports, control, onPublished }: {
   airfield?: Airfield, airfields: Map<string, Airfield>, profile?: Profile, reports?: ReportsState,
-  control: ReportFormControl, onPublished?: (airfield: Airfield) => void,
+  control: ReportFormControl, onPublished?: (airfield: Airfield, report?: Report) => void,
 }) => {
   if (!control.form) return null
   const { report, focusFee } = control.form
   const submit = async (target: Airfield, input: ReportInput, markVisited: boolean) => {
+    let published: Report | undefined
     if (report && reports) await reports.update(report, input)
     else if (reports) await reports.add(input)
-    else if (profile) await newReport(target.codeIcao, profile, input).save()
+    else if (profile) {
+      const { local, save } = newReport(target.codeIcao, profile, input)
+      await save()
+      published = local
+    }
     let thanks = 'Merci pour votre compte rendu !'
     if (markVisited && profile) {
       const visited = [...(profile.visited ?? []), { type: 'airfields' as const, id: target.codeIcao }]
@@ -33,7 +38,7 @@ export const ReportFormHost = ({ airfield, airfields, profile, reports, control,
     }
     if (!report) control.setThanks(thanks)
     control.close()
-    onPublished?.(target)
+    onPublished?.(target, published)
   }
   const loading = <Modal opened onClose={control.close} withCloseButton={false} zIndex={1500}><Group justify="center"><Loader /></Group></Modal>
   if (!profile) return loading

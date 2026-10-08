@@ -90,10 +90,15 @@ airfield page. `useReportForm` (signed out → Google popup, then the form), laz
 shown with « Toujours exact », weight class and note once a fee is entered, « Marquer comme visité » checked by default,
 per-airfield localStorage draft). Its modal and the date dropdown sit above the header/navbar (`zIndex` 1500 / 1501,
 like the other modals).
-The profile page lists the pilot's own reports under « Terrains visités » (`useUserReports`, `where('uid', '==', uid)`;
-`groupVisits`: latest visit first, then airfields with no report by ICAO code): date and fee only, each a link to
-`reportPath` (`/airfields/{ICAO}#report-{id}`); `ReportsSection` scrolls to and outlines that card once the reports load.
-Read-only for now; never on `/profile/{uid}`.
+The profile page's « Terrains visités » (`components/VisitsPanel.tsx`) lists the pilot's own reports per airfield
+(`useUserReports`, `where('uid', '==', uid)`; `groupVisits`: latest visit first, then airfields with no report by ICAO
+code): date and fee only, each a link to `reportPath` (`/airfields/{ICAO}#report-{id}`); `ReportsSection` scrolls to and
+outlines that card once the reports load. Edit/delete stay on the airfield page. Reports come first: « Ajouter une visite » (primary,
+the report form with the picker) and a link per airfield without a report; `onPublished` hands the new report to
+`useUserReports().add`. The bulk add (multi-select, one `profile.update`) is folded below the list and then invites a
+report. Airfields without a report can be removed (no confirmation). The title counts
+`countVisitedAirfields` like the passport: an airfield reported on but not marked visited is listed with « Marquer comme visité ».
+Shows 15 rows then « Voir les N autres terrains »; a filter field (name or ICAO, whole list) appears above 25. Never on `/profile/{uid}`.
 Rules: `firestore.rules` `reports` (owner-only edit/delete, field whitelist, limits mirrored from `reports.ts`); airfield
 updates may no longer touch `landingFee` / `reportStats`. Every write rule goes through `isMember()` (signed in, not
 anonymous), so enabling Anonymous Auth opens nothing by itself; phase 3 opens report creates to guests explicitly. Not yet: guests, prerender/MCP.

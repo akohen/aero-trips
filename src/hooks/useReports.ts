@@ -86,7 +86,7 @@ export const useReports = (icao: string | undefined, profile: Profile | undefine
 
 export type ReportsState = ReturnType<typeof useReports>
 
-/** A pilot's own visit reports, newest first; undefined while loading. */
+/** A pilot's own visit reports, newest first (undefined while loading); `add` shows one just published. */
 export const useUserReports = (uid: string | undefined) => {
   const [loaded, setLoaded] = useState<{ uid: string, reports: Report[] }>()
 
@@ -104,7 +104,10 @@ export const useUserReports = (uid: string | undefined) => {
     return () => { cancelled = true }
   }, [uid])
 
-  return loaded?.uid === uid ? loaded?.reports : undefined
+  const add = useCallback((report: Report) =>
+    setLoaded(current => current && { ...current, reports: sortReports([...current.reports, report]) }), [])
+
+  return { reports: loaded?.uid === uid ? loaded?.reports : undefined, add }
 }
 
 // Firestore rejects undefined values

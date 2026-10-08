@@ -10,7 +10,7 @@ import Profile from './Profile'
 
 vi.mock('../data/firebase', () => ({ storageBucket: 'test-bucket', googleLogin: vi.fn() }))
 const userReports = vi.hoisted(() => ({ list: undefined as Report[] | undefined }))
-vi.mock('../hooks/useReports', () => ({ useUserReports: () => userReports.list }))
+vi.mock('../hooks/useReports', () => ({ useUserReports: () => ({ reports: userReports.list, add: vi.fn() }) }))
 
 const airfield = (codeIcao: string, name: string): [string, Airfield] =>
   [codeIcao, { codeIcao, name, position: new GeoPoint(48, 2), runways: [], status: 'CAP' }]
@@ -37,7 +37,7 @@ const renderProfile = (p?: ProfileType, authLoading = false) => {
   return render(<MantineProvider env="test"><MemoryRouter><Profile {...data} /></MemoryRouter></MantineProvider>)
 }
 
-afterEach(() => { cleanup(); userReports.list = undefined })
+afterEach(() => { cleanup(); vi.unstubAllGlobals(); userReports.list = undefined })
 
 describe('Profile', () => {
   it('shows a loader, not the login button, while auth resolves', () => {
@@ -64,16 +64,65 @@ describe('Profile', () => {
     expect(screen.queryByText('Accueil sympa')).toBeNull()
   })
 
+  it('shows the first visits, the rest on demand, and filters the whole list', async () => {
+    const visited = Array.from({ length: 30 }, (_, i) => ({ type: 'airfields' as const, id: `LF${String(i).padStart(2, '0')}` }))
+    renderProfile(profile({ visited }))
+    const visits = () => screen.getAllByRole('listitem').filter(li => /^(LF|Terrain)/.test(li.textContent ?? ''))
+    expect(visits()).toHaveLength(15)
+    await userEvent.type(screen.getByPlaceholderText(/Filtrer/), 'lf2')
+    expect(visits()).toHaveLength(10)
+    await userEvent.clear(screen.getByPlaceholderText(/Filtrer/))
+    await userEvent.click(screen.getByRole('button', { name: 'Voir les 15 autres terrains' }))
+    expect(visits()).toHaveLength(30)
+  })
+
+  it('counts the passport airfields and offers to mark a reported one as visited', async () => {
+    userReports.list = [{
+      id: 'r1', target: { type: 'airfields', id: 'LFAT' }, source: { type: 'pilot' }, uid: 'u1',
+      observedAt: Timestamp.now(), updated_at: Timestamp.now(), text: 'Bien',
+    }]
+    const p = profile({ visited: [{ type: 'airfields', id: 'LFPZ' }] })
+    renderProfile(p)
+    expect(screen.getByText('Terrains visités (1)')).toBeInTheDocument()
+    expect(screen.getByText(/Pas dans votre passeport/)).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Marquer comme visité' }))
+    expect(p.update).toHaveBeenCalledWith({ visited: [{ type: 'airfields', id: 'LFPZ' }, { type: 'airfields', id: 'LFAT' }] })
+  })
+
   it('only renders non-empty sections', () => {
     renderProfile(profile({ visited: [{ type: 'airfields', id: 'LFAT' }] }))
     expect(screen.getByText('Terrains visités (1)')).toBeInTheDocument()
     expect(screen.queryByText(/Sorties partagées/)).toBeNull()
-    expect(screen.queryByText(/ni terrain visité/)).toBeNull()
   })
 
-  it('explains what to do when there is nothing to show', () => {
+  it('explains what visited airfields are for when there are none', () => {
     renderProfile(profile())
-    expect(screen.getByText(/ni terrain visité, ni favori, ni sortie partagée/)).toBeInTheDocument()
+    expect(screen.getByText('Terrains visités (0)')).toBeInTheDocument()
+    expect(screen.getByText(/rejoint votre passeport de pilote/)).toBeInTheDocument()
+  })
+
+  it('adds the picked airfields to the visited ones in one write', async () => {
+    const p = profile({ visited: [{ type: 'airfields', id: 'LFPZ' }] })
+    renderProfile(p)
+    await userEvent.click(screen.getByRole('button', { name: 'Ajouter plusieurs terrains sans compte rendu' }))
+    await userEvent.click(screen.getByPlaceholderText(/Terrains visités/))
+    expect(screen.queryByRole('option', { name: /LFPZ/ })).toBeNull()
+    await userEvent.click(await screen.findByRole('option', { name: /LFAT/ }))
+    await userEvent.click(screen.getByRole('button', { name: 'Ajouter' }))
+    expect(p.update).toHaveBeenCalledWith({ visited: [{ type: 'airfields', id: 'LFPZ' }, { type: 'airfields', id: 'LFAT' }] })
+    expect(await screen.findByText(/1 terrain ajouté à votre passeport. Ajoutez un compte rendu/)).toBeInTheDocument()
+  })
+
+  it('removes a visited airfield without reports', async () => {
+    userReports.list = [{
+      id: 'r1', target: { type: 'airfields', id: 'LFPZ' }, source: { type: 'pilot' }, uid: 'u1',
+      observedAt: Timestamp.now(), updated_at: Timestamp.now(), text: 'Bien',
+    }]
+    const p = profile({ visited: [{ type: 'airfields', id: 'LFPZ' }, { type: 'airfields', id: 'LFAT' }] })
+    renderProfile(p)
+    expect(screen.queryByRole('button', { name: 'Retirer LFPZ des terrains visités' })).toBeNull()
+    await userEvent.click(screen.getByRole('button', { name: 'Retirer LFAT des terrains visités' }))
+    expect(p.update).toHaveBeenCalledWith({ visited: [{ type: 'airfields', id: 'LFPZ' }] })
   })
 
   it('names a missing activity as such', () => {

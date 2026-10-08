@@ -14,21 +14,13 @@ import { ActivityTitle } from "../components/ActivityUtils"
 import PassportBadge from "../components/PassportBadge"
 import PassportMap from "../components/PassportMap"
 import { titleCase } from "../utils/utils"
-import { useUserReports } from "../hooks/useReports"
-import { formatVisitDate, groupVisits, reportFeeLabel, reportPath } from "../utils/reports"
-import { Report } from ".."
+import VisitsPanel from "../components/VisitsPanel"
 
 const byId = (a: {id: string}, b: {id: string}) => a.id.localeCompare(b.id)
-
-const VisitReport = ({report}: {report: Report}) => {
-  const fee = reportFeeLabel(report)
-  return <Text size="xs"><Link to={reportPath(report)}>Visite du {formatVisitDate(report.observedAt)}{fee && ` · ${fee}`}</Link></Text>
-}
 
 const Profile = ({profile, authLoading, airfields, activities, trips} : Data) => {
   const [openedShare, { toggle: toggleShare, open: openShare }] = useDisclosure(false)
   const [saveStatus, setSaveStatus] = useState<string>()
-  const reports = useUserReports(profile?.uid)
   const share = () => {
     navigator.clipboard.writeText(`${location.origin}/profile/${profile?.uid}`).then(openShare)
   }
@@ -75,17 +67,12 @@ const Profile = ({profile, authLoading, airfields, activities, trips} : Data) =>
     return <Text size="sm" className="ad-list"><Link to={`/activities/${id}`}><ActivityTitle activity={act} /></Link></Text>
   }
   
-  const visits = groupVisits(profile?.visited?.filter(v => v.type === 'airfields').map(v => v.id) ?? [], reports ?? [])
   const sharedTrips = [...trips].filter(([, trip]) => trip.uid === profile?.uid);
   const favoriteAirfields = profile?.favorites?.filter(f => f.type === 'airfields').sort(byId) ?? [];
   const favoriteActivities = profile?.favorites?.filter(f => f.type === 'activities') ?? [];
 
   // Only non-empty sections get a column, so the grid has no holes; `grow` widens the last one when their number is odd
   const sections: {title: string, items: ReactNode[]}[] = [
-    {title: `Terrains visités (${visits.length})`, items: visits.map(v => <div key={v.id}>
-      <AirfieldLink id={v.id}/>
-      {v.reports.map(r => <VisitReport key={r.id} report={r}/>)}
-    </div>)},
     {title: `Sorties partagées (${sharedTrips.length})`, items: sharedTrips.map(([key,trip]) => <Link key={key} to={`/trips/${key}`}><TripTitle trip={trip} details /></Link>)},
     {title: `Terrains favoris (${favoriteAirfields.length})`, items: favoriteAirfields.map(v => <AirfieldLink key={v.id} id={v.id}/>)},
     {title: `Activités favorites (${favoriteActivities.length})`, items: favoriteActivities.map(v => <ActivityLink key={v.id} id={v.id}/>)},
@@ -95,7 +82,8 @@ const Profile = ({profile, authLoading, airfields, activities, trips} : Data) =>
 
   return (profile ? <>
   <Title order={1}><BackButton />Votre profil utilisateur</Title>
-  { sections.length > 0 ?
+  <VisitsPanel profile={profile} airfields={airfields} />
+  { sections.length > 0 &&
     <Grid grow mt="md">
       { sections.map(s => (
         <Grid.Col key={s.title} span={{base: 12, sm: 6}}>
@@ -103,14 +91,6 @@ const Profile = ({profile, authLoading, airfields, activities, trips} : Data) =>
         </Grid.Col>
       ))}
     </Grid>
-  :
-    <Paper shadow="md" radius="md" p='sm' mt="md" withBorder>
-      <Text size="sm">
-        Vous n'avez encore ni terrain visité, ni favori, ni sortie partagée.
-        Marquez les <Link to="/airfields">terrains</Link> que vous avez visités ou que vous aimez depuis leur fiche,
-        ou <Link to="/trips">partagez une sortie</Link>.
-      </Text>
-    </Paper>
   }
   
   <Paper shadow="md" radius="md" p='sm' mt="md" withBorder>
