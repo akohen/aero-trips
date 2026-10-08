@@ -212,7 +212,7 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
 
 - **`firestore.rules`** is the source of truth (wired in `firebase.json`), imported from the production console
   on 2026-09-25. **Deployed by the release CI** (tag workflow, together with `functions:mcp`, `functions:reports`,
-  `functions:passports` and hosting); manual deploy: `npx firebase deploy --only firestore:rules`. Staging's console rules could not be
+  `functions:passports`, `functions:notifications` and hosting); manual deploy: `npx firebase deploy --only firestore:rules`. Staging's console rules could not be
   read at import time — deploying there overwrites whatever is in its console. Test changes with `npm run test:rules`.
 
 ## Images
@@ -233,6 +233,8 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   `publicUrl()` + per-object ACL, which an overwrite would drop) or legacy `_WxH` objects.
 - **`npm run verify:resize`** drives the resizer against the real staging bucket (token survival,
   generation preconditions, loop guard). Needs staging credentials; cleans up after itself.
+- **Deployed by hand, not by the release CI** (on purpose: standalone, rarely changed, and a bug rewrites users'
+  originals): run `verify:resize`, then `npx firebase deploy --only functions:images --project aero-trips`.
 - **`npm run heal`** (`scripts/heal-image-urls.ts`) repairs data left behind by the old extension:
   copies each orphaned `<path>_WxH` back to `<path>` and rewrites the few Firestore refs that name a
   variant directly. Dry run by default; `--apply` to write, `--production` to target prod,
@@ -245,7 +247,9 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   Creates only — `npm run manage` applying/deleting a change sends nothing. `retry: false` to avoid duplicate mail.
   `notifyNewReport` (`onDocumentCreated('reports/{id}')`) does the same for **pilot** visit reports only, readable text
   first (author, date, text, fee, a ⚠️ line when the fee disagrees with the airfield's), then the JSON.
-- **Not deployed by the release CI**: `npx firebase deploy --only functions:notifications` by hand.
+- **Deployed by the release CI** (it bundles `src/utils/reports.ts`, so it must ship with the app). The CI account
+  (`github-action-…`, Secret Manager Viewer) can't grant secret access: the runtime account already has
+  `secretAccessor` on `MAILGUN_API_KEY`; a new secret needs that grant by hand (`gcloud secrets add-iam-policy-binding`).
 - Config: secret `MAILGUN_API_KEY` (`firebase functions:secrets:set`). Sends through the EU endpoint from the
   `mg.aerotrips.fr` domain, hardcoded in `src/index.ts`.
 

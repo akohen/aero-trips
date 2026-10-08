@@ -20,13 +20,18 @@ jobs:
       # action-hosting-deploy can only deploy Hosting, so the CLI does it all:
       # `firebase deploy` always deploys functions before hosting, which is
       # what the /mcp rewrite needs. Firestore rules (firestore.rules) and the
-      # passports and reports functions ship with every release too. --force
+      # passports, reports and notifications functions ship with every release
+      # too (they bundle src/ code). notifications uses the MAILGUN_API_KEY
+      # secret: this account (Secret Manager Viewer) can only check that the
+      # runtime account already reads it; a new secret or runtime account
+      # needs its secretAccessor grant done by hand first.
+      # images stays manual (see CLAUDE.md). --force
       # acknowledges their retry policy, which the CLI otherwise asks to
       # confirm (fatal in --non-interactive).
       - id: auth
         uses: google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_AERO_TRIPS }}'
-      - run: npx --yes firebase-tools@latest deploy --only firestore:rules,functions:mcp,functions:passports,functions:reports,hosting --project aero-trips --non-interactive --force
+      - run: npx --yes firebase-tools@latest deploy --only firestore:rules,functions:mcp,functions:passports,functions:reports,functions:notifications,hosting --project aero-trips --non-interactive --force
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
