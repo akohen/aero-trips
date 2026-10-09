@@ -14,6 +14,8 @@ export default defineConfig({
       // workbox below): without them, a new version waits until every tab closes.
       injectRegister: 'inline',
       devOptions: { enabled: false },
+      // public/ files the UI needs offline: they are not hashed /assets/ chunks.
+      includeAssets: ['map-pin*.svg', 'icon.svg', 'icon.png', 'hero-image.webp'],
       manifest: {
         id: '/',
         name: 'AeroTrips',
