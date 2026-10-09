@@ -5,7 +5,8 @@
       "namespace": "android_app",
       "package_name": "fr.aerotrips.app",
       "sha256_cert_fingerprints": [
-        "7D:E1:7B:60:57:7E:F7:ED:59:AE:97:3C:0A:7B:8F:91:2E:B7:E7:5B:B3:2A:78:1B:17:B1:3A:EF:6B:4F:88:D9"
+        "7D:E1:7B:60:57:7E:F7:ED:59:AE:97:3C:0A:7B:8F:91:2E:B7:E7:5B:B3:2A:78:1B:17:B1:3A:EF:6B:4F:88:D9",
+        "EC:D2:FB:82:AA:94:6D:B1:75:6B:11:A5:41:D1:C3:1A:84:89:61:6F:F3:6D:6C:3D:5A:2A:F1:43:4C:EA:E8:73"
       ]
     }
   }
