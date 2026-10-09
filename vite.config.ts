@@ -9,6 +9,8 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Inline, so PWABuilder's scanner finds the registration in the HTML.
+      injectRegister: 'inline',
       devOptions: { enabled: false },
       manifest: {
         id: '/',
@@ -17,6 +19,7 @@ export default defineConfig({
         description: 'Idées de sorties aériennes en France : terrains, activités, événements et itinéraires.',
         lang: 'fr',
         categories: ['travel'],
+        orientation: 'any',
         theme_color: '#ffffff',
         background_color: '#ffffff',
         icons: [
