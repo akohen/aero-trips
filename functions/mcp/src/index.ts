@@ -13,7 +13,7 @@ import type { Response } from 'express'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
 import { registerTools, SERVER_INSTRUCTIONS } from './tools.ts'
-import { ga4Secrets, sendEvent } from './analytics.ts'
+import { sendEvent } from './analytics.ts'
 import { info as logInfo } from 'firebase-functions/logger'
 
 const ALLOW_HEADERS = 'content-type, accept, authorization, mcp-session-id, mcp-protocol-version, last-event-id'
@@ -72,7 +72,6 @@ export const mcp = onRequest(
     maxInstances: 1,
     timeoutSeconds: 30,
     invoker: 'public',
-    secrets: ga4Secrets,
   },
   async (req: Request, res: Response) => {
     setCors(res)

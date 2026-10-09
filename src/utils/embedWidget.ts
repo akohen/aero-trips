@@ -4,8 +4,8 @@
  * `buildEmbedHtml` returns a self-contained HTML page, written by the
  * prerender script to dist/embed/{ICAO}/index.html and meant to be loaded in
  * an <iframe> on club / airfield / tourism sites. It is deliberately NOT the
- * SPA: no React, no gtag (it would set cookies on a third-party site without
- * its consent banner), inline CSS, and a few lines of JS for the query-string
+ * SPA: no React, no analytics (it would measure a third-party site's visitors
+ * without telling them), inline CSS, and a few lines of JS for the query-string
  * options (`?theme=dark`, `?accent=0f766e`). Clicks are attributed through
  * utm parameters on the outgoing links instead.
  *

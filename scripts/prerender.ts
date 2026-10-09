@@ -62,7 +62,7 @@ const descriptionToHtml = (content: unknown, label?: string) => {
   if (!content) return ''
   try {
     const doc = fillImageAlt(content as Parameters<typeof fillImageAlt>[0], label)
-    return scrub(generateHTML(doc as Parameters<typeof generateHTML>[0], [StarterKit, Image, Youtube]))
+    return scrub(generateHTML(doc as Parameters<typeof generateHTML>[0], [StarterKit, Image, Youtube.configure({ nocookie: true })]))
   } catch {
     return ''
   }
@@ -70,7 +70,7 @@ const descriptionToHtml = (content: unknown, label?: string) => {
 
 // --- Per-page <head> ------------------------------------------------------
 // Replace the region from <title> through the default twitter meta with the
-// per-page tags; everything else in the shell (gtag, canonical script, hashed
+// per-page tags; everything else in the shell (analytics script, canonical script, hashed
 // asset <script>/<link>) is preserved verbatim.
 const titleStart = template.indexOf('<title>')
 const twitterIdx = template.indexOf('name="twitter:description"')

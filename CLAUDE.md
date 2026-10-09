@@ -163,7 +163,7 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
 - Built by **`src/utils/embedWidget.ts`** (`buildEmbedHtml`, `buildEmbedSnippet`), written by
   `scripts/prerender.ts` to `dist/embed/{ICAO}/index.html`. Same `findNearest` radius as the airfield page.
 - Options via query string: `?theme=dark`, `?accent=<hex6>` (validated in the page).
-- **No gtag** in the widget (it would set cookies on a third-party site); links carry `utm_source=widget`.
+- **No analytics** in the widget (it would measure a third-party site's visitors); links carry `utm_source=widget`.
   `<base target="_blank">` so links never navigate inside the iframe.
 - Hosting sends `X-Robots-Tag: noindex` + `frame-ancestors *` on `/embed/**`; the PWA `navigateFallbackDenylist`
   must keep `/^\/embed\//`, or a visitor's service worker would serve the SPA inside the iframe.
@@ -271,6 +271,16 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
 - **`public/.well-known/assetlinks.json`** proves the site owns the app (otherwise Android shows a URL bar). It lists
   the upload key's SHA-256; Play App Signing re-signs with Google's key, whose fingerprint (Play Console → App
   integrity) must be added next to it. The signing keystore never goes in the repo.
+
+## Analytics
+
+- **Umami Cloud** (free Hobby plan: 100k events/month, 6-month retention, EU region), cookieless and configured for
+  the CNIL consent exemption, so **no consent banner**: anonymous stats for our own use only, never combined with other
+  data. Don't add anything that breaks that (cookies, user IDs, cross-site tracking, other trackers) without adding consent.
+- Script in `index.html` (so also on prerendered pages; never in `/embed`), `data-domains="aerotrips.fr"`, hash excluded.
+- MCP events (`mcp_session`, `mcp_tool_call`, `mcp_tool_error`) are posted server-side by `functions/mcp/src/analytics.ts`
+  (`UMAMI_WEBSITE_ID` in `functions/mcp/.env`); they count against the same quota.
+- Opt-out: the switch on `/confidentialite` sets `localStorage['umami.disabled']`. YouTube embeds use `nocookie`.
 
 ## Conventions
 

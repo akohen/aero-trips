@@ -10,7 +10,7 @@ import Image from "@tiptap/extension-image";
 const extensions = [
   StarterKit,
   Image.configure({ allowBase64: false }),
-  Youtube.configure({ controls: true }),
+  Youtube.configure({ controls: true, nocookie: true }),
 ];
 
 

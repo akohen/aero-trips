@@ -37,7 +37,7 @@ const Description = ({content, label}: {content: JSONContent, label?: string}) =
     className="tiptap-content"
     miw={320}
     onClick={handleClick}
-    dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(generateHTML(fillImageAlt(content, label), [StarterKit, Image, Youtube]), { ADD_TAGS: ['iframe'], ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'] })}}
+    dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(generateHTML(fillImageAlt(content, label), [StarterKit, Image, Youtube.configure({ nocookie: true })]), { ADD_TAGS: ['iframe'], ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'] })}}
   />
 )}
 

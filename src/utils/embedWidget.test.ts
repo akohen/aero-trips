@@ -73,7 +73,7 @@ describe('buildEmbedHtml', () => {
   it('is standalone: noindex, links open outside the iframe, no analytics', () => {
     expect(html).toContain('<meta name="robots" content="noindex">')
     expect(html).toContain('<base target="_blank">')
-    expect(html).not.toMatch(/gtag|googletagmanager/)
+    expect(html).not.toMatch(/gtag|googletagmanager|umami/)
   })
 
   it('escapes names from the data', () => {
