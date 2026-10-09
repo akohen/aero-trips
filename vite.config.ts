@@ -40,9 +40,9 @@ export default defineConfig({
           { src: '/screenshots/desktop-map.webp', sizes: '1920x1080', type: 'image/webp', form_factor: 'wide', label: 'La carte des terrains et activités' },
         ],
         shortcuts: [
-          { name: 'Carte', url: '/map' },
-          { name: 'Terrains', url: '/airfields' },
-          { name: 'Ajouter', url: '/edit' },
+          { name: 'Carte', url: '/map', icons: [{ src: '/icons/shortcut-map.png', sizes: '192x192', type: 'image/png' }] },
+          { name: 'Terrains', url: '/airfields', icons: [{ src: '/icons/shortcut-airfields.png', sizes: '192x192', type: 'image/png' }] },
+          { name: 'Ajouter', url: '/edit', icons: [{ src: '/icons/shortcut-add.png', sizes: '192x192', type: 'image/png' }] },
         ],
       },
       workbox: {

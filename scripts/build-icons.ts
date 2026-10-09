@@ -29,3 +29,17 @@ await render(512).toFile('public/icons/icon-512.png')
 await (await fullBleed(512, 0.8)).toFile('public/icons/icon-maskable-512.png')
 // iOS fills transparency with black and only rounds the corners.
 await (await fullBleed(180, 0.88)).toFile('public/icons/apple-touch-icon.png')
+
+// App shortcuts (long press on the icon): Android drops a shortcut without an icon. Same glyphs as the menu, white on
+// the dial's colour, small enough to survive a circular crop.
+const shortcut = async (glyph: string, file: string) => {
+  const svg = readFileSync(`node_modules/@tabler/icons/icons/outline/${glyph}.svg`, 'utf8').replaceAll('currentColor', '#ffffff')
+  const icon = await sharp(Buffer.from(svg), { density: 72 * 96 / 24 }).resize(96, 96).png().toBuffer()
+  await sharp({ create: { width: 192, height: 192, channels: 4, background: BACKGROUND } })
+    .composite([{ input: icon, gravity: 'center' }])
+    .png()
+    .toFile(`public/icons/shortcut-${file}.png`)
+}
+await shortcut('map', 'map')
+await shortcut('plane-arrival', 'airfields')
+await shortcut('circle-plus', 'add')
