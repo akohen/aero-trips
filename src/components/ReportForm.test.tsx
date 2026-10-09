@@ -42,7 +42,7 @@ describe('ReportForm', () => {
   it('needs a text or a fee before publishing', async () => {
     renderForm()
     expect(publish()).toBeDisabled()
-    expect(screen.getByText('Publié sous le nom Camille M.')).toBeInTheDocument()
+    expect(screen.getByText('Publié sous le nom Camille Martin')).toBeInTheDocument()
   })
 
   it('publishes a text report dated today and marks the airfield visited', async () => {

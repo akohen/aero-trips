@@ -271,9 +271,9 @@ describe('pilot reports', () => {
   })
 
   it('publishes first names and initials', () => {
-    expect(authorName('Jean-Pierre Dupont')).toBe('Jean-Pierre D.')
-    expect(authorName('  marie  de la tour ')).toBe('marie D. L. T.')
-    expect(authorName('Alex')).toBe('Alex')
+    expect(authorName('Jean-Pierre Dupont')).toBe('Jean-Pierre Dupont')
+    expect(authorName('  marie  de la tour ')).toBe('marie de la tour')
+    expect(authorName('x'.repeat(80))).toHaveLength(60)
     expect(authorName('')).toBe('Pilote')
     expect(authorName(null)).toBe('Pilote')
   })

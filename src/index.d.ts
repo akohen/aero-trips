@@ -89,7 +89,7 @@ type Report = {
   },
   /** Pilot reports: the author */
   uid?: string,
-  /** Pilot reports: display name at write time ("Jean D.") */
+  /** Pilot reports: display name at write time */
   author?: string,
   /** Pilot reports: plain text, ≤ REPORT_TEXT_MAX */
   text?: string,

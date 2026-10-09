@@ -70,7 +70,7 @@ section open (see *Visit reports*).
 < 15 € / 15 € and more (paid fees cluster at 7–14 €), one glyph per level (photo cards draw icons white), the price in the tooltip (`LandingFeeIcon`).
 
 **Visit reports** (#39, phases 1–2): pilots (signed-in members only; guests are phase 3) post short dated
-`reports` with `source: {type: 'pilot'}`, `uid`, `author` (`authorName`: « Jean D. », copied at write time), `text`
+`reports` with `source: {type: 'pilot'}`, `uid`, `author` (`authorName`: the profile's display name, copied at write time), `text`
 (plain, ≤ 2000) and/or the `landingFee` they paid (`{amount, note?}`, TTC, standard visitor price) with
 `aircraftClass` (`light` = MTOW ≤ 1.2 t, the reference case; `heavy` fees stay on the report card and never set the
 airfield's fee nor raise a conflict). `observedAt` = the visit day as **midnight UTC** (`visitDayToUtc`, shown with

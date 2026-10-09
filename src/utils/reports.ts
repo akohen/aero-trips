@@ -250,6 +250,8 @@ export const REPORT_TEXT_MAX = 2000
 export const REPORT_NOTE_MAX = 300
 /** Sanity cap on a reported fee, also in firestore.rules */
 export const REPORT_FEE_MAX = 1000
+/** Also in firestore.rules */
+export const REPORT_AUTHOR_MAX = 60
 
 /**
  * Posted on the site by a member: listed, counted in `reportStats` and emailed. Imported pilot data (`community`, no
@@ -261,12 +263,10 @@ export const isPilotReport = <R extends Pick<FeeReport, 'source'> & { uid?: unkn
 /** Newest visit first, then the latest written, then id. */
 export const sortReports = <R extends FeeReport>(reports: R[]) => [...reports].sort(newestFirst)
 
-/** "Jean-Pierre Dupont" → "Jean-Pierre D.": first name and initials, published with each report. */
-export const authorName = (displayName?: string | null) => {
-  const [first, ...rest] = (displayName ?? '').trim().split(/\s+/).filter(Boolean)
-  if (!first) return 'Pilote'
-  return [first, ...rest.map(word => `${word[0].toUpperCase()}.`)].join(' ')
-}
+/** The display name published with each report (editable on the profile), whitespace collapsed. */
+export const authorName = (displayName?: string | null) =>
+  (displayName ?? '').trim().replace(/\s+/g, ' ').slice(0, REPORT_AUTHOR_MAX).trim() || 'Pilote'
+
 
 /** "12,50", "12.5", "12 €" → 12.5; anything else (empty, negative, over the cap) → undefined. */
 export const parseFeeAmount = (input: string) => {
