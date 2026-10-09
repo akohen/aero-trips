@@ -78,7 +78,11 @@ const Home = ({ events, airfields }: Data) => {
   <Text mt={"md"}>
     ⚠ Ce site n'est pas une source d'information aéronautique, et ne peut pas se substituer à la documentation réglementaire lors de la préparation d'un vol.
   </Text>
-  <Text size="xs" ta={"right"}>Aéro trips version {APP_VERSION}</Text>
+  <Text size="xs" ta={"right"}>
+    <Link to="/mentions-legales">Mentions légales</Link>{' · '}
+    <Link to="/confidentialite">Confidentialité</Link>{' · '}
+    Aéro trips version {APP_VERSION}
+  </Text>
 </>)}
 
 export default Home

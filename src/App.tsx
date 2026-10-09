@@ -19,6 +19,8 @@ const TripDetails = lazy(() => import("./routes/TripDetails"));
 import { ADfilter } from '.';
 import Profile from "./routes/Profile";
 import Contact from "./routes/Contact";
+import LegalNotice from "./routes/LegalNotice";
+import Privacy from "./routes/Privacy";
 import ScrollToTop from "./components/ScrollToTop";
 import UserDetails from "./routes/UserDetails";
 import { DatesProvider } from "@mantine/dates";
@@ -105,6 +107,8 @@ export default function App(data : Data) {
         <Route path="/events/:eventId"        element={<EventDetails {...data} />} />
         <Route path="/decouvrir/:slug"        element={<LandingPage {...data} />} />
         <Route path="/contact"                element={<Contact {...data} />} />
+        <Route path="/mentions-legales"       element={<LegalNotice />} />
+        <Route path="/confidentialite"        element={<Privacy />} />
         <Route path="/changes"                element={<LastChanges {...data} />} />
         <Route path="*"                       element={<NotFound />} />
       </Route>
