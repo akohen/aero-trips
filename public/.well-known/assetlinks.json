@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "fr.aerotrips.app",
+      "sha256_cert_fingerprints": [
+        "7D:E1:7B:60:57:7E:F7:ED:59:AE:97:3C:0A:7B:8F:91:2E:B7:E7:5B:B3:2A:78:1B:17:B1:3A:EF:6B:4F:88:D9"
+      ]
+    }
+  }
+]

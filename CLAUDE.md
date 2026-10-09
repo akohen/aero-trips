@@ -264,6 +264,14 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
 - `public/llms.txt` describes the site and the MCP server for AI crawlers (llmstxt.org format).
 - Not yet published to `registry.modelcontextprotocol.io` (steps in `functions/mcp/CLAUDE.md`).
 
+## Android app (#27)
+
+- Google Play app `fr.aerotrips.app`: a Trusted Web Activity packaged with PWABuilder from the live manifest, so
+  each web deploy updates it; repackage only when the name, icons or PWABuilder settings change.
+- **`public/.well-known/assetlinks.json`** proves the site owns the app (otherwise Android shows a URL bar). It lists
+  the upload key's SHA-256; Play App Signing re-signs with Google's key, whose fingerprint (Play Console → App
+  integrity) must be added next to it. The signing keystore never goes in the repo.
+
 ## Conventions
 
 - User-facing content and UI are in **French**; code, comments, identifiers and **commit messages** in
