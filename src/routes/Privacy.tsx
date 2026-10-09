@@ -146,7 +146,8 @@ const Privacy = () => (<>
       <List.Item>Statistiques d'audience : 6 mois.</List.Item>
     </List>
 
-    <Title order={3} mt="lg">Vos droits</Title>
+    {/* Linked from the Play Store listing as the account deletion page */}
+    <Title order={3} mt="lg" id="suppression-du-compte" style={{ scrollMarginTop: 80 }}>Vos droits</Title>
     <Text mt="xs">
       Vous pouvez accéder à vos données, les rectifier, les effacer, en demander une copie, vous opposer à leur
       traitement ou en demander la limitation. Pour supprimer votre compte ou exercer ces droits, utilisez le{" "}
