@@ -13,7 +13,6 @@ import type { Response } from 'express'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
 import { registerTools, SERVER_INSTRUCTIONS } from './tools.ts'
-import { sendEvent } from './analytics.ts'
 import { info as logInfo } from 'firebase-functions/logger'
 
 const ALLOW_HEADERS = 'content-type, accept, authorization, mcp-session-id, mcp-protocol-version, last-event-id'
@@ -39,7 +38,7 @@ type InitializeParams = {
 
 const asString = (value: unknown) => (typeof value === 'string' ? value : undefined)
 
-async function observeInitialize(body: unknown): Promise<void> {
+function observeInitialize(body: unknown): void {
   if (!body || typeof body !== 'object' || Array.isArray(body)) return
   const message = body as { method?: unknown; params?: InitializeParams }
   if (message.method !== 'initialize') return
@@ -48,11 +47,9 @@ async function observeInitialize(body: unknown): Promise<void> {
   const client_version = asString(message.params?.clientInfo?.version) ?? 'unknown'
   const protocol_version = asString(message.params?.protocolVersion) ?? 'unknown'
 
+  // Logged only, not sent to Umami: clients connect at every session start,
+  // used or not, so a per-session event would drown the tool calls.
   logInfo('mcp_initialize', { client_name, client_version, protocol_version })
-  await sendEvent({
-    name: 'mcp_session',
-    params: { client_name, client_version, protocol_version },
-  })
 }
 
 export const mcp = onRequest(
@@ -93,7 +90,7 @@ export const mcp = onRequest(
     // signal available: one entry per client that connects, rather than per
     // call. Only what the client volunteers about itself is recorded — no IP,
     // no user-agent, nothing tied to a person.
-    await observeInitialize(req.body)
+    observeInitialize(req.body)
 
     // A fresh server and transport per request. With concurrency > 1 a warm
     // instance handles overlapping requests, so a shared transport would leak

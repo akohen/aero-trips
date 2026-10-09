@@ -279,8 +279,9 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   data. Don't add anything that breaks that (cookies, user IDs, cross-site tracking, other trackers) without adding consent.
 - Script in `index.html` (so also on prerendered pages; never in `/embed`), `data-domains="aerotrips.fr"`, hash and
   query string excluded (list views group by page, not by filter; UTM parameters are lost too).
-- MCP events (`mcp_session`, `mcp_tool_call`, `mcp_tool_error`) are posted server-side by `functions/mcp/src/analytics.ts`
-  (`UMAMI_WEBSITE_ID` in `functions/mcp/.env`); they count against the same quota.
+- MCP events (`mcp_tool_call`, `mcp_tool_error`) are posted server-side by `functions/mcp/src/analytics.ts`
+  (`UMAMI_WEBSITE_ID` in `functions/mcp/.env`); they count against the same quota. Session starts (`initialize`) are
+  only logged (`mcp_initialize` in Cloud Logging): clients connect at every session start, used or not.
 - Opt-out: the switch on `/confidentialite` sets `localStorage['umami.disabled']`. YouTube embeds use `nocookie`.
 
 ## Conventions
