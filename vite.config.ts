@@ -9,7 +9,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      // Inline, so PWABuilder's scanner finds the registration in the HTML.
+      // Inline, so PWABuilder's scanner finds the registration in the HTML. The
+      // plugin then no longer sets skipWaiting/clientsClaim for autoUpdate (see
+      // workbox below): without them, a new version waits until every tab closes.
       injectRegister: 'inline',
       devOptions: { enabled: false },
       manifest: {
@@ -42,6 +44,8 @@ export default defineConfig({
         ],
       },
       workbox: {
+        skipWaiting: true,
+        clientsClaim: true,
         // Precache only the app shell (what index.html loads); lazy chunks are
         // cached on first use by the /assets/ rule below.
         manifestTransforms: [async (entries) => {
@@ -61,11 +65,19 @@ export default defineConfig({
           /__/,
         ],
         runtimeCaching: [
-          // Hashed file names never change content.
+          // Hashed file names never change content. Hosting answers a chunk
+          // removed by a deploy with index.html (200): never cache that.
           {
             urlPattern: ({ url, sameOrigin }) => sameOrigin && url.pathname.startsWith('/assets/'),
             handler: 'CacheFirst',
-            options: { cacheName: 'assets', expiration: { maxEntries: 60 } },
+            options: {
+              cacheName: 'assets',
+              expiration: { maxEntries: 60 },
+              plugins: [{
+                cacheWillUpdate: async ({ response }) =>
+                  response.ok && !response.headers.get('content-type')?.includes('text/html') ? response : null,
+              }],
+            },
           },
           // Map tiles already viewed, for weak signal on the field. Within the
           // OSM tile policy: no prefetching, kept no longer than its headers
