@@ -41,15 +41,14 @@ export const formatDistance = (m: number) =>
 export const filterAirfields = (airfields: Map<string,Airfield>, activities: Map<string,Activity>, filters: ADfilter, profile?: Profile, events?: Map<string,Event>) => {
   const query = filters.search.toLowerCase().trim().normalize("NFD").replace(/\p{Diacritic}/gu, "");
   const status = ['CAP', 'PRV', 'RST'].filter( e => filters.ad.includes(e))
+  const fuels = ['100LL', 'SP9X', 'UL91'].filter( e => filters.ad.includes(e))
   const feeLimits = filters.ad.filter(e => e in LANDING_FEE_FILTERS).map(e => LANDING_FEE_FILTERS[e])
   const feeMax = feeLimits.length > 0 ? Math.min(...feeLimits) : undefined
 
   return new Map([...airfields]
     .filter(([key, item]) => {
       if( status.length > 0 && !status.includes(item.status)) return false
-      if( filters.ad.includes('100LL') && !item.fuels?.includes('100LL')) return false
-      if( filters.ad.includes('SP9X') && !item.fuels?.some(f => f.startsWith('SP9'))) return false
-      if( filters.ad.includes('UL91') && !item.fuels?.includes('UL91')) return false
+      if( fuels.length > 0 && !fuels.some(fuel => item.fuels?.some(f => fuel == 'SP9X' ? f.startsWith('SP9') : f == fuel))) return false
       if( filters.runway && Math.max(...item.runways.map(r => r.length)) < filters.runway) return false
       if( filters.ad.includes('toilet') && (item.toilet == 'no' || !item.toilet)) return false
       if( filters.ad.includes('nvfr') && !item.nightVFR) return false

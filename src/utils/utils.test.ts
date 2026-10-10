@@ -40,3 +40,17 @@ describe('landing fee filters', () => {
     expect(codes(['fee-15', 'fee-free'])).toEqual(['LFAA'])
   })
 })
+
+describe('fuel filters', () => {
+  const withFuels = (codeIcao: string, fuels?: string[]) => {
+    const [key, a] = airfield(codeIcao)
+    return [key, { ...a, fuels } as Airfield] as const
+  }
+  const airfields = new Map([withFuels('LFAA', ['100LL']), withFuels('LFBB', ['SP98']), withFuels('LFCC', ['UL91', '100LL']), withFuels('LFDD')])
+  const codes = (ad: string[]) => [...filterAirfields(airfields, new Map(), { ...EMPTY_AIRFIELD_FILTERS, ad }).keys()]
+
+  it('keeps airfields with any of the selected fuels', () => {
+    expect(codes(['100LL'])).toEqual(['LFAA', 'LFCC'])
+    expect(codes(['SP9X', 'UL91'])).toEqual(['LFBB', 'LFCC'])
+  })
+})
