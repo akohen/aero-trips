@@ -204,6 +204,7 @@ https://aerotrips.fr/airfields/LFJA
 https://aerotrips.fr/airfields/LFJB
 https://aerotrips.fr/airfields/LFJC
 https://aerotrips.fr/airfields/LFJD
+https://aerotrips.fr/airfields/LFJE
 https://aerotrips.fr/airfields/LFJF
 https://aerotrips.fr/airfields/LFJH
 https://aerotrips.fr/airfields/LFJI
@@ -413,6 +414,7 @@ https://aerotrips.fr/airfields/LFSU
 https://aerotrips.fr/airfields/LFSV
 https://aerotrips.fr/airfields/LFSW
 https://aerotrips.fr/airfields/LFSX
+https://aerotrips.fr/airfields/LFTA
 https://aerotrips.fr/airfields/LFTB
 https://aerotrips.fr/airfields/LFTF
 https://aerotrips.fr/airfields/LFTH

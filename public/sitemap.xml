@@ -5,31 +5,31 @@
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
     <loc>https://aerotrips.fr/decouvrir/restaurants-aerodromes</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/decouvrir/aerodromes-vfr-de-nuit</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/decouvrir/location-velo-aerodromes</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/decouvrir/aerodromes-sans-taxe-atterrissage</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -89,7 +89,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFAL</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -173,7 +173,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFBC</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -209,7 +209,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFBI</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -233,13 +233,13 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFBM</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFBN</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -263,7 +263,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFBS</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -287,7 +287,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFBY</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -317,7 +317,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFCD</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -365,7 +365,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFCL</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -395,7 +395,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFCQ</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -443,7 +443,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFCY</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -473,13 +473,13 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFDE</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFDF</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -491,7 +491,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFDH</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -527,7 +527,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFDN</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -551,7 +551,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFDS</loc>
-    <lastmod>2025-07-12</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -587,7 +587,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFDY</loc>
-    <lastmod>2026-09-17</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -623,7 +623,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFEG</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -641,7 +641,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFEJ</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -659,7 +659,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFEM</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -671,7 +671,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFEP</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -689,7 +689,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFES</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -707,7 +707,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFEV</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -899,7 +899,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFGG</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -923,7 +923,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFGK</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -947,7 +947,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFGO</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -971,7 +971,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFGS</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1019,7 +1019,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFHB</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1121,7 +1121,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFHT</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1163,7 +1163,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFID</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1175,7 +1175,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFIG</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1265,7 +1265,13 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFJD</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://aerotrips.fr/airfields/LFJE</loc>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1319,13 +1325,13 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFJV</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFJY</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1361,7 +1367,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFKF</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1379,13 +1385,13 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFKJ</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFKK</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1415,13 +1421,13 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFKR</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFKS</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1451,7 +1457,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFLB</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1523,7 +1529,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFLO</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1541,13 +1547,13 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFLR</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFLS</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1565,7 +1571,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFLV</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1595,7 +1601,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFMA</loc>
-    <lastmod>2026-09-28</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1619,7 +1625,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFMF</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1643,13 +1649,13 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFMK</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFML</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1661,7 +1667,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFMO</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1703,7 +1709,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFMV</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1715,13 +1721,13 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFMX</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFMY</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1793,7 +1799,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFNO</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1853,7 +1859,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFOA</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1865,7 +1871,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFOC</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1877,7 +1883,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFOE</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1907,7 +1913,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFOJ</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1931,7 +1937,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFON</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1949,7 +1955,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFOQ</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1973,7 +1979,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFOU</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1985,7 +1991,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFOW</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2075,7 +2081,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFPO</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2087,19 +2093,19 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFPQ</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFPR</loc>
-    <lastmod>2026-09-17</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFPT</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2111,7 +2117,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFPV</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2129,7 +2135,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFQA</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2153,7 +2159,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFQE</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2213,7 +2219,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFQP</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2225,7 +2231,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFQS</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2285,7 +2291,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFRD</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2321,31 +2327,31 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFRJ</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFRK</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFRL</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFRM</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFRN</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2357,7 +2363,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFRP</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2369,7 +2375,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFRS</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2411,7 +2417,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFSB</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2441,7 +2447,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFSI</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2453,7 +2459,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFSK</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2477,7 +2483,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFSO</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2489,7 +2495,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFSS</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2519,7 +2525,13 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFSX</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://aerotrips.fr/airfields/LFTA</loc>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2573,7 +2585,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFTZ</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2591,7 +2603,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFXQ</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2603,7 +2615,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFYG</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2615,19 +2627,19 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFYS</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/airfields/LFYV</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/activities</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2909,7 +2921,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/arret-bus-r-garros-fw3mm</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -3047,7 +3059,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/avis-aeroport-le-touquet-ep8ufp</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -3245,7 +3257,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/brasserie-de-laeroport-du-havre-octeville-2bdqau</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -3317,7 +3329,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/campanile-chartres-9pl9m</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -3341,7 +3353,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/camping-capfun-route-blanche-1j4mo</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -3359,7 +3371,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/camping-les-dunes-zwraf</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -3377,7 +3389,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/canoe-kayak-club-de-tours-kpb86o</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -3689,7 +3701,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/chateau-de-chantilly-x8nh8f</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -3707,7 +3719,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/chateau-de-cheverny-ye2gco</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -3911,7 +3923,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/chateau-de-pierrefonds-bow6yp</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -4121,7 +4133,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/chateau-et-aqueduc-de-maintenon</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -4175,7 +4187,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/circuit-dalbi-et-karting-n7zx79</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -4205,7 +4217,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/club-de-golf-de-granville-uo47s9</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -4265,7 +4277,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/cyclevasion-jq2ct</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -4373,7 +4385,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/ecole-de-parachutisme-dagen-iuege</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -4385,7 +4397,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/ecosport-37-2n1xmon</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -4481,7 +4493,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/falaises-detretat-smcw5</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -4571,7 +4583,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/gare-de-granville-79znbi</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -4595,7 +4607,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/gare-saint-cyr-l-ecole</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -4679,7 +4691,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/gp-kart-concept-185gzv</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -4691,13 +4703,13 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/gr120-pointe-du-touquet-7xp73f</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/gr3-gr655-tours-mvrstc</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -4721,7 +4733,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/gr64-domme-dtgl5g</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -5141,7 +5153,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/la-piste-aux-saveurs-ny4xpo</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -5177,7 +5189,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/la-tanniere-2vy1ss</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -5237,7 +5249,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/lauto-becane-1enkpa</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -5267,13 +5279,13 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/le-blackwood-bhz1y</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/le-boeuf-au-galop-s5hnho</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -5387,7 +5399,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/le-mont-saintmichel-ter-xlxsl9</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -5597,7 +5609,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/les-argonautes-1omju</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -5663,7 +5675,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/les-valseuses-sur-mer-ddsnb8</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -5747,7 +5759,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/location-de-velos-aeroport-du-touquet-cdchgq</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -6239,7 +6251,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/plage-de-deauville-klqsb</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -6323,13 +6335,13 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/pont-de-brotonne-d6lde</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/pont-de-normandie-3591rc</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -6575,7 +6587,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/sixt-agen-51jcbq</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -6605,13 +6617,13 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/taxi-vtc-le-touquet-ipcquf</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/taxis-aerogare-du-havre-11we0n</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -6731,7 +6743,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/venturizone-simulateur-de-chute-libre-49g76r</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -6773,7 +6785,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/activities/vogue-pyertk</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -6845,7 +6857,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/trips</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -6941,7 +6953,7 @@
   </url>
   <url>
     <loc>https://aerotrips.fr/events</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
