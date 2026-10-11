@@ -11,8 +11,12 @@ a { color: steelblue; text-decoration: none;}
 
 .leaflet-container a {  color: #000; }
 
+/* Fills AppShell.Main: viewport minus the header (mobile only) and the main padding. dvh follows the
+   mobile browser bars; vh is the fallback. */
 .main-map {
-  height: calc(95vh - 80px);
+  --main-map-chrome: calc(var(--app-shell-header-offset, 0rem) + var(--app-shell-footer-offset, 0rem) + 2 * var(--app-shell-padding, 0rem));
+  height: calc(100vh - var(--main-map-chrome));
+  height: calc(100dvh - var(--main-map-chrome));
 }
 
 .map-top-right {
