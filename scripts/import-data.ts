@@ -1,7 +1,9 @@
 import { Activity, Airfield } from '../src';
 import { JSONContent } from '@tiptap/core';
 import { firebaseConfig } from '../src/data/firebase'
-import { readFileSync } from "fs";
+import { readdirSync, readFileSync } from "fs";
+import { join } from "path";
+import { XMLParser } from "fast-xml-parser";
 import { randomUUID } from "crypto";
 import creds from "../serviceAccountKey.json" with { "type": "json" }
 import chalk from 'chalk';
@@ -138,6 +140,98 @@ const updateNightVFR = (airfields: Map<string, Airfield>) => {
     })
 }
 
+const DMS2DD = (str: string) => {
+    const S = parseFloat(str) % 100
+    const M = Math.floor(parseInt(str) % 10000 / 100)
+    const D = Math.floor(parseInt(str) / 10000)
+    return (D + (M + S / 60) / 60) * ('SW'.includes(str[str.length - 1]) ? -1 : 1)
+}
+
+const asArray = <T,>(value: T | T[] | undefined): T[] => value === undefined ? [] : Array.isArray(value) ? value : [value]
+
+const findExport = (dir: string, prefix: string) => {
+    const file = readdirSync(dir).filter(f => f.startsWith(prefix) && f.endsWith('.xml')).sort().at(-1)
+    if (!file) throw new Error(`No ${prefix}*.xml in ${dir}`)
+    return join(dir, file)
+}
+
+// Syncs the airfield list with the SIA exports (AIXM 4.5 + XML SIA, same edition, in `dir`):
+// creates missing airfields, updates status and runways (not editable on the site), closes (OFF) airfields that left
+// the list. Names and fuels of existing airfields are left alone (fuels are enriched from the VAC charts).
+const updateFromSia = (airfields: Map<string, Airfield>, dir: string) => {
+    // Keep values as strings: runway designations like "18" or "05" must not become numbers
+    const parser = new XMLParser({ ignoreAttributes: false, parseTagValue: false })
+    const aixmPath = findExport(dir, 'AIXM4.5_')
+    const siaPath = findExport(dir, 'XML_SIA_')
+    const aixm = parser.parse(readFileSync(aixmPath, 'latin1'))['AIXM-Snapshot']
+    const sia = parser.parse(readFileSync(siaPath, 'latin1')).SiaExport.Situation
+    console.log(`Loaded ${aixmPath} and ${siaPath}`)
+
+    const siaAirfields = new Map(asArray(sia.AdS.Ad)
+        .filter((a: any) => a.Territoire['@_pk'] == 100)
+        .map((a: any) => ['LF' + a.AdCode, a]))
+    const getFuels = (ad: any) => {
+        const str = [ad.SvcEscaleFuel, ad.HorAvtTxt].join('')
+        return [['100LL', 'LL'], ['JETA1', 'A1'], ['UL91', 'UL']].filter(f => str.includes(f[1])).map(f => f[0])
+    }
+
+    const listed = new Map<string, Omit<Airfield, 'position'> & { position: [number, number] }>()
+    asArray(aixm.Ahp)
+        .filter((e: any) => e.codeType == 'AD' && e.OrgUid.txtName == 'FRANCE' && e.codeIcao && e.txtRmk != 'AD CLOSED')
+        .forEach((e: any) => {
+            const ad = siaAirfields.get(e.codeIcao)
+            if (!ad) return console.log(chalk.red(`${e.codeIcao} not in XML SIA, skipped`))
+            const fuels = getFuels(ad)
+            listed.set(e.codeIcao, {
+                codeIcao: e.codeIcao,
+                name: e.txtName,
+                position: [DMS2DD(e.geoLat), DMS2DD(e.geoLong)],
+                runways: [],
+                status: ad.AdStatut,
+                ...(fuels.length > 0 && { fuels }),
+            })
+        })
+    asArray(aixm.Rwy).forEach((e: any) => {
+        listed.get(e.RwyUid.AhpUid.codeId)?.runways.push({
+            designation: e.RwyUid.txtDesig,
+            length: Number(e.valLen),
+            composition: e.codeComposition,
+        })
+    })
+    console.log(`${listed.size} airfields listed by the SIA, ${airfields.size} in the database`)
+
+    const now = admin.firestore.Timestamp.fromDate(new Date())
+    const runwaysKey = (runways: Airfield['runways']) =>
+        JSON.stringify(runways.map(r => [r.designation, r.length, r.composition]).sort())
+    listed.forEach(({ position, ...airfield }, code) => {
+        const existing = airfields.get(code)
+        if (!existing) {
+            console.log(chalk.green(`${chalk.bold(code)} ${titleCase(airfield.name)}: new (${airfield.status}, ${airfield.runways.map(r => `${r.designation} ${r.length} m ${r.composition}`).join(', ')})`))
+            changes.push({ document: `airfields/${code}`, data: {
+                ...airfield,
+                position: new admin.firestore.GeoPoint(...position),
+                updated_at: now,
+            }})
+            return
+        }
+        const data: Partial<Airfield> = {}
+        if (existing.status !== airfield.status) {
+            console.log(`${chalk.bold.blue(code)} ${titleCase(existing.name)}: status ${existing.status} → ${airfield.status}`)
+            data.status = airfield.status
+        }
+        if (runwaysKey(existing.runways ?? []) !== runwaysKey(airfield.runways)) {
+            console.log(`${chalk.bold.blue(code)} ${titleCase(existing.name)}: runways ${runwaysKey(existing.runways ?? [])} → ${runwaysKey(airfield.runways)}`)
+            data.runways = airfield.runways
+        }
+        if (Object.keys(data).length > 0) changes.push({ document: `airfields/${code}`, data: { ...data, updated_at: now } })
+    })
+    airfields.forEach((airfield, code) => {
+        if (listed.has(code) || airfield.status === 'OFF') return
+        console.log(chalk.yellow(`${chalk.bold(code)} ${titleCase(airfield.name)}: no longer listed, status ${airfield.status} → OFF`))
+        changes.push({ document: `airfields/${code}`, data: { status: 'OFF', updated_at: now } })
+    })
+}
+
 // Firestore doesn't keep map key order: compare webcams by content
 const canonical = (webcams: object[]) => JSON.stringify(webcams.map(w => Object.entries(w).sort()))
 
@@ -263,6 +357,17 @@ if(process.argv.includes('--nvfr')) {
     console.log(chalk.green('Updating NVFR'))
     const airfields = await getAirfields(db)
     updateNightVFR(airfields)
+}
+
+if(process.argv.includes('--sia')) {
+    flags += 1
+    const dir = process.argv[process.argv.indexOf('--sia') + 1]
+    if (!dir || dir.startsWith('--')) {
+        console.log(chalk.red('Usage: --sia <directory with AIXM4.5_*.xml and XML_SIA_*.xml>'))
+        process.exit(1)
+    }
+    console.log(chalk.green('Updating airfields from the SIA exports'))
+    updateFromSia(await getAirfields(db), dir)
 }
 
 if(process.argv.includes('--webcams')) {

@@ -20,6 +20,9 @@ nearby activities, day-trips ("trips") and events, contributed and enriched by p
    collection, then are reviewed/applied manually via `npm run manage` (`scripts/manage-edits.js`).
 4. The JSON snapshot is regenerated from Firestore via `npm run export` (`scripts/export-data.ts`).
 
+**SIA airfield list**: `npm run import -- --sia <folder>` syncs airfields with the SIA AIXM + XML exports (creates new
+ones, updates status/runways, closes the delisted; details in `docs/data-sources.md`), then `npm run export`.
+
 **External sources** (SIA, VAC, clubs, OSM, webcams…): catalogued in **`docs/data-sources.md`** — check it before
 searching for a source, and add any new one there (coverage + date, access, freshness, rights, pitfalls).
 

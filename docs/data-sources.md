@@ -11,10 +11,17 @@ Re-check the coverage date before relying on a figure.
 ## Airfield reference data
 
 ### SIA — AIXM 4.5 + XML exports
-- Coverage: every French airfield (metropolitan + overseas): position, runways, status.
-- Access: `scripts/AIXM4.5_all_FR_OM_<date>.xml`, `scripts/XML_SIA_<date>.xml` (gitignored, 2023-10 / 2024-01 editions).
-- Used by: `scripts/data-import.js`, the initial import only (2024-01). Not re-synced since.
-- Pitfalls: names are UPPERCASE → `titleCase()`.
+- Coverage: every French airfield (metropolitan + overseas): position, runways, status, fuels.
+- Access: `AIXM4.5_all_FR_OM_<date>.xml` + `XML_SIA_<date>.xml` (same AIRAC edition, SIA digital products), kept in a
+  gitignored folder such as `tmp/export-sia/`. Last sync: 2026-10-29 edition.
+- Used by: `npm run import -- --sia <folder>` (initial import 2024-01, then this sync): AIXM selects the airfields (`AD`
+  with an ICAO code, not `AD CLOSED`) and gives name, position, runways; XML SIA gives status (metropolitan:
+  `Territoire` 100) and fuels. Creates missing airfields, updates status and runways, sets `OFF` on airfields that
+  left the list; never touches names or fuels of existing ones.
+- Freshness: AIRAC (28 days); runways get renumbered for magnetic drift (67 differed in 2026-10).
+- Pitfalls: names are UPPERCASE → `titleCase()`. Files are ISO-8859-1. XML SIA also lists private strips and closed
+  fields under pseudo-codes (`LF01`…`LF51`) and ATC/CROSS centres as `OFF`: the AIXM filter leaves them out. A closed
+  airfield's code can reappear as a pseudo-code (LFLK → LF50).
 
 ### SIA — VAC charts (eAIP Atlas-VAC)
 - Access: `https://www.sia.aviation-civile.gouv.fr/media/dvd/eAIP_{AIRAC}/Atlas-VAC/PDF_AIPparSSection/VAC/AD/AD-2.{ICAO}.pdf`
