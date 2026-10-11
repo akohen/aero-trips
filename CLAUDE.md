@@ -155,6 +155,19 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   --project demo-aerotrips` — a `demo-` project runs offline, no auth). `vite preview` is **not**
   representative (SPA-fallback-first; only hits nested files with a trailing slash).
 
+## OACI chart background (#45)
+
+- `/map` can show the SIA 1:1 000 000 chart instead of OSM on its zoomed-out views (button in the top-right
+  stack, off by default, choice kept in `localStorage`). Config in **`src/utils/oaciChart.ts`** (edition,
+  tile URL, zooms, attribution): tiles for zooms 7-9 (512 px, retina), zoom 10 upscales zoom 9, OSM from
+  zoom 11. The map itself can't zoom out below 7 (`minZoom`).
+- Tiles are static files in `gs://aero-trips.appspot.com/oaci/<edition>/` (public, immutable, bucket CORS
+  for aerotrips.fr + localhost:5173), cached by the service worker (`oaci-tiles`, before the photos rule).
+- Built by **`scripts/oaci-tiles.py`** from the PDFs (Python: pikepdf + GDAL; setup, yearly update and upload
+  in its docstring) with **`scripts/oaci-sheets.json`** (committed: control points and clip outlines per
+  sheet). Source and licence: `docs/data-sources.md` (*SIA — 1:1 000 000 aeronautical charts*). Keep the
+  attribution (SIA, edition, Licence Ouverte link).
+
 ## Embeddable widget
 
 - `/embed/{ICAO}` is a **standalone HTML page** (not the SPA shell) that clubs, airfields and tourism sites

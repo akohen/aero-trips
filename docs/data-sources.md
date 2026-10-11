@@ -83,6 +83,27 @@ All fetched by `.claude/skills/populate-airfield/scripts/sources.py` into `tmp/<
 ### Natural Earth 1:10m admin-0 countries
 - Used by: `scripts/build-france-outline.ts` → `src/data/franceOutline.ts` (passport map). Public domain.
 
+### SIA — 1:1 000 000 aeronautical charts (« Million » Nord and Sud)
+- Coverage: mainland France and Corsica (inset of the Sud sheet), SFC-FL195, 1st edition 2026 (in force
+  2026-04-16). Not covered: the Aosta valley (under a legend panel of the Sud sheet, south of the Nord one).
+- Access: free PDFs on the SIA shop (order at 0 €, then download from « Mes commandes »), kept in `tmp/oaci/`
+  (gitignored). Vector, Lambert-93, not georeferenced; page 3 is the airspace chart.
+- Freshness: yearly edition (April).
+- Rights: the SIA publishes these PDFs « avec licence d'utilisation », linking its
+  [Licence Ouverte](https://www.sia.aviation-civile.gouv.fr/pub/media/news/file//l/i/licenceopendata-vf_2.pdf):
+  reuse, adaptation and commercial use allowed, crediting the SIA and the update date, without altering the
+  information or misrepresenting it. Our use (map tiles of page 3, airways removed, credited to the SIA with
+  the edition and a link to the licence) is covered by that published licence. The charts themselves still print
+  « Reproduction interdite » and credit IGN for the background (© IGN, ROUTE 120/500): the printed notice is
+  the paper edition's; the online licence is the one attached to the PDF.
+- Used by: `scripts/oaci-tiles.py` (+ `scripts/oaci-sheets.json`: control points and clip outlines) → tiles in
+  `gs://aero-trips.appspot.com/oaci/<edition>/` → optional background of `/map` (`src/utils/oaciChart.ts`).
+- Pitfalls: everything green (airways, waypoints, VOR/NDB) is removed from the vector content, not
+  recoloured. Georeferencing is ±1 km (airfield symbols read by eye), enough to situate places only. The
+  Région Parisienne 1:250 000 and the 1:500 000 sheets were also checked: the 1:250 000 is vector with an open
+  BD CARTO background; the 1:500 000 PDF is a raster print (~51 m/px) carrying the same « reproduction
+  interdite » notice.
+
 ## Webcams
 
 Stored in `Airfield.webcams` (see CLAUDE.md § Webcams). Rule of thumb: preview an image only when its

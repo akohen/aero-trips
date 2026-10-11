@@ -93,6 +93,18 @@ export default defineConfig({
               expiration: { maxEntries: 1000, maxAgeSeconds: 7 * 24 * 3600, purgeOnQuotaError: true },
             },
           },
+          // OACI chart tiles (src/utils/oaciChart.ts): the edition is in the path, so a cached tile
+          // never goes stale. Before the photos rule, which matches the same host. Requested
+          // with CORS (bucket CORS config), so not opaque.
+          {
+            urlPattern: /^https:\/\/storage\.googleapis\.com\/aero-trips\.appspot\.com\/oaci\//,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'oaci-tiles',
+              cacheableResponse: { statuses: [200] },
+              expiration: { maxEntries: 500, purgeOnQuotaError: true },
+            },
+          },
           // Photos already viewed. Storage sends no CORS headers and the cards
           // use CSS backgrounds, so these are opaque: each counts for megabytes
           // of quota and a failure can't be told apart, hence few entries and a

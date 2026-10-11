@@ -33,6 +33,7 @@ scripts/*.xml
 scripts/*.json
 !scripts/fees.json
 !scripts/community-fees.json
+!scripts/oaci-sheets.json
 
 ### Firebase Patch ###
 .runtimeconfig.json

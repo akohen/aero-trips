@@ -8,7 +8,7 @@ import { AirfieldMarker } from '../components/AirfieldMarker';
 import ActivityMarker from '../components/ActivityMarker';
 import { Button, Stack } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconPlaneArrival, IconEye, IconEyeOff, IconFilterX, IconBulb } from '@tabler/icons-react';
+import { IconPlaneArrival, IconEye, IconEyeOff, IconFilterX, IconBulb, IconMap, IconMapOff } from '@tabler/icons-react';
 import MapMenu from '../components/MapMenu';
 import MapViewTracker from '../components/MapViewTracker';
 import { Link, useParams } from 'react-router';
@@ -17,6 +17,8 @@ import AirfieldsFilterModal from '../components/AirfieldsFilterModal';
 import ButtonFilter from '../components/ButtonFilter';
 import ActivitiesFilterModal from '../components/ActivitiesFilterModal';
 import { ActivityBadges } from '../components/ActivityUtils';
+import { OACI_ATTRIBUTION, OACI_TILES_URL, OACI_ZOOMS, loadOaciPreference, saveOaciPreference } from '../utils/oaciChart';
+import { useState } from 'react';
 
 function MapPage({airfields, activities, events, ADfilter, ActFilter, setADfilter, setActFilter, setFilters, mapView, setMapView, profile} :
   Data & {
@@ -30,6 +32,11 @@ function MapPage({airfields, activities, events, ADfilter, ActFilter, setADfilte
   
   const [showAirfields, { toggle: toggleAirfields }] = useDisclosure(true)
   const [showActivities, { toggle: toggleActivities }] = useDisclosure(true)
+  const [showOaci, setShowOaci] = useState(loadOaciPreference)
+  const toggleOaci = () => {
+    saveOaciPreference(!showOaci)
+    setShowOaci(!showOaci)
+  }
   const [modalOpened, { open, close }] = useDisclosure(false)
   const [modalActOpened, { open: openAct, close: closeAct }] = useDisclosure(false)
   const isFilterActive = () => [...Object.values(ADfilter), ...Object.values(ActFilter)].some(x => Array.isArray(x) ? x.length: x)
@@ -52,12 +59,22 @@ function MapPage({airfields, activities, events, ADfilter, ActFilter, setADfilte
   const resetFilters = () => setFilters({ ad: EMPTY_AIRFIELD_FILTERS, act: EMPTY_ACTIVITY_FILTERS })
   
   return (
-    <MapContainer className="main-map" center={view.center} zoom={view.zoom} scrollWheelZoom={true}>
+    <MapContainer className="main-map" center={view.center} zoom={view.zoom} minZoom={7} scrollWheelZoom={true}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         crossOrigin
       />
+      {showOaci && (
+        <TileLayer
+          attribution={OACI_ATTRIBUTION}
+          url={OACI_TILES_URL}
+          minZoom={OACI_ZOOMS.min}
+          maxNativeZoom={OACI_ZOOMS.maxNative}
+          maxZoom={OACI_ZOOMS.max}
+          crossOrigin
+        />
+      )}
       <MapMenu />
       <MapViewTracker setView={setMapView} />
       <Stack className='map-top-right' gap="xs" align='flex-end'>
@@ -114,7 +131,16 @@ function MapPage({airfields, activities, events, ADfilter, ActFilter, setADfilte
           </Button>
         </Button.Group>
 
-        
+        <Button
+          variant={showOaci ? 'filled' : 'default'}
+          aria-label="Afficher/masquer la carte OACI"
+          aria-pressed={showOaci}
+          title="Carte OACI"
+          onClick={toggleOaci}
+        >
+          {showOaci ? <IconMap size={16} /> : <IconMapOff size={16} />}
+        </Button>
+
         {isFilterActive() && (
           <Button.Group>
             <ShareButton iconOnly />
