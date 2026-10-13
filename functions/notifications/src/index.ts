@@ -3,10 +3,11 @@
  *
  * `notifyNewChange`: every new document in `changes`.
  * Anonymous contributions (and contact-form messages) land in `changes` and
- * wait for a manual review via `npm run manage`. Nothing announces them, so
- * this function mails the raw document to the maintainer as soon as it is
- * created. Updates and deletes (e.g. `manage` applying or dropping a change)
- * deliberately do not trigger it.
+ * wait for a review on `/admin/changes` (or `npm run manage`). Nothing announces
+ * them, so this function mails a summary (what it targets, which fields it
+ * changes, or the contact message) with a link to its review page, then the
+ * document (inline images elided). Updates and deletes (applying or dropping a
+ * change) deliberately do not trigger it.
  *
  * `notifyNewReport`: every new pilot visit report (#39). Reports are published
  * at once; moderation is deleting the report, after which `applyReports`
@@ -18,6 +19,8 @@ import { defineSecret, projectID } from 'firebase-functions/params'
 import { info } from 'firebase-functions/logger'
 import { initializeApp } from 'firebase-admin/app'
 import { DocumentReference, GeoPoint, getFirestore, Timestamp } from 'firebase-admin/firestore'
+import { parseChange } from '../../../src/utils/changes.ts'
+import { changeSummary } from './changeMail.ts'
 import { DerivedLandingFee, disagree, formatVisitDate, isPilotReport, reportFeeLabel, landingFeeSource } from '../../../src/utils/reports.ts'
 
 initializeApp()
@@ -35,6 +38,8 @@ function replacer(_key: string, value: unknown) {
   if (value instanceof Timestamp) return value.toDate().toISOString()
   if (value instanceof GeoPoint) return { latitude: value.latitude, longitude: value.longitude }
   if (value instanceof DocumentReference) return value.path
+  // Guests' pasted images are inlined: hundreds of KB of base64 nobody reads in a mail
+  if (typeof value === 'string' && value.startsWith('data:')) return `[image en ligne, ${Math.round(value.length * 3 / 4 / 1024)} Ko]`
   return value
 }
 
@@ -42,6 +47,8 @@ const escapeHtml = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 const PRODUCTION = 'aero-trips'
+
+const siteUrl = () => projectID.value() === PRODUCTION ? 'https://aerotrips.fr' : `https://${projectID.value()}.web.app`
 
 // Anything but production (staging, emulator) is flagged, so a test mail never passes for a real one
 const subjectTag = () => projectID.value() === PRODUCTION ? '[AeroTrips]' : `[${projectID.value()}]`
@@ -79,15 +86,20 @@ export const notifyNewChange = onDocumentCreated(
     if (!snapshot) return
 
     const data = snapshot.data()
+    const parsed = parseChange(data)
+    const current = parsed.kind === 'edit' ? (await getFirestore().doc(parsed.targetDocument).get()).data() : undefined
+    const { subject, summary, review } = changeSummary(snapshot.id, parsed, current, siteUrl())
     const json = JSON.stringify(data, replacer, 2)
-    const target = typeof data.targetDocument === 'string' ? data.targetDocument : snapshot.id
+    const text = `${summary.join('\n')}\n\nRelire : ${review}\n\nDocument changes/${snapshot.id}\n${json}`
 
     await send(
-      `Nouveau changement : ${target}`,
-      `Document changes/${snapshot.id}\n\n${json}`,
-      `<p>Document <code>changes/${escapeHtml(snapshot.id)}</code></p><pre>${escapeHtml(json)}</pre>`,
+      subject,
+      text,
+      `<pre style="white-space: pre-wrap">${escapeHtml(summary.join('\n'))}</pre>`
+        + `<p><a href="${escapeHtml(review)}">Relire et appliquer</a></p>`
+        + `<p>Document <code>changes/${escapeHtml(snapshot.id)}</code></p><pre>${escapeHtml(json)}</pre>`,
     )
-    info('change notification sent', { changeId: snapshot.id, target })
+    info('change notification sent', { changeId: snapshot.id, kind: parsed.kind })
   },
 )
 

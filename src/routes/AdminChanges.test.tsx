@@ -94,17 +94,33 @@ describe('AdminChanges', () => {
 
   it('shows only the modified fields and applies the change', async () => {
     renderPage('/admin/changes/edit')
-    const website = await screen.findByText('website')
-    const card = website.closest('div')!.parentElement!
-    expect(within(card).getByText('https://old.test')).toBeInTheDocument()
-    expect(within(card).getByText('https://new.test')).toBeInTheDocument()
-    expect(screen.queryByText('fuels')).toBeNull()
+    const row = (await screen.findByText('Site internet')).closest('.change-diff-row') as HTMLElement
+    expect(within(row).getByText('https://old.test').closest('.change-diff-current')).not.toBeNull()
+    expect(within(row).getByText('https://new.test').closest('.change-diff-proposed')).not.toBeNull()
+    expect(screen.queryByText('Carburants')).toBeNull()
     expect(screen.queryByText('updated_by')).toBeNull()
 
     await userEvent.click(screen.getByRole('button', { name: 'Appliquer' }))
     expect(fb.apply).toHaveBeenCalledWith({ id: 'edit' })
     await waitFor(() => expect(screen.getByTestId('where')).toHaveTextContent('/admin/changes/contact'))
     expect(screen.getByText('Modifications en attente (3)')).toBeInTheDocument()
+  })
+
+  it('highlights list items and positions that moved', async () => {
+    fb.changes = [{ id: 'move', data: {
+      targetDocument: 'airfields/LFOV', fuels: ['UL91', 'JETA1'], updated_at: at(1),
+      position: { latitude: 48.0310, longitude: -0.7420 },
+    } }]
+    fb.targets['airfields/LFOV'] = { fuels: ['100LL', 'UL91'], position: { latitude: 48.0300, longitude: -0.7400 } }
+    renderPage('/admin/changes/move')
+    const fuels = (await screen.findByText('Carburants')).closest('.change-diff-row') as HTMLElement
+    const current = fuels.querySelector('.change-diff-current') as HTMLElement
+    const proposed = fuels.querySelector('.change-diff-proposed') as HTMLElement
+    expect(within(current).getByText('100LL').parentElement).toHaveStyle({ textDecoration: 'line-through' })
+    expect(within(current).getByText('UL91').parentElement).not.toHaveStyle({ textDecoration: 'line-through' })
+    expect(within(proposed).getByText('JETA1').closest('[data-variant]')).toHaveAttribute('data-variant', 'filled')
+    expect(within(proposed).getByText('UL91').closest('[data-variant]')).toHaveAttribute('data-variant', 'default')
+    expect(screen.getByText(/déplacé de 186 m/)).toBeInTheDocument()
   })
 
   it('keeps the change and shows the error when applying fails', async () => {
@@ -117,8 +133,9 @@ describe('AdminChanges', () => {
 
   it('lists every field of a new document', async () => {
     renderPage('/admin/changes/resto')
-    expect(await screen.findByText('name')).toBeInTheDocument()
+    expect(await screen.findByText('Nom')).toBeInTheDocument()
     expect(screen.queryByText('Actuel')).toBeNull()
+    expect(screen.getAllByText('Activité · nouveau')).toHaveLength(2)
     expect(screen.getAllByText('Le Resto').length).toBeGreaterThan(1)
   })
 

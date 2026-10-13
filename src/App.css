@@ -46,3 +46,21 @@ th .aligner {
   flex-direction: column;
   justify-content: center;
 }
+/* Admin review diff (routes/AdminChanges.tsx): field | current | proposed, stacked on a phone */
+.change-diff-row { display: grid; grid-template-columns: 1fr; gap: 4px 12px; padding: 8px 12px; align-items: start; }
+.change-diff-row + .change-diff-row { border-top: 1px solid var(--mantine-color-default-border); }
+.change-diff-head { display: none; }
+.change-diff-value { min-width: 0; padding: 2px 6px; border-radius: 4px; }
+.change-diff-current { background: var(--mantine-color-red-light); }
+.change-diff-proposed { background: var(--mantine-color-green-light); }
+.change-diff-pair { display: grid; grid-template-columns: 1fr; gap: 4px 12px; }
+.change-diff-value .tiptap-content { min-width: 0 !important; box-shadow: none; }
+@media (min-width: 48em) {
+  .change-diff-row { grid-template-columns: 8rem 1fr 1fr; }
+  .change-diff--new .change-diff-row { grid-template-columns: 8rem 1fr; }
+  .change-diff-head { display: grid; font-size: var(--mantine-font-size-xs); color: var(--mantine-color-dimmed);
+    text-transform: uppercase; font-weight: 600; padding-block: 6px; }
+  .change-diff-row--wide { grid-template-columns: 1fr; }
+  .change-diff-row--wide .change-diff-pair { grid-template-columns: 1fr 1fr; }
+  .change-diff--new .change-diff-row--wide .change-diff-pair { grid-template-columns: 1fr; }
+}
