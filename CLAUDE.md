@@ -17,7 +17,8 @@ nearby activities, day-trips ("trips") and events, contributed and enriched by p
 2. `DataProvider` then queries Firestore for docs **modified since** the snapshot's `updated_at` and
    **merges** them on top (fresh data without reloading everything).
 3. **Anonymous** contributions don't write to the collections directly: they go to the `changes`
-   collection, then are reviewed/applied manually via `npm run manage` (`scripts/manage-edits.js`).
+   collection, then are reviewed/applied manually via `npm run manage` (`scripts/manage-edits.js`) or the
+   `applyChange` callable (see *Admin*).
 4. The JSON snapshot is regenerated from Firestore via `npm run export` (`scripts/export-data.ts`).
 
 **SIA airfield list**: `npm run import -- --sia <folder>` syncs airfields with the SIA AIXM + XML exports (creates new
@@ -220,11 +221,26 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   bundle — keep it that way. `/profile/{uid}` shows the hosted `map.png`, drawing it locally only if it 404s.
 - Not yet: backfill of past visits, OG image for `/profile/{uid}`.
 
+## Admin
+
+- **`admin` custom claim**, granted by **`npm run set-admin[:prod] -- <email> [--revoke]`** (`--list` shows the admins;
+  the account must have signed in once, and gets the claim at its next sign-in). `firestore.rules` `isAdmin()`
+  (a member with the claim): admins read and delete `changes`; anyone still creates them.
+- **`src/utils/changes.ts`** (React/SDK-free) is the single reading of a change, shared by `npm run manage` and the
+  callable: `parseChange` accepts only `airfields`/`activities`/`events` targets (anyone writes `changes`, so this is
+  the guard), drops `landingFee`/`reportStats`/`updated_at`, reads `contacts/{email}` (contact form) as a message to
+  delete, never to apply; `mayCreate` (a guest never creates an airfield); `diffChange` (by content: GeoPoints,
+  Timestamps, key order); `uploadDataImages` (guests' inline data-URL images → `img/guest/` with a download token,
+  so the `images` resizer handles them).
+- **`functions/admin/`** (codebase `admin`, `europe-west1`, deployed by the release CI): `applyChange({id})`, callable,
+  claim checked server-side; target write + change delete in one transaction, `updated_at` = apply time.
+  Rejecting is a plain client delete. Not yet: the `/admin/changes` UI.
+
 ## Firestore rules
 
 - **`firestore.rules`** is the source of truth (wired in `firebase.json`), imported from the production console
   on 2026-09-25. **Deployed by the release CI** (tag workflow, together with `functions:mcp`, `functions:reports`,
-  `functions:passports`, `functions:notifications` and hosting); manual deploy: `npx firebase deploy --only firestore:rules`. Staging's console rules could not be
+  `functions:passports`, `functions:notifications`, `functions:admin` and hosting); manual deploy: `npx firebase deploy --only firestore:rules`. Staging's console rules could not be
   read at import time — deploying there overwrites whatever is in its console. Test changes with `npm run test:rules`.
 
 ## Images

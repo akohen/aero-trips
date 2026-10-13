@@ -23,6 +23,7 @@ describe.skipIf(!emulator)('firestore.rules', () => {
   const bob = () => env.authenticatedContext('bob', { firebase: { sign_in_provider: 'google.com' } }).firestore()
   const guest = () => env.authenticatedContext('guest', { firebase: { sign_in_provider: 'anonymous' } }).firestore()
   const anonymous = () => env.unauthenticatedContext().firestore()
+  const admin = () => env.authenticatedContext('admin', { admin: true, firebase: { sign_in_provider: 'google.com' } }).firestore()
 
   const today = () => {
     const now = new Date()
@@ -181,5 +182,28 @@ describe.skipIf(!emulator)('firestore.rules', () => {
       await assertFails(updateDoc(doc(alice(), 'airfields/LFOV'), { reportStats: { count: 99 } }))
       await assertFails(updateDoc(doc(anonymous(), 'airfields/LFOV'), { website: 'https://x.test' }))
     })
+  })
+
+  describe('changes', () => {
+    beforeEach(() => env.withSecurityRulesDisabled((ctx) =>
+      setDoc(doc(ctx.firestore(), 'changes/c0'), { targetDocument: 'airfields/LFOV', website: 'https://x.test' })))
+
+    it('lets anyone propose, but only admins read and delete', async () => {
+      await assertSucceeds(setDoc(doc(anonymous(), 'changes/c1'), { targetDocument: 'airfields/LFOV' }))
+      for (const db of [anonymous(), guest(), alice()]) {
+        await assertFails(getDoc(doc(db, 'changes/c0')))
+        await assertFails(deleteDoc(doc(db, 'changes/c0')))
+      }
+      await assertSucceeds(getDoc(doc(admin(), 'changes/c0')))
+      await assertSucceeds(deleteDoc(doc(admin(), 'changes/c0')))
+    })
+
+    it('ignores an admin claim on a guest token', async () => {
+      const fakeAdmin = env.authenticatedContext('g', { admin: true, firebase: { sign_in_provider: 'anonymous' } }).firestore()
+      await assertFails(getDoc(doc(fakeAdmin, 'changes/c0')))
+    })
+
+    it('never lets anyone edit a pending change', () =>
+      assertFails(updateDoc(doc(admin(), 'changes/c0'), { website: 'https://y.test' })))
   })
 })

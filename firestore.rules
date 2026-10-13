@@ -6,6 +6,10 @@ service cloud.firestore {
     function isMember() {
       return request.auth != null && request.auth.token.firebase.sign_in_provider != 'anonymous';
     }
+    // Custom claim set by `npm run set-admin` (scripts/set-admin.ts)
+    function isAdmin() {
+      return isMember() && request.auth.token.admin == true;
+    }
     // A visit date: a calendar day stored as midnight UTC, so "today" may be up to a day ahead of request.time
     function validVisitDate(t) {
       return t is timestamp && t <= request.time + duration.value(1, 'd') && t >= timestamp.date(1990, 1, 1);
@@ -70,6 +74,11 @@ service cloud.firestore {
       allow update: if isMember()
         && !request.resource.data.diff(resource.data).affectedKeys()
              .hasAny(['landingFee', 'reportStats']);
+    }
+    // Guest contributions: anyone creates them (catch-all below). Admins review them;
+    // applying one goes through the `applyChange` callable (functions/admin/).
+    match /changes/{changeId} {
+      allow read, delete: if isAdmin();
     }
     match /{collection}/{document=**} {
     	allow read: if collection in ['trips','activities', 'airfields', 'events'];
