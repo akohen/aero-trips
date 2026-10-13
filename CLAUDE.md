@@ -148,7 +148,7 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   leaves out `MIL`/`OFF` airfields.
   `usePageSeo` (`src/hooks/`) applies any `ItemSeo` to `<head>`; `App.tsx` must not reset the title on those paths.
 - French elision: write "aérodrome" + `deName(name)` (`src/utils/utils.ts`) → "d'Abbeville" / "de Laval".
-- `firebase.json` sends `X-Robots-Tag: noindex` on `**/edit`, `/profile` and `/changes` (forms and private pages).
+- `firebase.json` sends `X-Robots-Tag: noindex` on `**/edit`, `/profile`, `/changes` and `/admin/**` (forms and private pages).
 - Approach is **template injection, not React SSR**: `createRoot` wipes `#root` on mount (brief cold-load
   flash, harmless). PWA precache excludes prerendered pages (written after `vite build`) — keep it that way.
 - **URLs**: canonical + `sitemap.xml` use the no-slash form (`/airfields/{ICAO}`); `firebase.json`
@@ -234,7 +234,13 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   so the `images` resizer handles them).
 - **`functions/admin/`** (codebase `admin`, `europe-west1`, deployed by the release CI): `applyChange({id})`, callable,
   claim checked server-side; target write + change delete in one transaction, `updated_at` = apply time.
-  Rejecting is a plain client delete. Not yet: the `/admin/changes` UI.
+  Rejecting is a plain client delete.
+- **UI: `/admin/changes/:changeId?`** (`routes/AdminChanges.tsx`, lazy: keeps `firebase/functions` out of the eager
+  bundle). Oldest change first; per field, current (read fresh with `getDoc`, not from DataProvider) vs. proposed
+  (`diffChange`; description rendered, position as a map link); Appliquer (callable, then the item is refreshed in
+  the data maps) / Supprimer (confirm); contact messages get « Répondre » (mailto). `useIsAdmin` (`src/hooks/`) reads
+  the claim from the ID token (`refresh` forces a new one); it only hides UI. The profile page links to it for admins.
+  Hosting sends `noindex` on `/admin/**`.
 
 ## Firestore rules
 

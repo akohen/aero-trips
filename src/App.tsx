@@ -16,6 +16,8 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef } from "react";
 // which is useless on the home/airfield/activity pages that dominate SEO traffic.
 const MapPage = lazy(() => import("./routes/MapPage"));
 const TripDetails = lazy(() => import("./routes/TripDetails"));
+// Admins only: keeps firebase/functions out of everyone's bundle
+const AdminChanges = lazy(() => import("./routes/AdminChanges"));
 import { ADfilter } from '.';
 import Profile from "./routes/Profile";
 import Contact from "./routes/Contact";
@@ -110,6 +112,7 @@ export default function App(data : Data) {
         <Route path="/mentions-legales"       element={<LegalNotice />} />
         <Route path="/confidentialite"        element={<Privacy />} />
         <Route path="/changes"                element={<LastChanges {...data} />} />
+        <Route path="/admin/changes/:changeId?" element={<Suspense fallback={<Center h="80vh"><Loader /></Center>}><AdminChanges {...data} /></Suspense>} />
         <Route path="*"                       element={<NotFound />} />
       </Route>
     </Routes>
