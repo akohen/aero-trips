@@ -17,6 +17,7 @@ import { usePassportMapSvg } from "../hooks/usePassportMapSvg"
 import { countVisitedAirfields } from "../utils/passportBadge"
 import { titleCase } from "../utils/utils"
 import VisitsPanel from "../components/VisitsPanel"
+import { useIsAdmin } from "../hooks/useIsAdmin"
 
 const byId = (a: {id: string}, b: {id: string}) => a.id.localeCompare(b.id)
 
@@ -88,11 +89,13 @@ const Profile = ({profile, authLoading, airfields, activities, trips} : Data) =>
   ].filter(s => s.items.length > 0)
 
   const visitedCount = countVisitedAirfields(profile)
+  const { isAdmin } = useIsAdmin(profile)
 
   if (authLoading) return <Center h="50vh"><Loader /></Center>
 
   return (profile ? <>
   <Title order={1}><BackButton />Votre profil utilisateur</Title>
+  {isAdmin && <Button component={Link} to="/admin/changes" variant="light" mt="sm">Modifications en attente</Button>}
   <Grid mt="md">
     <Grid.Col span={{base: 12, sm: visitedCount > 0 ? 6 : 12}}>
       <VisitsPanel profile={profile} airfields={airfields} />

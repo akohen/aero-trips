@@ -53,7 +53,7 @@
         ]
       },
       {
-        "source": "{**/edit,**/edit/**,/profile,/changes}",
+        "source": "{**/edit,**/edit/**,/profile,/changes,/admin,/admin/**}",
         "headers": [
           {
             "key": "X-Robots-Tag",
