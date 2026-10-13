@@ -4,7 +4,7 @@
  * Applying goes through the `applyChange` callable (functions/admin/), deleting is a plain delete.
  * Lazy-loaded: `firebase/functions` and the diff view stay out of the eager bundle.
  */
-import { Alert, Anchor, Badge, Button, Center, Code, Grid, Group, Loader, NavLink, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core"
+import { Alert, Anchor, Badge, Box, Button, Center, Code, Grid, Group, Loader, NavLink, Paper, Stack, Text, Title } from "@mantine/core"
 import { IconArrowLeft, IconBrandGoogleFilled, IconCheck, IconMail, IconTrash } from "@tabler/icons-react"
 import { JSONContent } from "@tiptap/react"
 import { collection, deleteDoc, doc, getDoc, getDocs } from "firebase/firestore"
@@ -17,6 +17,8 @@ import { db, googleLogin } from "../data/firebase"
 import { useIsAdmin } from "../hooks/useIsAdmin"
 import { ChangeCollection, diffChange, mayCreate, parseChange, ParsedChange } from "../utils/changes"
 import { titleCase } from "../utils/utils"
+import { labels } from "../utils/labels"
+import haversineDistance from "haversine-distance"
 import Description from "../components/Description"
 
 const CHANGES = 'changes'
@@ -81,85 +83,108 @@ const KindBadge = ({ change, isNew }: { change: Change, isNew?: boolean }) => {
 const isPosition = (v: unknown): v is { latitude: number, longitude: number } =>
   typeof (v as { latitude?: unknown })?.latitude === 'number' && typeof (v as { longitude?: unknown })?.longitude === 'number'
 
-/** One field's value, readable: a rendered description, a map link for a position, step ids for a trip. */
-const FieldValue = ({ field, value }: { field: string, value: unknown }): ReactNode => {
-  if (value === undefined || value === null || value === '' || (Array.isArray(value) && !value.length)) {
-    return <Text size="sm" c="dimmed">(vide)</Text>
+const FIELD_LABELS: Record<string, string> = {
+  name: 'Nom', title: 'Titre', website: 'Site internet', link: 'Lien', fuels: 'Carburants', toilet: 'Toilettes',
+  description: 'Description', position: 'Position', type: 'Type', startDate: 'Début', endDate: 'Fin',
+  airfieldId: 'Terrain', webcams: 'Webcams', nightVFR: 'VFR de nuit', status: 'Statut', runways: 'Pistes', author: 'Auteur',
+}
+// Values with a French label (labels.ts); fuel codes read better as is
+const LABELLED_FIELDS = ['type', 'toilet']
+
+const isEmpty = (value: unknown) => value === undefined || value === null || value === '' || (Array.isArray(value) && !value.length)
+const isList = (value: unknown): value is (string | number | boolean)[] => Array.isArray(value) && value.every(v => typeof v !== 'object')
+/** Full-width rows: values too big for a table cell */
+const isWide = (field: string, values: unknown[]) =>
+  field === 'description' || values.some(v => !isEmpty(v) && typeof v === 'object' && !isPosition(v) && !isList(v) && !toDate(v))
+
+/**
+ * One field's value, readable: a rendered description, a map link for a position, the list items the other side
+ * lacks highlighted (`other`: the value on the other side of the diff).
+ */
+const FieldValue = ({ field, value, other, side }: { field: string, value: unknown, other?: unknown, side?: 'current' | 'proposed' }): ReactNode => {
+  if (isEmpty(value)) return <Text size="sm" c="dimmed">(vide)</Text>
+  if (field === 'description' && typeof value === 'object') {
+    return <Box mah="20rem" style={{ overflow: 'auto' }}><Description content={value as JSONContent} /></Box>
   }
-  if (field === 'description' && typeof value === 'object') return <Description content={value as JSONContent} />
   if (isPosition(value)) {
     const { latitude: lat, longitude: lng } = value
-    return <Anchor size="sm" href={`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=15/${lat}/${lng}`} target="_blank" rel="noopener">
-      {lat.toFixed(5)}, {lng.toFixed(5)}
-    </Anchor>
+    const moved = side === 'proposed' && isPosition(other) ? Math.round(haversineDistance(other, value)) : undefined
+    return <Text size="sm">
+      <Anchor inherit href={`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=15/${lat}/${lng}`} target="_blank" rel="noopener">
+        {lat.toFixed(5)}, {lng.toFixed(5)}
+      </Anchor>
+      {moved !== undefined && <Text span inherit c="dimmed"> · déplacé de {moved < 1000 ? `${moved} m` : `${(moved / 1000).toFixed(1)} km`}</Text>}
+    </Text>
   }
   const date = toDate(value)
   if (date) return <Text size="sm">{formatDateTime(date)}</Text>
   if (field === 'steps' && Array.isArray(value)) return <Text size="sm">{value.map(s => (s as { id?: string }).id ?? '?').join(', ')}</Text>
-  if (Array.isArray(value) && value.every(v => typeof v !== 'object')) return <Text size="sm">{value.join(', ')}</Text>
+  const label = (v: unknown) => LABELLED_FIELDS.includes(field) ? labels.get(String(v)) ?? String(v) : String(v)
+  if (isList(value)) {
+    const others = isList(other) ? other : []
+    return <Group gap={4}>
+      {value.map(v => {
+        const changed = side && !others.includes(v)
+        return <Badge key={String(v)} variant={changed ? 'filled' : 'default'} color={side === 'current' ? 'red' : 'green'}
+          tt="none" fw={changed ? 700 : 400} td={changed && side === 'current' ? 'line-through' : undefined}>{label(v)}</Badge>
+      })}
+    </Group>
+  }
   if (typeof value === 'object') return <Code block>{JSON.stringify(value, null, 2)}</Code>
   if (typeof value === 'string' && /^https?:\/\//.test(value)) {
     return <Anchor size="sm" href={value} target="_blank" rel="noopener noreferrer" style={{ wordBreak: 'break-all' }}>{value}</Anchor>
   }
-  return <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>{String(value)}</Text>
+  return <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>{label(value)}</Text>
 }
 
-const EditDetails = ({ change, onApply, onDelete, busy }: {
-  change: Change & { parsed: { kind: 'edit' } },
-  onApply: () => void,
-  onDelete: () => void,
-  busy?: 'apply' | 'delete',
-}) => {
-  const { collection, docId, fields } = change.parsed
-  // Read fresh, not from DataProvider: the snapshot may predate an earlier applied change
-  const [current, setCurrent] = useState<{ id: string, data: Target }>()
+/**
+ * Every modified field in one card: name, current, proposed (current only when the target exists). On a phone the
+ * columns stack, the tints telling them apart.
+ */
+const DiffCard = ({ fields, target }: { fields: Record<string, unknown>, target: Target }) => {
+  const diff = diffChange(fields, target).filter(d => !HIDDEN_FIELDS.includes(d.field))
+  if (!diff.length) return <Text c="dimmed">Aucune différence avec la version actuelle.</Text>
+  const both = !!target
+  return <Paper withBorder radius="md" className={`change-diff${both ? '' : ' change-diff--new'}`}>
+    <div className="change-diff-row change-diff-head">
+      <span>Champ</span>
+      {both && <span>Actuel</span>}
+      <span>{both ? 'Proposé' : 'Valeur'}</span>
+    </div>
+    {diff.map(({ field, current, proposed }) => {
+      const wide = isWide(field, [current, proposed])
+      const values = <>
+        {both && <div className="change-diff-value change-diff-current">
+          <FieldValue field={field} value={current} other={proposed} side="current" />
+        </div>}
+        <div className={`change-diff-value${both ? ' change-diff-proposed' : ''}`}>
+          <FieldValue field={field} value={proposed} other={current} side={both ? 'proposed' : undefined} />
+        </div>
+      </>
+      return <div key={field} className={`change-diff-row${wide ? ' change-diff-row--wide' : ''}`}>
+        <Text size="sm" fw={600} title={field}>{FIELD_LABELS[field] ?? field}</Text>
+        {wide ? <div className="change-diff-pair">{values}</div> : values}
+      </div>
+    })}
+  </Paper>
+}
+
+/** The document a change targets, read fresh (DataProvider's copy may predate an earlier applied change). */
+const useTarget = (change: Change | undefined) => {
+  const [target, setTarget] = useState<{ id: string, data: Target }>()
+  const ref = change?.parsed.kind === 'edit' ? `${change.parsed.collection}/${change.parsed.docId}` : undefined
   useEffect(() => {
+    if (!change || !ref) return
     let cancelled = false
-    getDoc(doc(db, collection, docId))
-      .then(snap => { if (!cancelled) setCurrent({ id: change.id, data: snap.exists() ? snap.data() : undefined }) })
+    getDoc(doc(db, ref))
+      .then(snap => { if (!cancelled) setTarget({ id: change.id, data: snap.exists() ? snap.data() : undefined }) })
       .catch(e => {
         console.error('[AdminChanges] target', e)
-        if (!cancelled) setCurrent({ id: change.id, data: undefined })
+        if (!cancelled) setTarget({ id: change.id, data: undefined })
       })
     return () => { cancelled = true }
-  }, [change.id, collection, docId])
-
-  if (current?.id !== change.id) return <Center p="xl"><Loader /></Center>
-
-  const target = current.data
-  const blocked = !target && !mayCreate(collection)
-  const diff = diffChange(fields, target).filter(d => !HIDDEN_FIELDS.includes(d.field))
-
-  return <Stack>
-    {blocked && <Alert color="red" title="Cible introuvable">
-      {COLLECTION_LABELS[collection]} {docId} n'existe pas : un invité ne peut pas créer de terrain.
-    </Alert>}
-    {!diff.length && <Text c="dimmed">Aucune différence avec la version actuelle.</Text>}
-    {diff.map(({ field, current: before, proposed }) =>
-      <Paper key={field} withBorder p="sm" radius="md">
-        <Text fw={600} mb="xs">{field}</Text>
-        <SimpleGrid cols={{ base: 1, sm: target ? 2 : 1 }}>
-          {target && <Stack gap={4}>
-            <Text size="xs" c="red.8" tt="uppercase" fw={600}>Actuel</Text>
-            <FieldValue field={field} value={before} />
-          </Stack>}
-          <Stack gap={4}>
-            <Text size="xs" c="green.8" tt="uppercase" fw={600}>Proposé</Text>
-            <FieldValue field={field} value={proposed} />
-          </Stack>
-        </SimpleGrid>
-      </Paper>
-    )}
-    <Group>
-      <Button leftSection={<IconCheck size={18} />} onClick={onApply} disabled={blocked || !!busy} loading={busy === 'apply'}>
-        Appliquer
-      </Button>
-      <Button leftSection={<IconTrash size={18} />} color="red" variant="outline" onClick={onDelete} disabled={!!busy} loading={busy === 'delete'}>
-        Supprimer
-      </Button>
-      <Anchor component={Link} to={`${ITEM_PATHS[collection]}/${docId}`} size="sm">Voir la fiche</Anchor>
-    </Group>
-  </Stack>
+  }, [change, ref])
+  return target && target.id === change?.id ? target : undefined
 }
 
 export default function AdminChanges({ profile, authLoading, airfields, activities, events }: Data) {
@@ -182,6 +207,7 @@ export default function AdminChanges({ profile, authLoading, airfields, activiti
   }, [isAdmin])
 
   const selected = changes?.find(c => c.id === changeId)
+  const target = useTarget(selected)
 
   /** Drops a handled change and moves on to the next one. */
   const done = (id: string) => {
@@ -235,35 +261,55 @@ export default function AdminChanges({ profile, authLoading, airfields, activiti
   const details = (change: Change): ReactNode => {
     const { parsed } = change
     const actionBusy = busy?.id === change.id ? busy.action : undefined
-    if (parsed.kind === 'edit') {
-      return <EditDetails change={change as Change & { parsed: { kind: 'edit' } }} busy={actionBusy}
-        onApply={() => run(change, 'apply')} onDelete={() => remove(change)} />
-    }
-    return <Stack>
-      {parsed.kind === 'contact'
-        ? <Paper withBorder p="sm" radius="md">
-          <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>{parsed.message || '(message vide)'}</Text>
-        </Paper>
-        : <>
-          <Alert color="red" title="Changement invalide">{parsed.reason}</Alert>
-          <Code block>{JSON.stringify(parsed.fields, null, 2)}</Code>
-        </>}
-      <Group>
-        {parsed.kind === 'contact' &&
-          <Button component="a" href={`mailto:${parsed.email}?subject=${encodeURIComponent('Votre message à AeroTrips')}`}
-            leftSection={<IconMail size={18} />} variant="light">Répondre</Button>}
-        <Button leftSection={<IconTrash size={18} />} color="red" variant="outline" onClick={() => remove(change)}
-          disabled={!!actionBusy} loading={actionBusy === 'delete'}>Supprimer</Button>
+    const loading = parsed.kind === 'edit' && !target
+    const blocked = parsed.kind === 'edit' && !!target && !target.data && !mayCreate(parsed.collection)
+    const isNew = parsed.kind === 'edit' && (target ? !target.data : !isKnown(parsed, data))
+
+    return <Stack gap="sm">
+      <Group justify="space-between" align="flex-start" gap="xs">
+        <div>
+          <Title order={3}>
+            {parsed.kind === 'edit' && target?.data
+              ? <Anchor component={Link} to={`${ITEM_PATHS[parsed.collection]}/${parsed.docId}`} inherit>{changeTitle(change, data)}</Anchor>
+              : changeTitle(change, data)}
+          </Title>
+          <Group gap={6} mt={4}>
+            <KindBadge change={change} isNew={isNew} />
+            <Text size="sm" c="dimmed">{formatDateTime(change.submittedAt)}</Text>
+          </Group>
+        </div>
+        <Group gap="xs">
+          {parsed.kind === 'edit' &&
+            <Button size="sm" leftSection={<IconCheck size={16} />} onClick={() => run(change, 'apply')}
+              disabled={loading || blocked || !!actionBusy} loading={actionBusy === 'apply'}>Appliquer</Button>}
+          {parsed.kind === 'contact' &&
+            <Button size="sm" component="a" href={`mailto:${parsed.email}?subject=${encodeURIComponent('Votre message à AeroTrips')}`}
+              leftSection={<IconMail size={16} />}>Répondre</Button>}
+          <Button size="sm" leftSection={<IconTrash size={16} />} color="red" variant="outline" onClick={() => remove(change)}
+            disabled={!!actionBusy} loading={actionBusy === 'delete'}>Supprimer</Button>
+        </Group>
       </Group>
+      {actionError && <Alert color="red" withCloseButton onClose={() => setActionError(undefined)}>{actionError}</Alert>}
+      {blocked && <Alert color="red" title="Cible introuvable">
+        {parsed.kind === 'edit' && `${COLLECTION_LABELS[parsed.collection]} ${parsed.docId}`} n'existe pas : un invité ne peut pas créer de terrain.
+      </Alert>}
+      {parsed.kind === 'edit' && (!target ? <Center p="xl"><Loader /></Center> : <DiffCard fields={parsed.fields} target={target.data} />)}
+      {parsed.kind === 'contact' && <Paper withBorder p="sm" radius="md">
+        <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>{parsed.message || '(message vide)'}</Text>
+      </Paper>}
+      {parsed.kind === 'invalid' && <>
+        <Alert color="red" title="Changement invalide">{parsed.reason}</Alert>
+        <Code block>{JSON.stringify(parsed.fields, null, 2)}</Code>
+      </>}
     </Stack>
   }
 
   return <>
-    <Title order={1}>Modifications en attente{changes ? ` (${changes.length})` : ''}</Title>
+    <Title order={2}>Modifications en attente{changes ? ` (${changes.length})` : ''}</Title>
     {loadError && <Alert color="red" mt="md">{loadError}</Alert>}
     {!changes && !loadError && <Center p="xl"><Loader /></Center>}
     {changes && !changes.length && <Text mt="md" c="dimmed">Aucune modification en attente.</Text>}
-    {changes && changes.length > 0 && <Grid mt="md">
+    {changes && changes.length > 0 && <Grid mt="sm">
       {/* On a phone, the list or the selected change, not both */}
       <Grid.Col span={{ base: 12, sm: 4 }} display={{ base: changeId ? 'none' : 'block', sm: 'block' }}>
         <Stack gap={4}>
@@ -279,18 +325,7 @@ export default function AdminChanges({ profile, authLoading, airfields, activiti
         {changeId && <Anchor component={Link} to={BASE} size="sm" hiddenFrom="sm" mb="sm" display="block">
           <IconArrowLeft size={14} /> Toutes les modifications
         </Anchor>}
-        {selected ? <Stack>
-          <Group justify="space-between" align="baseline">
-            <Title order={3}>{changeTitle(selected, data)}</Title>
-            <KindBadge change={selected} isNew={selected.parsed.kind === 'edit' && !isKnown(selected.parsed, data)} />
-          </Group>
-          <Text size="sm" c="dimmed">
-            Proposé le {formatDateTime(selected.submittedAt)}
-            {selected.parsed.kind === 'edit' && ` · ${selected.parsed.targetDocument}`}
-          </Text>
-          {actionError && <Alert color="red" withCloseButton onClose={() => setActionError(undefined)}>{actionError}</Alert>}
-          {details(selected)}
-        </Stack>
+        {selected ? details(selected)
           : changeId ? <Text c="dimmed">Ce changement a déjà été traité.</Text>
             : <Text c="dimmed" visibleFrom="sm">Choisissez une modification à relire.</Text>}
       </Grid.Col>

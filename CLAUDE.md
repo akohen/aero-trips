@@ -236,9 +236,11 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
   claim checked server-side; target write + change delete in one transaction, `updated_at` = apply time.
   Rejecting is a plain client delete.
 - **UI: `/admin/changes/:changeId?`** (`routes/AdminChanges.tsx`, lazy: keeps `firebase/functions` out of the eager
-  bundle). Oldest change first; per field, current (read fresh with `getDoc`, not from DataProvider) vs. proposed
-  (`diffChange`; description rendered, position as a map link); Appliquer (callable, then the item is refreshed in
-  the data maps) / Supprimer (confirm); contact messages get « Répondre » (mailto). `useIsAdmin` (`src/hooks/`) reads
+  bundle). Oldest change first; actions in the header (Appliquer: callable, then the item is refreshed in the data
+  maps; Supprimer: confirm; « Répondre » (mailto) for contact messages); one `DiffCard` table of the modified fields
+  (French labels, current read fresh with `getDoc`, not from DataProvider, vs. proposed via `diffChange`; red/green
+  tints, added/removed list items highlighted, a moved position says how far, description rendered full-width;
+  `.change-diff*` in `App.css`, columns stack on a phone). `useIsAdmin` (`src/hooks/`) reads
   the claim from the ID token (`refresh` forces a new one); it only hides UI. The profile page links to it for admins.
   Hosting sends `noindex` on `/admin/**`.
 
@@ -271,7 +273,9 @@ Update both groups in one `setFilters` call, not two back-to-back `setSearchPara
 ## Change notifications
 
 - **`functions/notifications/`** (codebase `notifications`, `europe-west1`): `onDocumentCreated('changes/{id}')`
-  emails the new document as JSON to the maintainer via the Mailgun REST API (`fetch`, no SDK).
+  emails the maintainer via the Mailgun REST API (`fetch`, no SDK): `changeSummary` (`src/changeMail.ts`: target and
+  modified fields, or the contact message) with a link to `/admin/changes/{id}` (aerotrips.fr, `<project>.web.app`
+  elsewhere), then the document as JSON with inline images elided.
   Creates only — `npm run manage` applying/deleting a change sends nothing. `retry: false` to avoid duplicate mail.
   `notifyNewReport` (`onDocumentCreated('reports/{id}')`) does the same for **pilot** visit reports only, readable text
   first (author, date, text, fee, a ⚠️ line when the fee disagrees with the airfield's), then the JSON.
