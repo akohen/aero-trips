@@ -15,6 +15,8 @@
     "export": "NODE_ENV=production tsx scripts/export-data.ts",
     "import": "NODE_ENV=production tsx scripts/import-data.ts",
     "manage": "NODE_ENV=production node scripts/manage-edits.js",
+    "set-admin": "tsx scripts/set-admin.ts",
+    "set-admin:prod": "NODE_ENV=production tsx scripts/set-admin.ts",
     "heal": "tsx scripts/heal-image-urls.ts",
     "heal:prod": "NODE_ENV=production tsx scripts/heal-image-urls.ts --production",
     "import-images": "tsx scripts/import-external-images.ts",

@@ -1,11 +1,14 @@
 import select from '@inquirer/select';
 import chalk from 'chalk';
 import admin from "firebase-admin";
+import { getDownloadURL } from 'firebase-admin/storage';
+import { randomUUID } from 'node:crypto';
 import { generateHTML } from '@tiptap/html'
 import StarterKit from "@tiptap/starter-kit"
 import Link from "@tiptap/extension-link"
 import Image from "@tiptap/extension-image"
 import { firebaseConfig } from '../src/data/firebase.ts'
+import { diffChange, mayCreate, parseChange, uploadDataImages } from '../src/utils/changes.ts'
 import creds from "../serviceAccountKey.json" with { "type": "json" }
 
 admin.initializeApp({
@@ -15,86 +18,98 @@ admin.initializeApp({
 const db = admin.firestore();
 db.settings({ ignoreUndefinedProperties: true });
 
-const options = {
-  message: 'Choisir une action pour ce changement',
-  choices: [
-    {
-      name: 'Appliquer',
-      value: 'apply',
-      description: 'Appliquer le changement (supprime la demande ensuite)',
-    },
-    {
-      name: 'Ignorer pour le moment',
-      value: 'skip',
-      description: `N'applique pas le changement, mais conserve les données`,
-    },
-    {
-      name: 'Supprimer',
-      value: 'delete',
-      description: `Supprime le changement sans l'appliquer`,
-    },
-  ],
-};
+const APPLY = {
+  name: 'Appliquer',
+  value: 'apply',
+  description: 'Appliquer le changement (supprime la demande ensuite)',
+}
+const SKIP = {
+  name: 'Ignorer pour le moment',
+  value: 'skip',
+  description: `N'applique pas le changement, mais conserve les données`,
+}
+const DELETE = {
+  name: 'Supprimer',
+  value: 'delete',
+  description: `Supprime le changement sans l'appliquer`,
+}
+const ask = (choices) => select({ message: 'Choisir une action pour ce changement', choices })
+
+// Same storage as the `applyChange` callable (functions/admin/): a member-like upload the resizer handles
+const uploadImage = async ({ contentType, extension, bytes }) => {
+  const file = admin.storage().bucket().file(`img/guest/${randomUUID()}.${extension}`)
+  await file.save(Buffer.from(bytes), {
+    contentType,
+    resumable: false,
+    metadata: { metadata: { firebaseStorageDownloadTokens: randomUUID() } },
+  })
+  return getDownloadURL(file)
+}
+
+const display = (field, value) => {
+  if (value === undefined) return value
+  if (field == 'position') return value.latitude + ',' + value.longitude
+  if (field == 'description') {
+    return generateHTML(value, [StarterKit, Link, Image])
+      .replace(/<img src="data:image\/[a-z]+;base64.*?">/gi, '<BASE 64 IMAGE>')
+  }
+  if (field == 'steps') return value.map(e => e.id).join(', ')
+  return typeof value === 'object' ? JSON.stringify(value) : value
+}
 
 const changes = await db.collection('changes').orderBy("updated_at").get()
-const results = []
-changes.forEach(d => {
-  const {targetDocument, ...newDoc} = d.data()
-  results.push({targetDocument, newDoc, id:d.id})
-})
 
-console.log(chalk.bgMagenta(chalk.bold(results.length) + " changements à valider"))
+console.log(chalk.bgMagenta(chalk.bold(changes.size) + " changements à valider"))
 
-for(const {targetDocument, newDoc, id} of results) {
-  let answer
-  if(process.argv.includes('--apply-all')) {
-    answer = 'apply'
-  } else {
-    const currentDoc = (await db.doc(targetDocument).get()).data()
-    console.log(chalk.bgBlue(targetDocument) + ' => ' + (currentDoc ? chalk.bgBlue('edit') : chalk.bgGreen('new') ))
-    for(let field in newDoc) {
-      let newField = newDoc[field]
-      let currentField = currentDoc ? currentDoc[field] : undefined
-      if(field == "position") {
-        newField = newDoc[field].latitude +','+newDoc[field].longitude
-        if(currentField) {currentField = currentDoc[field].latitude +','+currentDoc[field].longitude}
-      } else if(field == 'description' && newField) {
-        newField = generateHTML(newField,[StarterKit,Link, Image])
-          .replace(/<img src="data:image\/(jpg|png|jpeg);base64.*?">/gi,'<BASE 64 IMAGE>')
-        if(currentField) {currentField = generateHTML(currentField,[StarterKit,Link, Image])}
-      } else if(field == 'steps') {
-        newField = newField.map(e => e.id).join(', ')
-        if(currentField) {currentField = currentField.map(e => e.id).join(', ')}
-      }
-      
-      if(currentDoc && newField == currentField) continue
+for(const change of changes.docs) {
+  const parsed = parseChange(change.data())
+  const applyAll = process.argv.includes('--apply-all')
+
+  if(parsed.kind == 'contact') {
+    if(applyAll) continue
+    console.log(chalk.bgYellow(`Message de ${parsed.email}`))
+    console.log(parsed.message)
+    if(await ask([SKIP, DELETE]) == 'delete') await change.ref.delete()
+    continue
+  }
+  if(parsed.kind == 'invalid') {
+    console.log(chalk.bgRed(`Changement ${change.id} invalide : ${parsed.reason}`))
+    if(applyAll) continue
+    console.log(JSON.stringify(parsed.fields))
+    if(await ask([SKIP, DELETE]) == 'delete') await change.ref.delete()
+    continue
+  }
+
+  const targetRef = db.doc(parsed.targetDocument)
+  const currentDoc = (await targetRef.get()).data()
+  if(!currentDoc && !mayCreate(parsed.collection)) {
+    console.log(chalk.bgRed(`${parsed.targetDocument} n'existe pas : un invité ne crée pas de terrain`))
+    if(!applyAll && await ask([SKIP, DELETE]) == 'delete') await change.ref.delete()
+    continue
+  }
+
+  let answer = 'apply'
+  if(!applyAll) {
+    console.log(chalk.bgBlue(parsed.targetDocument) + ' => ' + (currentDoc ? chalk.bgBlue('edit') : chalk.bgGreen('new') ))
+    for(const {field, current, proposed} of diffChange(parsed.fields, currentDoc)) {
       console.log(chalk.italic.blue(field))
-      console.log(chalk.green(newField))
-      if(currentDoc) console.log(chalk.red(currentField))
+      console.log(chalk.green(display(field, proposed)))
+      if(currentDoc) console.log(chalk.red(display(field, current)))
     }
-  answer = await select(options);
+    answer = await ask([APPLY, SKIP, DELETE]);
   }
 
   if(answer == 'apply') {
-    if(newDoc.description) {
-      newDoc.description.content.forEach(async e => {
-        if(e.type == 'image' && (e.attrs.src.startsWith('data:image/jpeg;base64') || e.attrs.src.startsWith('data:image/png;base64'))) {
-          const type = e.attrs.src.match(/data:image\/(png|jpeg)/)
-          const data = e.attrs.src.replace(/^data:image\/jpeg;base64,/, "")
-          var bitmap = Buffer.from(data,'base64');
-          const path = 'images/'+Math.random().toString(36).substring(2)+'.'+type[1]
-          e.attrs.src = admin.storage().bucket().file(path).publicUrl()
-          await admin.storage().bucket().file(path).save(bitmap, {contentType:'image/'+type[1]})
-          await admin.storage().bucket().file(path).makePublic()
-        }
-      })
-    }
+    const fields = 'description' in parsed.fields
+      ? { ...parsed.fields, description: await uploadDataImages(parsed.fields.description, uploadImage) }
+      : parsed.fields
     // Stamp the apply time, not the submission time: a change applied after an export would
     // otherwise predate the snapshot and be missed by DataProvider's "updated since" query.
-    newDoc.updated_at = admin.firestore.Timestamp.fromDate(new Date())
-    await db.doc(targetDocument).set(newDoc, {merge: true})
-  }
-  if(['delete', 'apply'].includes(answer)) {
-    await db.doc(`changes/${id}`).delete()
+    await db.runTransaction(async (tx) => {
+      tx.set(targetRef, { ...fields, updated_at: admin.firestore.Timestamp.now() }, {merge: true})
+      tx.delete(change.ref)
+    })
+  } else if(answer == 'delete') {
+    await change.ref.delete()
   }
 }
