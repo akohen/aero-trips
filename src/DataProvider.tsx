@@ -3,6 +3,7 @@ import App from './App.tsx'
 import { collection, doc, getDoc, getDocs, setDoc, query, where, type DocumentData } from "firebase/firestore";
 import { Activity, Airfield, Event, MapView, Profile, Trip } from '.';
 import { onAuthStateChanged, User } from 'firebase/auth';
+import { authState, identifyAuthState } from './utils/analytics';
 import { auth, db } from './data/firebase.ts';
 import airfieldsData from './data/airfields.json'
 import activitiesData from './data/activities.json'
@@ -131,6 +132,7 @@ export const DataProvider = () => {
       } else { setProfile(undefined) }
     }
     return onAuthStateChanged(auth, user => {
+      identifyAuthState(authState(user))
       loadProfile(user)
         .catch(e => console.error('[DataProvider] profile', e))
         // Also on a failed profile read, so the page falls back to the login button instead of spinning

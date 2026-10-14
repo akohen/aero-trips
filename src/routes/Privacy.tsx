@@ -47,7 +47,7 @@ const Privacy = () => (<>
     <List mt="xs" spacing="xs">
       <List.Item>
         une mesure d'audience anonyme est réalisée avec Umami, sans cookie : pages vues, page d'arrivée, site
-        de provenance, type d'appareil et pays. Ces statistiques servent uniquement à améliorer le site, ne
+        de provenance, type d'appareil, pays, version de l'application et le fait d'être connecté ou non. Ces statistiques servent uniquement à améliorer le site, ne
         permettent pas de vous identifier ni de vous suivre sur d'autres sites, et ne sont pas croisées avec
         d'autres données ;
       </List.Item>

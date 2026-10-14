@@ -7,6 +7,11 @@ import react from '@vitejs/plugin-react-swc'
 export default defineConfig({
   plugins: [
     react(),
+    {
+      // Umami tags every hit with the version the client runs (stale PWA shells included).
+      name: 'umami-version-tag',
+      transformIndexHtml: html => html.replace('data-website-id=', `data-tag="${process.env.npm_package_version}" data-website-id=`),
+    },
     VitePWA({
       registerType: 'autoUpdate',
       // Inline, so PWABuilder's scanner finds the registration in the HTML. The
